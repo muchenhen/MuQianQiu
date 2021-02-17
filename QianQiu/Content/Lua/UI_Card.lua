@@ -1,22 +1,11 @@
 local WBL = import("WidgetBlueprintLibrary")
+require "Global"
 
 local UI_Card = {}
 
 function UI_Card:Initialize()
 
 end
-
-local ECardState = {
-    Choose = 1,
-    UnChoose = 0
-}
-
-local ECardSeason = {
-    Spring = 1,
-    Summer = 2,
-    Autumn = 3,
-    Winter = 4
-}
 
 function UI_Card:Construct()
     self.state = ECardState.UnChoose
@@ -35,14 +24,18 @@ function UI_Card:Construct()
     end)
     self.Button_Card.OnHovered:Add(function ()
         self:PlayAnimation(self.PlayerHovered, 0, 1, 0, 1, false)
-        print("OnHovered card")
+        print("OnUnHovered card")
     end)
-    self.Button_Card.OnHovered:Add(function ()
-        -- self:PlayAnimation(self.PlayUnChoose, 0, 1, 0, 1, false)
-        -- print("OnUnHovered card")
+    -- self:BindDelegate(self.Button_Card.OnHovered, MakeCallBack(self.Hovered, self))
+    self.Button_Card.OnUnhovered:Add(function ()
+        self:PlayAnimation(self.PlayUnChoose, 0, 1, 0, 1, false)
+        print("OnUnHovered card")
     end)
 end
 
-
+function UI_Card:Hovered()
+    self:PlayAnimation(self.PlayerHovered, 0, 1, 0, 1, false)
+    print("OnHovered card")
+end
 
 return UI_Card
