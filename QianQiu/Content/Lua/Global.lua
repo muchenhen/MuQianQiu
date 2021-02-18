@@ -10,28 +10,88 @@ ECardState = {
     UnChoose = 0
 }
 
-function ui(uiname, baseUIName)
-	return class(uiname, require("UIBase/UIBase"))
+ECardType = {
+    Char = 'Char',
+    Sword = 'Sword',
+    Item = 'Item',
+    Pet = 'Pet',
+    Map = 'Map',
+    Back = '',
+}
+
+ESpecialDetail = {
+    [1] = "己方“{$Card}”增加{$Point}分",
+    [2] = "己方“{$Com}”组合增加{$Point}分",
+    [3] = "增加与自身相关的所有组合{$Point}分",
+    [4]	= "禁用对方任意一张特殊牌的效果",
+    [5]	= "禁用“{$Card}”特殊牌的效果",
+    [6]	= "选择对手任意一张特殊牌进行交换",
+    [7]	= "选择对手任意一张特殊牌复制效果",
+    [8]	= "如果“{$Cards}”还在公共牌库则必定下一回合出现"
+}
+
+ESpecialType = {
+    CardUp = 1,
+    StoryUp = 2,
+    AllStoryUp = 3,
+    BanAnyCard = 4,
+    BanAimCard = 5,
+    SwapAnyCard = 6,
+    CopyAnyCard = 7,
+    ShowCards = 8
+}
+
+ESlateVisibility = {
+    Visible = 0,
+	Collapsed = 1,
+	Hidden = 2,
+	HitTestInvisible = 3,
+	SelfHitTestInvisible = 4
+}
+
+UI_TEXTURE_PATH = "/Game/Texture/"
+UI_TEXTURE_BACK_PATH = "/Game/Texture/Tex_Card_Back"
+
+local WBL = import("WidgetBlueprintLibrary")
+
+function LastStringBySeparator(str, separator)
+	return str:sub(str:find(string.format("[^%s]*$", separator)))
 end
 
-local weakmeta = {__mode = "v"}
-function MakeCallBack(callBack, ...)
-    local parameters = setmetatable({...}, weakmeta)
-    local handle = {}
-    function handle:getParam()
-    	return parameters
-    end
-    local len_p = table.maxn(parameters)
-    local function f(...)
-        local args = {...}
-        local len_a = table.maxn(args)
-        for i = 1, len_a do
-            parameters[i+len_p] = args[i]
-        end        
-        handle.result = callBack(table.unpack(parameters, 1, len_p+len_a))
-        return handle.result
-    end
-    return f, handle
+function GetResPath(gamePackagePath)
+    return string.format("%s.%s", gamePackagePath, LastStringBySeparator(gamePackagePath, "/"))
 end
+
+function LoadObject(path, className)
+    local lastStr = LastStringBySeparator(path, "/")
+    if className ~= nil then
+        return slua.loadObject(string.format("%s\'%s\'", className, GetResPath(path)))
+    end
+    return slua.loadObject(path)
+end
+
+-- function ui(uiname, baseUIName)
+-- 	return class(uiname, require("UIBase/UIBase"))
+-- end
+
+-- local weakmeta = {__mode = "v"}
+-- function MakeCallBack(callBack, ...)
+--     local parameters = setmetatable({...}, weakmeta)
+--     local handle = {}
+--     function handle:getParam()
+--     	return parameters
+--     end
+--     local len_p = table.maxn(parameters)
+--     local function f(...)
+--         local args = {...}
+--         local len_a = table.maxn(args)
+--         for i = 1, len_a do
+--             parameters[i+len_p] = args[i]
+--         end        
+--         handle.result = callBack(table.unpack(parameters, 1, len_p+len_a))
+--         return handle.result
+--     end
+--     return f, handle
+-- end
 
 
