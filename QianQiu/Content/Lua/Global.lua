@@ -54,6 +54,33 @@ UI_TEXTURE_BACK_PATH = "/Game/Texture/Tex_Card_Back"
 
 local WBL = import("WidgetBlueprintLibrary")
 
+CommandMap = {}
+CommandMap.FuncMap = {}
+
+function CommandMap:AddCommand(key, widget, func)
+    local value = {
+        widget = widget,
+        func = func,
+    }
+    CommandMap.FuncMap[key] = value
+    print("Add One Command:",key)
+end
+
+function CommandMap:DoCommand(key, param)
+    if key == nil then
+        return
+    end
+    if CommandMap.FuncMap[key] then
+        local widget = CommandMap.FuncMap[key].widget
+        local func = CommandMap.FuncMap[key].func
+        if not param then
+            func(widget)
+        else
+            func(widget, param)
+        end
+    end
+end
+
 function LastStringBySeparator(str, separator)
 	return str:sub(str:find(string.format("[^%s]*$", separator)))
 end

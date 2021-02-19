@@ -39,10 +39,12 @@ function UI_Card:Construct()
                 cardDetail = "既出丹渊交光夜，凝雾点漆逸流萤。",
                 texturePath = "/" .. "Tex_Char_YunWuYue_HuaShang"
             }
+            CommandMap:DoCommand("CardDetailPlayShowIn", param)
             -- print("Chosse card")
         elseif self.state == ECardState.Choose then
             self:PlayAnimation(self.PlayUnChoose, 0, 1, 0, 1, false)
             self.state = ECardState.UnChoose
+            CommandMap:DoCommand("CardDetailPlayShowOut")
             -- print("Unchose card")
         end
     end)
