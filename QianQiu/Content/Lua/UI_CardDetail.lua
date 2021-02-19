@@ -13,6 +13,7 @@ end
 
 function UI_CardDetail:UpdateSelf(param)
     self.UI_Card:UpdateSelf(param)
+    self.Text_Score:SetText("基础分值：" .. param.score)
 end
 
 function UI_CardDetail:PlayShowIn(param)

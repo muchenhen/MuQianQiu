@@ -24,10 +24,12 @@ ESpecialDetail = {
     [2] = "己方“{$Com}”组合增加{$Point}分",
     [3] = "增加与自身相关的所有组合{$Point}分",
     [4]	= "禁用对方任意一张特殊牌的效果",
-    [5]	= "禁用“{$Card}”特殊牌的效果",
+    [5]	= "禁用“{$Cards}”特殊牌的效果",
     [6]	= "选择对手任意一张特殊牌进行交换",
     [7]	= "选择对手任意一张特殊牌复制效果",
-    [8]	= "如果“{$Cards}”还在公共牌库则必定下一回合出现"
+    [8]	= "如果“{$Cards}”还在公共牌库则必定下一回合出现",
+    [9] = "随机翻开对手{$Num}张手牌进行查看",
+    [10] = "禁止被对方交换"
 }
 
 ESpecialType = {
@@ -96,29 +98,3 @@ function LoadObject(path, className)
     end
     return slua.loadObject(path)
 end
-
--- function ui(uiname, baseUIName)
--- 	return class(uiname, require("UIBase/UIBase"))
--- end
-
--- local weakmeta = {__mode = "v"}
--- function MakeCallBack(callBack, ...)
---     local parameters = setmetatable({...}, weakmeta)
---     local handle = {}
---     function handle:getParam()
---     	return parameters
---     end
---     local len_p = table.maxn(parameters)
---     local function f(...)
---         local args = {...}
---         local len_a = table.maxn(args)
---         for i = 1, len_a do
---             parameters[i+len_p] = args[i]
---         end        
---         handle.result = callBack(table.unpack(parameters, 1, len_p+len_a))
---         return handle.result
---     end
---     return f, handle
--- end
-
-
