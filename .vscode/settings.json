@@ -2,5 +2,8 @@
     "Lua.diagnostics.globals": [
         "slua",
         "import"
+    ],
+    "Lua.diagnostics.disable": [
+        "lowercase-global"
     ]
 }

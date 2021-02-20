@@ -98,3 +98,10 @@ function LoadObject(path, className)
     end
     return slua.loadObject(path)
 end
+
+Cards = {
+    [101] = {
+        ["Name"] = "beiluo",
+        ""
+    }
+}
