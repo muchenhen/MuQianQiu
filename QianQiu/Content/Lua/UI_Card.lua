@@ -9,14 +9,15 @@ end
 function UI_Card:Construct()
     -- 初始化状态
     self.bPlayer = true
+    self.ID = 229
     self.state = ECardState.UnChoose -- 选中状态
-    self.season = ECardSeason.Spring -- 卡面属性
-    self.score = 2 -- 卡片分数
-    self.type = ECardType.Char -- 卡面类型
-    self.bSpecial = false -- 是否是特殊卡
+    self.season = Table.Cards[self.ID].Season -- 卡面属性
+    self.score = Table.Cards[self.ID].Value -- 卡片分数
+    self.type = Table.Cards[self.ID].Type -- 卡面类型
+    self.bSpecial = Table.Cards[self.ID].Special -- 是否是特殊卡
     self.bCanClick = true -- 是否可以点击
-    self.cardDetail = "既出丹渊交光夜，凝雾点漆逸流萤。"
-    self.texturePath = "/" .. "Tex_Char_YunWuYue_HuaShang"
+    self.cardDetail = Table.Cards[self.ID].Describe
+    self.texturePath = "/" .. Table.Cards[self.ID].Texture
     -- 初始化卡面
     self:UpdateCard()
 
@@ -29,15 +30,16 @@ function UI_Card:Construct()
             self:PlayAnimation(self.PlayerChoose, 0, 1, 0, 1, false)
             self.state = ECardState.Choose
             local param = {
+                id = self.ID,
                 bPlayer = true,
                 state = ECardState.UnChoose,
-                season = ECardSeason.Spring,
-                score = 2,
-                type = ECardType.Char,
-                bSpecial = false,
-                bCanClick = true,
-                cardDetail = "既出丹渊交光夜，凝雾点漆逸流萤。",
-                texturePath = "/" .. "Tex_Char_YunWuYue_HuaShang"
+                season = self.season,
+                score = self.score,
+                type = self.type,
+                bSpecial = self.bSpecial,
+                bCanClick = false,
+                cardDetail = self.cardDetail,
+                texturePath = self.texturePath
             }
             CommandMap:DoCommand("CardDetailPlayShowIn", param)
             -- print("Chosse card")

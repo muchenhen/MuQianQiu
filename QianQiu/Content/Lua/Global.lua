@@ -40,7 +40,9 @@ ESpecialType = {
     BanAimCard = 5,
     SwapAnyCard = 6,
     CopyAnyCard = 7,
-    ShowCards = 8
+    ShowCards = 8,
+    SeeCards = 9,
+    BanSwap = 10
 }
 
 ESlateVisibility = {
@@ -55,10 +57,12 @@ UI_TEXTURE_PATH = "/Game/Texture/"
 UI_TEXTURE_BACK_PATH = "/Game/Texture/Tex_Card_Back"
 
 local WBL = import("WidgetBlueprintLibrary")
-
+Table = {}
 CommandMap = {}
 CommandMap.FuncMap = {}
 
+require "Table/Card"
+require "Table/Story"
 function CommandMap:AddCommand(key, widget, func)
     local value = {
         widget = widget,
@@ -99,9 +103,23 @@ function LoadObject(path, className)
     return slua.loadObject(path)
 end
 
-Cards = {
-    [101] = {
-        ["Name"] = "beiluo",
-        ""
-    }
-}
+
+function Split(szFullString, szSeparator)
+    local nFindStartIndex = 1
+    local nSplitIndex = 1
+    local nSplitArray = {}
+    while true do
+       local nFindLastIndex = string.find(szFullString, szSeparator, nFindStartIndex)
+       if not nFindLastIndex then
+        nSplitArray[nSplitIndex] = string.sub(szFullString, nFindStartIndex, string.len(szFullString))
+        break
+       end
+       nSplitArray[nSplitIndex] = string.sub(szFullString, nFindStartIndex, nFindLastIndex - 1)
+       nFindStartIndex = nFindLastIndex + string.len(szSeparator)
+       nSplitIndex = nSplitIndex + 1
+    end
+    return nSplitArray
+end
+
+Table.Cards = Cards
+Table.Story = Story
