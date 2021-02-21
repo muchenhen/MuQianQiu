@@ -1,3 +1,8 @@
+require "Table/Card"
+require "Table/Story"
+require "Functions"
+require("LuaPanda").start("127.0.0.1",8818)
+
 ECardSeason = {
     Spring = 1,
     Summer = 2,
@@ -19,19 +24,6 @@ ECardType = {
     Back = '',
 }
 
-ESpecialDetail = {
-    [1] = "己方“{$Card}”增加{$Point}分",
-    [2] = "己方“{$Com}”组合增加{$Point}分",
-    [3] = "增加与自身相关的所有组合{$Point}分",
-    [4]	= "禁用对方任意一张特殊牌的效果",
-    [5]	= "禁用“{$Cards}”特殊牌的效果",
-    [6]	= "选择对手任意一张特殊牌进行交换",
-    [7]	= "选择对手任意一张特殊牌复制效果",
-    [8]	= "如果“{$Cards}”还在公共牌库则必定下一回合出现",
-    [9] = "随机翻开对手{$Num}张手牌进行查看",
-    [10] = "禁止被对方交换"
-}
-
 ESpecialType = {
     CardUp = 1,
     StoryUp = 2,
@@ -44,6 +36,20 @@ ESpecialType = {
     SeeCards = 9,
     BanSwap = 10
 }
+
+ESpecialDetail = {
+    [ESpecialType.CardUp] = "己方“{$Card}”增加{$Point}分",
+    [ESpecialType.StoryUp] = "己方“{$Com}”组合增加{$Point}分",
+    [ESpecialType.AllStoryUp] = "增加与自身相关的所有组合{$Point}分",
+    [ESpecialType.BanAnyCard]	= "禁用对方任意一张特殊牌的效果",
+    [ESpecialType.BanAimCard]	= "禁用“{$Cards}”特殊牌的效果",
+    [ESpecialType.SwapAnyCard]	= "选择对手任意一张特殊牌进行交换",
+    [ESpecialType.CopyAnyCard]	= "选择对手任意一张特殊牌复制效果",
+    [ESpecialType.ShowCards]	= "如果“{$Cards}”还在公共牌库则必定下一回合出现其中之一",
+    [ESpecialType.SeeCards] = "随机翻开对手{$Num}张手牌进行查看",
+    [ESpecialType.BanSwap] = "禁止被对方交换"
+}
+
 
 ESlateVisibility = {
     Visible = 0,
@@ -61,8 +67,16 @@ Table = {}
 CommandMap = {}
 CommandMap.FuncMap = {}
 
-require "Table/Card"
-require "Table/Story"
+StoryOne = false
+StoryOneMin = 101
+StoryOneMax = 128
+StoryTwo = true
+StoryTwoMin = 201
+StoryTwoMax = 228
+StoryThree = true
+StoryThreeMin = 301
+StoryThreeMax = 328
+
 function CommandMap:AddCommand(key, widget, func)
     local value = {
         widget = widget,
@@ -123,3 +137,151 @@ end
 
 Table.Cards = Cards
 Table.Story = Story
+Table.TotalCardOne = table.FillNum(StoryOneMin, StoryOneMax)
+Table.TotalCardSecond = table.FillNum(StoryTwoMin, StoryTwoMax)
+Table.TotalCardThird = table.FillNum(StoryThreeMin, StoryThreeMax)
+FormatEffectDetail = {
+    [ESpecialType.CardUp] = function(param)
+        local params = Split(param,';')
+        local EffectDetail = ESpecialDetail[ESpecialType.CardUp]
+        local cardName = Table.Cards[params[1]].Name
+        EffectDetail = string.gsub(EffectDetail,"{$Card}", cardName)
+        EffectDetail = string.gsub(EffectDetail,"{$Point}", params[2])
+        return EffectDetail
+    end,
+    [ESpecialType.StoryUp] = function(param)
+        local params = Split(param,';')
+        local EffectDetail = ESpecialDetail[ESpecialType.StoryUp]
+        local storyName = Table.Story[tonumber(params[1])].Name
+        EffectDetail = string.gsub(EffectDetail,"{$Com}", storyName)
+        EffectDetail = string.gsub(EffectDetail,"{$Point}", params[2])
+        return EffectDetail
+    end,
+    [ESpecialType.AllStoryUp] = function(param)
+        local EffectDetail = ESpecialDetail[ESpecialType.AllStoryUp]
+        EffectDetail = string.gsub(EffectDetail, "{$Point}", param)
+        return EffectDetail
+    end,
+    [ESpecialType.BanAnyCard] = function(param)
+        return ESpecialDetail[ESpecialType.BanAnyCard]
+    end,
+    [ESpecialType.BanAimCard] = function(param)
+        local params = Split(param,';')
+        local cardsName = ''
+        for key, value in pairs(params) do
+            cardsName = cardsName .. Table.Cards[value].Name .. ' '
+        end
+        local EffectDetail = ESpecialDetail[ESpecialType.StoryUp]
+        EffectDetail = string.gsub(EffectDetail, "{$Cards}", cardsName)
+        return EffectDetail
+    end,
+    [ESpecialType.SwapAnyCard] = function(param)
+        return ESpecialDetail[ESpecialType.SwapAnyCard]
+    end,
+    [ESpecialType.CopyAnyCard] = function(param)
+        return ESpecialDetail[ESpecialType.CopyAnyCard]
+    end,
+    [ESpecialType.ShowCards] = function(param)
+        local params = Split(param,';')
+        local cardsName = ""
+        for key, value in pairs(params) do
+            cardsName = cardsName .. Table.Cards[tonumber(value)].Name .. ' '
+        end
+        local EffectDetail = ESpecialDetail[ESpecialType.ShowCards]
+        EffectDetail = string.gsub(EffectDetail, "{$Cards}", cardsName)
+        return EffectDetail
+    end,
+    [ESpecialType.SeeCards] = function(param)
+        local EffectDetail = ESpecialDetail[ESpecialType.SeeCards]
+        EffectDetail = string.gsub(EffectDetail,"{$Num}", param)
+        return EffectDetail
+    end,
+    [ESpecialType.BanSwap] = function(param)
+        return ESpecialDetail[ESpecialType.BanSwap]
+    end
+}
+
+function FindStory(cardID)
+    local cardsName = ''
+    local cards = {}
+    for key, value in pairs(Table.Story) do
+        local bHasStory = false
+        for m,n in pairs(value.Cards) do
+            if n == cardID then
+                bHasStory = true
+            end
+        end
+        if bHasStory then
+            for m,n in pairs(value.Cards) do
+                if n ~= cardID then
+                    cards[n] = Table.Cards[n].Name
+                end
+            end
+        end
+    end
+    for m,n in pairs(cards) do
+        cardsName = cardsName .. n .. ', '
+    end
+    cardsName = string.sub(cardsName, 1, -2)
+    cardsName = string.sub(cardsName, 1, -2)
+    return cardsName
+end
+
+local CheckCard
+function CheckCard(CardsID, part, min, max, i)
+    -- math.randomseed(tonumber(tostring(os.time()):reverse():sub(1,7))) -- 设置随机种子
+    local temp = math.random(min, max)
+    if part[temp] == 0 then
+        table.insert(CardsID, temp)
+        part[temp] = 1
+        i = i + 1
+        return CardsID,i
+    else
+        print("上次随机重复")
+        return CheckCard(CardsID, part, min, max, i)
+    end
+end
+
+function RandomCards(num)
+    math.randomseed(tonumber(tostring(os.time()):reverse():sub(1,7))) -- 设置随机种子
+    local halfPartOne = math.random(1,num) -- 第一部分的数量
+    local partOne
+    local oneMin
+    local oneMax
+    local partTwo
+    local twoMin
+    local twoMax
+    if StoryOne and StoryTwo then
+        partOne = Table.TotalCardOne
+        oneMin = StoryOneMin
+        oneMax = StoryOneMax
+        partTwo = Table.TotalCardSecond
+        twoMin = StoryTwoMin
+        twoMax = StoryTwoMax
+    elseif StoryOne and StoryThree  then
+        partOne = Table.TotalCardOne
+        oneMin = StoryOneMin
+        oneMax = StoryOneMax
+        partTwo = Table.TotalCardThird
+        twoMin = StoryThreeMin
+        twoMax = StoryThreeMax
+    elseif StoryTwo and StoryThree then
+        partOne = Table.TotalCardSecond
+        oneMin = StoryTwoMin
+        oneMax = StoryTwoMax
+        partTwo = Table.TotalCardThird
+        twoMin = StoryThreeMin
+        twoMax = StoryThreeMax
+    end
+    local CardsID = {}
+    local i = 1
+    while i <= halfPartOne do
+        CardsID,i = CheckCard(CardsID, partOne, oneMin, oneMax, i)
+    end
+    while i <= num do
+        CardsID,i = CheckCard(CardsID, partTwo, twoMin, twoMax, i)
+    end
+    print("随机生成的卡片数量：", #CardsID)
+    return CardsID
+end
+

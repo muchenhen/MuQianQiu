@@ -8,18 +8,7 @@ end
 
 function UI_Card:Construct()
     -- 初始化状态
-    self.bPlayer = true
-    self.ID = 229
     self.state = ECardState.UnChoose -- 选中状态
-    self.season = Table.Cards[self.ID].Season -- 卡面属性
-    self.score = Table.Cards[self.ID].Value -- 卡片分数
-    self.type = Table.Cards[self.ID].Type -- 卡面类型
-    self.bSpecial = Table.Cards[self.ID].Special -- 是否是特殊卡
-    self.bCanClick = true -- 是否可以点击
-    self.cardDetail = Table.Cards[self.ID].Describe
-    self.texturePath = "/" .. Table.Cards[self.ID].Texture
-    -- 初始化卡面
-    self:UpdateCard()
 
     -- 卡牌点击
     self.Button_Card.OnClicked:Add(function()
@@ -42,6 +31,7 @@ function UI_Card:Construct()
                 texturePath = self.texturePath
             }
             CommandMap:DoCommand("CardDetailPlayShowIn", param)
+            CommandMap:DoCommand("EnsureJustOneCardChoose", self.ID)
             -- print("Chosse card")
         elseif self.state == ECardState.Choose then
             self:PlayAnimation(self.PlayUnChoose, 0, 1, 0, 1, false)
@@ -79,6 +69,25 @@ function UI_Card:UpdateSelf(param)
     self:UpdateCard()
 end
 
+function UI_Card:UpdateSelfByID(ID, bPlayer)
+    self.ID = ID
+    self.bPlayer = bPlayer
+    self.state = ECardState.UnChoose -- 选中状态
+    self.season = Table.Cards[self.ID].Season -- 卡面属性
+    self.score = Table.Cards[self.ID].Value -- 卡片分数
+    self.type = Table.Cards[self.ID].Type -- 卡面类型
+    self.bSpecial = Table.Cards[self.ID].Special == 1 -- 是否是特殊卡
+    if self.bSpecial then
+        self.specialID = tonumber(Table.Cards[self.ID].SpecialName)
+    else
+        self.specialID = self.ID
+    end
+    self.bCanClick = true -- 是否可以点击
+    self.cardDetail = Table.Cards[self.ID].Describe
+    self.texturePath = "/" .. Table.Cards[self.ID].Texture
+    self:UpdateCard()
+end
+
 function UI_Card:UpdateCard()
     if not self.bCanClick then
         self.Button_Card:SetVisibility(ESlateVisibility.HitTestInvisible)
@@ -101,6 +110,14 @@ end
 function UI_Card:SetPlayer(bPlayer)
     self.bPlayer = bPlayer
     self:UpdateCard()
+end
+
+function UI_Card:GetID()
+    return self.ID
+end
+
+function UI_Card:SetChooseState(state)
+    self.state = state
 end
 
 return UI_Card
