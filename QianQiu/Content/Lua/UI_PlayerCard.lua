@@ -7,7 +7,7 @@ function UI_PlayerCard:Construct()
 end
 
 function UI_PlayerCard:Initialize()
-    self:FirstInitCards()
+    self:PlayAnimation(self.FirstInit, 0, 1, 0, 1, false)
 end
 
 function UI_PlayerCard:UpdateChooseState(ID)
@@ -23,11 +23,11 @@ function UI_PlayerCard:UpdateChooseState(ID)
 end
 
 function UI_PlayerCard:FirstInitCards()
-    local firstCards = RandomCards(10)
+    self.Cards = RandomCards(10)
     local cardsNum = self.HaveCards:GetChildrenCount()
     for i = 0, cardsNum-1 do
         local card = self.HaveCards:GetChildAt(i)
-        card:UpdateSelfByID(firstCards[i+1],true)
+        card:UpdateSelfByID(self.Cards[i+1],true)
     end
 end
 

@@ -3,6 +3,16 @@ require "Table/Story"
 require "Functions"
 require("LuaPanda").start("127.0.0.1",8818)
 
+EPublicCardState = {
+    ReadyChoose = 1,--已经选择了卡池中的一张卡 准备带走的状态
+    Normal = 2, --普通状态
+}
+
+EOwner = {
+    Player = 0,
+    Enemy = 1,
+}
+
 ECardSeason = {
     Spring = 1,
     Summer = 2,
@@ -230,14 +240,15 @@ end
 local CheckCard
 function CheckCard(CardsID, part, min, max, i)
     -- math.randomseed(tonumber(tostring(os.time()):reverse():sub(1,7))) -- 设置随机种子
+    -- 在最大值和最小值之间生成一个随机数
     local temp = math.random(min, max)
+    -- 如果该数字表示的卡还在牌库里（0）就添加进CardsID 并标记为已经发出（1），否则重新生成
     if part[temp] == 0 then
         table.insert(CardsID, temp)
         part[temp] = 1
         i = i + 1
         return CardsID,i
     else
-        print("上次随机重复")
         return CheckCard(CardsID, part, min, max, i)
     end
 end
@@ -251,6 +262,7 @@ function RandomCards(num)
     local partTwo
     local twoMin
     local twoMax
+    -- 判断玩家选择的是几代
     if StoryOne and StoryTwo then
         partOne = Table.TotalCardOne
         oneMin = StoryOneMin
@@ -273,6 +285,7 @@ function RandomCards(num)
         twoMin = StoryThreeMin
         twoMax = StoryThreeMax
     end
+    -- 生成Cards并返回
     local CardsID = {}
     local i = 1
     while i <= halfPartOne do

@@ -9,15 +9,18 @@ end
 function UI_Card:Construct()
     -- 初始化状态
     self.state = ECardState.UnChoose -- 选中状态
-
+    self.publicCardState = EPublicCardState.Normal
     -- 卡牌点击
     self.Button_Card.OnClicked:Add(function()
         if not self.bCanClick then
             return
         end
-        if self.state == ECardState.UnChoose then
+        if self.publicCardState == EPublicCardState.ReadyChoose then
+            self:PlayAnimation(self.PlayerChoose, 0, 1, 0, 1, false)
+        elseif self.state == ECardState.UnChoose and self.publicCardState == EPublicCardState.Normal then
             self:PlayAnimation(self.PlayerChoose, 0, 1, 0, 1, false)
             self.state = ECardState.Choose
+            self.Img_CardChoose:SetVisibility(ESlateVisibility.HitTestInvisible)
             local param = {
                 id = self.ID,
                 bPlayer = true,
@@ -32,24 +35,27 @@ function UI_Card:Construct()
             }
             CommandMap:DoCommand("CardDetailPlayShowIn", param)
             CommandMap:DoCommand("EnsureJustOneCardChoose", self.ID)
+            CommandMap:DoCommand("OnPlayerCardChoose", self.ID)
             -- print("Chosse card")
-        elseif self.state == ECardState.Choose then
+        elseif self.state == ECardState.Choose and self.publicCardState == EPublicCardState.Normal then
             self:PlayAnimation(self.PlayUnChoose, 0, 1, 0, 1, false)
             self.state = ECardState.UnChoose
+            self.Img_CardChoose:SetVisibility(ESlateVisibility.Collapsed)
             CommandMap:DoCommand("CardDetailPlayShowOut")
+            CommandMap:DoCommand("OnPlayerCardUnchoose", self.ID)
             -- print("Unchose card")
         end
     end)
     -- 鼠标经过
     self.Button_Card.OnHovered:Add(function ()
-        if self.state == ECardState.UnChoose then
+        if self.state == ECardState.UnChoose and self.bCanHovered then
             self:PlayAnimation(self.PlayerHovered, 0, 1, 0, 1, false)
             -- print("OnUnHovered card")
         end
     end)
     -- 鼠标离开
     self.Button_Card.OnUnhovered:Add(function ()
-        if self.state == ECardState.UnChoose then
+        if self.state == ECardState.UnChoose and self.bCanHovered then
             self:PlayAnimation(self.PlayerUnhovered, 0, 1, 0, 1, false)
             -- print("OnUnHovered card")
         end
@@ -105,6 +111,12 @@ end
 
 function UI_Card:SetClick(bCanClick)
     self.bCanClick = bCanClick
+    self:UpdateCard()
+end
+
+function UI_Card:SetHovered(bCanHovered)
+    self.bCanHovered = bCanHovered
+    self:UpdateCard()
 end
 
 function UI_Card:SetPlayer(bPlayer)
@@ -116,8 +128,20 @@ function UI_Card:GetID()
     return self.ID
 end
 
+function UI_Card:GetSeason()
+    return self.Season
+end
+
 function UI_Card:SetChooseState(state)
     self.state = state
+    if state == ECardState.UnChoose then
+        self.Img_CardChoose:SetVisibility(ESlateVisibility.Collapsed)
+        CommandMap:DoCommand("OnPlayerCardUnchoose", self.ID)
+    end
+end
+
+function UI_Card:SetPublicState(state)
+    self.publicCardState = state
 end
 
 return UI_Card

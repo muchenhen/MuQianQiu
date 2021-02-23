@@ -10,6 +10,7 @@ function UI_Begin:Construct()
         StoryOne = true
         StoryTwo = true
         StoryThree = false
+        print("牌库选择1+2")
     end)
     self.Button_TwoThree.OnClicked:Add(function ()
         self:PlaySwitch(2)
@@ -17,6 +18,7 @@ function UI_Begin:Construct()
         StoryOne = false
         StoryTwo = true
         StoryThree = true
+        print("牌库选择2+3")
     end)
     self.Button_OneThree.OnClicked:Add(function ()
         self:PlaySwitch(3)
@@ -24,6 +26,7 @@ function UI_Begin:Construct()
         StoryOne = true
         StoryTwo = false
         StoryThree = true
+        print("牌库选择1+3")
     end)
 end
 
