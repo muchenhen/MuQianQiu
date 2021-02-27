@@ -17,6 +17,7 @@ function UI_CardPool:FirstInitCards()
     for i = 0, cardsNum-1 do
         local card = self.HaveCards:GetChildAt(i)
         card:UpdateSelfByID(self.Cards[i+1],true)
+        card:SetHovered(false)
     end
 end
 
@@ -28,9 +29,9 @@ function UI_CardPool:OnCardChoose(cardID)
                 local card = self.HaveCards:GetChildAt(j)
                 if card:GetID() == self.Cards[i] then
                     card:PlayAnimation(card.PlayerHovered, 0, 1, 0, 1, false)
-                    card:SetHovered(false)
                     card:SetPublicState(EPublicCardState.ReadyChoose)
                     card.Img_CardChoose:SetVisibility(ESlateVisibility.HitTestInvisible)
+                    card:SetHovered(false)
                 end
             end
         end

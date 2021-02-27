@@ -10,6 +10,7 @@ function UI_Card:Construct()
     -- 初始化状态
     self.state = ECardState.UnChoose -- 选中状态
     self.publicCardState = EPublicCardState.Normal
+    self.cardType = 0
     -- 卡牌点击
     self.Button_Card.OnClicked:Add(function()
         if not self.bCanClick then
@@ -48,14 +49,14 @@ function UI_Card:Construct()
     end)
     -- 鼠标经过
     self.Button_Card.OnHovered:Add(function ()
-        if self.state == ECardState.UnChoose and self.bCanHovered then
+        if self.state == ECardState.UnChoose then
             self:PlayAnimation(self.PlayerHovered, 0, 1, 0, 1, false)
             -- print("OnUnHovered card")
         end
     end)
     -- 鼠标离开
     self.Button_Card.OnUnhovered:Add(function ()
-        if self.state == ECardState.UnChoose and self.bCanHovered then
+        if self.state == ECardState.UnChoose then
             self:PlayAnimation(self.PlayerUnhovered, 0, 1, 0, 1, false)
             -- print("OnUnHovered card")
         end
