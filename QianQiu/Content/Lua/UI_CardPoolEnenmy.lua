@@ -15,6 +15,7 @@ function UI_CardPoolEnenmy:FirstInitCards()
     for i = 0, cardsNum-1 do
         local card = self.HaveCards:GetChildAt(i)
         card:UpdateSelfByID(self.Cards[i+1],true)
+        card:SetOwner(EOwner.Enemy)
     end
 end
 

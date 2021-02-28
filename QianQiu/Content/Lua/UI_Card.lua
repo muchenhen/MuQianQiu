@@ -16,9 +16,7 @@ function UI_Card:Construct()
         if not self.bCanClick then
             return
         end
-        if self.publicCardState == EPublicCardState.ReadyChoose then
-            self:PlayAnimation(self.PlayerChoose, 0, 1, 0, 1, false)
-        elseif self.state == ECardState.UnChoose and self.publicCardState == EPublicCardState.Normal then
+        if self.state == ECardState.UnChoose and self.publicCardState == EPublicCardState.Normal then
             self:PlayAnimation(self.PlayerChoose, 0, 1, 0, 1, false)
             self.state = ECardState.Choose
             self.Img_CardChoose:SetVisibility(ESlateVisibility.HitTestInvisible)
@@ -36,27 +34,34 @@ function UI_Card:Construct()
             }
             CommandMap:DoCommand("CardDetailPlayShowIn", param)
             CommandMap:DoCommand("EnsureJustOneCardChoose", self.ID)
-            CommandMap:DoCommand("OnPlayerCardChoose", self.ID)
+            if self.owner == EOwner.Player then
+                CommandMap:DoCommand("OnPlayerCardChoose", self.ID)
+            end
             -- print("Chosse card")
         elseif self.state == ECardState.Choose and self.publicCardState == EPublicCardState.Normal then
             self:PlayAnimation(self.PlayUnChoose, 0, 1, 0, 1, false)
             self.state = ECardState.UnChoose
             self.Img_CardChoose:SetVisibility(ESlateVisibility.Collapsed)
             CommandMap:DoCommand("CardDetailPlayShowOut")
-            CommandMap:DoCommand("OnPlayerCardUnchoose", self.ID)
+            if self.owner == EOwner.Player then
+                CommandMap:DoCommand("OnPlayerCardUnchoose", self.ID)
+            end
             -- print("Unchose card")
+        elseif self.state == ECardState.Choose and self.publicCardState == EPublicCardState.ReadyChoose then
+            local ui = CreateUI("UI_StoryShow")
+            ui:AddToViewport(10)
         end
     end)
     -- 鼠标经过
     self.Button_Card.OnHovered:Add(function ()
-        if self.state == ECardState.UnChoose then
+        if self.state == ECardState.UnChoose and self.bCanHovered then
             self:PlayAnimation(self.PlayerHovered, 0, 1, 0, 1, false)
             -- print("OnUnHovered card")
         end
     end)
     -- 鼠标离开
     self.Button_Card.OnUnhovered:Add(function ()
-        if self.state == ECardState.UnChoose then
+        if self.state == ECardState.UnChoose and self.bCanHovered then
             self:PlayAnimation(self.PlayerUnhovered, 0, 1, 0, 1, false)
             -- print("OnUnHovered card")
         end
@@ -133,6 +138,7 @@ function UI_Card:GetSeason()
     return self.Season
 end
 
+-- 设置选中状态 为玩家卡池设计 每次点击需要确保只有一张卡被选中
 function UI_Card:SetChooseState(state)
     self.state = state
     if state == ECardState.UnChoose then
@@ -141,8 +147,17 @@ function UI_Card:SetChooseState(state)
     end
 end
 
+-- 仅仅切换选中状态
+function UI_Card:SetPublicChooseState(state)
+    self.state = state
+end
+
 function UI_Card:SetPublicState(state)
     self.publicCardState = state
+end
+
+function UI_Card:SetOwner(owner)
+    self.owner = owner
 end
 
 return UI_Card

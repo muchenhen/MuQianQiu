@@ -42,12 +42,12 @@ end
 function UI_CardDetail:PlayShowIn(param)
     self:PlayAnimation(self.ShowIn, 0, 1, 0, 1, false)
     self:UpdateSelf(param)
-    print("DetailShowIn")
+    -- print("DetailShowIn")
 end
 
 function UI_CardDetail:PlayShowOut()
     self:PlayAnimation(self.ShowOut, 0, 1, 0, 1, false)
-    print("DetailShowOut")
+    -- print("DetailShowOut")
 end
 
 return UI_CardDetail

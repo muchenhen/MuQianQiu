@@ -9,8 +9,12 @@ EPublicCardState = {
 }
 
 EOwner = {
-    Player = 0,
-    Enemy = 1,
+    Player = 0, --玩家手牌
+    Enemy = 1,-- 对手的手牌
+    PublicPool = 2, -- 公共牌库中的牌
+    PlayerStore = 3, -- 玩家已经带走的牌
+    EnemyStore = 4,-- 对手已经带走的牌
+    PlayerSpecial = 5,-- 玩家的特殊牌
 }
 
 ECardSeason = {
@@ -127,6 +131,19 @@ function LoadObject(path, className)
     return slua.loadObject(path)
 end
 
+function ConverUEPath(path)
+	if path:find('%.') == nil then
+		local fileName = LastStringBySeparator(path, '/')
+		return string.format("%s.%s", path, fileName)
+	else
+		return path
+	end
+end
+
+function CreateUI(uiName)
+    local ui = slua.loadUI("/Game/UI/" .. ConverUEPath(uiName))
+    return ui
+end
 
 function Split(szFullString, szSeparator)
     local nFindStartIndex = 1

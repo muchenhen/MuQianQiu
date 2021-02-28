@@ -29,6 +29,7 @@ function UI_PlayerCard:FirstInitCards()
         local card = self.HaveCards:GetChildAt(i)
         card:UpdateSelfByID(self.Cards[i+1],true)
         card:SetHovered(true)
+        card:SetOwner(EOwner.Player)
     end
 end
 
