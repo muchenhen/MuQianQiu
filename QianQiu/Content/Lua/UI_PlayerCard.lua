@@ -4,6 +4,7 @@ local UI_PlayerCard = {}
 
 function UI_PlayerCard:Construct()
     CommandMap:AddCommand("EnsureJustOneCardChoose",self, self.UpdateChooseState)
+    CommandMap:AddCommand("GetPlayerChooseID",self, self.GetPlayerChooseID)
 end
 
 function UI_PlayerCard:Initialize()
@@ -18,6 +19,18 @@ function UI_PlayerCard:UpdateChooseState(ID)
         if ID ~= cardID and card.state == ECardState.Choose then
             card:PlayAnimation(card.PlayDown, 0, 1, 0, 1, false)
             card:SetChooseState(ECardState.UnChoose)
+        end
+    end
+end
+
+function UI_PlayerCard:GetPlayerChooseID()
+    local cardsNum = self.HaveCards:GetChildrenCount()
+    for i = 0, cardsNum-1 do
+        local card = self.HaveCards:GetChildAt(i)
+        local cardID = card:GetID()
+        if card.state == ECardState.Choose then
+            -- self:PlayAnimation(self["comb" .. i+1], 0, 1, 0, 1, false)
+            return cardID
         end
     end
 end

@@ -107,10 +107,22 @@ function CommandMap:DoCommand(key, param)
     if CommandMap.FuncMap[key] then
         local widget = CommandMap.FuncMap[key].widget
         local func = CommandMap.FuncMap[key].func
+        if not widget then
+            error("Can not find this widget:")
+        end
+        if not func then
+            error("Can not find this function:" ..  key)
+        end
         if not param then
-            func(widget)
+            local re = func(widget)
+            if re then
+                return re
+            end
         else
-            func(widget, param)
+            local re = func(widget, param)
+            if re then
+                return re
+            end
         end
     end
 end
@@ -143,6 +155,11 @@ end
 function CreateUI(uiName)
     local ui = slua.loadUI("/Game/UI/" .. ConverUEPath(uiName))
     return ui
+end
+
+function OpenUI(uiName)
+    local ui = slua.loadUI("/Game/UI/" .. ConverUEPath(uiName))
+    ui:AddToViewport(10)
 end
 
 function Split(szFullString, szSeparator)

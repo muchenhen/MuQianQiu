@@ -47,9 +47,11 @@ function UI_Card:Construct()
                 CommandMap:DoCommand("OnPlayerCardUnchoose", self.ID)
             end
             -- print("Unchose card")
-        elseif self.state == ECardState.Choose and self.publicCardState == EPublicCardState.ReadyChoose then
-            local ui = CreateUI("UI_StoryShow")
-            ui:AddToViewport(10)
+        elseif self.owner == EOwner.PublicPool and self.state == ECardState.Choose and self.publicCardState == EPublicCardState.ReadyChoose then
+            print(self.ID)
+            local playChooseID = CommandMap:DoCommand("GetPlayerChooseID")
+            print(playChooseID)
+            -- OpenUI("UI_StoryShow")
         end
     end)
     -- 鼠标经过

@@ -19,6 +19,7 @@ function UI_CardPool:FirstInitCards()
         local card = self.HaveCards:GetChildAt(i)
         card:UpdateSelfByID(self.Cards[i+1],true)
         card:SetHovered(true)
+        card:SetOwner(EOwner.PublicPool)
     end
 end
 
