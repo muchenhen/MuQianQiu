@@ -1,4 +1,4 @@
-Table.Cards = {
+Cards = {
     [101] = {
         ["Name"] = "百里屠苏",
         ["Value"] = 2,
