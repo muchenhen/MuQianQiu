@@ -4,34 +4,43 @@ local UI_Begin = {}
 
 function UI_Begin:Construct()
     self.currSwitch = 1
-    self.Button_OneTwo.OnClicked:Add(function ()
-        self:PlaySwitch(1)
-        self.currSwitch = 1
-        StoryOne = true
-        StoryTwo = true
-        StoryThree = false
-        print("牌库选择1+2")
-    end)
-    self.Button_TwoThree.OnClicked:Add(function ()
-        self:PlaySwitch(2)
-        self.currSwitch = 2
-        StoryOne = false
-        StoryTwo = true
-        StoryThree = true
-        print("牌库选择2+3")
-    end)
-    self.Button_OneThree.OnClicked:Add(function ()
-        self:PlaySwitch(3)
-        self.currSwitch = 3
-        StoryOne = true
-        StoryTwo = false
-        StoryThree = true
-        print("牌库选择1+3")
-    end)
+    self.Button_OneTwo.OnClicked:Add(self.OnOneTwoClick)
+    self.Button_TwoThree.OnClicked:Add(self.OnTwoThreeClick)
+    self.Button_OneThree.OnClicked:Add(self.OnOneThreeClick)
 end
 
 function UI_Begin:Initialize()
+    print("牌库选择1+2")
+end
 
+function UI_Begin:OnOneTwoClick()
+    local self = UI_Begin
+    self:PlaySwitch(1)
+    self.currSwitch = 1
+    StoryOne = true
+    StoryTwo = true
+    StoryThree = false
+    print("牌库选择1+2")
+end
+
+function UI_Begin:OnTwoThreeClick()
+    local self = UI_Begin
+    self:PlaySwitch(2)
+    self.currSwitch = 2
+    StoryOne = false
+    StoryTwo = true
+    StoryThree = true
+    print("牌库选择2+3")
+end
+
+function UI_Begin:OnOneThreeClick()
+    local self = UI_Begin
+    self:PlaySwitch(3)
+    self.currSwitch = 3
+    StoryOne = true
+    StoryTwo = false
+    StoryThree = true
+    print("牌库选择1+3")
 end
 
 function UI_Begin:PlaySwitch(aim)

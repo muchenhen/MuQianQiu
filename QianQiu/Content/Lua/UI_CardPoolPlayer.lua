@@ -1,17 +1,17 @@
 require "Global"
 
-local UI_PlayerCard = {}
+local UI_CardPoolPlayer = {}
 
-function UI_PlayerCard:Construct()
+function UI_CardPoolPlayer:Construct()
     CommandMap:AddCommand("EnsureJustOneCardChoose",self, self.UpdateChooseState)
     CommandMap:AddCommand("GetPlayerChooseID",self, self.GetPlayerChooseID)
 end
 
-function UI_PlayerCard:Initialize()
+function UI_CardPoolPlayer:Initialize()
     self:PlayAnimation(self.FirstInit, 0, 1, 0, 1, false)
 end
 
-function UI_PlayerCard:UpdateChooseState(ID)
+function UI_CardPoolPlayer:UpdateChooseState(ID)
     local cardsNum = self.HaveCards:GetChildrenCount()
     for i = 0, cardsNum-1 do
         local card = self.HaveCards:GetChildAt(i)
@@ -23,7 +23,7 @@ function UI_PlayerCard:UpdateChooseState(ID)
     end
 end
 
-function UI_PlayerCard:GetPlayerChooseID()
+function UI_CardPoolPlayer:GetPlayerChooseID()
     local cardsNum = self.HaveCards:GetChildrenCount()
     for i = 0, cardsNum-1 do
         local card = self.HaveCards:GetChildAt(i)
@@ -35,15 +35,18 @@ function UI_PlayerCard:GetPlayerChooseID()
     end
 end
 
-function UI_PlayerCard:FirstInitCards()
+function UI_CardPoolPlayer:FirstInitCards()
     self.Cards = RandomCards(10)
     local cardsNum = self.HaveCards:GetChildrenCount()
     for i = 0, cardsNum-1 do
         local card = self.HaveCards:GetChildAt(i)
-        card:UpdateSelfByID(self.Cards[i+1],true)
-        card:SetHovered(true)
-        card:SetOwner(EOwner.Player)
+        local param = {
+            ID = self.Cards[i+1],
+            cardOwner = ECardOwner.Player,
+            cardPosition = ECardPostion.OnHand,
+        }
+        card:UpdateSelf(param)
     end
 end
 
-return UI_PlayerCard
+return UI_CardPoolPlayer

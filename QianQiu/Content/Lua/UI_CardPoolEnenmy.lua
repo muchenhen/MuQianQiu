@@ -14,16 +14,12 @@ function UI_CardPoolEnenmy:FirstInitCards()
     local cardsNum = self.HaveCards:GetChildrenCount()
     for i = 0, cardsNum-1 do
         local card = self.HaveCards:GetChildAt(i)
-        card:UpdateSelfByID(self.Cards[i+1],true)
-        card:SetOwner(EOwner.Enemy)
-    end
-end
-
-function UI_CardPoolEnenmy:SetBackOn()
-    for i=0,9 do
-        local cardName = "UI_Card_" .. i
-        self[cardName]:SetPlayer(false)
-        self[cardName]:SetClick(false)
+        local param = {
+            ID = self.Cards[i+1],
+            cardOwner = ECardOwner.Enemy,
+            cardPosition = ECardPostion.OnHand,
+        }
+        card:UpdateSelf(param)
     end
 end
 

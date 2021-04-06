@@ -3,7 +3,7 @@ require "Global"
 local UI_CardHeal = {}
 
 function UI_CardHeal:Construct()
-    self.owner = EOwner.Player
+    self.owner = ECardOwner.Player
     self.cards = {}
 end
 

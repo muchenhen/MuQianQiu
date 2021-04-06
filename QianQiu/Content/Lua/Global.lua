@@ -3,30 +3,34 @@ require "Table/Story"
 require "Functions"
 require("LuaPanda").start("127.0.0.1",8818)
 
+-- 卡池的卡片的状态
 EPublicCardState = {
     ReadyChoose = 1,--已经选择了卡池中的一张卡 准备带走的状态
     Normal = 2, --普通状态
 }
 
-EOwner = {
-    Player = 0, --玩家手牌
-    Enemy = 1,-- 对手的手牌
-    PublicPool = 2, -- 公共牌库中的牌
-    PlayerStore = 3, -- 玩家已经带走的牌
-    EnemyStore = 4,-- 对手已经带走的牌
-    PlayerSpecial = 5,-- 玩家的特殊牌
+ECardOwner = {
+    Player = 0,     --玩家
+    Enemy = 1,      -- 对手
+    PublicPool = 2, -- 公共牌库
+    Detail = 4,     -- 卡片详情里展示用的
+}
+ 
+ECardPostion = {
+    OnHand = 0,     --还在手
+    OnStory = 1,    --已经打出去的
 }
 
 ECardSeason = {
-    Spring = 1,
-    Summer = 2,
-    Autumn = 3,
-    Winter = 4
+    Spring = 1,     --春
+    Summer = 2,     --夏
+    Autumn = 3,     --秋
+    Winter = 4      --冬
 }
 
 ECardState = {
-    Choose = 1,
-    UnChoose = 0
+    Choose = 1,     --被选中
+    UnChoose = 0    --没有被选中
 }
 
 ECardType = {
@@ -52,16 +56,16 @@ ESpecialType = {
 }
 
 ESpecialDetail = {
-    [ESpecialType.CardUp] = "己方“{$Card}”增加{$Point}分",
-    [ESpecialType.StoryUp] = "己方“{$Com}”组合增加{$Point}分",
-    [ESpecialType.AllStoryUp] = "增加与自身相关的所有组合{$Point}分",
+    [ESpecialType.CardUp]       = "己方“${Card}”增加${Point}分",
+    [ESpecialType.StoryUp]      = "己方“${Com}”组合增加${Point}分",
+    [ESpecialType.AllStoryUp]   = "增加与自身相关的所有组合${Point}分",
     [ESpecialType.BanAnyCard]	= "禁用对方任意一张特殊牌的效果",
-    [ESpecialType.BanAimCard]	= "禁用“{$Cards}”特殊牌的效果",
+    [ESpecialType.BanAimCard]	= "禁用“${Cards}”特殊牌的效果",
     [ESpecialType.SwapAnyCard]	= "选择对手任意一张特殊牌进行交换",
     [ESpecialType.CopyAnyCard]	= "选择对手任意一张特殊牌复制效果",
-    [ESpecialType.ShowCards]	= "如果“{$Cards}”还在公共牌库则必定下一回合出现其中之一",
-    [ESpecialType.SeeCards] = "随机翻开对手{$Num}张手牌进行查看",
-    [ESpecialType.BanSwap] = "禁止被对方交换"
+    [ESpecialType.ShowCards]	= "如果“${Cards}”还在公共牌库则必定下一回合出现其中之一",
+    [ESpecialType.SeeCards]     = "随机翻开对手${Num}张手牌进行查看",
+    [ESpecialType.BanSwap]      = "禁止被对方交换"
 }
 
 
@@ -189,21 +193,21 @@ FormatEffectDetail = {
         local params = Split(param,';')
         local EffectDetail = ESpecialDetail[ESpecialType.CardUp]
         local cardName = Table.Cards[params[1]].Name
-        EffectDetail = string.gsub(EffectDetail,"{$Card}", cardName)
-        EffectDetail = string.gsub(EffectDetail,"{$Point}", params[2])
+        EffectDetail = string.gsub(EffectDetail,"${Card}", cardName)
+        EffectDetail = string.gsub(EffectDetail,"${Point}", params[2])
         return EffectDetail
     end,
     [ESpecialType.StoryUp] = function(param)
         local params = Split(param,';')
         local EffectDetail = ESpecialDetail[ESpecialType.StoryUp]
         local storyName = Table.Story[tonumber(params[1])].Name
-        EffectDetail = string.gsub(EffectDetail,"{$Com}", storyName)
-        EffectDetail = string.gsub(EffectDetail,"{$Point}", params[2])
+        EffectDetail = string.gsub(EffectDetail,"${Com}", storyName)
+        EffectDetail = string.gsub(EffectDetail,"${Point}", params[2])
         return EffectDetail
     end,
     [ESpecialType.AllStoryUp] = function(param)
         local EffectDetail = ESpecialDetail[ESpecialType.AllStoryUp]
-        EffectDetail = string.gsub(EffectDetail, "{$Point}", param)
+        EffectDetail = string.gsub(EffectDetail, "${Point}", param)
         return EffectDetail
     end,
     [ESpecialType.BanAnyCard] = function(param)
@@ -216,7 +220,7 @@ FormatEffectDetail = {
             cardsName = cardsName .. Table.Cards[value].Name .. ' '
         end
         local EffectDetail = ESpecialDetail[ESpecialType.StoryUp]
-        EffectDetail = string.gsub(EffectDetail, "{$Cards}", cardsName)
+        EffectDetail = string.gsub(EffectDetail, "${Cards}", cardsName)
         return EffectDetail
     end,
     [ESpecialType.SwapAnyCard] = function(param)
@@ -232,12 +236,12 @@ FormatEffectDetail = {
             cardsName = cardsName .. Table.Cards[tonumber(value)].Name .. ' '
         end
         local EffectDetail = ESpecialDetail[ESpecialType.ShowCards]
-        EffectDetail = string.gsub(EffectDetail, "{$Cards}", cardsName)
+        EffectDetail = string.gsub(EffectDetail, "${Cards}", cardsName)
         return EffectDetail
     end,
     [ESpecialType.SeeCards] = function(param)
         local EffectDetail = ESpecialDetail[ESpecialType.SeeCards]
-        EffectDetail = string.gsub(EffectDetail,"{$Num}", param)
+        EffectDetail = string.gsub(EffectDetail,"${Num}", param)
         return EffectDetail
     end,
     [ESpecialType.BanSwap] = function(param)
