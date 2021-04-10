@@ -16,7 +16,7 @@ function UI_CardPoolPlayer:UpdateChooseState(ID)
     for i = 0, cardsNum-1 do
         local card = self.HaveCards:GetChildAt(i)
         local cardID = card:GetID()
-        if ID ~= cardID and card.state == ECardState.Choose then
+        if ID ~= cardID and card.cardState == ECardState.Choose then
             card:PlayAnimation(card.PlayDown, 0, 1, 0, 1, false)
             card:SetChooseState(ECardState.UnChoose)
         end
@@ -28,7 +28,7 @@ function UI_CardPoolPlayer:GetPlayerChooseID()
     for i = 0, cardsNum-1 do
         local card = self.HaveCards:GetChildAt(i)
         local cardID = card:GetID()
-        if card.state == ECardState.Choose then
+        if card.cardState == ECardState.Choose then
             -- self:PlayAnimation(self["comb" .. i+1], 0, 1, 0, 1, false)
             return cardID
         end

@@ -31,9 +31,8 @@ end
 
 function UI_Card:OnCardClick()
     local self = UI_Card
-    if self.cardState == ECardState.UnChoose then
+    if self.cardState == ECardState.UnChoose and self.cardOwner ~= ECardOwner.Enemy and self.cardOwner ~= ECardOwner.Detail then
         self:PlayAnimation(self.PlayerChoose, 0, 1, 0, 1, false)
-        self.cardState = ECardState.Choose
         self.Img_CardChoose:SetVisibility(ESlateVisibility.HitTestInvisible)
         local param = {
             ID = self.ID,
@@ -45,25 +44,29 @@ function UI_Card:OnCardClick()
             cardDetail = self.cardDetail,
             texturePath = self.texturePath
         }
-        CommandMap:DoCommand("CardDetailPlayShowIn", param)
-        CommandMap:DoCommand("EnsureJustOneCardChoose", self.ID)
-        if self.owner == ECardOwner.Player then
-            CommandMap:DoCommand("OnPlayerCardChoose", self.ID)
+        CommandMap:DoCommand(CommandList.CardDetailPlayShowIn, param)
+        CommandMap:DoCommand(CommandList.EnsureJustOneCardChoose, self.ID)
+        if self.cardOwner == ECardOwner.Player then
+            CommandMap:DoCommand(CommandList.OnPlayerCardChoose, self.ID)
         end
-        print("Chosse card")
-    elseif self.cardState == ECardState.Choose then
+    elseif self.cardState == ECardState.Choose and self.cardOwner == ECardOwner.Player then
         self:PlayAnimation(self.PlayUnChoose, 0, 1, 0, 1, false)
-        self.cardState = ECardState.UnChoose
         self.Img_CardChoose:SetVisibility(ESlateVisibility.Collapsed)
-        CommandMap:DoCommand("CardDetailPlayShowOut")
-        if self.owner == ECardOwner.Player then
-            CommandMap:DoCommand("OnPlayerCardUnchoose", self.ID)
+        CommandMap:DoCommand(CommandList.CardDetailPlayShowOut)
+        if self.cardOwner == ECardOwner.Player then
+            CommandMap:DoCommand(CommandList.OnPlayerCardUnchoose, self.ID)
         end
-        print("Unchose card")
-    elseif self.owner == ECardOwner.PublicPool and self.cardState == ECardState.Choose then
-        print(self.ID)
-        local playChooseID = CommandMap:DoCommand("GetPlayerChooseID")
-        print(playChooseID)
+    elseif self.cardState == ECardState.Choose and self.cardOwner == ECardOwner.PublicPool then
+        local playChooseID = CommandMap:DoCommand(CommandList.GetPlayerChooseID)
+        print(playChooseID, Cards[playChooseID].Name)
+        print(self.ID,  Cards[self.ID].Name)
+        local param = {
+            PlayerHaveID = playChooseID,
+            PlayerChooseID = self.ID
+        }
+        CommandMap:DoCommand(CommandList.UpdatePlayerScore, param)
+        CommandMap:DoCommand(CommandList.UpdatePlayerHeal, param)
+        CommandMap:DoCommand(CommandList.PopAndPushOneCardForPublic, param)
         -- OpenUI("UI_StoryShow")
     end
 end
@@ -112,6 +115,7 @@ function UI_Card:UpdateSelf(param)
     else
         self.cardType = Table.Cards[self.ID].Type
     end
+
     if self.cardOwner == ECardOwner.Enemy then
         self.cardType = ECardType.Back
         local imgCard = LoadObject(UI_TEXTURE_BACK_PATH)
@@ -121,16 +125,18 @@ function UI_Card:UpdateSelf(param)
         local imgCard = LoadObject(UI_TEXTURE_PATH .. self.texturePath)
         self.Img_Card:SetBrushFromTexture(imgCard, false)
     end
+
     self.season = Table.Cards[self.ID].Season -- 卡面属性
     self.value = Table.Cards[self.ID].Value -- 卡片分数
     self.bSpecial = (Table.Cards[self.ID].Special == 1) -- 是否是特殊卡
+
     if self.bSpecial then
         self.specialID = tonumber(Table.Cards[self.ID].SpecialName)
     else
         self.specialID = self.ID
     end
+
     self.cardDetail = Table.Cards[self.ID].Describe
-    
 
 end
 
@@ -147,7 +153,7 @@ function UI_Card:SetChooseState(state)
     self.cardState = state
     if state == ECardState.UnChoose then
         self.Img_CardChoose:SetVisibility(ESlateVisibility.Collapsed)
-        CommandMap:DoCommand("OnPlayerCardUnchoose", self.ID)
+        CommandMap:DoCommand(CommandList.OnPlayerCardUnchoose, self.ID)
     end
 end
 
@@ -158,6 +164,18 @@ end
 
 function UI_Card:SetOwner(owner)
     self.cardOwner = owner
+end
+
+function UI_Card:OnDestroy()
+
+end
+
+function UI_Card:OnAnimationFinished(anim)
+    if anim == self.PlayerChoose then
+        self.cardState = ECardState.Choose
+    elseif anim == self.PlayUnChoose then
+        self.cardState = ECardState.UnChoose
+    end
 end
 
 return UI_Card
