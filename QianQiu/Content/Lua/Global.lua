@@ -141,6 +141,7 @@ CommandList = {
     UpdatePlayerScore = "UpdatePlayerScore",                    -- 玩家从公共卡池取走卡的时候更新分数信息
     UpdatePlayerHeal = "UpdatePlayerHeal",                      -- 将玩家选的两张卡加入到卡堆
     PopAndPushOneCardForPublic = "PopAndPushOneCardForPublic",  -- 移除选择的卡并随机在生成一张卡 公共卡池
+    PopAndPushOneCardForPlayer = "PopAndPushOneCardForPlayer",  -- 同上 玩家卡池
 }
 
 function LastStringBySeparator(str, separator)

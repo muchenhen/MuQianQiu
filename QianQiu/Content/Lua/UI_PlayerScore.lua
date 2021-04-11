@@ -14,14 +14,23 @@ function UI_PlayerScore:Initialize()
 end
 
 function UI_PlayerScore:UpdatePlayerScore(param)
-    local playerChooseID = param.PlayerChooseID
-    local playChooseCard = Cards[playerChooseID]
-    local playerChooseScore = playChooseCard.Value
-    local playerHaveID = param.PlayerHaveID
-    local playerHaveCard = Cards[playerHaveID]
-    local playerHaveScore = playerHaveCard.Value
-    local score = playerChooseScore + playerHaveScore
-    self.Text_PlayerPoint:SetText(self.playerScore + score)
+    if param.PlayerChooseID then
+        local playerChooseID = param.PlayerChooseID
+        local playChooseCard = Cards[playerChooseID]
+        local playerChooseScore = playChooseCard.Value
+        local playerHaveID = param.PlayerHaveID
+        local playerHaveCard = Cards[playerHaveID]
+        local playerHaveScore = playerHaveCard.Value
+        local score = playerChooseScore + playerHaveScore
+        self.Text_PlayerPoint:SetText(tostring(self.playerScore + score))
+        print("分数更新 ", "旧分数：", self.playerScore, "新分数：", self.playerScore + score)
+        self.playerScore = self.playerScore + score
+    elseif param.Score then
+        local score = param.Score
+        self.Text_PlayerPoint:SetText(tostring(self.playerScore + score))
+        print("分数更新 ", "旧分数：", self.playerScore, "新分数：", self.playerScore + score)
+        self.playerScore = self.playerScore + score
+    end
 end
 
 return UI_PlayerScore

@@ -37,7 +37,7 @@ function UI_CardPool:OnCardChoose(cardID)
                 local card = self.HaveCards:GetChildAt(j)
                 if card:GetID() == self.Cards[i] then
                     card:PlayAnimation(card.PlayerHovered, 0, 1, 0, 1, false)
-                    card.cardState = ECardState.Choose
+                    card:SetCardState(ECardState.Choose)
                     -- card:SetVisibility(ESlateVisibility.HitTestInvisible)
                     card.Img_CardChoose:SetVisibility(ESlateVisibility.HitTestInvisible)
                 end
@@ -70,7 +70,13 @@ function UI_CardPool:PopAndPushOneCardForPublic(param)
         local card = self.HaveCards:GetChildAt(i)
         if card.ID == publicCardID then
             local newCardID = RandomCards(1)[1]
+            print("卡池新生成卡牌：", Cards[newCardID].Name)
             local newCard = CreateUI('UI_Card')
+            for i=1, #self.Cards do
+                if self.Cards[i] == publicCardID then
+                    self.Cards[i] = newCardID
+                end
+            end
             local param  = {
                 ID = newCardID,
                 cardOwner = ECardOwner.PublicPool,
@@ -85,6 +91,7 @@ function UI_CardPool:PopAndPushOneCardForPublic(param)
             newCard.Slot:SetPosition(pos)
             newCard.Slot:SetZOrder(zOrder)
             newCard:SetRenderTransform(trans)
+            self:ResetPlayerCardUnChoose()
             break
         end
     end
@@ -92,11 +99,9 @@ end
 
 function UI_CardPool:ResetPlayerCardUnChoose()
     local cardsNum = self.HaveCards:GetChildrenCount()
-    for i = 1, #self.Cards do
+    for i = 0, cardsNum-1 do
         local card = self.HaveCards:GetChildAt(i)
-        if card.cardState == ECardState.Choose then
-            card.cardState = ECardState.UnChoose
-        end
+        card:SetCardState(ECardState.UnChoose)
     end
 end
 

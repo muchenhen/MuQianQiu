@@ -67,6 +67,8 @@ function UI_Card:OnCardClick()
         CommandMap:DoCommand(CommandList.UpdatePlayerScore, param)
         CommandMap:DoCommand(CommandList.UpdatePlayerHeal, param)
         CommandMap:DoCommand(CommandList.PopAndPushOneCardForPublic, param)
+        CommandMap:DoCommand(CommandList.PopAndPushOneCardForPlayer, param)
+        CommandMap:DoCommand(CommandList.CardDetailPlayShowOut)
         -- OpenUI("UI_StoryShow")
     end
 end
@@ -155,6 +157,22 @@ function UI_Card:SetChooseState(state)
         self.Img_CardChoose:SetVisibility(ESlateVisibility.Collapsed)
         CommandMap:DoCommand(CommandList.OnPlayerCardUnchoose, self.ID)
     end
+end
+
+-- 根据当前状态和目标状态进行动画播放和状态更新
+function UI_Card:SetCardState(state)
+    if self.cardState == ECardState.Choose and state == ECardState.UnChoose then
+        self:RefreshStateFromChooseToUnChoose()
+    elseif self.cardState == ECardState.UnChoose and state == ECardState.Choose then
+        self:PlayAnimation(self.PlayerChoose, 0, 1, 0, 1, false)
+    end
+end
+
+-- 从选中到未选中的状态需要执行的操作
+function UI_Card:RefreshStateFromChooseToUnChoose()
+    self:PlayAnimation(self.PlayUnChoose, 0, 1, 0, 1, false)
+    self:PlayAnimation(self.PlayerUnhovered, 0, 1, 0, 1, false)
+    self.Img_CardChoose:SetVisibility(ESlateVisibility.Collapsed)
 end
 
 -- 仅仅切换选中状态
