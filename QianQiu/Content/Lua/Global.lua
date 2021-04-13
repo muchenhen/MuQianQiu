@@ -349,3 +349,14 @@ function RandomCards(num)
     return CardsID
 end
 
+
+
+function ShowStory(param)
+    local story = CreateUI("UI_StoryShow")
+    story:UpdateCards(param)
+    story:AddToViewport(10)
+end
+
+function DoPlayerStoryShowAndUpdateScore()
+
+end

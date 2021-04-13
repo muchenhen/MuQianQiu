@@ -69,7 +69,6 @@ function UI_Card:OnCardClick()
         CommandMap:DoCommand(CommandList.PopAndPushOneCardForPublic, param)
         CommandMap:DoCommand(CommandList.PopAndPushOneCardForPlayer, param)
         CommandMap:DoCommand(CommandList.CardDetailPlayShowOut)
-        -- OpenUI("UI_StoryShow")
     end
 end
 

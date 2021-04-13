@@ -18,6 +18,25 @@ function UI_StoryShow:OnAnimationFinished(anim)
     end
 end
 
+function UI_StoryShow:UpdateCards(param)
+    self.Text_StoryName:SetText(param.Name)
+    self.Text_Score:SetText(param.Score)
+    self.Cards:ClearChildren()
+    local cardsID = param.Cards
+    for i=1, #cardsID do
+        local card = CreateUI("UI_Card")
+        local param = {
+                ID = cardsID[i],
+                cardPosition = ECardPostion.OnStory,
+                cardOwner = ECardOwner.Player,
+                state = ECardState.UnChoose,
+        }
+        self.Cards:AddChild(card)
+        card:UpdateSelf(param)
+        card:SetPadding(self.CardPadding)
+    end
+end
+
 function UI_StoryShow:OnDestroy()
 
 end

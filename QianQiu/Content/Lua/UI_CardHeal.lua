@@ -16,8 +16,6 @@ function UI_CardHeal:UpdatePlayerHeal(param)
     local chooseCardID = param.PlayerChooseID
     table.insert(self.cards, haveCardID)
     table.insert(self.cards, chooseCardID)
-    local haveCard = Cards[haveCardID]
-    local chooseCard = Cards[chooseCardID]
     local card = CreateUI("UI_Card")
     local param = {
         ID = haveCardID,
@@ -77,9 +75,12 @@ function UI_CardHeal:FindAllStory()
                 Table.Story[i].bHold = true
                 print("完成一个组合：", i, Table.Story[i].Name, " 组合分数：", Table.Story[i].Score)
                 CommandMap:DoCommand(CommandList.UpdatePlayerScore, {Score = Table.Story[i].Score})
+                ShowStory(Table.Story[i])
+                -- OpenUI("UI_StoryShow")
             end
         end
     end
+    DoPlayerStoryShowAndUpdateScore()
 end
 
 return UI_CardHeal
