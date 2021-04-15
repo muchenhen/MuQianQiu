@@ -117,15 +117,15 @@ function UI_Card:UpdateSelf(param)
         self.cardType = Table.Cards[self.ID].Type
     end
 
-    if self.cardOwner == ECardOwner.Enemy then
-        self.cardType = ECardType.Back
-        local imgCard = LoadObject(UI_TEXTURE_BACK_PATH)
-        self.Img_Card:SetBrushFromTexture(imgCard, false)
-    else
+    -- if self.cardOwner == ECardOwner.Enemy then
+    --     self.cardType = ECardType.Back
+    --     local imgCard = LoadObject(UI_TEXTURE_BACK_PATH)
+    --     self.Img_Card:SetBrushFromTexture(imgCard, false)
+    -- else
         self.texturePath = self.cardType .. '/' .. Table.Cards[self.ID].Texture
         local imgCard = LoadObject(UI_TEXTURE_PATH .. self.texturePath)
         self.Img_Card:SetBrushFromTexture(imgCard, false)
-    end
+    -- end
 
     self.season = Table.Cards[self.ID].Season -- 卡面属性
     self.value = Table.Cards[self.ID].Value -- 卡片分数

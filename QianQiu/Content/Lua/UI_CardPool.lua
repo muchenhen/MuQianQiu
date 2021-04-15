@@ -5,7 +5,6 @@ local UI_CardPool = {}
 
 function UI_CardPool:Initialize()
     self:PlayAnimation(self.ShowIn, 0, 1, 0, 1, false)
-    
 end
 
 function UI_CardPool:Construct()

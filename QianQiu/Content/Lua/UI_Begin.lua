@@ -1,5 +1,5 @@
 require "Global"
-
+local KismetSystemLibrary = import "KismetSystemLibrary"
 local UI_Begin = {}
 
 function UI_Begin:Construct()
@@ -7,10 +7,16 @@ function UI_Begin:Construct()
     self.Button_OneTwo.OnClicked:Add(self.OnOneTwoClick)
     self.Button_TwoThree.OnClicked:Add(self.OnTwoThreeClick)
     self.Button_OneThree.OnClicked:Add(self.OnOneThreeClick)
+    self.bHasScriptImplementedTick = false
 end
 
 function UI_Begin:Initialize()
+    -- KismetSystemLibrary.K2_SetTimer(self, "PrintSomething", 2, true, 2, 2)
     print("牌库选择1+2")
+end
+
+function UI_Begin:Tick()
+    self:PrintSomething()
 end
 
 function UI_Begin:OnOneTwoClick()
@@ -31,6 +37,10 @@ function UI_Begin:OnTwoThreeClick()
     StoryTwo = true
     StoryThree = true
     print("牌库选择2+3")
+end
+
+function UI_Begin:PrintSomething()
+    print("aaaaaaaaaaaaaaaaaaaa")
 end
 
 function UI_Begin:OnOneThreeClick()

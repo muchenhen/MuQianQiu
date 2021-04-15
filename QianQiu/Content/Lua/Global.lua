@@ -80,7 +80,6 @@ ESlateVisibility = {
 UI_TEXTURE_PATH = "/Game/Texture/"
 UI_TEXTURE_BACK_PATH = "/Game/Texture/Tex_Card_Back"
 
-local WBL = import("WidgetBlueprintLibrary")
 Table = {}
 CommandMap = {}
 CommandMap.FuncMap = {}
@@ -289,7 +288,7 @@ function FindStory(cardID)
 end
 
 local CheckCard
-function CheckCard(CardsID, part, min, max, i)
+CheckCard = function (CardsID, part, min, max, i)
     -- math.randomseed(tonumber(tostring(os.time()):reverse():sub(1,7))) -- 设置随机种子
     -- 在最大值和最小值之间生成一个随机数
     local temp = math.random(min, max)
@@ -304,49 +303,99 @@ function CheckCard(CardsID, part, min, max, i)
     end
 end
 
-function RandomCards(num)
-    math.randomseed(tonumber(tostring(os.time()):reverse():sub(1,7))) -- 设置随机种子
-    local halfPartOne = math.random(1,num) -- 第一部分的数量
-    local partOne
+function math.randomx( m,n,cnt ) -- 生成指定范围内不相同的指定数量的随机数
+    if cnt>n-m+1 then
+        return {}
+    end
+    local t = {}
+    local tmp = {}
+    math.randomseed(tonumber(tostring(os.time()):reverse():sub(1,7)))
+    while cnt>0 do
+        local x =math.random(m,n)
+        if not tmp[x] then
+            t[#t+1]=x
+            tmp[x]=1
+            cnt=cnt-1
+        end
+    end
+    return t
+end
+t1 = {} --牌库1
+t2 = {} --牌库2
+t1index = 0
+t2index = 0
+
+local function IndexAdd(index)
+    if index < 28 then
+        index = index + 1
+    end
+    print(index)
+    return index
+end
+
+function WashCards()
     local oneMin
     local oneMax
-    local partTwo
     local twoMin
     local twoMax
     -- 判断玩家选择的是几代
     if StoryOne and StoryTwo then
-        partOne = Table.TotalCardOne
         oneMin = StoryOneMin
         oneMax = StoryOneMax
-        partTwo = Table.TotalCardSecond
         twoMin = StoryTwoMin
         twoMax = StoryTwoMax
     elseif StoryOne and StoryThree  then
-        partOne = Table.TotalCardOne
         oneMin = StoryOneMin
         oneMax = StoryOneMax
-        partTwo = Table.TotalCardThird
         twoMin = StoryThreeMin
         twoMax = StoryThreeMax
     elseif StoryTwo and StoryThree then
         partOne = Table.TotalCardSecond
         oneMin = StoryTwoMin
         oneMax = StoryTwoMax
-        partTwo = Table.TotalCardThird
         twoMin = StoryThreeMin
         twoMax = StoryThreeMax
     end
-    -- 生成Cards并返回
-    local CardsID = {}
-    local i = 1
-    while i <= halfPartOne do
-        CardsID,i = CheckCard(CardsID, partOne, oneMin, oneMax, i)
+    t1 = math.randomx(oneMin, oneMax, 28)
+    t2 = math.randomx(twoMin, twoMax, 28)
+end
+
+function RandomCards(num)
+    if t1index >=28 and t2index >=28 then
+        print("牌库已空")
+        return {[1] = 101}
     end
-    while i <= num do
-        CardsID,i = CheckCard(CardsID, partTwo, twoMin, twoMax, i)
+    print("随机生成的卡片数量：", num)
+    if num == 1 then
+        local ran = math.random(1,2)
+        if ran == 1 then
+            t1index = IndexAdd(t1index)
+            print("当前牌库1的索引位置位：",t1index-1)
+            return {[1] = t1[t1index]}
+        else
+            t2index = IndexAdd(t2index)
+            print("当前牌库2的索引位置位：",t2index-1)
+            return {[1] = t2[t2index]}
+        end
+    else
+        local halfPartOne = math.random(1,num)
+        local CardsID = {}
+        t1index = IndexAdd(t1index)
+        local i = 1
+        while i <= halfPartOne do
+            t1index = IndexAdd(t1index)
+            table.insert( CardsID, t1[t1index])
+            i = i + 1
+        end
+        print("当前牌库1的索引位置位：",t1index-1)
+        while i <= num do
+            t2index = IndexAdd(t2index)
+            table.insert( CardsID, t2[t2index])
+            i = i + 1
+        end
+        print("当前牌库2的索引位置位：",t2index-1)
+        return CardsID
     end
-    print("随机生成的卡片数量：", #CardsID)
-    return CardsID
 end
 
 function ShowStory(param)
