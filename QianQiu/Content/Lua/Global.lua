@@ -358,6 +358,12 @@ function WashCards()
     end
     t1 = math.randomx(oneMin, oneMax, 28)
     t2 = math.randomx(twoMin, twoMax, 28)
+    -- for k,v in pairs(t1) do
+    --     print(k,v)
+    -- end
+    -- for k,v in pairs(t1) do
+    --     print(k,v)
+    -- end
 end
 
 function RandomCards(num)
@@ -370,30 +376,30 @@ function RandomCards(num)
         local ran = math.random(1,2)
         if ran == 1 then
             t1index = IndexAdd(t1index)
-            print("当前牌库1的索引位置位：",t1index-1)
+            print("当前牌库1的索引位置位：",t1index)
             return {[1] = t1[t1index]}
         else
             t2index = IndexAdd(t2index)
-            print("当前牌库2的索引位置位：",t2index-1)
+            print("当前牌库2的索引位置位：",t2index)
             return {[1] = t2[t2index]}
         end
     else
         local halfPartOne = math.random(1,num)
         local CardsID = {}
-        t1index = IndexAdd(t1index)
         local i = 1
         while i <= halfPartOne do
             t1index = IndexAdd(t1index)
             table.insert( CardsID, t1[t1index])
             i = i + 1
         end
-        print("当前牌库1的索引位置位：",t1index-1)
+        print("当前牌库1的索引位置位：",t1index)
         while i <= num do
             t2index = IndexAdd(t2index)
-            table.insert( CardsID, t2[t2index])
+            table.insert(CardsID, t2[t2index])
             i = i + 1
         end
-        print("当前牌库2的索引位置位：",t2index-1)
+        print("当前牌库2的索引位置位：",t2index)
+        print("cardsID数量：", #CardsID)
         return CardsID
     end
 end
@@ -405,21 +411,19 @@ function ShowStory(param)
 end
 
 NeedShowStorys = {}
-
 function AddNeedStoryShowList(story)
     table.insert(NeedShowStorys, story)
 end
 
-function DoPlayerStoryShowAndUpdateScore()
-    -- if #NeedShowStorys == 1 then
-    --     print("完成一个组合：", NeedShowStorys[1].Name, " 组合分数：", NeedShowStorys[1].Score)
-    --     CommandMap:DoCommand(CommandList.UpdatePlayerScore, {Score = NeedShowStorys[1].Score})
-    --     ShowStory(NeedShowStorys[1])
-    -- end
-    for i=1, #NeedShowStorys do
-        print("完成一个组合：", NeedShowStorys[i].Name, " 组合分数：", NeedShowStorys[i].Score)
-        CommandMap:DoCommand(CommandList.UpdatePlayerScore, {Score = NeedShowStorys[i].Score})
-        -- ShowStory(NeedShowStorys[i])
+StoryTimer = 4
+function DoPlayerStoryShowAndUpdateScore(story, ui)
+    -- ui.bHasScriptImplementedTick = false
+    print("完成一个组合：", story.Name, " 组合分数：", story.Score)
+    CommandMap:DoCommand(CommandList.UpdatePlayerScore, {Score = story.Score})
+    ShowStory(story)
+    if next(NeedShowStorys) then
+        table.remove( NeedShowStorys, 1)
+    else
+        NeedShowStorys = {}
     end
-    NeedShowStorys = {}
 end
