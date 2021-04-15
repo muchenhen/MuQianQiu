@@ -73,9 +73,8 @@ function UI_CardHeal:FindAllStory()
             -- print("checkNum", checkNum, "checkNumber", checkNumber)
             if checkNum == checkNumber then
                 Table.Story[i].bHold = true
-                print("完成一个组合：", i, Table.Story[i].Name, " 组合分数：", Table.Story[i].Score)
-                CommandMap:DoCommand(CommandList.UpdatePlayerScore, {Score = Table.Story[i].Score})
-                ShowStory(Table.Story[i])
+                AddNeedStoryShowList(Table.Story[i])
+
                 -- OpenUI("UI_StoryShow")
             end
         end

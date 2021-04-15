@@ -26,10 +26,10 @@ function UI_StoryShow:UpdateCards(param)
     for i=1, #cardsID do
         local card = CreateUI("UI_Card")
         local param = {
-                ID = cardsID[i],
-                cardPosition = ECardPostion.OnStory,
-                cardOwner = ECardOwner.Player,
-                state = ECardState.UnChoose,
+            ID = cardsID[i],
+            cardPosition = ECardPostion.OnStory,
+            cardOwner = ECardOwner.Player,
+            state = ECardState.UnChoose,
         }
         self.Cards:AddChild(card)
         card:UpdateSelf(param)

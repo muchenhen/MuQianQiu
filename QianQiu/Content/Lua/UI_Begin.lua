@@ -59,4 +59,8 @@ function UI_Begin:PlaySwitch(aim)
     end
 end
 
+function UI_Begin:OnDestroy()
+
+end
+
 return UI_Begin

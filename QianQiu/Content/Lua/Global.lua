@@ -349,14 +349,28 @@ function RandomCards(num)
     return CardsID
 end
 
-
-
 function ShowStory(param)
     local story = CreateUI("UI_StoryShow")
     story:UpdateCards(param)
     story:AddToViewport(10)
 end
 
-function DoPlayerStoryShowAndUpdateScore()
+NeedShowStorys = {}
 
+function AddNeedStoryShowList(story)
+    table.insert(NeedShowStorys, story)
+end
+
+function DoPlayerStoryShowAndUpdateScore()
+    -- if #NeedShowStorys == 1 then
+    --     print("完成一个组合：", NeedShowStorys[1].Name, " 组合分数：", NeedShowStorys[1].Score)
+    --     CommandMap:DoCommand(CommandList.UpdatePlayerScore, {Score = NeedShowStorys[1].Score})
+    --     ShowStory(NeedShowStorys[1])
+    -- end
+    for i=1, #NeedShowStorys do
+        print("完成一个组合：", NeedShowStorys[i].Name, " 组合分数：", NeedShowStorys[i].Score)
+        CommandMap:DoCommand(CommandList.UpdatePlayerScore, {Score = NeedShowStorys[i].Score})
+        -- ShowStory(NeedShowStorys[i])
+    end
+    NeedShowStorys = {}
 end
