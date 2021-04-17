@@ -6,6 +6,7 @@ function UI_StoryShow:Construct()
 end
 
 function UI_StoryShow:Initialize()
+    CommandMap:DoCommand("SetTick", false)
     self:PlayAnimation(self.ShowIn, 0, 1, 0, 1, false)
 end
 
@@ -14,6 +15,7 @@ function UI_StoryShow:OnAnimationFinished(anim)
         self:PlayAnimation(self.ShowOut, 0, 1, 0, 1, false)
     elseif anim == self.ShowOut then
         self.Cards:ClearChildren()
+        CommandMap:DoCommand("SetTick", true)
         self:RemoveFromParent()
     end
 end

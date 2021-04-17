@@ -365,7 +365,7 @@ function WashCards()
     --     print(k,v)
     -- end
 end
-
+ 
 function RandomCards(num)
     if t1index >=28 and t2index >=28 then
         print("牌库已空")
@@ -415,8 +415,7 @@ function AddNeedStoryShowList(story)
     table.insert(NeedShowStorys, story)
 end
 
-StoryTimer = 4
-function DoPlayerStoryShowAndUpdateScore(story, ui)
+function DoPlayerStoryShowAndUpdateScore(story)
     -- ui.bHasScriptImplementedTick = false
     print("完成一个组合：", story.Name, " 组合分数：", story.Score)
     CommandMap:DoCommand(CommandList.UpdatePlayerScore, {Score = story.Score})

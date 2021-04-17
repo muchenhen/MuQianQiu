@@ -74,16 +74,16 @@ end
 
 function UI_Card:OnCardHovered()
     local self = UI_Card
-    if self.cardState == ECardState.UnChoose and self.cardOwner ~= ECardOwner.Enemy then
-        self:PlayAnimation(self.PlayerHovered, 0, 1, 0, 1, false)
-    end
+    -- if self.cardState == ECardState.UnChoose and self.cardOwner ~= ECardOwner.Enemy then
+    --     self:PlayAnimation(self.PlayerHovered, 0, 1, 0, 1, false)
+    -- end
 end
 
 function UI_Card:OnCardUnHovered()
     local self = UI_Card
-    if self.cardState == ECardState.UnChoose and self.cardOwner ~= ECardOwner.Enemy then
-        self:PlayAnimation(self.PlayerUnhovered, 0, 1, 0, 1, false)
-    end
+    -- if self.cardState == ECardState.UnChoose and self.cardOwner ~= ECardOwner.Enemy then
+    --     self:PlayAnimation(self.PlayerUnhovered, 0, 1, 0, 1, false)
+    -- end
 end
 
 function UI_Card:UpdateSelf(param)

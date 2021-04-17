@@ -4,20 +4,27 @@ local UI_CardHeal = {}
 
 function UI_CardHeal:Construct()
     CommandMap:AddCommand("UpdatePlayerHeal", self, self.UpdatePlayerHeal)
+    CommandMap:AddCommand("SetTick", self, self.SetTick)
     self.bHasScriptImplementedTick = true
+    self.bTick = true
 end
 
 function UI_CardHeal:Tick()
-    StoryTimer = StoryTimer + 0.016
-    if StoryTimer >= 4 and next(NeedShowStorys) then
-        DoPlayerStoryShowAndUpdateScore(NeedShowStorys[1],self)
-        StoryTimer = 0
+    if next(NeedShowStorys) and self.bTick then
+        -- self.bHasScriptImplementedTick = false
+        self.bTick = false
+        DoPlayerStoryShowAndUpdateScore(NeedShowStorys[1])
     end
 end
 
 function UI_CardHeal:Initialize()
     self.cards = {}
     self.Cards:ClearChildren()
+end
+
+function UI_CardHeal:SetTick(bTick)
+    -- self.bHasScriptImplementedTick = bTick
+    self.bTick = bTick
 end
 
 function UI_CardHeal:UpdatePlayerHeal(param)
@@ -86,8 +93,6 @@ function UI_CardHeal:FindAllStory()
             end
         end
     end
-    -- self.bHasScriptImplementedTick = true
-    -- DoPlayerStoryShowAndUpdateScore()
 end
 
 return UI_CardHeal
