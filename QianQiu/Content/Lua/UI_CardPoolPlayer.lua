@@ -6,6 +6,7 @@ function UI_CardPoolPlayer:Construct()
     CommandMap:AddCommand("EnsureJustOneCardChoose",self, self.UpdateChooseState)
     CommandMap:AddCommand("GetPlayerChooseID",self, self.GetPlayerChooseID)
     CommandMap:AddCommand("PopAndPushOneCardForPlayer", self, self.PopAndPushOneCardForPlayer)
+    CommandMap:AddCommand("PopOneCardForPlayer", self, self.PopOneCardForPlayer)
 end
 
 function UI_CardPoolPlayer:Initialize()
@@ -50,6 +51,18 @@ function UI_CardPoolPlayer:FirstInitCards()
     end
 end
 
+function UI_CardPoolPlayer:PopOneCardForPlayer(param)
+    local playerHaveID = param.PlayerHaveID
+    local cardsNum = self.HaveCards:GetChildrenCount()
+    for i = 0, cardsNum-1 do
+        local card = self.HaveCards:GetChildAt(i)
+        if card.ID == playerHaveID then
+            self.HaveCards:RemoveChildAt(i)
+            break
+        end
+    end
+end
+
 function UI_CardPoolPlayer:PopAndPushOneCardForPlayer(param)
     local playerHaveID = param.PlayerHaveID
     local cardsNum = self.HaveCards:GetChildrenCount()
@@ -84,6 +97,12 @@ function UI_CardPoolPlayer:PopAndPushOneCardForPlayer(param)
             newCard.Slot:SetVerticalAlignment(verAli)
             break
         end
+    end
+end
+
+function UI_CardPoolPlayer:OnAnimationFinished(anim)
+    if anim == self.FirstInit then
+        CommandMap:DoCommand(CommandList.ShowRound)
     end
 end
 

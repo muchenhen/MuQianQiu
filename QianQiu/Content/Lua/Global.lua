@@ -1,88 +1,15 @@
 require "Table/Card"
 require "Table/Story"
 require "Functions"
+require "Command"
+require "Enum"
 require("LuaPanda").start("127.0.0.1",8818)
-
--- 卡池的卡片的状态
-EPublicCardState = {
-    ReadyChoose = 1,--已经选择了卡池中的一张卡 准备带走的状态
-    Normal = 2, --普通状态
-}
-
-ECardOwner = {
-    Player = 0,     --玩家
-    Enemy = 1,      -- 对手
-    PublicPool = 2, -- 公共牌库
-    Detail = 4,     -- 卡片详情里展示用的
-}
- 
-ECardPostion = {
-    OnHand = 0,     --还在手
-    OnStory = 1,    --已经打出去的
-}
-
-ECardSeason = {
-    Spring = 1,     --春
-    Summer = 2,     --夏
-    Autumn = 3,     --秋
-    Winter = 4      --冬
-}
-
-ECardState = {
-    Choose = 1,     --被选中
-    UnChoose = 0    --没有被选中
-}
-
-ECardType = {
-    Char = 'Char',
-    Sword = 'Sword',
-    Item = 'Item',
-    Pet = 'Pet',
-    Map = 'Map',
-    Back = '',
-}
-
-ESpecialType = {
-    CardUp = 1,
-    StoryUp = 2,
-    AllStoryUp = 3,
-    BanAnyCard = 4,
-    BanAimCard = 5,
-    SwapAnyCard = 6,
-    CopyAnyCard = 7,
-    ShowCards = 8,
-    SeeCards = 9,
-    BanSwap = 10
-}
-
-ESpecialDetail = {
-    [ESpecialType.CardUp]       = "己方“${Card}”增加${Point}分",
-    [ESpecialType.StoryUp]      = "己方“${Com}”组合增加${Point}分",
-    [ESpecialType.AllStoryUp]   = "增加与自身相关的所有组合${Point}分",
-    [ESpecialType.BanAnyCard]	= "禁用对方任意一张特殊牌的效果",
-    [ESpecialType.BanAimCard]	= "禁用“${Cards}”特殊牌的效果",
-    [ESpecialType.SwapAnyCard]	= "选择对手任意一张特殊牌进行交换",
-    [ESpecialType.CopyAnyCard]	= "选择对手任意一张特殊牌复制效果",
-    [ESpecialType.ShowCards]	= "如果“${Cards}”还在公共牌库则必定下一回合出现其中之一",
-    [ESpecialType.SeeCards]     = "随机翻开对手${Num}张手牌进行查看",
-    [ESpecialType.BanSwap]      = "禁止被对方交换"
-}
-
-
-ESlateVisibility = {
-    Visible = 0,
-	Collapsed = 1,
-	Hidden = 2,
-	HitTestInvisible = 3,
-	SelfHitTestInvisible = 4
-}
 
 UI_TEXTURE_PATH = "/Game/Texture/"
 UI_TEXTURE_BACK_PATH = "/Game/Texture/Tex_Card_Back"
 
 Table = {}
-CommandMap = {}
-CommandMap.FuncMap = {}
+
 
 StoryOne = false
 StoryOneMin = 101
@@ -94,80 +21,6 @@ StoryThree = true
 StoryThreeMin = 301
 StoryThreeMax = 328
 
-function CommandMap:AddCommand(key, widget, func)
-    local value = {
-        widget = widget,
-        func = func,
-    }
-    CommandMap.FuncMap[key] = value
-    print("Add One Command:",key)
-end
-
-function CommandMap:DoCommand(key, param)
-    if key == nil then
-        return
-    end
-    if CommandMap.FuncMap[key] then
-        local widget = CommandMap.FuncMap[key].widget
-        local func = CommandMap.FuncMap[key].func
-        if not widget then
-            error("Can not find this widget:")
-        end
-        if not func then
-            error("Can not find this function:" ..  key)
-        end
-        if not param then
-            local re = func(widget)
-            if re then
-                return re
-            end
-        else
-            local re = func(widget, param)
-            if re then
-                return re
-            end
-        end
-    end
-end
-
-CommandList = {
-    CardDetailPlayShowIn = 'CardDetailPlayShowIn',              -- 点击卡片后显示详情界面
-    CardDetailPlayShowOut = 'CardDetailPlayShowOut',            -- 卡片取消选择后隐藏详情界面
-    EnsureJustOneCardChoose = 'EnsureJustOneCardChoose',        -- 玩家每次选择卡片时确认只有一张卡片被选择
-    OnPlayerCardChoose = 'OnPlayerCardChoose',                  -- 当玩家选择一张卡片之后 卡池中对应的属性的牌也被选中
-    OnPlayerCardUnchoose = 'OnPlayerCardUnchoose',              -- 玩家手牌取消选择后 卡池中对应的牌也取消选择
-    GetPlayerChooseID = 'GetPlayerChooseID',                    -- 获得玩家当前选择的卡片的ID
-    UpdatePlayerScore = "UpdatePlayerScore",                    -- 玩家从公共卡池取走卡的时候更新分数信息
-    UpdatePlayerHeal = "UpdatePlayerHeal",                      -- 将玩家选的两张卡加入到卡堆
-    PopAndPushOneCardForPublic = "PopAndPushOneCardForPublic",  -- 移除选择的卡并随机在生成一张卡 公共卡池
-    PopAndPushOneCardForPlayer = "PopAndPushOneCardForPlayer",  -- 同上 玩家卡池
-}
-
-function LastStringBySeparator(str, separator)
-	return str:sub(str:find(string.format("[^%s]*$", separator)))
-end
-
-function GetResPath(gamePackagePath)
-    return string.format("%s.%s", gamePackagePath, LastStringBySeparator(gamePackagePath, "/"))
-end
-
-function LoadObject(path, className)
-    local lastStr = LastStringBySeparator(path, "/")
-    if className ~= nil then
-        return slua.loadObject(string.format("%s\'%s\'", className, GetResPath(path)))
-    end
-    return slua.loadObject(path)
-end
-
-function ConverUEPath(path)
-	if path:find('%.') == nil then
-		local fileName = LastStringBySeparator(path, '/')
-		return string.format("%s.%s", path, fileName)
-	else
-		return path
-	end
-end
-
 function CreateUI(uiName)
     local ui = slua.loadUI("/Game/UI/" .. ConverUEPath(uiName))
     return ui
@@ -176,23 +29,7 @@ end
 function OpenUI(uiName)
     local ui = slua.loadUI("/Game/UI/" .. ConverUEPath(uiName))
     ui:AddToViewport(10)
-end
-
-function Split(szFullString, szSeparator)
-    local nFindStartIndex = 1
-    local nSplitIndex = 1
-    local nSplitArray = {}
-    while true do
-       local nFindLastIndex = string.find(szFullString, szSeparator, nFindStartIndex)
-       if not nFindLastIndex then
-        nSplitArray[nSplitIndex] = string.sub(szFullString, nFindStartIndex, string.len(szFullString))
-        break
-       end
-       nSplitArray[nSplitIndex] = string.sub(szFullString, nFindStartIndex, nFindLastIndex - 1)
-       nFindStartIndex = nFindLastIndex + string.len(szSeparator)
-       nSplitIndex = nSplitIndex + 1
-    end
-    return nSplitArray
+    return ui
 end
 
 Table.Cards = Cards
@@ -200,6 +37,7 @@ Table.Story = Story
 Table.TotalCardOne = table.FillNum(StoryOneMin, StoryOneMax)
 Table.TotalCardSecond = table.FillNum(StoryTwoMin, StoryTwoMax)
 Table.TotalCardThird = table.FillNum(StoryThreeMin, StoryThreeMax)
+
 FormatEffectDetail = {
     [ESpecialType.CardUp] = function(param)
         local params = Split(param,';')
@@ -303,23 +141,6 @@ CheckCard = function (CardsID, part, min, max, i)
     end
 end
 
-function math.randomx( m,n,cnt ) -- 生成指定范围内不相同的指定数量的随机数
-    if cnt>n-m+1 then
-        return {}
-    end
-    local t = {}
-    local tmp = {}
-    math.randomseed(tonumber(tostring(os.time()):reverse():sub(1,7)))
-    while cnt>0 do
-        local x =math.random(m,n)
-        if not tmp[x] then
-            t[#t+1]=x
-            tmp[x]=1
-            cnt=cnt-1
-        end
-    end
-    return t
-end
 t1 = {} --牌库1
 t2 = {} --牌库2
 t1index = 0
@@ -329,7 +150,7 @@ local function IndexAdd(index)
     if index < 28 then
         index = index + 1
     end
-    print(index)
+    -- print(index)
     return index
 end
 

@@ -3,6 +3,7 @@ require "Global"
 local UI_CardHeal = {}
 
 function UI_CardHeal:Construct()
+    self.Button_HealDetail.OnClicked:Add(self.OnHealDetailClick)
     CommandMap:AddCommand("UpdatePlayerHeal", self, self.UpdatePlayerHeal)
     CommandMap:AddCommand("SetTick", self, self.SetTick)
     self.bHasScriptImplementedTick = true
@@ -89,10 +90,15 @@ function UI_CardHeal:FindAllStory()
             if checkNum == checkNumber then
                 Table.Story[i].bHold = true
                 AddNeedStoryShowList(Table.Story[i])
-                -- OpenUI("UI_StoryShow")
             end
         end
     end
+end
+
+function UI_CardHeal:OnHealDetailClick()
+    local self = UI_CardHeal
+    local ui = UIStack:OpenUIByName("UI_HealDetail")
+    ui:UpdateSelf(self.cards)
 end
 
 return UI_CardHeal
