@@ -44,7 +44,7 @@ function UI_Card:OnCardClick()
             cardDetail = self.cardDetail,
             texturePath = self.texturePath
         }
-        -- CommandMap:DoCommand(CommandList.CardDetailPlayShowIn, param)
+        UIStack:PushUIByName("UI_CardDetail",param)
         CommandMap:DoCommand(CommandList.EnsureJustOneCardChoose, self.ID)
         if self.cardOwner == ECardOwner.Player then
             CommandMap:DoCommand(CommandList.OnPlayerCardChoose, self.ID)
@@ -52,23 +52,30 @@ function UI_Card:OnCardClick()
     elseif self.cardState == ECardState.Choose and self.cardOwner == ECardOwner.Player then
         self:PlayAnimation(self.PlayUnChoose, 0, 1, 0, 1, false)
         self.Img_CardChoose:SetVisibility(ESlateVisibility.Collapsed)
-        -- CommandMap:DoCommand(CommandList.CardDetailPlayShowOut)
+        UIStack:PopUIByName("UI_CardDetail", true)
         if self.cardOwner == ECardOwner.Player then
             CommandMap:DoCommand(CommandList.OnPlayerCardUnchoose, self.ID)
         end
     elseif self.cardState == ECardState.Choose and self.cardOwner == ECardOwner.PublicPool then
         local playChooseID = CommandMap:DoCommand(CommandList.GetPlayerChooseID)
-        print(playChooseID, Cards[playChooseID].Name)
-        print(self.ID,  Cards[self.ID].Name)
-        local param = {
-            PlayerHaveID = playChooseID,
-            PlayerChooseID = self.ID
-        }
-        CommandMap:DoCommand(CommandList.UpdatePlayerScore, param)
-        CommandMap:DoCommand(CommandList.UpdatePlayerHeal, param)
-        CommandMap:DoCommand(CommandList.PopAndPushOneCardForPublic, param)
-        CommandMap:DoCommand(CommandList.PopOneCardForPlayer, param)
-        CommandMap:DoCommand(CommandList.CardDetailPlayShowOut)
+        if playChooseID then
+            print(playChooseID, Cards[playChooseID].Name)
+            print(self.ID,  Cards[self.ID].Name)
+            local param = {
+                PlayerHaveID = playChooseID,
+                PlayerChooseID = self.ID
+            }
+            UIStack:PopUIByName("UI_CardDetail", true)
+            CommandMap:DoCommand(CommandList.UpdatePlayerScore, param)
+            CommandMap:DoCommand(CommandList.UpdatePlayerHeal, param)
+            CommandMap:DoCommand(CommandList.PopAndPushOneCardForPublic, param)
+            CommandMap:DoCommand(CommandList.PopOneCardForPlayer, param)
+            CommandMap:DoCommand(CommandList.ShowRound)
+        else
+            self:PlayAnimation(self.PlayUnChoose, 0, 1, 0, 1, false)
+            self.Img_CardChoose:SetVisibility(ESlateVisibility.Collapsed)
+            UIStack:PopUIByName("UI_CardDetail", true)
+        end
     end
 end
 
@@ -117,15 +124,15 @@ function UI_Card:UpdateSelf(param)
         self.cardType = Table.Cards[self.ID].Type
     end
 
-    if self.cardOwner == ECardOwner.Enemy then
-        self.cardType = ECardType.Back
-        local imgCard = LoadObject(UI_TEXTURE_BACK_PATH)
-        self.Img_Card:SetBrushFromTexture(imgCard, false)
-    else
+    -- if self.cardOwner == ECardOwner.Enemy then
+        -- self.cardType = ECardType.Back
+        -- local imgCard = LoadObject(UI_TEXTURE_BACK_PATH)
+        -- self.Img_Card:SetBrushFromTexture(imgCard, false)
+    -- else
         self.texturePath = self.cardType .. '/' .. Table.Cards[self.ID].Texture
         local imgCard = LoadObject(UI_TEXTURE_PATH .. self.texturePath)
         self.Img_Card:SetBrushFromTexture(imgCard, false)
-    end
+    -- end
 
     self.season = Table.Cards[self.ID].Season -- 卡面属性
     self.value = Table.Cards[self.ID].Value -- 卡片分数

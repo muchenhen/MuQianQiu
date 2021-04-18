@@ -4,7 +4,11 @@ local UI_CardHeal = {}
 
 function UI_CardHeal:Construct()
     self.Button_HealDetail.OnClicked:Add(self.OnHealDetailClick)
-    CommandMap:AddCommand("UpdatePlayerHeal", self, self.UpdatePlayerHeal)
+    if self.bPlayerHeal then
+        CommandMap:AddCommand("UpdatePlayerHeal", self, self.UpdateHeal)
+    else
+        CommandMap:AddCommand("UpdateEnemyHeal", self, self.UpdateHeal)
+    end
     CommandMap:AddCommand("SetTick", self, self.SetTick)
     self.bHasScriptImplementedTick = true
     self.bTick = true
@@ -28,9 +32,16 @@ function UI_CardHeal:SetTick(bTick)
     self.bTick = bTick
 end
 
-function UI_CardHeal:UpdatePlayerHeal(param)
-    local haveCardID = param.PlayerHaveID
-    local chooseCardID = param.PlayerChooseID
+function UI_CardHeal:UpdateHeal(param)
+    local haveCardID
+    local chooseCardID
+    if self.bPlayerHeal then
+        haveCardID = param.PlayerHaveID
+        chooseCardID = param.PlayerChooseID
+    else
+        haveCardID = param.EnemyHaveCard
+        chooseCardID = param.EnemyChooseID
+    end
     table.insert(self.cards, haveCardID)
     table.insert(self.cards, chooseCardID)
     local card = CreateUI("UI_Card")
@@ -97,8 +108,8 @@ end
 
 function UI_CardHeal:OnHealDetailClick()
     local self = UI_CardHeal
-    local ui = UIStack:OpenUIByName("UI_HealDetail")
-    ui:UpdateSelf(self.cards)
+    UIStack:PopUIByName("UI_CardDetail", true)
+    UIStack:PushUIByName("UI_HealDetail", self.cards)
 end
 
 return UI_CardHeal

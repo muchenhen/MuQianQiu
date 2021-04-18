@@ -12,14 +12,15 @@ end
 
 function UI_StoryShow:OnAnimationFinished(anim)
     if anim == self.ShowIn then
-        self:PlayAnimation(self.ShowOut, 0, 1, 0, 1, false)
+        -- self:PlayAnimation(self.ShowOut, 0, 1, 0, 1, false)
+        UIStack:PopUIByName("UI_StoryShow", true)
     elseif anim == self.ShowOut then
         self:RemoveFromParent()
         CommandMap:DoCommand("SetTick", true)
     end
 end
 
-function UI_StoryShow:UpdateCards(param)
+function UI_StoryShow:UpdateSelf(param)
     self.Text_StoryName:SetText(param.Name)
     self.Text_Score:SetText(param.Score)
     self.Cards:ClearChildren()

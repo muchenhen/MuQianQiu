@@ -3,12 +3,10 @@ require "Global"
 local UI_CardDetail = {}
 
 function UI_CardDetail:Initialize()
-
+    self:PlayAnimation(self.ShowIn, 0, 1, 0, 1, false)
 end
 
 function UI_CardDetail:Construct()
-    CommandMap:AddCommand("CardDetailPlayShowIn", self, self.PlayShowIn)
-    CommandMap:AddCommand("CardDetailPlayShowOut", self, self.PlayShowOut)
 end
 
 function UI_CardDetail:UpdateSelf(param)
@@ -39,13 +37,22 @@ function UI_CardDetail:UpdateSelf(param)
     self.Text_CanStory:SetText(FindStory(param.ID))
 end
 
-function UI_CardDetail:PlayShowIn(param)
+function UI_CardDetail:PlayShowIn()
     self:PlayAnimation(self.ShowIn, 0, 1, 0, 1, false)
-    self:UpdateSelf(param)
 end
 
 function UI_CardDetail:PlayShowOut()
     self:PlayAnimation(self.ShowOut, 0, 1, 0, 1, false)
+end
+
+function UI_CardDetail:OnAnimationFinished(anim)
+    if anim == self.ShowOut then
+        self:RemoveFromViewport()
+    end
+end
+
+function UI_CardDetail:OnDestroy()
+
 end
 
 return UI_CardDetail

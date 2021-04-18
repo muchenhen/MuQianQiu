@@ -29,8 +29,7 @@ function UI_HealDetail:UpdateSelf(cards)
 end
 
 function UI_HealDetail:OnCloseClick()
-    local self = UI_HealDetail
-    self:PlayAnimation(self.ShowOut, 0, 1, 0, 1, false)
+    UIStack:PopUIByName("UI_HealDetail", true)
 end
 
 function UI_HealDetail:OnDestroy()

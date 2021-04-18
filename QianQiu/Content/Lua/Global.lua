@@ -3,6 +3,8 @@ require "Table/Story"
 require "Functions"
 require "Command"
 require "Enum"
+require "UIStack"
+require "AI_Enemy"
 require("LuaPanda").start("127.0.0.1",8818)
 
 UI_TEXTURE_PATH = "/Game/Texture/"
@@ -20,11 +22,6 @@ StoryTwoMax = 228
 StoryThree = true
 StoryThreeMin = 301
 StoryThreeMax = 328
-
-function CreateUI(uiName)
-    local ui = slua.loadUI("/Game/UI/" .. ConverUEPath(uiName))
-    return ui
-end
 
 function OpenUI(uiName)
     local ui = slua.loadUI("/Game/UI/" .. ConverUEPath(uiName))
@@ -240,7 +237,8 @@ function DoPlayerStoryShowAndUpdateScore(story)
     -- ui.bHasScriptImplementedTick = false
     print("完成一个组合：", story.Name, " 组合分数：", story.Score)
     CommandMap:DoCommand(CommandList.UpdatePlayerScore, {Score = story.Score})
-    ShowStory(story)
+    UIStack:PushUIByName("UI_StoryShow", story)
+    -- ShowStory(story)
     if next(NeedShowStorys) then
         table.remove( NeedShowStorys, 1)
     else

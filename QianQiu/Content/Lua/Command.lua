@@ -44,8 +44,10 @@ CommandList = {
     GetPlayerChooseID = 'GetPlayerChooseID',                    -- 获得玩家当前选择的卡片的ID
     UpdatePlayerScore = "UpdatePlayerScore",                    -- 玩家从公共卡池取走卡的时候更新分数信息
     UpdatePlayerHeal = "UpdatePlayerHeal",                      -- 将玩家选的两张卡加入到卡堆
+    UpdateEnemyHeal = "UpdateEnemyHeal",                        -- 同上 对手
     PopAndPushOneCardForPublic = "PopAndPushOneCardForPublic",  -- 移除选择的卡并随机在生成一张卡 公共卡池
     PopAndPushOneCardForPlayer = "PopAndPushOneCardForPlayer",  -- 同上 玩家卡池
-    PopOneCardForPlayer = "PopOneCardForPlayer",
+    PopOneCardForPlayer = "PopOneCardForPlayer",                -- 移除玩家选择的卡
+    PopOneCardForEnemy = "PopOneCardForEnemy",                  -- 移除对手选择的卡
     ShowRound = "ShowRound",                                    -- 设置回合文字并显示回合
 }

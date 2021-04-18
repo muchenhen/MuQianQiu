@@ -63,7 +63,7 @@ function UI_CardPool:OnCardUnchoose(cardID)
 end
 
 function UI_CardPool:PopAndPushOneCardForPublic(param)
-    local publicCardID = param.PlayerChooseID
+    local publicCardID = param.PlayerChooseID or param.EnemyChooseID
     local cardsNum = self.HaveCards:GetChildrenCount()
     for i = 0, cardsNum-1 do
         local card = self.HaveCards:GetChildAt(i)

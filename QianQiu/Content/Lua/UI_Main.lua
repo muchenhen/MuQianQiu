@@ -7,6 +7,11 @@ function UI_Main:Initialize()
     self.UI_CardPool:FirstInitCards()
     self.UI_CardPoolPlayer:FirstInitCards()
     self.UI_CardPoolEnenmy:FirstInitCards()
+    local param = {
+        UI_CardPoolEnenmy = self.UI_CardPoolEnenmy,
+        UI_CardPool = self.UI_CardPool
+    }
+    Enemy:SetData(param)
     self.round = 0
     self.bTick = true
     CommandMap:AddCommand("ShowRound", self, self.ShowRound)
@@ -28,13 +33,14 @@ function UI_Main:ShowRound()
         local text = ""
         if self.round%2 == 0 then
             text = "我方回合"
+            self.UI_CardPoolPlayer:SetVisibility(ESlateVisibility.SelfHitTestInvisible)
         elseif self.round%2 == 1 then
             text = "对手回合"
+            self.UI_CardPoolPlayer:SetVisibility(ESlateVisibility.HitTestInvisible)
+            Enemy.Basic:Action()
         end
         self.round = self.round + 1
-        local roundUI = CreateUI("UI_Round")
-        roundUI:SetRound(text)
-        roundUI:AddToViewport(10)
+        UIStack:PushUIByName("UI_Round", text)
     end
 end
 

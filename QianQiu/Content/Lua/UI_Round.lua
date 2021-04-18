@@ -11,7 +11,7 @@ end
 
 function UI_Round:OnAnimationFinished(anim)
     if anim == self.ShowIn then
-        self:PlayAnimation(self.ShowOut, 0, 1, 0, 1, false)
+        UIStack:PopUIByName("UI_Round", true)
     elseif anim == self.ShowOut then
         self:RemoveFromParent()
     end
@@ -21,7 +21,7 @@ function UI_Round:OnDestroy()
 
 end
 
-function UI_Round:SetRound(text)
+function UI_Round:UpdateSelf(text)
     self.Text_Round:SetText(text)
 end
 
