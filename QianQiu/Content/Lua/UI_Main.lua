@@ -37,10 +37,14 @@ function UI_Main:ShowRound()
         elseif self.round%2 == 1 then
             text = "对手回合"
             self.UI_CardPoolPlayer:SetVisibility(ESlateVisibility.HitTestInvisible)
-            Enemy.Basic:Action()
         end
+        local param = {
+            text = text,
+            round = self.round
+        }
+        UIStack:PushUIByName("UI_Round", param)
         self.round = self.round + 1
-        UIStack:PushUIByName("UI_Round", text)
+
     end
 end
 

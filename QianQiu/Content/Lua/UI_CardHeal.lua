@@ -16,7 +16,6 @@ end
 
 function UI_CardHeal:Tick()
     if next(NeedShowStorys) and self.bTick then
-        -- self.bHasScriptImplementedTick = false
         self.bTick = false
         DoPlayerStoryShowAndUpdateScore(NeedShowStorys[1])
     end
@@ -28,7 +27,6 @@ function UI_CardHeal:Initialize()
 end
 
 function UI_CardHeal:SetTick(bTick)
-    -- self.bHasScriptImplementedTick = bTick
     self.bTick = bTick
 end
 

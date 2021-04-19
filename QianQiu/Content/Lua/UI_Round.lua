@@ -14,6 +14,9 @@ function UI_Round:OnAnimationFinished(anim)
         UIStack:PopUIByName("UI_Round", true)
     elseif anim == self.ShowOut then
         self:RemoveFromParent()
+        if self.round%2 == 1 then
+            Enemy.Basic:Action()
+        end
     end
 end
 
@@ -21,8 +24,9 @@ function UI_Round:OnDestroy()
 
 end
 
-function UI_Round:UpdateSelf(text)
-    self.Text_Round:SetText(text)
+function UI_Round:UpdateSelf(param)
+    self.round = param.round
+    self.Text_Round:SetText(param.text)
 end
 
 return UI_Round
