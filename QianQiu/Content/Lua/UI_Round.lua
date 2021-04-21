@@ -15,6 +15,7 @@ function UI_Round:OnAnimationFinished(anim)
     elseif anim == self.ShowOut then
         self:RemoveFromParent()
         if self.round%2 == 1 then
+            Sleep(1)
             Enemy.Basic:Action()
         end
     end
