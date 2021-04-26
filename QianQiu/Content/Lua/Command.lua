@@ -12,6 +12,7 @@ end
 
 function CommandMap:DoCommand(key, param)
     if key == nil then
+        error("该消息没有注册！")
         return
     end
     if CommandMap.FuncMap[key] then
@@ -50,4 +51,5 @@ CommandList = {
     PopOneCardForPlayer = "PopOneCardForPlayer",                -- 移除玩家选择的卡
     PopOneCardForEnemy = "PopOneCardForEnemy",                  -- 移除对手选择的卡
     ShowRound = "ShowRound",                                    -- 设置回合文字并显示回合
+    UpdateEnemyScore = "UpdateEnemyScore",          -- 更新敌人分数
 }

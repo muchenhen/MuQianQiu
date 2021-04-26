@@ -34,6 +34,7 @@ function Enemy.Basic:Action()
                     }
                     CommandMap:DoCommand(CommandList.PopOneCardForEnemy,param)
                     CommandMap:DoCommand(CommandList.PopAndPushOneCardForPublic,param)
+                    CommandMap:DoCommand(CommandList.UpdateEnemyScore,param)
                     Sleep(1)
                     CommandMap:DoCommand(CommandList.UpdateEnemyHeal, param)
                     CommandMap:DoCommand(CommandList.ShowRound)
