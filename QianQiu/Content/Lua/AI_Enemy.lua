@@ -35,8 +35,9 @@ function Enemy.Basic:Action()
                     CommandMap:DoCommand(CommandList.PopOneCardForEnemy,param)
                     CommandMap:DoCommand(CommandList.PopAndPushOneCardForPublic,param)
                     CommandMap:DoCommand(CommandList.UpdateEnemyScore,param)
-                    Sleep(1)
+                    Sleep(0.5)
                     CommandMap:DoCommand(CommandList.UpdateEnemyHeal, param)
+                    Sleep(0.5)
                     CommandMap:DoCommand(CommandList.ShowRound)
                     value.bOnHand = false
                     return

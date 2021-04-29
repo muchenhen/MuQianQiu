@@ -87,8 +87,7 @@ function Split(szFullString, szSeparator)
     return nSplitArray
 end
 
-function Sleep(a)
-    local sec = tonumber(os.clock() + a);
-    while (os.clock() < sec) do
-    end
+function Sleep(time)
+    local duration = os.time() + time
+    while os.time() < duration do end
 end

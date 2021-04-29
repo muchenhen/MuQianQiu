@@ -70,6 +70,7 @@ function UI_Card:OnCardClick()
             CommandMap:DoCommand(CommandList.UpdatePlayerHeal, param)
             CommandMap:DoCommand(CommandList.PopAndPushOneCardForPublic, param)
             CommandMap:DoCommand(CommandList.PopOneCardForPlayer, param)
+            Sleep(0.5)
             CommandMap:DoCommand(CommandList.ShowRound)
         else
             self:PlayAnimation(self.PlayUnChoose, 0, 1, 0, 1, false)
