@@ -233,15 +233,15 @@ function AddNeedStoryShowList(story)
     table.insert(NeedShowStorys, story)
 end
 
-function DoPlayerStoryShowAndUpdateScore(story)
-    -- ui.bHasScriptImplementedTick = false
-    print("完成一个组合：", story.Name, " 组合分数：", story.Score)
-    CommandMap:DoCommand(CommandList.UpdatePlayerScore, {Score = story.Score})
-    UIStack:PushUIByName("UI_StoryShow", story)
-    -- ShowStory(story)
+function DoPlayerStoryShowAndUpdateScore()
     if next(NeedShowStorys) then
-        table.remove( NeedShowStorys, 1)
+        local story = NeedShowStorys[1]
+        print("完成一个组合：", story.Name, " 组合分数：", story.Score)
+        CommandMap:DoCommand(CommandList.UpdatePlayerScore, {Score = story.Score})
+        UIStack:PushUIByName("UI_StoryShow", story)
+        table.remove(NeedShowStorys, 1)
     else
         NeedShowStorys = {}
+        CommandMap:DoCommand(CommandList.ShowRound)
     end
 end

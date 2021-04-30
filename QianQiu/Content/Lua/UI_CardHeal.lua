@@ -15,9 +15,9 @@ function UI_CardHeal:Construct()
 end
 
 function UI_CardHeal:Tick()
-    if next(NeedShowStorys) and self.bTick then
+    if self.bTick then
         self.bTick = false
-        DoPlayerStoryShowAndUpdateScore(NeedShowStorys[1])
+        DoPlayerStoryShowAndUpdateScore()
     end
 end
 
@@ -101,6 +101,9 @@ function UI_CardHeal:FindAllStory()
                 AddNeedStoryShowList(Table.Story[i])
             end
         end
+    end
+    if not next(NeedShowStorys) then
+        CommandMap:DoCommand(CommandList.ShowRound)
     end
 end
 

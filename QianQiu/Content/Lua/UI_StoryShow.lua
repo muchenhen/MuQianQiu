@@ -12,7 +12,7 @@ end
 
 function UI_StoryShow:OnAnimationFinished(anim)
     if anim == self.ShowIn then
-        UIStack:PopUIByName("UI_StoryShow", true)
+        self:PlayAnimation(self.ShowOut, 0, 1, 0, 1, false)
     elseif anim == self.ShowOut then
         self:RemoveFromParent()
         CommandMap:DoCommand("SetTick", true)

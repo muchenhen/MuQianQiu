@@ -88,6 +88,6 @@ function Split(szFullString, szSeparator)
 end
 
 function Sleep(time)
-    local duration = os.time() + time
-    while os.time() < duration do end
+    -- local duration = os.time() + time
+    -- while os.time() < duration do end
 end

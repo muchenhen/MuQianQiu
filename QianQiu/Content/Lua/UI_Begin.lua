@@ -1,5 +1,4 @@
 require "Global"
-local KismetSystemLibrary = import "KismetSystemLibrary"
 local UI_Begin = {}
 
 function UI_Begin:Construct()
