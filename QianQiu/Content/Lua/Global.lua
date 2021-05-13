@@ -242,6 +242,6 @@ function DoPlayerStoryShowAndUpdateScore()
         table.remove(NeedShowStorys, 1)
     else
         NeedShowStorys = {}
-        CommandMap:DoCommand(CommandList.ShowRound)
+        -- CommandMap:DoCommand(CommandList.ShowRound)
     end
 end

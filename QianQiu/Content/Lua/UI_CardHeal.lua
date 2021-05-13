@@ -45,7 +45,7 @@ function UI_CardHeal:UpdateHeal(param)
     local card = CreateUI("UI_Card")
     local param = {
         ID = haveCardID,
-        cardPosition = ECardPostion.OnStory,
+        cardPosition = ECardPostion.Heal,
         cardOwner = ECardOwner.Player,
         state = ECardState.UnChoose,
     }
@@ -57,7 +57,7 @@ function UI_CardHeal:UpdateHeal(param)
     card = CreateUI("UI_Card")
     param = {
         ID = chooseCardID,
-        cardPosition = ECardPostion.OnStory,
+        cardPosition = ECardPostion.Heal,
         cardOwner = ECardOwner.Player,
         state = ECardState.UnChoose,
     }
@@ -103,7 +103,7 @@ function UI_CardHeal:FindAllStory()
         end
     end
     if not next(NeedShowStorys) then
-        CommandMap:DoCommand(CommandList.ShowRound)
+        -- CommandMap:DoCommand(CommandList.ShowRound)
     end
 end
 

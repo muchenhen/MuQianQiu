@@ -9,6 +9,7 @@ ECardOwner = {
     Enemy = 1,      -- 对手
     PublicPool = 2, -- 公共牌库
     Detail = 4,     -- 卡片详情里展示用的
+    Heal = 5,       -- 近弃牌堆了
 }
  
 ECardPostion = {

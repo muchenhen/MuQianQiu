@@ -2,10 +2,6 @@ require "Global"
 
 local UI_Card = {}
 
-function UI_Card:Initialize()
-
-end
-
 function UI_Card:Construct()
     -- 初始化状态
     -- self.ID = 204
