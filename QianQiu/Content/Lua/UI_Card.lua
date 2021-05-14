@@ -64,6 +64,7 @@ function UI_Card:OnCardClick()
             UIStack:PopUIByName("UI_CardDetail", true)
             CommandMap:DoCommand(CommandList.UpdatePlayerScore, param)
             CommandMap:DoCommand(CommandList.UpdatePlayerHeal, param)
+            -- CommandMap:DoCommand(CommandList.SetStoryShowTick, true)
             CommandMap:DoCommand(CommandList.PopAndPushOneCardForPublic, param)
             CommandMap:DoCommand(CommandList.PopOneCardForPlayer, param)
         else

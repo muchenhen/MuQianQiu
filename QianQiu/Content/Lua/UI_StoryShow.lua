@@ -6,7 +6,7 @@ function UI_StoryShow:Construct()
 end
 
 function UI_StoryShow:Initialize()
-    CommandMap:DoCommand("SetTick", false)
+    CommandMap:DoCommand(CommandList.SetStoryShowTick, false)
     self:PlayAnimation(self.ShowIn, 0, 1, 0, 1, false)
 end
 
@@ -15,7 +15,7 @@ function UI_StoryShow:OnAnimationFinished(anim)
         self:PlayAnimation(self.ShowOut, 0, 1, 0, 1, false)
     elseif anim == self.ShowOut then
         self:RemoveFromParent()
-        CommandMap:DoCommand("SetTick", true)
+        CommandMap:DoCommand(CommandList.SetStoryShowTick, true)
     end
 end
 

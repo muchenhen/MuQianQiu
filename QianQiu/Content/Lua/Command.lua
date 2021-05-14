@@ -51,5 +51,6 @@ CommandList = {
     PopOneCardForPlayer = "PopOneCardForPlayer",                -- 移除玩家选择的卡
     PopOneCardForEnemy = "PopOneCardForEnemy",                  -- 移除对手选择的卡
     ShowRound = "ShowRound",                                    -- 设置回合文字并显示回合
-    UpdateEnemyScore = "UpdateEnemyScore",          -- 更新敌人分数
+    UpdateEnemyScore = "UpdateEnemyScore",                      -- 更新敌人分数
+    SetStoryShowTick = "SetStoryShowTick",                      -- 设置Heal的故事tick检查
 }
