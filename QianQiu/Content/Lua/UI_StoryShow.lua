@@ -8,18 +8,23 @@ end
 function UI_StoryShow:Initialize()
     CommandMap:DoCommand(CommandList.SetStoryShowTick, false)
     self:PlayAnimation(self.ShowIn, 0, 1, 0, 1, false)
+    
 end
 
 function UI_StoryShow:OnAnimationFinished(anim)
-    if anim == self.ShowIn then
-        self:PlayAnimation(self.ShowOut, 0, 1, 0, 1, false)
-    elseif anim == self.ShowOut then
+    -- if anim == self.ShowIn then
+    --     self:PlayAnimation(self.ShowOut, 0, 1, 0, 1, false)
+    -- else
+    if anim == self.ShowOut then
         self:RemoveFromParent()
         CommandMap:DoCommand(CommandList.SetStoryShowTick, true)
     end
 end
 
 function UI_StoryShow:UpdateSelf(param)
+    if not param then
+        return
+    end
     self.Text_StoryName:SetText(param.Name)
     self.Text_Score:SetText(param.Score)
     self.Cards:ClearChildren()

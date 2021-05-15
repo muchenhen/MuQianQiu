@@ -2,6 +2,10 @@ require "Global"
 
 local UI_Card = {}
 
+function UI_Card:Initialize()
+
+end
+
 function UI_Card:Construct()
     -- 初始化状态
     -- self.ID = 204
@@ -62,11 +66,11 @@ function UI_Card:OnCardClick()
                 PlayerChooseID = self.ID
             }
             UIStack:PopUIByName("UI_CardDetail", true)
-            CommandMap:DoCommand(CommandList.UpdatePlayerScore, param)
-            CommandMap:DoCommand(CommandList.UpdatePlayerHeal, param)
-            -- CommandMap:DoCommand(CommandList.SetStoryShowTick, true)
-            CommandMap:DoCommand(CommandList.PopAndPushOneCardForPublic, param)
-            CommandMap:DoCommand(CommandList.PopOneCardForPlayer, param)
+            UIStack:PushUIByName("UI_StoryShow")
+            -- CommandMap:DoCommand(CommandList.UpdatePlayerScore, param)
+            -- CommandMap:DoCommand(CommandList.UpdatePlayerHeal, param)
+            -- CommandMap:DoCommand(CommandList.PopAndPushOneCardForPublic, param)
+            -- CommandMap:DoCommand(CommandList.PopOneCardForPlayer, param)
         else
             self:PlayAnimation(self.PlayUnChoose, 0, 1, 0, 1, false)
             self.Img_CardChoose:SetVisibility(ESlateVisibility.Collapsed)

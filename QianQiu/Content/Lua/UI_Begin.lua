@@ -1,6 +1,10 @@
 require "Global"
 local UI_Begin = {}
 
+function UI_Begin:Initialize()
+    print("牌库选择1+2")
+end
+
 function UI_Begin:Construct()
     self.currSwitch = 1
     self.model = 4
@@ -9,12 +13,8 @@ function UI_Begin:Construct()
     self.Button_OneThree.OnClicked:Add(self.OnOneThreeClick)
     self.Button_Normal.OnClicked:Add(self.OnNormalClick)
     self.Button_Monster.OnClicked:Add(self.OnMonsterClick)
+    print(GameplayStatics.GetPlatformName())
 end
-
-function UI_Begin:Initialize()
-    print("牌库选择1+2")
-end
-
 
 function UI_Begin:OnOneTwoClick()
     local self = UI_Begin

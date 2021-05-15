@@ -6,6 +6,35 @@ require "Enum"
 require "UIStack"
 require "AI_Enemy"
 require("LuaPanda").start("127.0.0.1",8818)
+GameplayStatics = import("GameplayStatics")
+
+--import function helper
+local importedClsList = {} --cache element as table { cls = class, cnt = number }
+ImportHelper = {}
+local _import = import
+ImportHelper.importClass = function (className)
+    if importedClsList[className] == nil then
+        importedClsList[className] = {cls = _import(className), cnt = 1}
+    else
+        importedClsList[className].cnt = importedClsList[className].cnt + 1
+    end
+    return importedClsList[className].cls
+end
+ImportHelper.clearAllClass = function ()
+    importedClsList = {}
+end
+ImportHelper.shrinkClass = function (importedCnt)
+    importedCnt = importedCnt or 3
+    for k,v in pairs(importedClsList) do
+        if v.cnt <= importedCnt then
+            importedClsList[k] = nil
+        else
+            v.cnt = v.cnt - importedCnt
+        end
+    end
+end
+
+import = ImportHelper.importClass
 
 UI_TEXTURE_PATH = "/Game/Texture/"
 UI_TEXTURE_BACK_PATH = "/Game/Texture/Tex_Card_Back"
