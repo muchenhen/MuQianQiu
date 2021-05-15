@@ -6,15 +6,18 @@ function UI_StoryShow:Construct()
 end
 
 function UI_StoryShow:Initialize()
+    CommandMap:AddCommand("PlayStoryShowOut", self, self.PlayStoryShowOut)
+
     CommandMap:DoCommand(CommandList.SetStoryShowTick, false)
     self:PlayAnimation(self.ShowIn, 0, 1, 0, 1, false)
     
 end
 
+function UI_StoryShow:PlayStoryShowOut()
+    self:PlayAnimation(self.ShowOut, 0, 1, 0, 1, false)
+end
+
 function UI_StoryShow:OnAnimationFinished(anim)
-    -- if anim == self.ShowIn then
-    --     self:PlayAnimation(self.ShowOut, 0, 1, 0, 1, false)
-    -- else
     if anim == self.ShowOut then
         self:RemoveFromParent()
         CommandMap:DoCommand(CommandList.SetStoryShowTick, true)
@@ -40,6 +43,9 @@ function UI_StoryShow:UpdateSelf(param)
         self.Cards:AddChild(card)
         card:UpdateSelf(param)
         card:SetPadding(self.CardPadding)
+    end
+    if param.Audio then
+        CommandMap:DoCommand("SetSelfAudioAndPlay", param.Audio)
     end
 end
 

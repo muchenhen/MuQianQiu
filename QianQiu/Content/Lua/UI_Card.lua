@@ -66,11 +66,11 @@ function UI_Card:OnCardClick()
                 PlayerChooseID = self.ID
             }
             UIStack:PopUIByName("UI_CardDetail", true)
-            UIStack:PushUIByName("UI_StoryShow")
-            -- CommandMap:DoCommand(CommandList.UpdatePlayerScore, param)
-            -- CommandMap:DoCommand(CommandList.UpdatePlayerHeal, param)
-            -- CommandMap:DoCommand(CommandList.PopAndPushOneCardForPublic, param)
-            -- CommandMap:DoCommand(CommandList.PopOneCardForPlayer, param)
+            -- UIStack:PushUIByName("UI_StoryShow", Story[1])
+            CommandMap:DoCommand(CommandList.UpdatePlayerScore, param)
+            CommandMap:DoCommand(CommandList.UpdatePlayerHeal, param)
+            CommandMap:DoCommand(CommandList.PopAndPushOneCardForPublic, param)
+            CommandMap:DoCommand(CommandList.PopOneCardForPlayer, param)
         else
             self:PlayAnimation(self.PlayUnChoose, 0, 1, 0, 1, false)
             self.Img_CardChoose:SetVisibility(ESlateVisibility.Collapsed)

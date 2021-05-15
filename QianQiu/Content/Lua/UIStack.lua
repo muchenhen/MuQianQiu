@@ -28,7 +28,10 @@ function UIStack:PopUIByName(uiName, bNeedCache)
     if next(UIStack.Stack) then
         for key, value in pairs(UIStack.Stack) do
             if value.Name == uiName then
-                local anim = value.Widget.ShowOut
+                local anim
+                if value.Widget.ShowOut then
+                    anim = value.Widget.ShowOut
+                end
                 if anim then
                     value.Widget:PlayAnimation(value.Widget.ShowOut, 0, 1, 0, 1, false)
                 else
