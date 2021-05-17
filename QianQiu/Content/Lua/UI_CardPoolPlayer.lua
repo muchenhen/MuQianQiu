@@ -7,6 +7,7 @@ function UI_CardPoolPlayer:Construct()
     CommandMap:AddCommand("GetPlayerChooseID",self, self.GetPlayerChooseID)
     CommandMap:AddCommand("PopAndPushOneCardForPlayer", self, self.PopAndPushOneCardForPlayer)
     CommandMap:AddCommand("PopOneCardForPlayer", self, self.PopOneCardForPlayer)
+    CommandMap:AddCommand("CheckPlayerSeason", self, self.CheckPlayerSeason)
 end
 
 function UI_CardPoolPlayer:Initialize()
@@ -103,6 +104,18 @@ end
 function UI_CardPoolPlayer:OnAnimationFinished(anim)
     if anim == self.FirstInit then
         CommandMap:DoCommand(CommandList.ShowRound)
+    end
+end
+
+function UI_CardPoolPlayer:CheckPlayerSeason()
+    PlayerSeason[ECardSeason.Spring] = false
+    PlayerSeason[ECardSeason.Summer] = false
+    PlayerSeason[ECardSeason.Autumn] = false
+    PlayerSeason[ECardSeason.Winter] = false
+    local cardsNum = self.HaveCards:GetChildrenCount()
+    for i = 0, cardsNum-1 do
+        local card = self.HaveCards:GetChildAt(i)
+        PlayerSeason[card.season] = true
     end
 end
 

@@ -252,4 +252,6 @@ function RandomCards(num)
 end
 
 NeedShowStorys = {}
-
+PublicSeason = {}
+PlayerSeason = {}
+EnemySeason = {}

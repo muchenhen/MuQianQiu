@@ -38,7 +38,6 @@ function UIStack:PopUIByName(uiName, bNeedCache)
                     value.Widget:RemoveFromViewport()
                 end
                 value.Widget:Destruct()
-                -- UIStack.Layer = UIStack.Layer - 1
             end
         end
     end

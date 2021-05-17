@@ -8,6 +8,7 @@ end
 
 function UI_CardPoolEnenmy:Construct()
     CommandMap:AddCommand("PopOneCardForEnemy", self, self.PopOneCardForEnemy)
+    CommandMap:AddCommand("CheckEnemySeason", self, self.CheckEnemySeason)
 end
 
 function UI_CardPoolEnenmy:FirstInitCards()
@@ -33,6 +34,18 @@ function UI_CardPoolEnenmy:PopOneCardForEnemy(param)
             self.HaveCards:RemoveChildAt(i)
             break
         end
+    end
+end
+
+function UI_CardPoolEnenmy:CheckEnemySeason()
+    EnemySeason[ECardSeason.Spring] = false
+    EnemySeason[ECardSeason.Summer] = false
+    EnemySeason[ECardSeason.Autumn] = false
+    EnemySeason[ECardSeason.Winter] = false
+    local cardsNum = self.HaveCards:GetChildrenCount()
+    for i = 0, cardsNum-1 do
+        local card = self.HaveCards:GetChildAt(i)
+        EnemySeason[card.season] = true
     end
 end
 

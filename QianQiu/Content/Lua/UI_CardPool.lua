@@ -1,6 +1,4 @@
 require "Global"
-local UI_Card = require "UI_Card"
-
 local UI_CardPool = {}
 
 function UI_CardPool:Initialize()
@@ -12,6 +10,7 @@ function UI_CardPool:Construct()
     CommandMap:AddCommand("OnPlayerCardUnchoose", self, self.OnCardUnchoose)
     CommandMap:AddCommand("ResetPlayerCardUnChoose", self, self.ResetPlayerCardUnChoose)
     CommandMap:AddCommand("PopAndPushOneCardForPublic", self, self.PopAndPushOneCardForPublic)
+    CommandMap:AddCommand("CheckPublicSeason", self, self.CheckPublicSeason)
 end
 
 function UI_CardPool:FirstInitCards()
@@ -101,6 +100,18 @@ function UI_CardPool:ResetPlayerCardUnChoose()
     for i = 0, cardsNum-1 do
         local card = self.HaveCards:GetChildAt(i)
         card:SetCardState(ECardState.UnChoose)
+    end
+end
+
+function UI_CardPool:CheckPublicSeason()
+    PublicSeason[ECardSeason.Spring] = false
+    PublicSeason[ECardSeason.Summer] = false
+    PublicSeason[ECardSeason.Autumn] = false
+    PublicSeason[ECardSeason.Winter] = false
+    local cardsNum = self.HaveCards:GetChildrenCount()
+    for i = 0, cardsNum-1 do
+        local card = self.HaveCards:GetChildAt(i)
+        PublicSeason[card.season] = true
     end
 end
 
