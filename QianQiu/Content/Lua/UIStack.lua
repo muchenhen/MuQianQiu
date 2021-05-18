@@ -24,7 +24,7 @@ function UIStack:PushUIByName(uiName, param)
     return ui
 end
 
-function UIStack:PopUIByName(uiName, bNeedCache)
+function UIStack:PopUIByName(uiName)
     if next(UIStack.Stack) then
         for key, value in pairs(UIStack.Stack) do
             if value.Name == uiName then
@@ -38,6 +38,7 @@ function UIStack:PopUIByName(uiName, bNeedCache)
                     value.Widget:RemoveFromViewport()
                 end
                 value.Widget:Destruct()
+                UIStack.Stack[key] = nil
             end
         end
     end
