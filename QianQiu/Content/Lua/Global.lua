@@ -251,7 +251,42 @@ function RandomCards(num)
     end
 end
 
+function ShowTip(text)
+    local param = {
+        text = text,
+    }
+    UIStack:PushUIByName("UI_Tip", param)
+end
+
 NeedShowStorys = {}
+
 PublicSeason = {}
 PlayerSeason = {}
 EnemySeason = {}
+
+function CheckSeasons(type)
+    CommandMap:DoCommand(CommandList.CheckEnemySeason)
+    CommandMap:DoCommand(CommandList.CheckPlayerSeason)
+    CommandMap:DoCommand(CommandList.CheckPublicSeason)
+    -- Dump(PublicSeason)
+    -- Dump(PlayerSeason)
+    -- Dump(EnemySeason)
+    if type == ECardOwner.Enemy then
+        for key, value in pairs(PublicSeason) do
+            if value then
+                if PlayerSeason[key] then
+                    return true
+                end
+            end
+        end
+        return false
+    elseif type == ECardOwner.Player then
+        for key, value in pairs(PublicSeason) do
+            if value then
+                if EnemySeason[key] then
+                    break
+                end
+            end
+        end
+    end
+end

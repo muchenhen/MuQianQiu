@@ -117,8 +117,13 @@ end
 function UI_CardHeal:DoPlayerStoryShowAndUpdateScore()
     if next(NeedShowStorys) then
         local story = NeedShowStorys[1]
-        print("完成一个组合：", story.Name, " 组合分数：", story.Score)
-        CommandMap:DoCommand(CommandList.UpdatePlayerScore, {Score = story.Score})
+        if self.bPlayerHeal then
+            print("我方完成一个组合：", story.Name, " 组合分数：", story.Score)
+            CommandMap:DoCommand(CommandList.UpdatePlayerScore, {Score = story.Score})
+        else
+            print("对方完成一个组合：", story.Name, " 组合分数：", story.Score)
+            CommandMap:DoCommand(CommandList.UpdateEnemyScore, {Score = story.Score})
+        end
         UIStack:PushUIByName("UI_StoryShow", story)
         table.remove(NeedShowStorys, 1)
     else

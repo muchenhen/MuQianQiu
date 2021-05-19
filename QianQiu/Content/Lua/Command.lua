@@ -53,4 +53,7 @@ CommandList = {
     ShowRound = "ShowRound",                                    -- 设置回合文字并显示回合
     UpdateEnemyScore = "UpdateEnemyScore",                      -- 更新敌人分数
     SetStoryShowTick = "SetStoryShowTick",                      -- 设置Heal的故事tick检查
+    CheckPlayerSeason = "CheckPlayerSeason",                    -- 检查玩家手牌的季节
+    CheckEnemySeason = "CheckEnemySeason",                      -- 检查对手手牌的季节
+    CheckPublicSeason = "CheckPublicSeason",                    -- 检查公共卡池的季节
 }

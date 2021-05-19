@@ -3,6 +3,7 @@ require "Global"
 local UI_Main = {}
 
 function UI_Main:Initialize()
+    self:PlayAnimation(self.ShowIn, 0, 1, 0, 1, false)
     WashCards()     --洗牌
     self.UI_CardPool:FirstInitCards()       --第一次初始化公共卡池
     self.UI_CardPoolPlayer:FirstInitCards() --初次初始化玩家卡池
@@ -34,6 +35,8 @@ function UI_Main:ShowRound()
         }
         UIStack:PushUIByName("UI_Round", param)
         self.round = self.round + 1
+        CheckSeasons()
+
     end
 end
 

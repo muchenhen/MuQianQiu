@@ -111,7 +111,7 @@ function UI_CardPool:CheckPublicSeason()
     local cardsNum = self.HaveCards:GetChildrenCount()
     for i = 0, cardsNum-1 do
         local card = self.HaveCards:GetChildAt(i)
-        PublicSeason[card.season] = true
+        PublicSeason[ESeason[card.season]] = true
     end
 end
 

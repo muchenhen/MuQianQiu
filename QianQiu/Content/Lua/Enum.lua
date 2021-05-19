@@ -71,3 +71,10 @@ ESlateVisibility = {
 	HitTestInvisible = 3,
 	SelfHitTestInvisible = 4
 }
+
+ESeason = {
+    ['春'] = 1,
+    ['夏'] = 1,
+    ['秋'] = 1,
+    ['冬'] = 1,
+}

@@ -45,7 +45,7 @@ function UI_CardPoolEnenmy:CheckEnemySeason()
     local cardsNum = self.HaveCards:GetChildrenCount()
     for i = 0, cardsNum-1 do
         local card = self.HaveCards:GetChildAt(i)
-        EnemySeason[card.season] = true
+        EnemySeason[ESeason[card.season]] = true
     end
 end
 

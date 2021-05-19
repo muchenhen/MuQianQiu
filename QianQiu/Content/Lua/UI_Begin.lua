@@ -48,16 +48,20 @@ end
 
 function UI_Begin:OnNormalClick()
     local self = UI_Begin
+    if self.model == 4 then
+        return
+    end
     self:PlaySwitch(4)
     self.model = 4
     print("模式选择：普通模式")
 end
 
 function UI_Begin:OnMonsterClick()
-    local self = UI_Begin
-    self:PlaySwitch(5)
-    self.model = 5
-    print("模式选择：撒野模式")
+    ShowTip("暂未开放")
+    -- local self = UI_Begin
+    -- self:PlaySwitch(5)
+    -- self.model = 5
+    -- print("模式选择：撒野模式")
 end
 
 function UI_Begin:PlaySwitch(aim)
