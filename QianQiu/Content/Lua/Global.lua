@@ -274,7 +274,7 @@ function CheckSeasons(type)
     if type == ECardOwner.Enemy then
         for key, value in pairs(PublicSeason) do
             if value then
-                if PlayerSeason[key] then
+                if EnemySeason[key] then
                     return true
                 end
             end
@@ -283,10 +283,11 @@ function CheckSeasons(type)
     elseif type == ECardOwner.Player then
         for key, value in pairs(PublicSeason) do
             if value then
-                if EnemySeason[key] then
-                    break
+                if PlayerSeason[key] then
+                    return true
                 end
             end
         end
+        return false
     end
 end

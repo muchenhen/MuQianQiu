@@ -44,7 +44,7 @@ function UI_CardPoolPlayer:FirstInitCards()
     for i = 0, cardsNum-1 do
         local card = self.HaveCards:GetChildAt(i)
         local param = {
-            ID = self.Cards[i+1],
+            ID = self.Cards[1], --临时修改为1 原为i+1 用来测试没有对应季节的边界情况
             cardOwner = ECardOwner.Player,
             cardPosition = ECardPostion.OnHand,
         }

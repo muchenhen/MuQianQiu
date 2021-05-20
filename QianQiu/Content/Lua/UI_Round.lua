@@ -11,12 +11,17 @@ end
 
 function UI_Round:OnAnimationFinished(anim)
     if anim == self.ShowIn then
-        UIStack:PopUIByName("UI_Round", true)
+        UIStack:PopUIByName("UI_Round")
     elseif anim == self.ShowOut then
-        self:RemoveFromParent()
-        if self.round%2 == 1 then
-            Enemy.Basic:Action()
+        print("bCan", self.bCan)
+        if not self.bCan then
+            UIStack:PushUIByName("UI_StaticTip")
+        else
+            if self.round%2 == 1 then
+                Enemy.Basic:Action()
+            end
         end
+        self:RemoveFromParent()
     end
 end
 
@@ -27,6 +32,8 @@ end
 function UI_Round:UpdateSelf(param)
     self.round = param.round
     self.Text_Round:SetText(param.text)
+    self.bCan = param.bCan
+    print("param.Bcan", param.bCan)
 end
 
 return UI_Round
