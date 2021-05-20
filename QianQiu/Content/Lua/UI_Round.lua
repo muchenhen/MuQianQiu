@@ -16,6 +16,10 @@ function UI_Round:OnAnimationFinished(anim)
         print("bCan", self.bCan)
         if not self.bCan then
             UIStack:PushUIByName("UI_StaticTip")
+            local param = {
+                bCan = false
+            }
+            CommandMap:DoCommand(CommandList.SetAllCardsbCan, param)
         else
             if self.round%2 == 1 then
                 Enemy.Basic:Action()

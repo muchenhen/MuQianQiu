@@ -56,4 +56,5 @@ CommandList = {
     CheckPlayerSeason = "CheckPlayerSeason",                    -- 检查玩家手牌的季节
     CheckEnemySeason = "CheckEnemySeason",                      -- 检查对手手牌的季节
     CheckPublicSeason = "CheckPublicSeason",                    -- 检查公共卡池的季节
+    SetAllCardsbCan = "SetAllCardsbCan",                        -- 设置所有卡片的丢弃状态
 }

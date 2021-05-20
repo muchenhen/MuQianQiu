@@ -40,7 +40,6 @@ function UI_Main:ShowRound()
             round = self.round,
             bCan = bCan
         }
-        print("bCan", param.bCan)
         UIStack:PushUIByName("UI_Round", param)
         self.round = self.round + 1
     end

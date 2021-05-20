@@ -8,6 +8,8 @@ function UI_CardPoolPlayer:Construct()
     CommandMap:AddCommand("PopAndPushOneCardForPlayer", self, self.PopAndPushOneCardForPlayer)
     CommandMap:AddCommand("PopOneCardForPlayer", self, self.PopOneCardForPlayer)
     CommandMap:AddCommand("CheckPlayerSeason", self, self.CheckPlayerSeason)
+    CommandMap:AddCommand("SetAllCardsbCan", self, self.SetAllCardsbCan)
+
 end
 
 function UI_CardPoolPlayer:Initialize()
@@ -116,6 +118,14 @@ function UI_CardPoolPlayer:CheckPlayerSeason()
     for i = 0, cardsNum-1 do
         local card = self.HaveCards:GetChildAt(i)
         PlayerSeason[ESeason[card.season]] = true
+    end
+end
+
+function UI_CardPoolPlayer:SetAllCardsbCan(param)
+    local cardsNum = self.HaveCards:GetChildrenCount()
+    for i = 0, cardsNum-1 do
+        local card = self.HaveCards:GetChildAt(i)
+        card:SetbCan(param.bCan)
     end
 end
 

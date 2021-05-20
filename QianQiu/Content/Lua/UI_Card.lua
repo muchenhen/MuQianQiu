@@ -31,50 +31,67 @@ end
 
 function UI_Card:OnCardClick()
     local self = UI_Card
-    if self.cardState == ECardState.UnChoose and self.cardOwner ~= ECardOwner.Enemy and self.cardOwner ~= ECardOwner.Detail then
-        self:PlayAnimation(self.PlayerChoose, 0, 1, 0, 1, false)
-        self.Img_CardChoose:SetVisibility(ESlateVisibility.HitTestInvisible)
-        local param = {
-            ID = self.ID,
-            state = ECardState.UnChoose,
-            season = self.season,
-            score = self.value,
-            type = self.cardType,
-            bSpecial = self.bSpecial,
-            cardDetail = self.cardDetail,
-            texturePath = self.texturePath
-        }
-        UIStack:PushUIByName("UI_CardDetail",param)
-        CommandMap:DoCommand(CommandList.EnsureJustOneCardChoose, self.ID)
-        if self.cardOwner == ECardOwner.Player then
-            CommandMap:DoCommand(CommandList.OnPlayerCardChoose, self.ID)
+    if self.bCan then
+        if (self.cardState == ECardState.UnChoose
+            and self.cardOwner ~= ECardOwner.Enemy
+            and self.cardOwner ~= ECardOwner.Detail) then
+            self:PlayAnimation(self.PlayerChoose, 0, 1, 0, 1, false)
+            self.Img_CardChoose:SetVisibility(ESlateVisibility.HitTestInvisible)
+            local param = {
+                ID = self.ID,
+                state = ECardState.UnChoose,
+                season = self.season,
+                score = self.value,
+                type = self.cardType,
+                bSpecial = self.bSpecial,
+                cardDetail = self.cardDetail,
+                texturePath = self.texturePath
+            }
+            UIStack:PushUIByName("UI_CardDetail",param)
+            CommandMap:DoCommand(CommandList.EnsureJustOneCardChoose, self.ID)
+            if self.cardOwner == ECardOwner.Player then
+                CommandMap:DoCommand(CommandList.OnPlayerCardChoose, self.ID)
+            end
+        elseif (self.cardState == ECardState.Choose
+            and self.cardOwner == ECardOwner.Player) then
+            self:PlayAnimation(self.PlayUnChoose, 0, 1, 0, 1, false)
+            self.Img_CardChoose:SetVisibility(ESlateVisibility.Collapsed)
+            UIStack:PopUIByName("UI_CardDetail", true)
+            if self.cardOwner == ECardOwner.Player then
+                CommandMap:DoCommand(CommandList.OnPlayerCardUnchoose, self.ID)
+            end
+        elseif (self.cardState == ECardState.Choose
+            and self.cardOwner == ECardOwner.PublicPool) then
+            local playChooseID = CommandMap:DoCommand(CommandList.GetPlayerChooseID)
+            if playChooseID then
+                print(playChooseID, Cards[playChooseID].Name)
+                print(self.ID,  Cards[self.ID].Name)
+                local param = {
+                    PlayerHaveID = playChooseID,
+                    PlayerChooseID = self.ID
+                }
+                UIStack:PopUIByName("UI_CardDetail")
+                CommandMap:DoCommand(CommandList.UpdatePlayerScore, param)
+                CommandMap:DoCommand(CommandList.UpdatePlayerHeal, param)
+                CommandMap:DoCommand(CommandList.PopAndPushOneCardForPublic, param)
+                CommandMap:DoCommand(CommandList.PopOneCardForPlayer, param)
+            else
+                self:PlayAnimation(self.PlayUnChoose, 0, 1, 0, 1, false)
+                self.Img_CardChoose:SetVisibility(ESlateVisibility.Collapsed)
+                UIStack:PopUIByName("UI_CardDetail")
+            end
         end
-    elseif self.cardState == ECardState.Choose and self.cardOwner == ECardOwner.Player then
-        self:PlayAnimation(self.PlayUnChoose, 0, 1, 0, 1, false)
-        self.Img_CardChoose:SetVisibility(ESlateVisibility.Collapsed)
-        UIStack:PopUIByName("UI_CardDetail", true)
-        if self.cardOwner == ECardOwner.Player then
-            CommandMap:DoCommand(CommandList.OnPlayerCardUnchoose, self.ID)
-        end
-    elseif self.cardState == ECardState.Choose and self.cardOwner == ECardOwner.PublicPool then
+    else
+        self.cardState = ECardState.Choose
+        print("丢弃手牌并重新获得")
         local playChooseID = CommandMap:DoCommand(CommandList.GetPlayerChooseID)
         if playChooseID then
-            print(playChooseID, Cards[playChooseID].Name)
-            print(self.ID,  Cards[self.ID].Name)
             local param = {
                 PlayerHaveID = playChooseID,
                 PlayerChooseID = self.ID
             }
-            UIStack:PopUIByName("UI_CardDetail", true)
-            -- UIStack:PushUIByName("UI_StoryShow", Story[1])
-            CommandMap:DoCommand(CommandList.UpdatePlayerScore, param)
-            CommandMap:DoCommand(CommandList.UpdatePlayerHeal, param)
-            CommandMap:DoCommand(CommandList.PopAndPushOneCardForPublic, param)
-            CommandMap:DoCommand(CommandList.PopOneCardForPlayer, param)
-        else
-            self:PlayAnimation(self.PlayUnChoose, 0, 1, 0, 1, false)
-            self.Img_CardChoose:SetVisibility(ESlateVisibility.Collapsed)
-            UIStack:PopUIByName("UI_CardDetail", true)
+            CommandMap:DoCommand(CommandList.PopAndPushOneCardForPlayer, param)
+            UIStack:PopUIByName("UI_StaticTip")
         end
     end
 end
@@ -94,6 +111,7 @@ function UI_Card:OnCardUnHovered()
 end
 
 function UI_Card:UpdateSelf(param)
+    self.bCan = true
     if param.ID then
         self.ID = param.ID
     else
@@ -154,6 +172,10 @@ end
 
 function UI_Card:GetSeason()
     return self.Season
+end
+
+function UI_Card:SetbCan(bCan)
+    self.bCan = bCan
 end
 
 -- 设置选中状态 为玩家卡池设计 每次点击需要确保只有一张卡被选中
