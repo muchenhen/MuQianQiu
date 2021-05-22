@@ -15,15 +15,11 @@ end
 
 function UI_CardPoolEnenmy:FirstInitCards()
     self.Cards = RandomCards(10)
-    --temp
-    for i=1, #self.Cards do
-        self.Cards[i] = self.Cards[1]
-    end
     local cardsNum = self.HaveCards:GetChildrenCount()
     for i = 0, cardsNum-1 do
         local card = self.HaveCards:GetChildAt(i)
         local param = {
-            ID = self.Cards[1], -- 测试Enemy替换卡片
+            ID = self.Cards[i+1], -- 测试Enemy替换卡片
             cardOwner = ECardOwner.Enemy,
             cardPosition = ECardPostion.OnHand,
         }
@@ -58,7 +54,7 @@ function UI_CardPoolEnenmy:PopAndPushOneCardForEnemy(param)
         local card = self.HaveCards:GetChildAt(i)
         if card.ID == playerHaveID then
             local newCardID = ChangeCard(playerHaveID)[1]
-            print("对手用卡牌", Cards[playerHaveID].Name, "交换出了", Cards[newCardID].Name)
+            print("对手用卡牌", Cards[playerHaveID].Name, Cards[playerHaveID].Season, "交换出了", Cards[newCardID].Name, Cards[newCardID].Season)
             local newCard = CreateUI('UI_Card')
             for i=1, #self.Cards do
                 if self.Cards[i] == playerHaveID then
