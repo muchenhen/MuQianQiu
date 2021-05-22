@@ -32,6 +32,7 @@ function UI_Main:ShowRound()
             bPlayer = false
             text = "对手回合"
             self.UI_CardPoolPlayer:SetVisibility(ESlateVisibility.HitTestInvisible)
+            bCan = CheckSeasons(ECardOwner.Player)
         end
         local param = {
             text = text,

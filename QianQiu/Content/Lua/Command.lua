@@ -49,6 +49,7 @@ CommandList = {
     UpdatePlayerHeal = "UpdatePlayerHeal",                      -- 将玩家选的两张卡加入到卡堆
     UpdateEnemyHeal = "UpdateEnemyHeal",                        -- 同上 对手
     PopAndPushOneCardForPublic = "PopAndPushOneCardForPublic",  -- 移除选择的卡并随机在生成一张卡 公共卡池
+    PopAndPushOneCardForEnemy = "PopAndPushOneCardForEnemy",    -- 同上 对手卡池
     PopAndPushOneCardForPlayer = "PopAndPushOneCardForPlayer",  -- 同上 玩家卡池
     PopOneCardForPlayer = "PopOneCardForPlayer",                -- 移除玩家选择的卡
     PopOneCardForEnemy = "PopOneCardForEnemy",                  -- 移除对手选择的卡
@@ -59,5 +60,6 @@ CommandList = {
     CheckPlayerSeason = "CheckPlayerSeason",                    -- 检查玩家手牌的季节
     CheckEnemySeason = "CheckEnemySeason",                      -- 检查对手手牌的季节
     CheckPublicSeason = "CheckPublicSeason",                    -- 检查公共卡池的季节
-    SetAllCardsbCan = "SetAllCardsbCan",                        -- 设置所有卡片的丢弃状态
+    SetAllCardsbCanPlayer = "SetAllCardsbCanPlayer",            -- 设置所有卡片的丢弃状态
+    SetAllCardsbCanEnemy = "SetAllCardsbCanEnemy",              -- 同上 对手
 }

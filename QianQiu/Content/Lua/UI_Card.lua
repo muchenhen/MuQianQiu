@@ -95,13 +95,13 @@ function UI_Card:OnCardClick()
                 local param = {
                     bCan = true
                 }
-                CommandMap:DoCommand(CommandList.SetAllCardsbCan, param)
+                CommandMap:DoCommand(CommandList.SetAllCardsbCanPlayer, param)
                 UIStack:PopUIByName("UI_StaticTip")
             else
                 local param = {
                     bCan = false
                 }
-                CommandMap:DoCommand(CommandList.SetAllCardsbCan, param)
+                CommandMap:DoCommand(CommandList.SetAllCardsbCanPlayer, param)
             end
         end
     end

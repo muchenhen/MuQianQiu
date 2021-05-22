@@ -18,7 +18,7 @@ function UI_Round:OnAnimationFinished(anim)
             local param = {
                 bCan = false
             }
-            CommandMap:DoCommand(CommandList.SetAllCardsbCan, param)
+            CommandMap:DoCommand(CommandList.SetAllCardsbCanPlayer, param)
         else
             if self.round%2 == 1 then
                 Enemy.Basic:Action()

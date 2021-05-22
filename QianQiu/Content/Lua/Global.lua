@@ -299,13 +299,9 @@ PlayerSeason = {}
 EnemySeason = {}
 
 function CheckSeasons(type)
-    CommandMap:DoCommand(CommandList.CheckEnemySeason)
-    CommandMap:DoCommand(CommandList.CheckPlayerSeason)
     CommandMap:DoCommand(CommandList.CheckPublicSeason)
-    -- Dump(PublicSeason)
-    -- Dump(PlayerSeason)
-    -- Dump(EnemySeason)
     if type == ECardOwner.Enemy then
+        CommandMap:DoCommand(CommandList.CheckEnemySeason)
         for key, value in pairs(PublicSeason) do
             if value then
                 if EnemySeason[key] then
@@ -315,6 +311,7 @@ function CheckSeasons(type)
         end
         return false
     elseif type == ECardOwner.Player then
+        CommandMap:DoCommand(CommandList.CheckPlayerSeason)
         for key, value in pairs(PublicSeason) do
             if value then
                 if PlayerSeason[key] then

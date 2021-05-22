@@ -9,15 +9,21 @@ end
 function UI_CardPoolEnenmy:Construct()
     CommandMap:AddCommand("PopOneCardForEnemy", self, self.PopOneCardForEnemy)
     CommandMap:AddCommand("CheckEnemySeason", self, self.CheckEnemySeason)
+    CommandMap:AddCommand("PopAndPushOneCardForEnemy", self, self.PopAndPushOneCardForEnemy)
+    CommandMap:AddCommand("SetAllCardsbCanEnemy", self, self.SetAllCardsbCanEnemy)
 end
 
 function UI_CardPoolEnenmy:FirstInitCards()
     self.Cards = RandomCards(10)
+    --temp
+    for i=1, #self.Cards do
+        self.Cards[i] = self.Cards[1]
+    end
     local cardsNum = self.HaveCards:GetChildrenCount()
     for i = 0, cardsNum-1 do
         local card = self.HaveCards:GetChildAt(i)
         local param = {
-            ID = self.Cards[i+1],
+            ID = self.Cards[1], -- 测试Enemy替换卡片
             cardOwner = ECardOwner.Enemy,
             cardPosition = ECardPostion.OnHand,
         }
@@ -32,6 +38,52 @@ function UI_CardPoolEnenmy:PopOneCardForEnemy(param)
         local card = self.HaveCards:GetChildAt(i)
         if card.ID == enemyHaveCard then
             self.HaveCards:RemoveChildAt(i)
+            break
+        end
+    end
+end
+
+function UI_CardPoolEnenmy:SetAllCardsbCanEnemy(param)
+    local cardsNum = self.HaveCards:GetChildrenCount()
+    for i = 0, cardsNum-1 do
+        local card = self.HaveCards:GetChildAt(i)
+        card:SetbCan(param.bCan)
+    end
+end
+
+function UI_CardPoolEnenmy:PopAndPushOneCardForEnemy(param)
+    local playerHaveID = param.PlayerHaveID
+    local cardsNum = self.HaveCards:GetChildrenCount()
+    for i = 0, cardsNum-1 do
+        local card = self.HaveCards:GetChildAt(i)
+        if card.ID == playerHaveID then
+            local newCardID = ChangeCard(playerHaveID)[1]
+            print("对手用卡牌", Cards[playerHaveID].Name, "交换出了", Cards[newCardID].Name)
+            local newCard = CreateUI('UI_Card')
+            for i=1, #self.Cards do
+                if self.Cards[i] == playerHaveID then
+                    self.Cards[i] = newCardID
+                end
+            end
+            local param  = {
+                ID = newCardID,
+                cardOwner = ECardOwner.Player,
+                cardPosition = ECardPostion.OnHand,
+            }
+            newCard:UpdateSelf(param)
+            local col = card.Slot.Column
+            local layer = card.Slot.Layer
+            local trans = card.Slot.Nudge
+            local horAli = card.Slot.HorizontalAlignment
+            local verAli = card.Slot.VerticalAlignment
+            self.HaveCards:RemoveChildAt(i)
+            self.HaveCards:AddChild(newCard)
+            newCard.Slot:SetColumn(col)
+            newCard.Slot:SetLayer(layer)
+            newCard.Slot:SetNudge(trans)
+            newCard.Slot:SetHorizontalAlignment(horAli)
+            newCard.Slot:SetVerticalAlignment(verAli)
+            Enemy.Basic:Action()
             break
         end
     end

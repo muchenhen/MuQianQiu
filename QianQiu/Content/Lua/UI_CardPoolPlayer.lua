@@ -8,8 +8,7 @@ function UI_CardPoolPlayer:Construct()
     CommandMap:AddCommand("PopAndPushOneCardForPlayer", self, self.PopAndPushOneCardForPlayer)
     CommandMap:AddCommand("PopOneCardForPlayer", self, self.PopOneCardForPlayer)
     CommandMap:AddCommand("CheckPlayerSeason", self, self.CheckPlayerSeason)
-    CommandMap:AddCommand("SetAllCardsbCan", self, self.SetAllCardsbCan)
-
+    CommandMap:AddCommand("SetAllCardsbCanPlayer", self, self.SetAllCardsbCanPlayer)
 end
 
 function UI_CardPoolPlayer:Initialize()
@@ -73,7 +72,8 @@ function UI_CardPoolPlayer:PopAndPushOneCardForPlayer(param)
         local card = self.HaveCards:GetChildAt(i)
         if card.ID == playerHaveID then
             local newCardID = ChangeCard(playerHaveID)[1]
-            print("玩家新生成卡牌：", Cards[newCardID].Name)
+            print("玩家用卡牌", Cards[playerHaveID].Name, "交换出了", Cards[newCardID].Name)
+            -- print("玩家新生成卡牌：", Cards[newCardID].Name)
             local newCard = CreateUI('UI_Card')
             for i=1, #self.Cards do
                 if self.Cards[i] == playerHaveID then
@@ -121,7 +121,7 @@ function UI_CardPoolPlayer:CheckPlayerSeason()
     end
 end
 
-function UI_CardPoolPlayer:SetAllCardsbCan(param)
+function UI_CardPoolPlayer:SetAllCardsbCanPlayer(param)
     local cardsNum = self.HaveCards:GetChildrenCount()
     for i = 0, cardsNum-1 do
         local card = self.HaveCards:GetChildAt(i)
