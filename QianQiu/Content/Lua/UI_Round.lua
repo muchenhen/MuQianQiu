@@ -13,15 +13,15 @@ function UI_Round:OnAnimationFinished(anim)
     if anim == self.ShowIn then
         UIStack:PopUIByName("UI_Round")
     elseif anim == self.ShowOut then
-        if not self.bCan then
-            UIStack:PushUIByName("UI_StaticTip")
-            local param = {
-                bCan = false
-            }
-            CommandMap:DoCommand(CommandList.SetAllCardsbCanPlayer, param)
+        if self.round%2 == 1 then
+            Enemy.Basic:Action()
         else
-            if self.round%2 == 1 then
-                Enemy.Basic:Action()
+            if not self.bCan then
+                UIStack:PushUIByName("UI_StaticTip")
+                local param = {
+                    bCan = false
+                }
+                CommandMap:DoCommand(CommandList.SetAllCardsbCanPlayer, param)
             end
         end
         self:RemoveFromParent()
