@@ -9,10 +9,11 @@ function UI_CardHeal:Initialize()
     self.Button_HealDetail.OnClicked:Add(self.OnHealDetailClick)
     if self.bPlayerHeal then
         CommandMap:AddCommand("UpdatePlayerHeal", self, self.UpdateHeal)
+        CommandMap:AddCommand("SetStoryShowTickPlayer", self, self.SetStoryShowTick)
     else
         CommandMap:AddCommand("UpdateEnemyHeal", self, self.UpdateHeal)
+        CommandMap:AddCommand("SetStoryShowTickEnemy", self, self.SetStoryShowTick)
     end
-    CommandMap:AddCommand("SetStoryShowTick", self, self.SetStoryShowTick)
     self.bHasScriptImplementedTick = true
     self.bTick = false
 
@@ -21,7 +22,7 @@ end
 function UI_CardHeal:Tick()
     if self.bTick then
         self.bTick = false
-        self:DoPlayerStoryShowAndUpdateScore()
+        self:DoStoryShowAndUpdateScore()
     end
 end
 
@@ -114,9 +115,11 @@ function UI_CardHeal:AddNeedStoryShowList(story)
     NeedShowStorys[#NeedShowStorys+1] = story
 end
 
-function UI_CardHeal:DoPlayerStoryShowAndUpdateScore()
+function UI_CardHeal:DoStoryShowAndUpdateScore()
+    local self = UI_CardHeal
     if next(NeedShowStorys) then
         local story = NeedShowStorys[1]
+        -- print("bPlayer", self.bPlayerHeal)
         if self.bPlayerHeal then
             print("我方完成一个组合：", story.Name, " 组合分数：", story.Score)
             CommandMap:DoCommand(CommandList.UpdatePlayerScore, {Score = story.Score})

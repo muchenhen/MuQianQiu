@@ -1,20 +1,20 @@
 require "Global"
 
-local UI_PlayerScore = {}
+local UI_Score = {}
 
-function UI_PlayerScore:Construct()
+function UI_Score:Construct()
     CommandMap:AddCommand("UpdatePlayerScore", self, self.UpdatePlayerScore)
     CommandMap:AddCommand("UpdateEnemyScore", self, self.UpdateEnemyScore)
 end
 
-function UI_PlayerScore:Initialize()
+function UI_Score:Initialize()
     self.Text_EnemyPoint:SetText(0)
     self.Text_PlayerPoint:SetText(0)
     self.playerScore = 0
     self.enemyScore = 0
 end
 
-function UI_PlayerScore:UpdatePlayerScore(param)
+function UI_Score:UpdatePlayerScore(param)
     if param.PlayerChooseID then
         local playerChooseID = param.PlayerChooseID
         local playChooseCard = Cards[playerChooseID]
@@ -34,7 +34,7 @@ function UI_PlayerScore:UpdatePlayerScore(param)
     end
 end
 
-function UI_PlayerScore:UpdateEnemyScore(param)
+function UI_Score:UpdateEnemyScore(param)
     if param.EnemyChooseID then
         local playerChooseID = param.EnemyChooseID
         local playChooseCard = Cards[playerChooseID]
@@ -55,4 +55,4 @@ function UI_PlayerScore:UpdateEnemyScore(param)
 
 end
 
-return UI_PlayerScore
+return UI_Score

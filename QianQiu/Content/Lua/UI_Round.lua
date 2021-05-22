@@ -13,7 +13,6 @@ function UI_Round:OnAnimationFinished(anim)
     if anim == self.ShowIn then
         UIStack:PopUIByName("UI_Round")
     elseif anim == self.ShowOut then
-        print("bCan", self.bCan)
         if not self.bCan then
             UIStack:PushUIByName("UI_StaticTip")
             local param = {
@@ -37,7 +36,6 @@ function UI_Round:UpdateSelf(param)
     self.round = param.round
     self.Text_Round:SetText(param.text)
     self.bCan = param.bCan
-    print("param.Bcan", param.bCan)
 end
 
 return UI_Round

@@ -24,14 +24,12 @@ function UI_Main:ShowRound()
         local text = ""
         local bCan = true
         if self.round%2 == 0 then
+            bPlayer = true
             text = "我方回合"
             bCan = CheckSeasons(ECardOwner.Player)
-            -- if bCan then
-                self.UI_CardPoolPlayer:SetVisibility(ESlateVisibility.SelfHitTestInvisible)
-            -- else
-            --     ShowTip("没有手牌可用，需选择丢弃一张手牌重新获得手牌")
-            -- end
+            self.UI_CardPoolPlayer:SetVisibility(ESlateVisibility.SelfHitTestInvisible)
         elseif self.round%2 == 1 then
+            bPlayer = false
             text = "对手回合"
             self.UI_CardPoolPlayer:SetVisibility(ESlateVisibility.HitTestInvisible)
         end
@@ -42,6 +40,12 @@ function UI_Main:ShowRound()
         }
         UIStack:PushUIByName("UI_Round", param)
         self.round = self.round + 1
+    else
+        local param = {
+            playerScore = 100,
+            enemyScore = 90,
+        }
+        UIStack:PushUIByName("UI_GameResult", param)
     end
 end
 

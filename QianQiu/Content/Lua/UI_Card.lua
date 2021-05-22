@@ -91,7 +91,18 @@ function UI_Card:OnCardClick()
                 PlayerChooseID = self.ID
             }
             CommandMap:DoCommand(CommandList.PopAndPushOneCardForPlayer, param)
-            UIStack:PopUIByName("UI_StaticTip")
+            if CheckSeasons(ECardOwner.Player) then
+                local param = {
+                    bCan = true
+                }
+                CommandMap:DoCommand(CommandList.SetAllCardsbCan, param)
+                UIStack:PopUIByName("UI_StaticTip")
+            else
+                local param = {
+                    bCan = false
+                }
+                CommandMap:DoCommand(CommandList.SetAllCardsbCan, param)
+            end
         end
     end
 end

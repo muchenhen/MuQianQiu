@@ -46,7 +46,7 @@ function UI_CardPoolPlayer:FirstInitCards()
     for i = 0, cardsNum-1 do
         local card = self.HaveCards:GetChildAt(i)
         local param = {
-            ID = self.Cards[1], --临时修改为1 原为i+1 用来测试没有对应季节的边界情况
+            ID = self.Cards[i+1], --临时修改为1 原为i+1 用来测试没有对应季节的边界情况
             cardOwner = ECardOwner.Player,
             cardPosition = ECardPostion.OnHand,
         }
@@ -72,7 +72,7 @@ function UI_CardPoolPlayer:PopAndPushOneCardForPlayer(param)
     for i = 0, cardsNum-1 do
         local card = self.HaveCards:GetChildAt(i)
         if card.ID == playerHaveID then
-            local newCardID = RandomCards(1)[1]
+            local newCardID = ChangeCard(playerHaveID)[1]
             print("玩家新生成卡牌：", Cards[newCardID].Name)
             local newCard = CreateUI('UI_Card')
             for i=1, #self.Cards do

@@ -125,6 +125,8 @@ FormatEffectDetail = {
     end
 }
 
+bPlayer = true
+
 function FindStory(cardID)
     local cardsName = ''
     local cards = {}
@@ -167,9 +169,9 @@ CheckCard = function (CardsID, part, min, max, i)
     end
 end
 
-t1 = {} --牌库1
+t1 = {} --牌库1 顺序保存ID
 t2 = {} --牌库2
-t1index = 0
+t1index = 0 --保存当前发牌到第几张
 t2index = 0
 
 local function IndexAdd(index)
@@ -205,12 +207,6 @@ function WashCards()
     end
     t1 = math.randomx(oneMin, oneMax, 28)
     t2 = math.randomx(twoMin, twoMax, 28)
-    -- for k,v in pairs(t1) do
-    --     print(k,v)
-    -- end
-    -- for k,v in pairs(t1) do
-    --     print(k,v)
-    -- end
 end
  
 function RandomCards(num)
@@ -221,6 +217,15 @@ function RandomCards(num)
     print("随机生成的卡片数量：", num)
     if num == 1 then
         local ran = math.random(1,2)
+        if ran == 1 then
+            if t1index >=28 then
+                ran = 2
+            end
+        elseif ran == 2 then
+            if t2index >=28 then
+                ran = 1
+            end
+        end
         if ran == 1 then
             t1index = IndexAdd(t1index)
             print("当前牌库1的索引位置位：",t1index)
@@ -248,6 +253,35 @@ function RandomCards(num)
         print("当前牌库2的索引位置位：",t2index)
         print("cardsID数量：", #CardsID)
         return CardsID
+    end
+end
+
+function ChangeCard(cardID)
+    if t1index >=28 and t2index >=28 then
+        print("牌库已空")
+        return {[1] = 101}
+    end
+    local ran = math.random(1,2)
+    if ran == 1 then
+        if t1index >=28 then
+            ran = 2
+        end
+    elseif ran == 2 then
+        if t2index >=28 then
+            ran = 1
+        end
+    end
+    if ran == 1 then
+        -- 从t1中交换一张卡出来
+        local aim = math.random(t1index, 27)
+        local param = {[1] = t1[aim]}
+        t1[aim] = cardID
+        return param
+    else
+        local aim = math.random(t2index, 27)
+        local param = {[1] = t2[aim]}
+        t2[aim] = cardID
+        return param
     end
 end
 

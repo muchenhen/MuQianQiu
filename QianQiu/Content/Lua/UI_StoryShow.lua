@@ -8,7 +8,11 @@ end
 function UI_StoryShow:Initialize()
     CommandMap:AddCommand("PlayStoryShowOut", self, self.PlayStoryShowOut)
 
-    CommandMap:DoCommand(CommandList.SetStoryShowTick, false)
+    if bPlayer then
+        CommandMap:DoCommand(CommandList.SetStoryShowTickPlayer, false)
+    else
+        CommandMap:DoCommand(CommandList.SetStoryShowTickEnemy, false)
+    end
     self:PlayAnimation(self.ShowIn, 0, 1, 0, 1, false)
     
 end
@@ -20,7 +24,11 @@ end
 function UI_StoryShow:OnAnimationFinished(anim)
     if anim == self.ShowOut then
         self:RemoveFromParent()
-        CommandMap:DoCommand(CommandList.SetStoryShowTick, true)
+        if bPlayer then
+            CommandMap:DoCommand(CommandList.SetStoryShowTickPlayer, true)
+        else
+            CommandMap:DoCommand(CommandList.SetStoryShowTickEnemy, true)
+        end
     end
 end
 

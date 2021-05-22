@@ -78,3 +78,9 @@ ESeason = {
     ['秋'] = 3,
     ['冬'] = 4,
 }
+
+EResult = {
+    Win = 1,
+    Fail = 2,
+    Draw = 3,
+}
