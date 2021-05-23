@@ -5,6 +5,7 @@ local UI_Score = {}
 function UI_Score:Construct()
     CommandMap:AddCommand("UpdatePlayerScore", self, self.UpdatePlayerScore)
     CommandMap:AddCommand("UpdateEnemyScore", self, self.UpdateEnemyScore)
+    CommandMap:AddCommand("GetResultScores", self, self.GetResultScores)
 end
 
 function UI_Score:Initialize()
@@ -52,7 +53,14 @@ function UI_Score:UpdateEnemyScore(param)
         print("分数更新 ", "旧分数：", self.enemyScore, "新分数：", self.enemyScore + score)
         self.enemyScore = self.enemyScore + score
     end
+end
 
+function UI_Score:GetResultScores()
+    local scores = {
+        enemyScore = self.enemyScore,
+        playerScore = self.playerScore,
+    }
+    return scores
 end
 
 return UI_Score

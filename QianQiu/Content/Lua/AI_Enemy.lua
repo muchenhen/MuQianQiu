@@ -20,7 +20,6 @@ function Enemy:update()
         Enemy.Cards[i] =
         {
             UI = cards:Get(i),
-            bOnHand = true,
         }
     end
 end
@@ -29,39 +28,37 @@ function Enemy.Basic:Action()
     Enemy:update()
     for index = 0, #(Enemy.Cards) do
         local value = Enemy.Cards[index]
-        if value.bOnHand then
-            if CheckSeasons(ECardOwner.Enemy) then
-                local ID = value.UI.ID
-                print("对手当前第", index+1,"张卡片ID", ID, Table.Cards[ID].Name, Table.Cards[ID].Season)
-                local aimSeason = Table.Cards[ID].Season
-                local poolCardNum = Enemy.Widgets["UI_CardPool"].HaveCards:GetChildrenCount()
-                for i=0, poolCardNum-1 do
-                    print("对手准备行动中……")
-                    local card = Enemy.Widgets["UI_CardPool"].HaveCards:GetChildAt(i)
-                    local cardID = card.ID
-                    print("AI当前检索到公共卡池卡片ID", cardID, Table.Cards[cardID].Name, Table.Cards[cardID].Season)
-                    if card.season == aimSeason then
-                        print("对手行动！！！")
-                        print("对手进牌堆的两张牌是",Table.Cards[ID].Name,Table.Cards[ID].Season,Table.Cards[cardID].Name,Table.Cards[cardID].Season)
-                        local param = {
-                            EnemyHaveCard = ID,
-                            EnemyChooseID = card.ID,
-                        }
-                        CommandMap:DoCommand(CommandList.PopOneCardForEnemy,param)
-                        CommandMap:DoCommand(CommandList.PopAndPushOneCardForPublic,param)
-                        CommandMap:DoCommand(CommandList.UpdateEnemyScore,param)
-                        CommandMap:DoCommand(CommandList.UpdateEnemyHeal, param)
-                        value.bOnHand = false
-                        print("对手行动完毕。")
-                        return
-                    end
+        if CheckSeasons(ECardOwner.Enemy) then
+            local ID = value.UI.ID
+            print("对手当前第", index+1,"张卡片ID", ID, Table.Cards[ID].Name, Table.Cards[ID].Season)
+            local aimSeason = Table.Cards[ID].Season
+            local poolCardNum = Enemy.Widgets["UI_CardPool"].HaveCards:GetChildrenCount()
+            for i=0, poolCardNum-1 do
+                print("对手准备行动中……")
+                local card = Enemy.Widgets["UI_CardPool"].HaveCards:GetChildAt(i)
+                local cardID = card.ID
+                print("AI当前检索到公共卡池卡片ID", cardID, Table.Cards[cardID].Name, Table.Cards[cardID].Season)
+                if card.season == aimSeason then
+                    print("对手行动！！！")
+                    print("对手进牌堆的两张牌是",Table.Cards[ID].Name,Table.Cards[ID].Season,Table.Cards[cardID].Name,Table.Cards[cardID].Season)
+                    local param = {
+                        EnemyHaveCard = ID,
+                        EnemyChooseID = card.ID,
+                    }
+                    CommandMap:DoCommand(CommandList.PopOneCardForEnemy,param)
+                    CommandMap:DoCommand(CommandList.PopAndPushOneCardForPublic,param)
+                    CommandMap:DoCommand(CommandList.UpdateEnemyScore,param)
+                    CommandMap:DoCommand(CommandList.UpdateEnemyHeal, param)
+                    value.bOnHand = false
+                    print("对手行动完毕。")
+                    return
                 end
-            else
-                local param = {
-                    PlayerHaveID = value.UI.ID
-                }
-                CommandMap:DoCommand(CommandList.PopAndPushOneCardForEnemy, param)
             end
+        else
+            local param = {
+                PlayerHaveID = value.UI.ID
+            }
+            CommandMap:DoCommand(CommandList.PopAndPushOneCardForEnemy, param)
         end
     end
     return

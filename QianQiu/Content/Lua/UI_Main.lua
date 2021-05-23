@@ -42,9 +42,10 @@ function UI_Main:ShowRound()
         UIStack:PushUIByName("UI_Round", param)
         self.round = self.round + 1
     else
+        local scores = CommandMap:DoCommand(CommandList.GetResultScores)
         local param = {
-            playerScore = 100,
-            enemyScore = 90,
+            playerScore = scores.playerScore,
+            enemyScore = scores.enemyScore,
         }
         UIStack:PushUIByName("UI_GameResult", param)
     end

@@ -62,4 +62,5 @@ CommandList = {
     CheckPublicSeason = "CheckPublicSeason",                    -- 检查公共卡池的季节
     SetAllCardsbCanPlayer = "SetAllCardsbCanPlayer",            -- 设置所有卡片的丢弃状态
     SetAllCardsbCanEnemy = "SetAllCardsbCanEnemy",              -- 同上 对手
+    GetResultScores = "GetResultScores",                        -- 获取最后的分数
 }
