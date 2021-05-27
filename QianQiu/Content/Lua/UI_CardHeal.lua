@@ -107,7 +107,7 @@ end
 
 function UI_CardHeal:OnHealDetailClick()
     local self = UI_CardHeal
-    UIStack:PopUIByName("UI_CardDetail", true)
+    UIStack:PopUIByName("UI_CardDetail")
     UIStack:PushUIByName("UI_HealDetail", self.cards)
 end
 
@@ -134,6 +134,10 @@ function UI_CardHeal:DoStoryShowAndUpdateScore()
         self.bTick = false
         CommandMap:DoCommand(CommandList.ShowRound)
     end
+end
+
+function UI_CardHeal:Reset()
+    self.Cards:ClearChildren()
 end
 
 return UI_CardHeal

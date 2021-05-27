@@ -235,4 +235,8 @@ function UI_Card:OnAnimationFinished(anim)
     end
 end
 
+function UI_Card:SetCardVisibile(visibility)
+    self:SetVisibility(visibility)
+end
+
 return UI_Card

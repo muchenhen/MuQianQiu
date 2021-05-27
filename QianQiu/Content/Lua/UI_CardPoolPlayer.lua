@@ -12,7 +12,7 @@ function UI_CardPoolPlayer:Construct()
 end
 
 function UI_CardPoolPlayer:Initialize()
-    self:PlayAnimation(self.FirstInit, 0, 1, 0, 1, false)
+    
 end
 
 function UI_CardPoolPlayer:UpdateChooseState(ID)
@@ -28,12 +28,10 @@ function UI_CardPoolPlayer:UpdateChooseState(ID)
 end
 
 function UI_CardPoolPlayer:GetPlayerChooseID()
-    local cardsNum = self.HaveCards:GetChildrenCount()
-    for i = 0, cardsNum-1 do
-        local card = self.HaveCards:GetChildAt(i)
-        local cardID = card:GetID()
-        if card.cardState == ECardState.Choose then
-            -- self:PlayAnimation(self["comb" .. i+1], 0, 1, 0, 1, false)
+    local cards = self.HaveCards:GetAllChildren()
+    for key, value in pairs(cards) do
+        local cardID = value:GetID()
+        if value.cardState == ECardState.Choose then
             return cardID
         end
     end
@@ -50,16 +48,19 @@ function UI_CardPoolPlayer:FirstInitCards()
             cardPosition = ECardPostion.OnHand,
         }
         card:UpdateSelf(param)
+        card:PlayAnimation(self.PlayUnChoose, 0, 1, 0, 1, false)
     end
+    self:PlayAnimation(self.FirstInit, 0, 1, 0, 1, false)
+    print("玩家卡池初始化完毕")
 end
 
 function UI_CardPoolPlayer:PopOneCardForPlayer(param)
     local playerHaveID = param.PlayerHaveID
-    local cardsNum = self.HaveCards:GetChildrenCount()
-    for i = 0, cardsNum-1 do
-        local card = self.HaveCards:GetChildAt(i)
-        if card.ID == playerHaveID then
-            self.HaveCards:RemoveChildAt(i)
+    local cards = self.HaveCards:GetAllChildren()
+    for key, value in pairs(cards) do
+        if value.ID == playerHaveID then
+            value:PlayAnimation(value.PlayUnChoose, 0, 1, 0, 1, false)
+            value:SetCardVisibile(ESlateVisibility.Hidden)
             break
         end
     end
@@ -67,14 +68,12 @@ end
 
 function UI_CardPoolPlayer:PopAndPushOneCardForPlayer(param)
     local playerHaveID = param.PlayerHaveID
-    local cardsNum = self.HaveCards:GetChildrenCount()
-    for i = 0, cardsNum-1 do
-        local card = self.HaveCards:GetChildAt(i)
+    local cards = self.HaveCards:GetAllChildren()
+    for key, card in pairs(cards) do
         if card.ID == playerHaveID then
             local newCardID = ChangeCard(playerHaveID)[1]
             print("玩家用卡牌", Cards[playerHaveID].Name, "交换出了", Cards[newCardID].Name)
             -- print("玩家新生成卡牌：", Cards[newCardID].Name)
-            local newCard = CreateUI('UI_Card')
             for i=1, #self.Cards do
                 if self.Cards[i] == playerHaveID then
                     self.Cards[i] = newCardID
@@ -85,19 +84,7 @@ function UI_CardPoolPlayer:PopAndPushOneCardForPlayer(param)
                 cardOwner = ECardOwner.Player,
                 cardPosition = ECardPostion.OnHand,
             }
-            newCard:UpdateSelf(param)
-            local col = card.Slot.Column
-            local layer = card.Slot.Layer
-            local trans = card.Slot.Nudge
-            local horAli = card.Slot.HorizontalAlignment
-            local verAli = card.Slot.VerticalAlignment
-            self.HaveCards:RemoveChildAt(i)
-            self.HaveCards:AddChild(newCard)
-            newCard.Slot:SetColumn(col)
-            newCard.Slot:SetLayer(layer)
-            newCard.Slot:SetNudge(trans)
-            newCard.Slot:SetHorizontalAlignment(horAli)
-            newCard.Slot:SetVerticalAlignment(verAli)
+            card:UpdateSelf(param)
             break
         end
     end
@@ -126,6 +113,18 @@ function UI_CardPoolPlayer:SetAllCardsbCanPlayer(param)
     for i = 0, cardsNum-1 do
         local card = self.HaveCards:GetChildAt(i)
         card:SetbCan(param.bCan)
+    end
+end
+
+function UI_CardPoolPlayer:Reset()
+    local cards = self.HaveCards:GetAllChildren()
+    for key, value in pairs(cards) do
+        local param  = {
+            cardOwner = ECardOwner.Player,
+            cardPosition = ECardPostion.OnHand,
+        }
+        value:UpdateSelf(param)
+        value:SetCardVisibile(ESlateVisibility.SelfHitTestInvisible)
     end
 end
 

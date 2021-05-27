@@ -322,3 +322,18 @@ function CheckSeasons(type)
         return false
     end
 end
+
+function Reset()
+    NeedShowStorys = {}
+    PublicSeason = {}
+    PlayerSeason = {}
+    EnemySeason = {}
+    t1 = {} --牌库1 顺序保存ID
+    t2 = {} --牌库2
+    t1index = 0 --保存当前发牌到第几张
+    t2index = 0
+    print(t1index)
+    print(t2index)
+
+    CommandMap:DoCommand(CommandList.UIMainReset)
+end

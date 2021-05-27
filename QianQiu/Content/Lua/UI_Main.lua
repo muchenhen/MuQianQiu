@@ -16,11 +16,12 @@ function UI_Main:Initialize()
     self.round = 0 --奇数为我方回合，回合数小于等于20，第21回合进行结算展示
     -- 第一次的回合展示在玩家卡池初始化动画播放完毕后进行 UI_CardPoolPlayer中
     CommandMap:AddCommand("ShowRound", self, self.ShowRound)
+    CommandMap:AddCommand("UIMainReset", self, self.Reset)
 end
 
 -- 展示并切换回合
 function UI_Main:ShowRound()
-    if self.round < 20 then
+    if self.round < 20 then --20个回合
         local text = ""
         local bCan = true
         if self.round%2 == 0 then
@@ -49,6 +50,27 @@ function UI_Main:ShowRound()
         }
         UIStack:PushUIByName("UI_GameResult", param)
     end
+end
+
+function UI_Main:Reset()
+    print("UI_Main Reset")
+    self.round = 0 --奇数为我方回合，回合数小于等于20，第21回合进行结算展示
+
+    self.UI_CardPoolPlayer:SetVisibility(ESlateVisibility.SelfHitTestInvisible)
+    self.UI_CardPool:Reset()
+    self.UI_CardPoolPlayer:Reset()
+    self.UI_CardPoolEnenmy:Reset()
+    self.UI_Score:Reset()
+    self:PlayAnimation(self.ShowIn, 0, 1, 0, 1, false)
+    WashCards()     --洗牌
+    self.UI_CardPool:FirstInitCards()       --第一次初始化公共卡池
+    self.UI_CardPoolPlayer:FirstInitCards() --初次初始化玩家卡池
+    self.UI_CardPoolEnenmy:FirstInitCards() --初次初始化敌人卡池
+    local param = {
+        UI_CardPoolEnenmy = self.UI_CardPoolEnenmy,
+        UI_CardPool = self.UI_CardPool
+    }
+    Enemy:SetData(param)
 end
 
 return UI_Main

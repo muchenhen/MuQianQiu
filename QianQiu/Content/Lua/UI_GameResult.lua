@@ -3,7 +3,7 @@ require "Global"
 local UI_GameResult = {}
 
 function UI_GameResult:Construct()
-
+    self.Button_More.OnClicked:Add(self.OnMoreClick)
 end
 
 function UI_GameResult:Initialize()
@@ -35,6 +35,15 @@ function UI_GameResult:UpdateSelf(param)
     end
     self.Text_Result:SetText(text)
     self.Text_Score:SetText(param.playerScore)
+end
+
+function UI_GameResult:OnMoreClick()
+    UIStack:PopUIByName("UI_GameResult")
+    Reset()
+end
+
+function UI_GameResult:OnDestroy()
+
 end
 
 return UI_GameResult

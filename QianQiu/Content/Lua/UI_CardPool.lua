@@ -69,7 +69,7 @@ function UI_CardPool:PopAndPushOneCardForPublic(param)
         if card.ID == publicCardID then
             local newCardID = RandomCards(1)[1]
             print("卡池新生成卡牌：", Cards[newCardID].Name)
-            local newCard = CreateUI('UI_Card')
+            -- local newCard = CreateUI('UI_Card')
             for i=1, #self.Cards do
                 if self.Cards[i] == publicCardID then
                     self.Cards[i] = newCardID
@@ -79,16 +79,9 @@ function UI_CardPool:PopAndPushOneCardForPublic(param)
                 ID = newCardID,
                 cardOwner = ECardOwner.PublicPool,
                 cardPosition = ECardPostion.OnHand,
+                state = ECardState.Choose
             }
-            newCard:UpdateSelf(param)
-            local pos = card.Slot:GetPosition()
-            local trans = card.RenderTransform
-            local zOrder = card.Slot:GetZOrder()
-            self.HaveCards:RemoveChildAt(i)
-            self.HaveCards:AddChild(newCard)
-            newCard.Slot:SetPosition(pos)
-            newCard.Slot:SetZOrder(zOrder)
-            newCard:SetRenderTransform(trans)
+            card:UpdateSelf(param)
             self:ResetPlayerCardUnChoose()
             break
         end
@@ -96,10 +89,9 @@ function UI_CardPool:PopAndPushOneCardForPublic(param)
 end
 
 function UI_CardPool:ResetPlayerCardUnChoose()
-    local cardsNum = self.HaveCards:GetChildrenCount()
-    for i = 0, cardsNum-1 do
-        local card = self.HaveCards:GetChildAt(i)
-        card:SetCardState(ECardState.UnChoose)
+    local cards = self.HaveCards:GetAllChildren()
+    for key, value in pairs(cards) do
+        value:SetCardState(ECardState.UnChoose)
     end
 end
 
@@ -113,6 +105,10 @@ function UI_CardPool:CheckPublicSeason()
         local card = self.HaveCards:GetChildAt(i)
         PublicSeason[ESeason[card.season]] = true
     end
+end
+
+function UI_CardPool:Reset()
+
 end
 
 return UI_CardPool

@@ -63,4 +63,13 @@ function UI_Score:GetResultScores()
     return scores
 end
 
+function UI_Score:Reset()
+    self.Text_EnemyPoint:SetText(0)
+    self.Text_PlayerPoint:SetText(0)
+    self.playerScore = 0
+    self.enemyScore = 0
+    self.EnemyHeal:Reset()
+    self.PlayerHeal:Reset()
+end
+
 return UI_Score
