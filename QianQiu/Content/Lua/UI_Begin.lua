@@ -13,6 +13,8 @@ function UI_Begin:Construct()
     self.Button_OneThree.OnClicked:Add(self.OnOneThreeClick)
     self.Button_Normal.OnClicked:Add(self.OnNormalClick)
     self.Button_Monster.OnClicked:Add(self.OnMonsterClick)
+    self.Button_Dark.OnClicked:Add(self.OnDarkClick)
+    self.Button_Light.OnClicked:Add(self.OnLightClick)
     print(GameplayStatics.GetPlatformName())
 end
 
@@ -64,6 +66,26 @@ function UI_Begin:OnMonsterClick()
     -- print("模式选择：撒野模式")
 end
 
+function UI_Begin:OnDarkClick()
+    local self = UI_Begin
+    if self.bDark then
+        return
+    end
+    self.bDark = true
+    self:PlaySwitch(7)
+    print("对手暗牌")
+end
+
+function UI_Begin:OnLightClick()
+    local self = UI_Begin
+    if not self.bDark then
+        return
+    end
+    self.bDark = false
+    self:PlaySwitch(8)
+    print("对手明牌")
+end
+
 function UI_Begin:PlaySwitch(aim)
     if self.currSwitch == 1 and aim == 2 then
         self:PlayAnimation(self.A12, 0, 1, 0, 1, false)
@@ -81,6 +103,10 @@ function UI_Begin:PlaySwitch(aim)
         self:PlayAnimation(self.B12, 0, 1, 0, 1, false)
     elseif self.model == 5 and aim == 4 then
         self:PlayAnimation(self.B12, 0, 1, 1, 1, false)
+    elseif self.bDark and aim == 7 then
+        self:PlayAnimation(self.C12, 0, 1, 1, 1, false)
+    elseif not self.bDark and aim == 8 then
+        self:PlayAnimation(self.C12, 0, 1, 0, 1, false)
     end
 end
 

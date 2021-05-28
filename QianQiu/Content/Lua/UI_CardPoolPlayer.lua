@@ -70,7 +70,8 @@ function UI_CardPoolPlayer:PopAndPushOneCardForPlayer(param)
     local playerHaveID = param.PlayerHaveID
     local cards = self.HaveCards:GetAllChildren()
     for key, card in pairs(cards) do
-        if card.ID == playerHaveID then
+        local cardVisibility = card:GetCardVisibility()
+        if card.ID == playerHaveID and cardVisibility ~= ESlateVisibility.Hidden then
             local newCardID = ChangeCard(playerHaveID)[1]
             print("玩家用卡牌", Cards[playerHaveID].Name, "交换出了", Cards[newCardID].Name)
             -- print("玩家新生成卡牌：", Cards[newCardID].Name)

@@ -137,6 +137,7 @@ function UI_CardHeal:DoStoryShowAndUpdateScore()
 end
 
 function UI_CardHeal:Reset()
+    self.cards = {}
     self.Cards:ClearChildren()
 end
 

@@ -39,6 +39,8 @@ import = ImportHelper.importClass
 UI_TEXTURE_PATH = "/Game/Texture/"
 UI_TEXTURE_BACK_PATH = "/Game/Texture/Tex_Card_Back"
 
+bEnemyDark = true
+
 Table = {}
 
 
