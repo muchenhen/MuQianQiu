@@ -101,10 +101,11 @@ function UI_CardPoolPlayer:CheckPlayerSeason()
     PlayerSeason[ECardSeason.Summer] = false
     PlayerSeason[ECardSeason.Autumn] = false
     PlayerSeason[ECardSeason.Winter] = false
-    local cardsNum = self.HaveCards:GetChildrenCount()
-    for i = 0, cardsNum-1 do
-        local card = self.HaveCards:GetChildAt(i)
-        PlayerSeason[ESeason[card.season]] = true
+    local cards = self.HaveCards:GetAllChildren()
+    for key, card in pairs(cards) do
+        if card:GetCardVisibility() ~= ESlateVisibility.Hidden then
+            PlayerSeason[ESeason[card.season]] = true
+        end
     end
 end
 

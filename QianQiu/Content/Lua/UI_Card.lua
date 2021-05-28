@@ -239,4 +239,10 @@ function UI_Card:SetCardVisibile(visibility)
     self:SetVisibility(visibility)
 end
 
+
+function UI_Card:GetCardVisibility()
+    return self:GetVisibility()
+end
+
+
 return UI_Card

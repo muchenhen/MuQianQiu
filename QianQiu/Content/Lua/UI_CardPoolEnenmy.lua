@@ -74,10 +74,11 @@ function UI_CardPoolEnenmy:CheckEnemySeason()
     EnemySeason[ECardSeason.Summer] = false
     EnemySeason[ECardSeason.Autumn] = false
     EnemySeason[ECardSeason.Winter] = false
-    local cardsNum = self.HaveCards:GetChildrenCount()
-    for i = 0, cardsNum-1 do
-        local card = self.HaveCards:GetChildAt(i)
-        EnemySeason[ESeason[card.season]] = true
+    local cards = self.HaveCards:GetAllChildren()
+    for key, card in pairs(cards) do
+        if card:GetCardVisibility() ~= ESlateVisibility.Hidden then
+            EnemySeason[ESeason[card.season]] = true
+        end
     end
 end
 
