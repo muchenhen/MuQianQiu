@@ -78,7 +78,7 @@ end
 
 -- 遍历当前牌堆的所有牌 找到所有组合 对每个组合播放动画，更新分数
 function UI_CardHeal:FindAllStory()
-    print("检查是否有故事组合……")
+    --print("检查是否有故事组合……")
     -- 讲所有需要播放的故事添加到了一个全局缓冲表
     for i=1,#Table.Story do
         if Table.Story[i].bHold == nil or (not Table.Story[i].bHold) then
@@ -119,12 +119,12 @@ function UI_CardHeal:DoStoryShowAndUpdateScore()
     local self = UI_CardHeal
     if next(NeedShowStorys) then
         local story = NeedShowStorys[1]
-        -- print("bPlayer", self.bPlayerHeal)
+        -- --print("bPlayer", self.bPlayerHeal)
         if self.bPlayerHeal then
-            print("我方完成一个组合：", story.Name, " 组合分数：", story.Score)
+            --print("我方完成一个组合：", story.Name, " 组合分数：", story.Score)
             CommandMap:DoCommand(CommandList.UpdatePlayerScore, {Score = story.Score})
         else
-            print("对方完成一个组合：", story.Name, " 组合分数：", story.Score)
+            --print("对方完成一个组合：", story.Name, " 组合分数：", story.Score)
             CommandMap:DoCommand(CommandList.UpdateEnemyScore, {Score = story.Score})
         end
         UIStack:PushUIByName("UI_StoryShow", story)

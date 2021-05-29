@@ -64,8 +64,6 @@ function UI_Card:OnCardClick()
             and self.cardOwner == ECardOwner.PublicPool) then
             local playChooseID = CommandMap:DoCommand(CommandList.GetPlayerChooseID)
             if playChooseID then
-                print(playChooseID, Cards[playChooseID].Name)
-                print(self.ID,  Cards[self.ID].Name)
                 local param = {
                     PlayerHaveID = playChooseID,
                     PlayerChooseID = self.ID
@@ -83,7 +81,7 @@ function UI_Card:OnCardClick()
         end
     else
         self.cardState = ECardState.Choose
-        print("丢弃手牌并重新获得")
+        --print("丢弃手牌并重新获得")
         local playChooseID = CommandMap:DoCommand(CommandList.GetPlayerChooseID)
         if playChooseID then
             local param = {

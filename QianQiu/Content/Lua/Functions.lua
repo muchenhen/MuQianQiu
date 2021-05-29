@@ -112,12 +112,12 @@ function Dump(value, depth, key)
     if type(value) == 'table' then
         mTable = getmetatable(value)
         if mTable ~= nil then
-            print(spaces .."(metatable) ")
+            --print(spaces .."(metatable) ")
             for tableKey, tableValue in pairs(mTable) do
                 Dump(tableValue, depth, tableKey)
             end
         end
-        print(spaces ..linePrefix.."(table) ")
+        --print(spaces ..linePrefix.."(table) ")
         for tableKey, tableValue in pairs(value) do
           Dump(tableValue, depth, tableKey)
         end
@@ -126,8 +126,8 @@ function Dump(value, depth, key)
         type(value)	== 'userdata' or
         value		== nil
     then
-        print(spaces .. tostring(value))
+        --print(spaces .. tostring(value))
     else
-        print(spaces .. linePrefix .. "(" .. type(value) .. ") " .. tostring(value))
+        --print(spaces .. linePrefix .. "(" .. type(value) .. ") " .. tostring(value))
     end
 end

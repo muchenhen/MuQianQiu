@@ -51,7 +51,7 @@ function UI_CardPoolPlayer:FirstInitCards()
         card:PlayAnimation(self.PlayUnChoose, 0, 1, 0, 1, false)
     end
     self:PlayAnimation(self.FirstInit, 0, 1, 0, 1, false)
-    print("玩家卡池初始化完毕")
+    --print("玩家卡池初始化完毕")
 end
 
 function UI_CardPoolPlayer:PopOneCardForPlayer(param)
@@ -73,8 +73,8 @@ function UI_CardPoolPlayer:PopAndPushOneCardForPlayer(param)
         local cardVisibility = card:GetCardVisibility()
         if card.ID == playerHaveID and cardVisibility ~= ESlateVisibility.Hidden then
             local newCardID = ChangeCard(playerHaveID)[1]
-            print("玩家用卡牌", Cards[playerHaveID].Name, "交换出了", Cards[newCardID].Name)
-            -- print("玩家新生成卡牌：", Cards[newCardID].Name)
+            --print("玩家用卡牌", Cards[playerHaveID].Name, "交换出了", Cards[newCardID].Name)
+            -- --print("玩家新生成卡牌：", Cards[newCardID].Name)
             for i=1, #self.Cards do
                 if self.Cards[i] == playerHaveID then
                     self.Cards[i] = newCardID

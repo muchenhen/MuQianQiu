@@ -53,7 +53,7 @@ function UI_Main:ShowRound()
 end
 
 function UI_Main:Reset()
-    print("UI_Main Reset")
+    --print("UI_Main Reset")
     self.round = 0 --奇数为我方回合，回合数小于等于20，第21回合进行结算展示
 
     self.UI_CardPoolPlayer:SetVisibility(ESlateVisibility.SelfHitTestInvisible)

@@ -25,12 +25,12 @@ function UI_Score:UpdatePlayerScore(param)
         local playerHaveScore = playerHaveCard.Value
         local score = playerChooseScore + playerHaveScore
         self.Text_PlayerPoint:SetText(tostring(self.playerScore + score))
-        print("分数更新 ", "旧分数：", self.playerScore, "新分数：", self.playerScore + score)
+        --print("分数更新 ", "旧分数：", self.playerScore, "新分数：", self.playerScore + score)
         self.playerScore = self.playerScore + score
     elseif param.Score then
         local score = param.Score
         self.Text_PlayerPoint:SetText(tostring(self.playerScore + score))
-        print("分数更新 ", "旧分数：", self.playerScore, "新分数：", self.playerScore + score)
+        --print("分数更新 ", "旧分数：", self.playerScore, "新分数：", self.playerScore + score)
         self.playerScore = self.playerScore + score
     end
 end
@@ -45,12 +45,12 @@ function UI_Score:UpdateEnemyScore(param)
         local playerHaveScore = playerHaveCard.Value
         local score = playerChooseScore + playerHaveScore
         self.Text_EnemyPoint:SetText(tostring(self.enemyScore + score))
-        print("分数更新 ", "旧分数：", self.enemyScore, "新分数：", self.enemyScore + score)
+        --print("分数更新 ", "旧分数：", self.enemyScore, "新分数：", self.enemyScore + score)
         self.enemyScore = self.enemyScore + score
     elseif param.Score then
         local score = param.Score
         self.Text_EnemyPoint:SetText(tostring(self.enemyScore + score))
-        print("分数更新 ", "旧分数：", self.enemyScore, "新分数：", self.enemyScore + score)
+        --print("分数更新 ", "旧分数：", self.enemyScore, "新分数：", self.enemyScore + score)
         self.enemyScore = self.enemyScore + score
     end
 end

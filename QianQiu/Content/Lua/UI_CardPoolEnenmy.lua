@@ -52,7 +52,7 @@ function UI_CardPoolEnenmy:PopAndPushOneCardForEnemy(param)
         local cardVisibility = card:GetCardVisibility()
         if card.ID == playerHaveID and cardVisibility ~= ESlateVisibility.Hidden then
             local newCardID = ChangeCard(playerHaveID)[1]
-            print("对手用卡牌", Cards[playerHaveID].Name, Cards[playerHaveID].Season, "交换出了", Cards[newCardID].Name, Cards[newCardID].Season)
+            --print("对手用卡牌", Cards[playerHaveID].Name, Cards[playerHaveID].Season, "交换出了", Cards[newCardID].Name, Cards[newCardID].Season)
             for i=1, #self.Cards do
                 if self.Cards[i] == playerHaveID then
                     self.Cards[i] = newCardID

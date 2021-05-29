@@ -7,7 +7,7 @@ function CommandMap:AddCommand(key, widget, func)
         func = func,
     }
     if not CommandMap.FuncMap[key] then
-        print("Add One Command:",key)
+        -- --print("Add One Command:",key)
     end
     CommandMap.FuncMap[key] = value
 end

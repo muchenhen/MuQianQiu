@@ -115,3 +115,4 @@ QianQiu/Plugins/*/Binaries/*
 QianQiu/Binaries/*
 QianQiu/.vs/*
 *.pdb
+*.log

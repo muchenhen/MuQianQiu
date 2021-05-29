@@ -54,6 +54,19 @@ StoryThree = true
 StoryThreeMin = 301
 StoryThreeMax = 328
 
+bPlayer = true
+
+NeedShowStorys = {}
+
+PublicSeason = {}
+PlayerSeason = {}
+EnemySeason = {}
+
+t1 = {} --牌库1 顺序保存ID
+t2 = {} --牌库2
+t1index = 0 --保存当前发牌到第几张
+t2index = 0
+
 function OpenUI(uiName)
     local ui = slua.loadUI("/Game/UI/" .. ConverUEPath(uiName))
     ui:AddToViewport(10)
@@ -127,8 +140,6 @@ FormatEffectDetail = {
     end
 }
 
-bPlayer = true
-
 function FindStory(cardID)
     local cardsName = ''
     local cards = {}
@@ -171,16 +182,13 @@ CheckCard = function (CardsID, part, min, max, i)
     end
 end
 
-t1 = {} --牌库1 顺序保存ID
-t2 = {} --牌库2
-t1index = 0 --保存当前发牌到第几张
-t2index = 0
+
 
 local function IndexAdd(index)
     if index < 28 then
         index = index + 1
     end
-    -- print(index)
+    -- --print(index)
     return index
 end
 
@@ -213,10 +221,10 @@ end
  
 function RandomCards(num)
     if t1index >=28 and t2index >=28 then
-        print("牌库已空")
+        --print("牌库已空")
         return {[1] = 101}
     end
-    print("随机生成的卡片数量：", num)
+    --print("随机生成的卡片数量：", num)
     if num == 1 then
         local ran = math.random(1,2)
         if ran == 1 then
@@ -230,11 +238,19 @@ function RandomCards(num)
         end
         if ran == 1 then
             t1index = IndexAdd(t1index)
+            --print("当前牌库1的索引位置位：",t1index)
             print("当前牌库1的索引位置位：",t1index)
+            print("当前牌库2的索引位置位：",t2index)
+            print("")
+        
             return {[1] = t1[t1index]}
         else
             t2index = IndexAdd(t2index)
+            --print("当前牌库2的索引位置位：",t2index)
+            print("当前牌库1的索引位置位：",t1index)
             print("当前牌库2的索引位置位：",t2index)
+            print("")
+        
             return {[1] = t2[t2index]}
         end
     else
@@ -246,21 +262,24 @@ function RandomCards(num)
             table.insert( CardsID, t1[t1index])
             i = i + 1
         end
-        print("当前牌库1的索引位置位：",t1index)
+        --print("当前牌库1的索引位置位：",t1index)
         while i <= num do
             t2index = IndexAdd(t2index)
             table.insert(CardsID, t2[t2index])
             i = i + 1
         end
+        --print("当前牌库2的索引位置位：",t2index)
+        --print("cardsID数量：", #CardsID)
+        print("当前牌库1的索引位置位：",t1index)
         print("当前牌库2的索引位置位：",t2index)
-        print("cardsID数量：", #CardsID)
+        print("")
         return CardsID
     end
 end
 
 function ChangeCard(cardID)
     if t1index >=28 and t2index >=28 then
-        print("牌库已空")
+        --print("牌库已空")
         return {[1] = 101}
     end
     local ran = math.random(1,2)
@@ -294,11 +313,7 @@ function ShowTip(text)
     UIStack:PushUIByName("UI_Tip", param)
 end
 
-NeedShowStorys = {}
 
-PublicSeason = {}
-PlayerSeason = {}
-EnemySeason = {}
 
 function CheckSeasons(type)
     CommandMap:DoCommand(CommandList.CheckPublicSeason)
@@ -334,8 +349,8 @@ function Reset()
     t2 = {} --牌库2
     t1index = 0 --保存当前发牌到第几张
     t2index = 0
-    print(t1index)
-    print(t2index)
+    --print(t1index)
+    --print(t2index)
 
     CommandMap:DoCommand(CommandList.UIMainReset)
 end

@@ -21,9 +21,8 @@ function Enemy:update()
             UI = value,
         }
         i = i + 1
-        print(value.ID, Table.Cards[value.ID].Name)
     end
-    print("对手当前卡片数量：", i+ 1)
+    --print("对手当前卡片数量：", i)
 end
 
 function Enemy.Basic:Action()
@@ -32,16 +31,16 @@ function Enemy.Basic:Action()
         if value then
             if CheckSeasons(ECardOwner.Enemy) then
                 local ID = value.UI.ID
-                print("对手当前第", index+1,"张卡片ID", ID, Table.Cards[ID].Name, Table.Cards[ID].Season)
+                --print("对手当前第", index+1,"张卡片ID", ID, Table.Cards[ID].Name, Table.Cards[ID].Season)
                 local aimSeason = Table.Cards[ID].Season
                 local poolCards = Enemy.Widgets["UI_CardPool"].HaveCards:GetAllChildren()
                 for key, card in pairs(poolCards) do
-                    print("对手准备行动中……")
+                    --print("对手准备行动中……")
                     local cardID = card.ID
-                    print("AI当前检索到公共卡池卡片ID", cardID, Table.Cards[cardID].Name, Table.Cards[cardID].Season)
+                    --print("AI当前检索到公共卡池卡片ID", cardID, Table.Cards[cardID].Name, Table.Cards[cardID].Season)
                     if card.season == aimSeason then
-                        print("对手行动！！！")
-                        print("对手进牌堆的两张牌是",Table.Cards[ID].Name,Table.Cards[ID].Season,Table.Cards[cardID].Name,Table.Cards[cardID].Season)
+                        --print("对手行动！！！")
+                        --print("对手进牌堆的两张牌是",Table.Cards[ID].Name,Table.Cards[ID].Season,Table.Cards[cardID].Name,Table.Cards[cardID].Season)
                         Enemy.Cards[index] = false
                         local param = {
                             EnemyHaveCard = ID,
@@ -51,7 +50,7 @@ function Enemy.Basic:Action()
                         CommandMap:DoCommand(CommandList.PopAndPushOneCardForPublic,param)
                         CommandMap:DoCommand(CommandList.UpdateEnemyScore,param)
                         CommandMap:DoCommand(CommandList.UpdateEnemyHeal, param)
-                        print("对手行动完毕。")
+                        --print("对手行动完毕。")
                         return
                     end
                 end

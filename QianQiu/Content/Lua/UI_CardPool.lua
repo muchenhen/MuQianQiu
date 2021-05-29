@@ -68,7 +68,7 @@ function UI_CardPool:PopAndPushOneCardForPublic(param)
         local card = self.HaveCards:GetChildAt(i)
         if card.ID == publicCardID then
             local newCardID = RandomCards(1)[1]
-            print("卡池新生成卡牌：", Cards[newCardID].Name)
+            --print("卡池新生成卡牌：", Cards[newCardID].Name)
             -- local newCard = CreateUI('UI_Card')
             for i=1, #self.Cards do
                 if self.Cards[i] == publicCardID then

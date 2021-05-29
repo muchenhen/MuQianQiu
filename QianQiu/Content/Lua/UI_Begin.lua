@@ -2,12 +2,13 @@ require "Global"
 local UI_Begin = {}
 
 function UI_Begin:Initialize()
-    print("牌库选择1+2")
+    --print("牌库选择1+2")
 end
 
 function UI_Begin:Construct()
     self.currSwitch = 1
     self.model = 4
+    self.bDark = true
     self.Button_OneTwo.OnClicked:Add(self.OnOneTwoClick)
     self.Button_TwoThree.OnClicked:Add(self.OnTwoThreeClick)
     self.Button_OneThree.OnClicked:Add(self.OnOneThreeClick)
@@ -15,7 +16,7 @@ function UI_Begin:Construct()
     self.Button_Monster.OnClicked:Add(self.OnMonsterClick)
     self.Button_Dark.OnClicked:Add(self.OnDarkClick)
     self.Button_Light.OnClicked:Add(self.OnLightClick)
-    print(GameplayStatics.GetPlatformName())
+    --print(GameplayStatics.GetPlatformName())
 end
 
 function UI_Begin:OnOneTwoClick()
@@ -25,7 +26,7 @@ function UI_Begin:OnOneTwoClick()
     StoryOne = true
     StoryTwo = true
     StoryThree = false
-    print("牌库选择1+2")
+    --print("牌库选择1+2")
 end
 
 function UI_Begin:OnTwoThreeClick()
@@ -35,7 +36,7 @@ function UI_Begin:OnTwoThreeClick()
     StoryOne = false
     StoryTwo = true
     StoryThree = true
-    print("牌库选择2+3")
+    --print("牌库选择2+3")
 end
 
 function UI_Begin:OnOneThreeClick()
@@ -45,7 +46,7 @@ function UI_Begin:OnOneThreeClick()
     StoryOne = true
     StoryTwo = false
     StoryThree = true
-    print("牌库选择1+3")
+    --print("牌库选择1+3")
 end
 
 function UI_Begin:OnNormalClick()
@@ -55,7 +56,7 @@ function UI_Begin:OnNormalClick()
     end
     self:PlaySwitch(4)
     self.model = 4
-    print("模式选择：普通模式")
+    --print("模式选择：普通模式")
 end
 
 function UI_Begin:OnMonsterClick()
@@ -63,7 +64,7 @@ function UI_Begin:OnMonsterClick()
     -- local self = UI_Begin
     -- self:PlaySwitch(5)
     -- self.model = 5
-    -- print("模式选择：撒野模式")
+    -- --print("模式选择：撒野模式")
 end
 
 function UI_Begin:OnDarkClick()
@@ -72,8 +73,9 @@ function UI_Begin:OnDarkClick()
         return
     end
     self.bDark = true
+    bEnemyDark = self.bDark
     self:PlaySwitch(7)
-    print("对手暗牌")
+    --print("对手暗牌")
 end
 
 function UI_Begin:OnLightClick()
@@ -82,8 +84,9 @@ function UI_Begin:OnLightClick()
         return
     end
     self.bDark = false
+    bEnemyDark = self.bDark
     self:PlaySwitch(8)
-    print("对手明牌")
+    --print("对手明牌")
 end
 
 function UI_Begin:PlaySwitch(aim)

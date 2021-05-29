@@ -20,7 +20,7 @@ function UIStack:PushUIByName(uiName, param)
         Name = uiName,
         Widget = ui,
     }
-    -- print("创建并打开UI：",uiName, "添加上的UI的层级：", UIStack.Layer)
+    -- --print("创建并打开UI：",uiName, "添加上的UI的层级：", UIStack.Layer)
     return ui
 end
 
