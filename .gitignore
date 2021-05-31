@@ -116,3 +116,7 @@ QianQiu/Binaries/*
 QianQiu/.vs/*
 *.pdb
 *.log
+QianQiu/Build/Android_ASTC/FileOpenOrder/CookerOpenOrder.log
+QianQiu/Build/Android_ASTC/FileOpenOrder/EditorOpenOrder.log
+QianQiu/Build/Android_ASTC/FileOpenOrder/EditorOpenOrder.log
+QianQiu/Build/Android_ASTC/FileOpenOrder/CookerOpenOrder.log
