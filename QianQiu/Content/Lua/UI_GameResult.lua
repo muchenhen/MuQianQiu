@@ -4,6 +4,7 @@ local UI_GameResult = {}
 
 function UI_GameResult:Construct()
     self.Button_More.OnClicked:Add(self.OnMoreClick)
+    self.Button_Restart.OnClicked:Add(self.OnRestartClick)
 end
 
 function UI_GameResult:Initialize()
@@ -40,6 +41,13 @@ end
 function UI_GameResult:OnMoreClick()
     UIStack:PopUIByName("UI_GameResult")
     Reset()
+    CommandMap:DoCommand(CommandList.UIMainReset)
+end
+
+function UI_GameResult:OnRestartClick()
+    UIStack:PopUIByName("UI_GameResult")
+    Reset()
+    CommandMap:DoCommand(CommandList.UIStartRestart)
 end
 
 function UI_GameResult:OnDestroy()

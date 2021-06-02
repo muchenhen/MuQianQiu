@@ -64,4 +64,5 @@ CommandList = {
     SetAllCardsbCanEnemy = "SetAllCardsbCanEnemy",              -- 同上 对手
     GetResultScores = "GetResultScores",                        -- 获取最后的分数
     UIMainReset = "UIMainReset",                                -- 重置UIMain
+    
 }

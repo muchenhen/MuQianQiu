@@ -352,5 +352,4 @@ function Reset()
     --print(t1index)
     --print(t2index)
 
-    CommandMap:DoCommand(CommandList.UIMainReset)
 end
