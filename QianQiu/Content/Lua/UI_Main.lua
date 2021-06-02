@@ -17,6 +17,8 @@ function UI_Main:Initialize()
     -- 第一次的回合展示在玩家卡池初始化动画播放完毕后进行 UI_CardPoolPlayer中
     CommandMap:AddCommand("ShowRound", self, self.ShowRound)
     CommandMap:AddCommand("UIMainReset", self, self.Reset)
+    CommandMap:AddCommand("UIStartRestart", self, self.Restart)
+
 end
 
 -- 展示并切换回合
@@ -71,6 +73,17 @@ function UI_Main:Reset()
         UI_CardPool = self.UI_CardPool
     }
     Enemy:SetData(param)
+end
+
+function UI_Main:Restart()
+    self.round = 0
+    self.UI_CardPoolPlayer:SetVisibility(ESlateVisibility.SelfHitTestInvisible)
+    self.UI_CardPool:Reset()
+    self.UI_CardPoolPlayer:Reset()
+    self.UI_CardPoolEnenmy:Reset()
+    self.UI_Score:Reset()
+    UIStack:PopUIByName("UI_Main")
+    UIStack:PushUIByName("UI_Begin")
 end
 
 return UI_Main

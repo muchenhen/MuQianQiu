@@ -3,6 +3,7 @@ local UI_Begin = {}
 
 function UI_Begin:Initialize()
     --print("牌库选择1+2")
+    self.Button_Begin.OnClicked:Add(self.OnStartClick)
 end
 
 function UI_Begin:Construct()
@@ -87,6 +88,12 @@ function UI_Begin:OnLightClick()
     bEnemyDark = self.bDark
     self:PlaySwitch(8)
     --print("对手明牌")
+end
+
+function UI_Begin:OnStartClick()
+    local self = UI_Begin
+    UIStack:PushUIByName("UI_Main")
+    self:RemoveFromViewport()
 end
 
 function UI_Begin:PlaySwitch(aim)
