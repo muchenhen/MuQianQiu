@@ -65,8 +65,6 @@ EnemySeason = {}
 t1 = {} --牌库1 顺序保存ID
 t2 = {} --牌库2
 FULLt= {}
-t1index = 0 --保存当前发牌到第几张
-t2index = 0
 FULLtIndex = 0
 
 function OpenUI(uiName)
@@ -168,28 +166,8 @@ function FindStory(cardID)
     return cardsName
 end
 
-local CheckCard
-CheckCard = function (CardsID, part, min, max, i)
-    -- math.randomseed(tonumber(tostring(os.time()):reverse():sub(1,7))) -- 设置随机种子
-    -- 在最大值和最小值之间生成一个随机数
-    local temp = math.random(min, max)
-    -- 如果该数字表示的卡还在牌库里（0）就添加进CardsID 并标记为已经发出（1），否则重新生成
-    if part[temp] == 0 then
-        table.insert(CardsID, temp)
-        part[temp] = 1
-        i = i + 1
-        return CardsID,i
-    else
-        return CheckCard(CardsID, part, min, max, i)
-    end
-end
-
-
-
 local function IndexAdd(index)
-    if index < 28 then
-        index = index + 1
-    end
+    index = index + 1
     -- --print(index)
     return index
 end
@@ -238,7 +216,7 @@ function RandomCards(num)
         ShowTip("牌库已空")
         return {[1] = 101}
     end
-    print("随机生成的卡片数量：", num)
+    --print("随机生成的卡片数量：", num)
     if num == 1 then
         FULLtIndex = IndexAdd(FULLtIndex)
         return {[1] = FULLt[FULLtIndex]}
@@ -248,100 +226,33 @@ function RandomCards(num)
         while i <= num do
             FULLtIndex = IndexAdd(FULLtIndex)
             table.insert(CardsID, FULLt[FULLtIndex])
+            --print("卡池新生成卡牌：", Cards[FULLt[FULLtIndex]].Name)
             i = i + 1
         end
+        --print("当前索引位置：", FULLtIndex)
         return CardsID
     end
-    -- if t1index >=28 and t2index >= 28 then
-    --     ShowTip("牌库已空")
-    --     return {[1] = 101}
-    -- end
-    -- print("随机生成的卡片数量：", num)
-    -- if num == 1 then
-    --     local ran = math.random(1,2)
-    --     if ran == 1 then
-    --         if t1index >=28 then
-    --             ran = 2
-    --         end
-    --     elseif ran == 2 then
-    --         if t2index >=28 then
-    --             ran = 1
-    --         end
-    --     end
-    --     if ran == 1 then
-    --         t1index = IndexAdd(t1index)
-    --         print("当前牌库1的索引位置位：",t1index)
-    --         print("当前牌库2的索引位置位：",t2index)
-    --         print("")
-        
-    --         return {[1] = t1[t1index]}
-    --     else
-    --         t2index = IndexAdd(t2index)
-    --         print("当前牌库1的索引位置位：",t1index)
-    --         print("当前牌库2的索引位置位：",t2index)
-    --         print("")
-        
-    --         return {[1] = t2[t2index]}
-    --     end
-    -- else
-    --     local halfPartOne = math.random(1,num)
-    --     local CardsID = {}
-    --     local i = 1
-    --     while i <= halfPartOne do
-    --         t1index = IndexAdd(t1index)
-    --         table.insert( CardsID, t1[t1index])
-    --         i = i + 1
-    --     end
-    --     while i <= num do
-    --         t2index = IndexAdd(t2index)
-    --         table.insert(CardsID, t2[t2index])
-    --         i = i + 1
-    --     end
-    --     print("cardsID数量：", #CardsID)
-    --     print("当前牌库1的索引位置位：",t1index)
-    --     print("当前牌库2的索引位置位：",t2index)
-    --     print("")
-    --     return CardsID
-    -- end
 end
 
 function ChangeCard(cardID)
-    if t1index >=28 and t2index >=28 then
-        --print("牌库已空")
+    if FULLtIndex >= #FULLt then
+        ShowTip("牌库已空")
         return {[1] = 101}
     end
-    local ran = math.random(1,2)
-    if ran == 1 then
-        if t1index >=28 then
-            ran = 2
-        end
-    elseif ran == 2 then
-        if t2index >=28 then
-            ran = 1
-        end
-    end
-    if ran == 1 then
-        -- 从t1中交换一张卡出来
-        local aim = math.random(t1index, 27)
-        local param = {[1] = t1[aim]}
-        t1[aim] = cardID
-        return param
-    else
-        local aim = math.random(t2index, 27)
-        local param = {[1] = t2[aim]}
-        t2[aim] = cardID
-        return param
-    end
+    -- 从Fullt中交换一张卡出来
+    local aim = math.random(FULLtIndex, #FULLt)
+    local param = {[1] = FULLt[aim]}
+    FULLt[aim] = cardID
+    return param
 end
 
 function ShowTip(text)
     local param = {
         text = text,
     }
+    --print(text)
     UIStack:PushUIByName("UI_Tip", param)
 end
-
-
 
 function CheckSeasons(type)
     CommandMap:DoCommand(CommandList.CheckPublicSeason)
@@ -375,9 +286,6 @@ function Reset()
     EnemySeason = {}
     t1 = {} --牌库1 顺序保存ID
     t2 = {} --牌库2
-    t1index = 0 --保存当前发牌到第几张
-    t2index = 0
-    --print(t1index)
-    --print(t2index)
-
+    FULLt= {}
+    FULLtIndex = 0
 end

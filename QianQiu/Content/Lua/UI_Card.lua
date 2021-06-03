@@ -7,20 +7,6 @@ function UI_Card:Initialize()
 end
 
 function UI_Card:Construct()
-    -- 初始化状态
-    -- self.ID = 204
-    -- self.cardState = ECardState.UnChoose -- 选中状态
-    -- self.publicCardState = EPublicCardState.Normal -- 未激活的状态/已经被激活准备被带走的状态
-    -- self.cardOwner = ECardOwner.Player -- 拥有者 公共卡池/玩家/对手
-    -- self.cardPosition = ECardPostion.OnHand -- 所在位置 手中/已经组成故事
-    -- self.cardType = Table.Cards[self.ID].Type -- 卡面类型 用于索引贴图路径
-
-    --#region 卡片的固有属性
-    -- self.season = ECardSeason.Spring -- 卡面属性
-    -- self.value = 4 -- 卡片分数
-    -- self.bSpecial = (Table.Cards[self.ID].Special == 1) -- 是否是特殊卡
-    --#endregion
-
     -- 卡牌点击
     self.Button_Card.OnClicked:Add(self.OnCardClick)
     -- 鼠标经过
@@ -172,7 +158,6 @@ function UI_Card:UpdateSelf(param)
     end
 
     self.cardDetail = Table.Cards[self.ID].Describe
-
 end
 
 function UI_Card:GetID()

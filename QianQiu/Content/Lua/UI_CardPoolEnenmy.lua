@@ -16,6 +16,7 @@ end
 function UI_CardPoolEnenmy:FirstInitCards()
     self.Cards = RandomCards(10)
     local cardsNum = self.HaveCards:GetChildrenCount()
+    local i = 0
     for i = 0, cardsNum-1 do
         local card = self.HaveCards:GetChildAt(i)
         local param = {
@@ -24,6 +25,7 @@ function UI_CardPoolEnenmy:FirstInitCards()
             cardPosition = ECardPostion.OnHand,
         }
         card:UpdateSelf(param)
+        i = i + 1
     end
 end
 

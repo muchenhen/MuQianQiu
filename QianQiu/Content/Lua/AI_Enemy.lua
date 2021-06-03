@@ -35,11 +35,11 @@ function Enemy.Basic:Action()
                 local aimSeason = Table.Cards[ID].Season
                 local poolCards = Enemy.Widgets["UI_CardPool"].HaveCards:GetAllChildren()
                 for key, card in pairs(poolCards) do
-                    --print("对手准备行动中……")
+                    -- --print("对手准备行动中……")
                     local cardID = card.ID
                     --print("AI当前检索到公共卡池卡片ID", cardID, Table.Cards[cardID].Name, Table.Cards[cardID].Season)
                     if card.season == aimSeason then
-                        --print("对手行动！！！")
+                        print("对手行动！！！")
                         --print("对手进牌堆的两张牌是",Table.Cards[ID].Name,Table.Cards[ID].Season,Table.Cards[cardID].Name,Table.Cards[cardID].Season)
                         Enemy.Cards[index] = false
                         local param = {
@@ -59,6 +59,7 @@ function Enemy.Basic:Action()
                     PlayerHaveID = value.UI.ID
                 }
                 CommandMap:DoCommand(CommandList.PopAndPushOneCardForEnemy, param)
+                break
             end
         end
     end
