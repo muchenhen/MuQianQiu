@@ -35,7 +35,7 @@ function math.randomx( m,n,cnt ) -- 生成指定范围内不相同的指定数�
     local tmp = {}
     math.randomseed(tonumber(tostring(os.time()):reverse():sub(1,7)))
     while cnt>0 do
-        local x =math.random(m,n)
+        local x = math.random(m,n)
         if not tmp[x] then
             t[#t+1]=x
             tmp[x]=1
@@ -130,4 +130,23 @@ function Dump(value, depth, key)
     else
         --print(spaces .. linePrefix .. "(" .. type(value) .. ") " .. tostring(value))
     end
+end
+
+
+function Shuffle(_table)
+    -- 判断如果不为table则直接返回 
+    if type(_table)~="table" then
+	   return
+	end
+    local _result = {}
+    local _index = 1
+    while #_table ~= 0 do
+        local ran = math.random(0,#_table)
+        if _table[ran] ~= nil then
+            _result[_index] = _table[ran]
+            table.remove(_table,ran)
+            _index = _index + 1
+        end
+    end
+    return _result
 end
