@@ -17,6 +17,9 @@ function UI_Begin:Construct()
     self.Button_Monster.OnClicked:Add(self.OnMonsterClick)
     self.Button_Dark.OnClicked:Add(self.OnDarkClick)
     self.Button_Light.OnClicked:Add(self.OnLightClick)
+    self.Button_Slience.OnClicked:Add(self.OnSlienceClick)
+    self.Button_Voice.OnClicked:Add(self.OnVoiceClick)
+
     --print(GameplayStatics.GetPlatformName())
 end
 
@@ -57,15 +60,16 @@ function UI_Begin:OnNormalClick()
     end
     self:PlaySwitch(4)
     self.model = 4
-    --print("模式选择：普通模式")
+    bStoryExtra = false
+    print("模式选择：普通模式")
 end
 
 function UI_Begin:OnMonsterClick()
-    ShowTip("暂未开放")
-    -- local self = UI_Begin
-    -- self:PlaySwitch(5)
-    -- self.model = 5
-    -- --print("模式选择：撒野模式")
+    local self = UI_Begin
+    self:PlaySwitch(5)
+    self.model = 5
+    bStoryExtra = true
+    print("模式选择：撒野模式")
 end
 
 function UI_Begin:OnDarkClick()
@@ -92,8 +96,25 @@ end
 
 function UI_Begin:OnStartClick()
     local self = UI_Begin
+    InitAllStory()
     UIStack:PushUIByName("UI_Main")
     self:RemoveFromViewport()
+end
+
+function UI_Begin:OnSlienceClick()
+    local self = UI_Begin
+    if bPlayAudio then
+        bPlayAudio = false
+        self:PlaySwitch(10)
+    end
+end
+
+function UI_Begin:OnVoiceClick()
+    local self = UI_Begin
+    if not bPlayAudio then
+        bPlayAudio = true
+        self:PlaySwitch(9)
+    end
 end
 
 function UI_Begin:PlaySwitch(aim)
@@ -117,6 +138,10 @@ function UI_Begin:PlaySwitch(aim)
         self:PlayAnimation(self.C12, 0, 1, 1, 1, false)
     elseif not self.bDark and aim == 8 then
         self:PlayAnimation(self.C12, 0, 1, 0, 1, false)
+    elseif aim == 9 then
+        self:PlayAnimation(self.D12, 0, 1, 1, 1, false)
+    elseif aim == 10 then
+        self:PlayAnimation(self.D12, 0, 1, 0, 1, false)
     end
 end
 

@@ -80,9 +80,9 @@ end
 function UI_CardHeal:FindAllStory()
     --print("检查是否有故事组合……")
     -- 讲所有需要播放的故事添加到了一个全局缓冲表
-    for i=1,#Table.Story do
-        if Table.Story[i].bHold == nil or (not Table.Story[i].bHold) then
-            local IDs = Table.Story[i].Cards
+    for i=1,#Table.AllStory do
+        if Table.AllStory[i].bHold == nil or (not Table.AllStory[i].bHold) then
+            local IDs = Table.AllStory[i].Cards
             local checkNum = #IDs
             local checkNumber = 0
             for j=1, #IDs do
@@ -96,8 +96,8 @@ function UI_CardHeal:FindAllStory()
                 end
             end
             if checkNum == checkNumber then
-                Table.Story[i].bHold = true
-                self:AddNeedStoryShowList(Table.Story[i])
+                Table.AllStory[i].bHold = true
+                self:AddNeedStoryShowList(Table.AllStory[i])
             end
         end
     end

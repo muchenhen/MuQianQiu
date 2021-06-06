@@ -14,7 +14,7 @@ function UI_StoryShow:Initialize()
         CommandMap:DoCommand(CommandList.SetStoryShowTickEnemy, false)
     end
     self:PlayAnimation(self.ShowIn, 0, 1, 0, 1, false)
-    
+    self.bAutoClose = false
 end
 
 function UI_StoryShow:PlayStoryShowOut()
@@ -29,6 +29,8 @@ function UI_StoryShow:OnAnimationFinished(anim)
         else
             CommandMap:DoCommand(CommandList.SetStoryShowTickEnemy, true)
         end
+    elseif anim == self.ShowIn and self.bAutoClose then
+        self:PlayStoryShowOut()
     end
 end
 
@@ -52,8 +54,10 @@ function UI_StoryShow:UpdateSelf(param)
         card:UpdateSelf(param)
         card:SetPadding(self.CardPadding)
     end
-    if param.Audio then
+    if param.Audio ~= '' and bPlayAudio then
         CommandMap:DoCommand("SetSelfAudioAndPlay", param.Audio)
+    else
+        self.bAutoClose = true
     end
 end
 

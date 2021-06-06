@@ -1,5 +1,7 @@
 require "Table/Card"
 require "Table/Story"
+require "Table/StoryExtra"
+
 require "Functions"
 require "Command"
 require "Enum"
@@ -40,6 +42,8 @@ UI_TEXTURE_PATH = "/Game/Texture/"
 UI_TEXTURE_BACK_PATH = "/Game/Texture/Tex_Card_Back"
 
 bEnemyDark = true
+bStoryExtra = false
+bPlayAudio = true
 
 Table = {}
 
@@ -67,17 +71,36 @@ t2 = {} --牌库2
 FULLt= {}
 FULLtIndex = 0
 
+Table.Cards = Cards
+Table.Story = Story
+Table.StoryExtra = StoryExtra
+Table.AllStory = {}
+Table.TotalCardOne = table.FillNum(StoryOneMin, StoryOneMax)
+Table.TotalCardSecond = table.FillNum(StoryTwoMin, StoryTwoMax)
+Table.TotalCardThird = table.FillNum(StoryThreeMin, StoryThreeMax)
+
 function OpenUI(uiName)
     local ui = slua.loadUI("/Game/UI/" .. ConverUEPath(uiName))
     ui:AddToViewport(10)
     return ui
 end
 
-Table.Cards = Cards
-Table.Story = Story
-Table.TotalCardOne = table.FillNum(StoryOneMin, StoryOneMax)
-Table.TotalCardSecond = table.FillNum(StoryTwoMin, StoryTwoMax)
-Table.TotalCardThird = table.FillNum(StoryThreeMin, StoryThreeMax)
+
+
+function InitAllStory()
+    if bStoryExtra then
+        for key, value in pairs(Table.Story) do
+            Table.AllStory[key] = value
+        end
+        for key, value in pairs(Table.StoryExtra) do
+            Table.AllStory[key] = value
+        end
+    else
+        for key, value in pairs(Table.Story) do
+            Table.AllStory[key] = value
+        end
+    end
+end
 
 FormatEffectDetail = {
     [ESpecialType.CardUp] = function(param)
@@ -91,7 +114,7 @@ FormatEffectDetail = {
     [ESpecialType.StoryUp] = function(param)
         local params = Split(param,';')
         local EffectDetail = ESpecialDetail[ESpecialType.StoryUp]
-        local storyName = Table.Story[tonumber(params[1])].Name
+        local storyName = Table.AllStory[tonumber(params[1])].Name
         EffectDetail = string.gsub(EffectDetail,"${Com}", storyName)
         EffectDetail = string.gsub(EffectDetail,"${Point}", params[2])
         return EffectDetail
@@ -143,7 +166,7 @@ FormatEffectDetail = {
 function FindStory(cardID)
     local cardsName = ''
     local cards = {}
-    for key, value in pairs(Table.Story) do
+    for key, value in pairs(Table.AllStory) do
         local bHasStory = false
         for m,n in pairs(value.Cards) do
             if n == cardID then
