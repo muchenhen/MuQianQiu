@@ -18,12 +18,7 @@ function UI_CardPool:FirstInitCards()
     local cardsNum = self.HaveCards:GetChildrenCount()
     for i = 0, cardsNum-1 do
         local card = self.HaveCards:GetChildAt(i)
-        local param = {
-            ID = self.Cards[i+1],
-            cardOwner = ECardOwner.PublicPool,
-            cardPosition = ECardPostion.OnHand,
-        }
-        card:UpdateSelf(param)
+        card:UpdateSelf(self.Cards[i+1])
     end
 end
 
@@ -96,15 +91,15 @@ function UI_CardPool:ResetPlayerCardUnChoose()
 end
 
 function UI_CardPool:CheckPublicSeason()
-    PublicSeason[ECardSeason.Spring] = false
-    PublicSeason[ECardSeason.Summer] = false
-    PublicSeason[ECardSeason.Autumn] = false
-    PublicSeason[ECardSeason.Winter] = false
-    local cardsNum = self.HaveCards:GetChildrenCount()
-    for i = 0, cardsNum-1 do
-        local card = self.HaveCards:GetChildAt(i)
-        PublicSeason[ESeason[card.season]] = true
-    end
+    PublicSeason[ECardSeason.Spring] = true
+    PublicSeason[ECardSeason.Summer] = true
+    PublicSeason[ECardSeason.Autumn] = true
+    PublicSeason[ECardSeason.Winter] = true
+    -- local cardsNum = self.HaveCards:GetChildrenCount()
+    -- for i = 0, cardsNum-1 do
+    --     local card = self.HaveCards:GetChildAt(i)
+    --     PublicSeason[ESeason[card.season]] = true
+    -- end
 end
 
 function UI_CardPool:Reset()

@@ -2,7 +2,7 @@ require "Functions"
 
 UIStack = {}
 UIStack.Stack = {} -- {[Layer] = {Name =  "uiName", Widget = ui}}
-UIStack.Layer = 1  -- 层级
+UIStack.Layer = 1 -- 层级
 
 function CreateUI(uiName)
     local ui = slua.loadUI("/Game/UI/" .. ConverUEPath(uiName))
@@ -18,7 +18,7 @@ function UIStack:PushUIByName(uiName, param)
     ui:AddToViewport(UIStack.Layer)
     UIStack.Stack[UIStack.Layer] = {
         Name = uiName,
-        Widget = ui,
+        Widget = ui
     }
     -- --print("创建并打开UI：",uiName, "添加上的UI的层级：", UIStack.Layer)
     return ui

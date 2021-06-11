@@ -7,14 +7,14 @@ require "Command"
 require "Enum"
 require "UIStack"
 require "AI_Enemy"
-require("LuaPanda").start("127.0.0.1",8818)
+require("LuaPanda").start("127.0.0.1", 8818)
 GameplayStatics = import("GameplayStatics")
 
 --import function helper
 local importedClsList = {} --cache element as table { cls = class, cnt = number }
 ImportHelper = {}
 local _import = import
-ImportHelper.importClass = function (className)
+ImportHelper.importClass = function(className)
     if importedClsList[className] == nil then
         importedClsList[className] = {cls = _import(className), cnt = 1}
     else
@@ -22,12 +22,12 @@ ImportHelper.importClass = function (className)
     end
     return importedClsList[className].cls
 end
-ImportHelper.clearAllClass = function ()
+ImportHelper.clearAllClass = function()
     importedClsList = {}
 end
-ImportHelper.shrinkClass = function (importedCnt)
+ImportHelper.shrinkClass = function(importedCnt)
     importedCnt = importedCnt or 3
-    for k,v in pairs(importedClsList) do
+    for k, v in pairs(importedClsList) do
         if v.cnt <= importedCnt then
             importedClsList[k] = nil
         else
@@ -46,7 +46,6 @@ bStoryExtra = false
 bPlayAudio = true
 
 Table = {}
-
 
 StoryOne = false
 StoryOneMin = 101
@@ -68,7 +67,7 @@ EnemySeason = {}
 
 t1 = {} --牌库1 顺序保存ID
 t2 = {} --牌库2
-FULLt= {}
+FULLt = {}
 FULLtIndex = 0
 
 Table.Cards = Cards
@@ -84,8 +83,6 @@ function OpenUI(uiName)
     ui:AddToViewport(10)
     return ui
 end
-
-
 
 function InitAllStory()
     if bStoryExtra then
@@ -104,19 +101,19 @@ end
 
 FormatEffectDetail = {
     [ESpecialType.CardUp] = function(param)
-        local params = Split(param,';')
+        local params = Split(param, ";")
         local EffectDetail = ESpecialDetail[ESpecialType.CardUp]
         local cardName = Table.Cards[params[1]].Name
-        EffectDetail = string.gsub(EffectDetail,"${Card}", cardName)
-        EffectDetail = string.gsub(EffectDetail,"${Point}", params[2])
+        EffectDetail = string.gsub(EffectDetail, "${Card}", cardName)
+        EffectDetail = string.gsub(EffectDetail, "${Point}", params[2])
         return EffectDetail
     end,
     [ESpecialType.StoryUp] = function(param)
-        local params = Split(param,';')
+        local params = Split(param, ";")
         local EffectDetail = ESpecialDetail[ESpecialType.StoryUp]
         local storyName = Table.AllStory[tonumber(params[1])].Name
-        EffectDetail = string.gsub(EffectDetail,"${Com}", storyName)
-        EffectDetail = string.gsub(EffectDetail,"${Point}", params[2])
+        EffectDetail = string.gsub(EffectDetail, "${Com}", storyName)
+        EffectDetail = string.gsub(EffectDetail, "${Point}", params[2])
         return EffectDetail
     end,
     [ESpecialType.AllStoryUp] = function(param)
@@ -128,10 +125,10 @@ FormatEffectDetail = {
         return ESpecialDetail[ESpecialType.BanAnyCard]
     end,
     [ESpecialType.BanAimCard] = function(param)
-        local params = Split(param,';')
-        local cardsName = ''
+        local params = Split(param, ";")
+        local cardsName = ""
         for key, value in pairs(params) do
-            cardsName = cardsName .. Table.Cards[value].Name .. ' '
+            cardsName = cardsName .. Table.Cards[value].Name .. " "
         end
         local EffectDetail = ESpecialDetail[ESpecialType.StoryUp]
         EffectDetail = string.gsub(EffectDetail, "${Cards}", cardsName)
@@ -144,10 +141,10 @@ FormatEffectDetail = {
         return ESpecialDetail[ESpecialType.CopyAnyCard]
     end,
     [ESpecialType.ShowCards] = function(param)
-        local params = Split(param,';')
+        local params = Split(param, ";")
         local cardsName = ""
         for key, value in pairs(params) do
-            cardsName = cardsName .. Table.Cards[tonumber(value)].Name .. ' '
+            cardsName = cardsName .. Table.Cards[tonumber(value)].Name .. " "
         end
         local EffectDetail = ESpecialDetail[ESpecialType.ShowCards]
         EffectDetail = string.gsub(EffectDetail, "${Cards}", cardsName)
@@ -155,7 +152,7 @@ FormatEffectDetail = {
     end,
     [ESpecialType.SeeCards] = function(param)
         local EffectDetail = ESpecialDetail[ESpecialType.SeeCards]
-        EffectDetail = string.gsub(EffectDetail,"${Num}", param)
+        EffectDetail = string.gsub(EffectDetail, "${Num}", param)
         return EffectDetail
     end,
     [ESpecialType.BanSwap] = function(param)
@@ -164,25 +161,25 @@ FormatEffectDetail = {
 }
 
 function FindStory(cardID)
-    local cardsName = ''
+    local cardsName = ""
     local cards = {}
     for key, value in pairs(Table.AllStory) do
         local bHasStory = false
-        for m,n in pairs(value.Cards) do
+        for m, n in pairs(value.Cards) do
             if n == cardID then
                 bHasStory = true
             end
         end
         if bHasStory then
-            for m,n in pairs(value.Cards) do
+            for m, n in pairs(value.Cards) do
                 if n ~= cardID then
                     cards[n] = Table.Cards[n].Name
                 end
             end
         end
     end
-    for m,n in pairs(cards) do
-        cardsName = cardsName .. n .. ', '
+    for m, n in pairs(cards) do
+        cardsName = cardsName .. n .. ", "
     end
     cardsName = string.sub(cardsName, 1, -2)
     cardsName = string.sub(cardsName, 1, -2)
@@ -206,7 +203,7 @@ function WashCards()
         oneMax = StoryOneMax
         twoMin = StoryTwoMin
         twoMax = StoryTwoMax
-    elseif StoryOne and StoryThree  then
+    elseif StoryOne and StoryThree then
         oneMin = StoryOneMin
         oneMax = StoryOneMax
         twoMin = StoryThreeMin
@@ -221,14 +218,14 @@ function WashCards()
     t1 = math.randomx(oneMin, oneMax, 28)
     t2 = math.randomx(twoMin, twoMax, 28)
     for key, value in pairs(t1) do
-        FULLt[#FULLt+1] = value
+        FULLt[#FULLt + 1] = value
     end
     for key, value in pairs(t2) do
-        FULLt[#FULLt+1] = value
+        FULLt[#FULLt + 1] = value
     end
     local n = 10
-    while n>=0 do
-    FULLt = Shuffle(FULLt)
+    while n >= 0 do
+        FULLt = Shuffle(FULLt)
         n = n - 1
     end
 end
@@ -271,7 +268,7 @@ end
 
 function ShowTip(text)
     local param = {
-        text = text,
+        text = text
     }
     --print(text)
     UIStack:PushUIByName("UI_Tip", param)
@@ -309,6 +306,6 @@ function Reset()
     EnemySeason = {}
     t1 = {} --牌库1 顺序保存ID
     t2 = {} --牌库2
-    FULLt= {}
+    FULLt = {}
     FULLtIndex = 0
 end

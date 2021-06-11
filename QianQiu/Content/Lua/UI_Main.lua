@@ -4,8 +4,8 @@ local UI_Main = {}
 
 function UI_Main:Initialize()
     self:PlayAnimation(self.ShowIn, 0, 1, 0, 1, false)
-    WashCards()     --洗牌
-    self.UI_CardPool:FirstInitCards()       --第一次初始化公共卡池
+    WashCards() --洗牌
+    self.UI_CardPool:FirstInitCards() --第一次初始化公共卡池
     self.UI_CardPoolPlayer:FirstInitCards() --初次初始化玩家卡池
     self.UI_CardPoolEnenmy:FirstInitCards() --初次初始化敌人卡池
     local param = {
@@ -18,7 +18,7 @@ function UI_Main:Initialize()
     CommandMap:AddCommand("ShowRound", self, self.ShowRound)
     CommandMap:AddCommand("UIMainReset", self, self.Reset)
     CommandMap:AddCommand("UIStartRestart", self, self.Restart)
-
+    CommandMap:AddCommand("SetChooseCardID", self, self.SetChooseCardID)
 end
 
 -- 展示并切换回合
@@ -27,12 +27,12 @@ function UI_Main:ShowRound()
     if self.round < 20 then --20个回合
         local text = ""
         local bCan = true
-        if self.round%2 == 0 then
+        if self.round % 2 == 0 then
             bPlayer = true
             text = "我方回合"
             bCan = CheckSeasons(ECardOwner.Player)
             self.UI_CardPoolPlayer:SetVisibility(ESlateVisibility.SelfHitTestInvisible)
-        elseif self.round%2 == 1 then
+        elseif self.round % 2 == 1 then
             bPlayer = false
             text = "对手回合"
             self.UI_CardPoolPlayer:SetVisibility(ESlateVisibility.HitTestInvisible)
@@ -49,7 +49,7 @@ function UI_Main:ShowRound()
         local scores = CommandMap:DoCommand(CommandList.GetResultScores)
         local param = {
             playerScore = scores.playerScore,
-            enemyScore = scores.enemyScore,
+            enemyScore = scores.enemyScore
         }
         UIStack:PushUIByName("UI_GameResult", param)
     end
@@ -65,8 +65,8 @@ function UI_Main:Reset()
     self.UI_CardPoolEnenmy:Reset()
     self.UI_Score:Reset()
     self:PlayAnimation(self.ShowIn, 0, 1, 0, 1, false)
-    WashCards()     --洗牌
-    self.UI_CardPool:FirstInitCards()       --第一次初始化公共卡池
+    WashCards() --洗牌
+    self.UI_CardPool:FirstInitCards() --第一次初始化公共卡池
     self.UI_CardPoolPlayer:FirstInitCards() --初次初始化玩家卡池
     self.UI_CardPoolEnenmy:FirstInitCards() --初次初始化敌人卡池
     local param = {
@@ -85,6 +85,19 @@ function UI_Main:Restart()
     self.UI_Score:Reset()
     UIStack:PopUIByName("UI_Main")
     UIStack:PushUIByName("UI_Begin")
+end
+
+function UI_Main:SetChooseCardID(ID)
+    local self = UI_Main
+    self.chooseID = ID
+    local playerCards = self.UI_CardPoolPlayer.HaveCards:GetAllChildren()
+    for key, card in pairs(playerCards) do
+        if card.ID ~= self.chooseID then
+            if card.state == ECardState.Choose then
+                card:ChangeChooseState()
+            end
+        end
+    end
 end
 
 return UI_Main

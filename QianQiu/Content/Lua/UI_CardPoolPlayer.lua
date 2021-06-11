@@ -13,7 +13,9 @@ function UI_CardPoolPlayer:Construct()
 end
 
 function UI_CardPoolPlayer:Initialize()
-    
+    for i=0, 9 do
+        self["UI_CardPlayer_C_" .. i]:SetRenderTranslation(self.trans * i)
+    end
 end
 
 function UI_CardPoolPlayer:UpdateChooseState(ID)
@@ -30,7 +32,7 @@ end
 function UI_CardPoolPlayer:GetPlayerChooseID()
     local cards = self.HaveCards:GetAllChildren()
     for key, value in pairs(cards) do
-        local cardID = value:GetID()
+        local cardID = value.ID
         print(cardID,Cards[cardID].Name)
         if value.cardState == ECardState.Choose then
             return cardID
@@ -43,13 +45,7 @@ function UI_CardPoolPlayer:FirstInitCards()
     local cards = self.HaveCards:GetAllChildren()
     local i = 0
     for key, card in pairs(cards) do
-        local param = {
-            ID = self.Cards[i+1], --临时修改为1 原为i+1 用来测试没有对应季节的边界情况
-            cardOwner = ECardOwner.Player,
-            cardPosition = ECardPostion.OnHand,
-            state = ECardState.UnChoose
-        }
-        card:UpdateSelf(param)
+        card:UpdateSelf(self.Cards[i+1])
         card:PlayAnimation(self.PlayUnChoose, 0, 1, 0, 1, false)
         i = i + 1
     end
@@ -111,16 +107,16 @@ function UI_CardPoolPlayer:OnAnimationFinished(anim)
 end
 
 function UI_CardPoolPlayer:CheckPlayerSeason()
-    PlayerSeason[ECardSeason.Spring] = false
-    PlayerSeason[ECardSeason.Summer] = false
-    PlayerSeason[ECardSeason.Autumn] = false
-    PlayerSeason[ECardSeason.Winter] = false
-    local cards = self.HaveCards:GetAllChildren()
-    for key, card in pairs(cards) do
-        if card:GetCardVisibility() ~= ESlateVisibility.Hidden then
-            PlayerSeason[ESeason[card.season]] = true
-        end
-    end
+    PlayerSeason[ECardSeason.Spring] = true
+    PlayerSeason[ECardSeason.Summer] = true
+    PlayerSeason[ECardSeason.Autumn] = true
+    PlayerSeason[ECardSeason.Winter] = true
+    -- local cards = self.HaveCards:GetAllChildren()
+    -- for key, card in pairs(cards) do
+    --     -- if card:GetCardVisibility() ~= ESlateVisibility.Hidden then
+    --         PlayerSeason[ESeason[card.season]] = true
+    --     -- end
+    -- end
 end
 
 function UI_CardPoolPlayer:SetAllCardsbCanPlayer(param)
@@ -134,7 +130,7 @@ end
 function UI_CardPoolPlayer:PrintAllCards()
     local cards = self.HaveCards:GetAllChildren()
     for key, card in pairs(cards) do
-        local cardID = card:GetID()
+        local cardID = card.ID
         print(cardID, Cards[cardID].Name)
     end
 end
