@@ -19,12 +19,7 @@ function UI_CardPoolEnenmy:FirstInitCards()
     local i = 0
     for i = 0, cardsNum-1 do
         local card = self.HaveCards:GetChildAt(i)
-        local param = {
-            ID = self.Cards[i+1], -- 测试Enemy替换卡片
-            cardOwner = ECardOwner.Enemy,
-            cardPosition = ECardPostion.OnHand,
-        }
-        card:UpdateSelf(param)
+        card:UpdateSelf(self.Cards[i+1])
         i = i + 1
     end
 end
@@ -79,8 +74,9 @@ function UI_CardPoolEnenmy:CheckEnemySeason()
     EnemySeason[ECardSeason.Winter] = false
     local cards = self.HaveCards:GetAllChildren()
     for key, card in pairs(cards) do
-        if card:GetCardVisibility() ~= ESlateVisibility.Hidden then
-            EnemySeason[ESeason[card.season]] = true
+        if card:GetVisibility() ~= ESlateVisibility.Hidden then
+            local season = Table.Cards[card.ID].Season
+            EnemySeason[ESeason[season]] = true
         end
     end
 end

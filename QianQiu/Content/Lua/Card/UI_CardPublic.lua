@@ -1,11 +1,12 @@
 local UI_CardPlayer = {}
 
 function UI_CardPlayer:Construct()
-    -- self.Button_Player.OnClicked:Add(self.OnCardClick)
+    self.Button_Public.OnClicked:Add(self.OnCardClick)
 end
 
 function UI_CardPlayer:Initialize()
     self.state = ECardState.UnChoose
+    self.bClick = false
 end
 
 function UI_CardPlayer:UpdateSelf(cardID)
@@ -15,8 +16,12 @@ end
 
 function UI_CardPlayer:OnCardClick()
     local self = UI_CardPlayer
-    self:ChangeChooseState()
+    -- self:ChangeChooseState()
     -- CommandMap:DoCommand("SetChooseCardID", self.ID)
+    if self.bClick then
+        -- CommandMap:DoCommand(CommandList.PopAndPushOneCardForPublic, self.ID)
+        CommandMap:DoCommand("PlayerChooseOneCard", self.ID)
+    end
 end
 
 function UI_CardPlayer:ChangeChooseState()
@@ -24,11 +29,11 @@ function UI_CardPlayer:ChangeChooseState()
     if self.state == ECardState.Choose then
         PlayAnim(self, "Unchoose", true)
         self.state = ECardState.UnChoose
-        UIStack:PopUIByName("UI_CardDetail")
+        self.bClick = false
     elseif self.state == ECardState.UnChoose then
         PlayAnim(self, "Choose", true)
         self.state = ECardState.Choose
-        UIStack:PushUIByName("UI_CardDetail", self.ID)
+        self.bClick = true
     end
 end
 

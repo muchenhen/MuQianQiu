@@ -3,8 +3,8 @@ require "Global"
 local UI_CardPoolPlayer = {}
 
 function UI_CardPoolPlayer:Construct()
-    CommandMap:AddCommand("EnsureJustOneCardChoose",self, self.UpdateChooseState)
-    CommandMap:AddCommand("GetPlayerChooseID",self, self.GetPlayerChooseID)
+    CommandMap:AddCommand("EnsureJustOneCardChoose", self, self.UpdateChooseState)
+    CommandMap:AddCommand("GetPlayerChooseID", self, self.GetPlayerChooseID)
     CommandMap:AddCommand("PopAndPushOneCardForPlayer", self, self.PopAndPushOneCardForPlayer)
     CommandMap:AddCommand("PopOneCardForPlayer", self, self.PopOneCardForPlayer)
     CommandMap:AddCommand("CheckPlayerSeason", self, self.CheckPlayerSeason)
@@ -13,7 +13,7 @@ function UI_CardPoolPlayer:Construct()
 end
 
 function UI_CardPoolPlayer:Initialize()
-    for i=0, 9 do
+    for i = 0, 9 do
         self["UI_CardPlayer_C_" .. i]:SetRenderTranslation(self.trans * i)
     end
 end
@@ -33,7 +33,7 @@ function UI_CardPoolPlayer:GetPlayerChooseID()
     local cards = self.HaveCards:GetAllChildren()
     for key, value in pairs(cards) do
         local cardID = value.ID
-        print(cardID,Cards[cardID].Name)
+        print(cardID, Cards[cardID].Name)
         if value.cardState == ECardState.Choose then
             return cardID
         end
@@ -45,7 +45,7 @@ function UI_CardPoolPlayer:FirstInitCards()
     local cards = self.HaveCards:GetAllChildren()
     local i = 0
     for key, card in pairs(cards) do
-        card:UpdateSelf(self.Cards[i+1])
+        card:UpdateSelf(self.Cards[i + 1])
         card:PlayAnimation(self.PlayUnChoose, 0, 1, 0, 1, false)
         i = i + 1
     end
@@ -53,21 +53,13 @@ function UI_CardPoolPlayer:FirstInitCards()
     --print("玩家卡池初始化完毕")
 end
 
-function UI_CardPoolPlayer:PopOneCardForPlayer(param)
-    local playerHaveID = param.PlayerHaveID
+function UI_CardPoolPlayer:PopOneCardForPlayer()
+    -- local playerHaveID = ID
+    local self = UI_CardPoolPlayer
     local cards = self.HaveCards:GetAllChildren()
     for key, value in pairs(cards) do
-        if value.ID == playerHaveID then
-            -- self.HaveCards:RemoveChild(value)
-            local param = {
-                ID = self.Cards[1], --临时修改为1 原为i+1 用来测试没有对应季节的边界情况
-                cardOwner = ECardOwner.Player,
-                cardPosition = ECardPostion.OnHand,
-                state = ECardState.UnChoose
-            }
-            value:UpdateSelf(param)
-            value:PlayAnimation(value.PlayUnChoose, 0, 1, 0, 1, false)
-            value:SetCardVisibile(ESlateVisibility.Hidden)
+        if value.state == ECardState.Choose then
+            value:SetVisibility(ESlateVisibility.Hidden)
             break
         end
     end
@@ -83,12 +75,12 @@ function UI_CardPoolPlayer:PopAndPushOneCardForPlayer(param)
             local newCardID = ChangeCard(playerHaveID)[1]
             print("玩家用卡牌", Cards[playerHaveID].Name, "交换出了", Cards[newCardID].Name)
             -- print("玩家新生成卡牌：", Cards[newCardID].Name)
-            for i=1, #self.Cards do
+            for i = 1, #self.Cards do
                 if self.Cards[i] == playerHaveID then
                     self.Cards[i] = newCardID
                 end
             end
-            local param  = {
+            local param = {
                 ID = newCardID,
                 cardOwner = ECardOwner.Player,
                 cardPosition = ECardPostion.OnHand,
@@ -107,21 +99,22 @@ function UI_CardPoolPlayer:OnAnimationFinished(anim)
 end
 
 function UI_CardPoolPlayer:CheckPlayerSeason()
-    PlayerSeason[ECardSeason.Spring] = true
-    PlayerSeason[ECardSeason.Summer] = true
-    PlayerSeason[ECardSeason.Autumn] = true
-    PlayerSeason[ECardSeason.Winter] = true
-    -- local cards = self.HaveCards:GetAllChildren()
-    -- for key, card in pairs(cards) do
-    --     -- if card:GetCardVisibility() ~= ESlateVisibility.Hidden then
-    --         PlayerSeason[ESeason[card.season]] = true
-    --     -- end
-    -- end
+    PlayerSeason[ECardSeason.Spring] = false
+    PlayerSeason[ECardSeason.Summer] = false
+    PlayerSeason[ECardSeason.Autumn] = false
+    PlayerSeason[ECardSeason.Winter] = false
+    local cards = self.HaveCards:GetAllChildren()
+    for key, card in pairs(cards) do
+        if card:GetVisibility() ~= ESlateVisibility.Hidden then
+            local season = Table.Cards[card.ID].Season
+            PlayerSeason[ESeason[season]] = true
+        end
+    end
 end
 
 function UI_CardPoolPlayer:SetAllCardsbCanPlayer(param)
     local cardsNum = self.HaveCards:GetChildrenCount()
-    for i = 0, cardsNum-1 do
+    for i = 0, cardsNum - 1 do
         local card = self.HaveCards:GetChildAt(i)
         card:SetbCan(param.bCan)
     end
@@ -138,9 +131,9 @@ end
 function UI_CardPoolPlayer:Reset()
     local cards = self.HaveCards:GetAllChildren()
     for key, value in pairs(cards) do
-        local param  = {
+        local param = {
             cardOwner = ECardOwner.Player,
-            cardPosition = ECardPostion.OnHand,
+            cardPosition = ECardPostion.OnHand
         }
         value:UpdateSelf(param)
         value:SetCardVisibile(ESlateVisibility.SelfHitTestInvisible)

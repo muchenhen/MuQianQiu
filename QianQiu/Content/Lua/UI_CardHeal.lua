@@ -36,32 +36,22 @@ function UI_CardHeal:UpdateHeal(param)
     if self.bPlayerHeal then
         haveCardID = param.PlayerHaveID
         chooseCardID = param.PlayerChooseID
+        CommandMap:DoCommand(CommandList.UpdatePlayerScore, param)
+
     else
         haveCardID = param.EnemyHaveCard
         chooseCardID = param.EnemyChooseID
     end
     table.insert(self.cards, haveCardID)
     table.insert(self.cards, chooseCardID)
-    local card = CreateUI("UI_Card")
-    local param = {
-        ID = haveCardID,
-        cardPosition = ECardPostion.Heal,
-        cardOwner = ECardOwner.Player,
-        state = ECardState.UnChoose,
-    }
-    card:UpdateSelf(param)
+    local card = CreateUI("Card/UI_Card")
+    card:UpdateSelf(haveCardID)
     self.Cards:AddChildToGrid(card, 0, 0)
     card.Slot:SetHorizontalAlignment(self.HorAli)
     card.Slot:SetVerticalAlignment(self.VerAli)
     card = nil
-    card = CreateUI("UI_Card")
-    param = {
-        ID = chooseCardID,
-        cardPosition = ECardPostion.Heal,
-        cardOwner = ECardOwner.Player,
-        state = ECardState.UnChoose,
-    }
-    card:UpdateSelf(param)
+    card = CreateUI("Card/UI_Card")
+    card:UpdateSelf(chooseCardID)
     self.Cards:AddChildToGrid(card, 0, 0)
     card.Slot:SetHorizontalAlignment(self.HorAli)
     card.Slot:SetVerticalAlignment(self.VerAli)

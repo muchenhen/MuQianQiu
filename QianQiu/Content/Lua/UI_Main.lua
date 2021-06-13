@@ -19,6 +19,8 @@ function UI_Main:Initialize()
     CommandMap:AddCommand("UIMainReset", self, self.Reset)
     CommandMap:AddCommand("UIStartRestart", self, self.Restart)
     CommandMap:AddCommand("SetChooseCardID", self, self.SetChooseCardID)
+    CommandMap:AddCommand("PlayerChooseOneCard", self, self.PlayerChooseOneCard)
+    self.bHasScriptImplementedTick = true
 end
 
 -- 展示并切换回合
@@ -89,15 +91,60 @@ end
 
 function UI_Main:SetChooseCardID(ID)
     local self = UI_Main
-    self.chooseID = ID
+    self.playerChooseID = ID
+    print(ID)
+    --#玩家选择一个卡之后将其他的卡设置为未选中
     local playerCards = self.UI_CardPoolPlayer.HaveCards:GetAllChildren()
     for key, card in pairs(playerCards) do
-        if card.ID ~= self.chooseID then
+        if card.ID ~= self.playerChooseID then
             if card.state == ECardState.Choose then
                 card:ChangeChooseState()
             end
         end
     end
+    --#endregion
+    local publicCards = self.UI_CardPool.HaveCards:GetAllChildren()
+    local PlayerSeason = Table.Cards[self.playerChooseID].Season
+    for key, card in pairs(publicCards) do
+        local season = Table.Cards[card.ID].Season
+        if season == PlayerSeason then
+            if card.state == ECardState.UnChoose then
+                card:ChangeChooseState()
+            end
+        else
+            if card.state == ECardState.Choose then
+                card:ChangeChooseState()
+            end
+        end
+    end
+
+    local allPlayerCardUnchoose = true
+    for key, card in pairs(playerCards) do
+        if card.state == ECardState.Choose then
+            allPlayerCardUnchoose = false
+            break
+        end
+    end
+    if allPlayerCardUnchoose then
+        for key, card in pairs(publicCards) do
+            if card.state == ECardState.Choose then
+                card:ChangeChooseState()
+            end
+        end
+    end
+end
+
+function UI_Main:PlayerChooseOneCard(ID)
+    CommandMap:DoCommand(CommandList.PopAndPushOneCardForPublic, ID)
+    CommandMap:DoCommand(CommandList.PopOneCardForPlayer)
+    local param = {
+        PlayerHaveID = self.playerChooseID,
+        PlayerChooseID = ID
+    }
+    CommandMap:DoCommand(CommandList.UpdatePlayerHeal, param)
+end
+
+function UI_Main:Tick()
 end
 
 return UI_Main
