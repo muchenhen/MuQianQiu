@@ -43,6 +43,7 @@ UI_TEXTURE_BACK_PATH = "/Game/Texture/Tex_Card_Back"
 
 bEnemyDark = true
 bStoryExtra = false
+bNormalStory = true
 bPlayAudio = true
 
 Table = {}
@@ -85,15 +86,19 @@ function OpenUI(uiName)
 end
 
 function InitAllStory()
-    if bStoryExtra then
+    if bStoryExtra and bNormalStory then
         for key, value in pairs(Table.Story) do
             Table.AllStory[key] = value
         end
         for key, value in pairs(Table.StoryExtra) do
             Table.AllStory[key] = value
         end
-    else
+    elseif bNormalStory and not bStoryExtra then
         for key, value in pairs(Table.Story) do
+            Table.AllStory[key] = value
+        end
+    elseif bStoryExtra and not bNormalStory then
+        for key, value in pairs(Table.StoryExtra) do
             Table.AllStory[key] = value
         end
     end
@@ -237,21 +242,17 @@ function RandomCards(num)
         return {[1] = 101}
     end
     --print("随机生成的卡片数量：", num)
-    if num == 1 then
+
+    local i = 1
+    local CardsID = {}
+    while i <= num do
         FULLtIndex = IndexAdd(FULLtIndex)
-        return {[1] = FULLt[FULLtIndex]}
-    else
-        local i = 1
-        local CardsID = {}
-        while i <= num do
-            FULLtIndex = IndexAdd(FULLtIndex)
-            table.insert(CardsID, FULLt[FULLtIndex])
-            --print("卡池新生成卡牌：", Cards[FULLt[FULLtIndex]].Name)
-            i = i + 1
-        end
-        --print("当前索引位置：", FULLtIndex)
-        return CardsID
+        table.insert(CardsID, FULLt[FULLtIndex])
+        --print("卡池新生成卡牌：", Cards[FULLt[FULLtIndex]].Name)
+        i = i + 1
     end
+    --print("当前索引位置：", FULLtIndex)
+    return CardsID
 end
 
 function ChangeCard(cardID)

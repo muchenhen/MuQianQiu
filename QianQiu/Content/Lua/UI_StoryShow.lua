@@ -43,15 +43,9 @@ function UI_StoryShow:UpdateSelf(param)
     self.Cards:ClearChildren()
     local cardsID = param.Cards
     for i=1, #cardsID do
-        local card = CreateUI("UI_Card")
-        local param = {
-            ID = cardsID[i],
-            cardPosition = ECardPostion.OnStory,
-            cardOwner = ECardOwner.Player,
-            state = ECardState.UnChoose,
-        }
+        local card = CreateUI("Card/UI_Card")
         self.Cards:AddChild(card)
-        card:UpdateSelf(param)
+        card:UpdateSelf(cardsID[i])
         card:SetPadding(self.CardPadding)
     end
     if param.Audio ~= '' and bPlayAudio then

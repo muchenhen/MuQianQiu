@@ -4,6 +4,9 @@ local UI_Begin = {}
 function UI_Begin:Initialize()
     --print("牌库选择1+2")
     self.Button_Begin.OnClicked:Add(self.OnStartClick)
+    StoryOne = true
+    StoryTwo = true
+    StoryThree = false
 end
 
 function UI_Begin:Construct()
@@ -15,6 +18,7 @@ function UI_Begin:Construct()
     self.Button_OneThree.OnClicked:Add(self.OnOneThreeClick)
     self.Button_Normal.OnClicked:Add(self.OnNormalClick)
     self.Button_Monster.OnClicked:Add(self.OnMonsterClick)
+    self.Button_OnlyMonster.OnClicked:Add(self.OnOnlyMonsterClick)
     self.Button_Dark.OnClicked:Add(self.OnDarkClick)
     self.Button_Light.OnClicked:Add(self.OnLightClick)
     self.Button_Slience.OnClicked:Add(self.OnSlienceClick)
@@ -60,6 +64,7 @@ function UI_Begin:OnNormalClick()
     end
     self:PlaySwitch(4)
     self.model = 4
+    bNormalStory = true
     bStoryExtra = false
     print("模式选择：普通模式")
 end
@@ -68,8 +73,18 @@ function UI_Begin:OnMonsterClick()
     local self = UI_Begin
     self:PlaySwitch(5)
     self.model = 5
+    bNormalStory = true
     bStoryExtra = true
     print("模式选择：撒野模式")
+end
+
+function UI_Begin:OnOnlyMonsterClick()
+    local self = UI_Begin
+    self:PlaySwitch(6)
+    self.model = 6
+    bNormalStory = false
+    bStoryExtra = true
+    print("模式选择：仅撒野模式")
 end
 
 function UI_Begin:OnDarkClick()
@@ -134,6 +149,14 @@ function UI_Begin:PlaySwitch(aim)
         self:PlayAnimation(self.B12, 0, 1, 0, 1, false)
     elseif self.model == 5 and aim == 4 then
         self:PlayAnimation(self.B12, 0, 1, 1, 1, false)
+    elseif self.model == 4 and aim == 6 then
+        self:PlayAnimation(self.B13, 0, 1, 0, 1, false)
+    elseif self.model == 6 and aim == 4 then
+        self:PlayAnimation(self.B13, 0, 1, 1, 1, false)
+    elseif self.model == 5 and aim == 6 then
+        self:PlayAnimation(self.B23, 0, 1, 0, 1, false)
+    elseif self.model == 6 and aim == 5 then
+        self:PlayAnimation(self.B23, 0, 1, 1, 1, false)
     elseif self.bDark and aim == 7 then
         self:PlayAnimation(self.C12, 0, 1, 1, 1, false)
     elseif not self.bDark and aim == 8 then
@@ -146,7 +169,6 @@ function UI_Begin:PlaySwitch(aim)
 end
 
 function UI_Begin:OnDestroy()
-
 end
 
 return UI_Begin

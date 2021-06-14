@@ -29,7 +29,7 @@ function UI_CardPoolEnenmy:PopOneCardForEnemy(param)
     local cards = self.HaveCards:GetAllChildren()
     for key, value in pairs(cards) do
         if value.ID == enemyHaveCard then
-            value:SetCardVisibile(ESlateVisibility.Hidden)
+            value:SetVisibility(ESlateVisibility.Hidden)
             break
         end
     end
@@ -46,7 +46,7 @@ function UI_CardPoolEnenmy:PopAndPushOneCardForEnemy(param)
     local playerHaveID = param.PlayerHaveID
     local cards = self.HaveCards:GetAllChildren()
     for key, card in pairs(cards) do
-        local cardVisibility = card:GetCardVisibility()
+        local cardVisibility = card:GetVisibility()
         if card.ID == playerHaveID and cardVisibility ~= ESlateVisibility.Hidden then
             local newCardID = ChangeCard(playerHaveID)[1]
             --print("对手用卡牌", Cards[playerHaveID].Name, Cards[playerHaveID].Season, "交换出了", Cards[newCardID].Name, Cards[newCardID].Season)
@@ -55,12 +55,7 @@ function UI_CardPoolEnenmy:PopAndPushOneCardForEnemy(param)
                     self.Cards[i] = newCardID
                 end
             end
-            local param  = {
-                ID = newCardID,
-                cardOwner = ECardOwner.Player,
-                cardPosition = ECardPostion.OnHand,
-            }
-            card:UpdateSelf(param)
+            card:UpdateSelf(newCardID)
             Enemy.Basic:Action()
             break
         end

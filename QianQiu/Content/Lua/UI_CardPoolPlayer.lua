@@ -3,7 +3,6 @@ require "Global"
 local UI_CardPoolPlayer = {}
 
 function UI_CardPoolPlayer:Construct()
-    CommandMap:AddCommand("EnsureJustOneCardChoose", self, self.UpdateChooseState)
     CommandMap:AddCommand("GetPlayerChooseID", self, self.GetPlayerChooseID)
     CommandMap:AddCommand("PopAndPushOneCardForPlayer", self, self.PopAndPushOneCardForPlayer)
     CommandMap:AddCommand("PopOneCardForPlayer", self, self.PopOneCardForPlayer)
@@ -15,17 +14,6 @@ end
 function UI_CardPoolPlayer:Initialize()
     for i = 0, 9 do
         self["UI_CardPlayer_C_" .. i]:SetRenderTranslation(self.trans * i)
-    end
-end
-
-function UI_CardPoolPlayer:UpdateChooseState(ID)
-    local cards = self.HaveCards:GetAllChildren()
-    for key, card in pairs(cards) do
-        local cardID = card:GetID()
-        if ID ~= cardID and card.cardState == ECardState.Choose then
-            card:PlayAnimation(card.PlayDown, 0, 1, 0, 1, false)
-            card:SetChooseState(ECardState.UnChoose)
-        end
     end
 end
 
@@ -65,11 +53,11 @@ function UI_CardPoolPlayer:PopOneCardForPlayer()
     end
 end
 
-function UI_CardPoolPlayer:PopAndPushOneCardForPlayer(param)
-    local playerHaveID = param.PlayerHaveID
+function UI_CardPoolPlayer:PopAndPushOneCardForPlayer(ID)
+    local playerHaveID = ID
     local cards = self.HaveCards:GetAllChildren()
     for key, card in pairs(cards) do
-        local cardVisibility = card:GetCardVisibility()
+        local cardVisibility = card:GetVisibility()
         card.cardState = ECardState.Choose
         if card.ID == playerHaveID and cardVisibility ~= ESlateVisibility.Hidden then
             local newCardID = ChangeCard(playerHaveID)[1]
@@ -80,13 +68,11 @@ function UI_CardPoolPlayer:PopAndPushOneCardForPlayer(param)
                     self.Cards[i] = newCardID
                 end
             end
-            local param = {
-                ID = newCardID,
-                cardOwner = ECardOwner.Player,
-                cardPosition = ECardPostion.OnHand,
-                state = ECardState.UnChoose
-            }
-            card:UpdateSelf(param)
+            card:UpdateSelf(newCardID)
+            if CheckSeasons(ECardOwner.Player) then
+                UIStack:PopUIByName("UI_StaticTip")
+                CommandMap:DoCommand(CommandList.SetAllCardsbCanPlayer, true)
+            end
             break
         end
     end
@@ -112,11 +98,11 @@ function UI_CardPoolPlayer:CheckPlayerSeason()
     end
 end
 
-function UI_CardPoolPlayer:SetAllCardsbCanPlayer(param)
+function UI_CardPoolPlayer:SetAllCardsbCanPlayer(bCan)
     local cardsNum = self.HaveCards:GetChildrenCount()
     for i = 0, cardsNum - 1 do
         local card = self.HaveCards:GetChildAt(i)
-        card:SetbCan(param.bCan)
+        card:SetbCan(bCan)
     end
 end
 

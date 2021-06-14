@@ -25,7 +25,7 @@ end
 
 -- 展示并切换回合
 function UI_Main:ShowRound()
-    CommandMap:DoCommand("PrintAllCards")
+    -- CommandMap:DoCommand("PrintAllCards")
     if self.round < 20 then --20个回合
         local text = ""
         local bCan = true

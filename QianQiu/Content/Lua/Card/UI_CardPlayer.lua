@@ -6,7 +6,7 @@ end
 
 function UI_CardPlayer:Initialize()
     self.state = ECardState.UnChoose
-
+    self.bCan = true
 end
 
 function UI_CardPlayer:UpdateSelf(cardID)
@@ -16,8 +16,12 @@ end
 
 function UI_CardPlayer:OnCardClick()
     local self = UI_CardPlayer
-    self:ChangeChooseState()
-    CommandMap:DoCommand("SetChooseCardID", self.ID)
+    if self.bCan then
+        self:ChangeChooseState()
+        CommandMap:DoCommand("SetChooseCardID", self.ID)
+    else
+        CommandMap:DoCommand(CommandList.PopAndPushOneCardForPlayer, self.ID)
+    end
 end
 
 function UI_CardPlayer:ChangeChooseState()
@@ -29,6 +33,10 @@ function UI_CardPlayer:ChangeChooseState()
         PlayAnim(self, "Choose", true)
         self.state = ECardState.Choose
     end
+end
+
+function UI_CardPlayer:SetbCan(bCan)
+    self.bCan = bCan
 end
 
 function UI_CardPlayer:OnDestroy()

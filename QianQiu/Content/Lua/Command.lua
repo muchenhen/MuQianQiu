@@ -41,7 +41,6 @@ function CommandMap:DoCommand(key, param)
 end
 
 CommandList = {
-    EnsureJustOneCardChoose = "EnsureJustOneCardChoose", -- 玩家每次选择卡片时确认只有一张卡片被选择
     OnPlayerCardChoose = "OnPlayerCardChoose", -- 当玩家选择一张卡片之后 卡池中对应的属性的牌也被选中
     OnPlayerCardUnchoose = "OnPlayerCardUnchoose", -- 玩家手牌取消选择后 卡池中对应的牌也取消选择
     GetPlayerChooseID = "GetPlayerChooseID", -- 获得玩家当前选择的卡片的ID

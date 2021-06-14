@@ -18,10 +18,7 @@ function UI_Round:OnAnimationFinished(anim)
         else
             if not self.bCan then
                 UIStack:PushUIByName("UI_StaticTip")
-                local param = {
-                    bCan = false
-                }
-                CommandMap:DoCommand(CommandList.SetAllCardsbCanPlayer, param)
+                CommandMap:DoCommand(CommandList.SetAllCardsbCanPlayer, false)
             end
         end
         self:RemoveFromParent()

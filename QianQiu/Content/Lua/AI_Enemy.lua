@@ -37,8 +37,9 @@ function Enemy.Basic:Action()
                 for key, card in pairs(poolCards) do
                     -- --print("对手准备行动中……")
                     local cardID = card.ID
+                    local cardSeason = Table.Cards[cardID].Season
                     --print("AI当前检索到公共卡池卡片ID", cardID, Table.Cards[cardID].Name, Table.Cards[cardID].Season)
-                    if card.season == aimSeason then
+                    if cardSeason == aimSeason then
                         print("对手行动！！！")
                         --print("对手进牌堆的两张牌是",Table.Cards[ID].Name,Table.Cards[ID].Season,Table.Cards[cardID].Name,Table.Cards[cardID].Season)
                         Enemy.Cards[index] = false
@@ -47,7 +48,7 @@ function Enemy.Basic:Action()
                             EnemyChooseID = card.ID,
                         }
                         CommandMap:DoCommand(CommandList.PopOneCardForEnemy,param)
-                        CommandMap:DoCommand(CommandList.PopAndPushOneCardForPublic,param)
+                        CommandMap:DoCommand(CommandList.PopAndPushOneCardForPublic,card.ID)
                         CommandMap:DoCommand(CommandList.UpdateEnemyScore,param)
                         CommandMap:DoCommand(CommandList.UpdateEnemyHeal, param)
                         --print("对手行动完毕。")
