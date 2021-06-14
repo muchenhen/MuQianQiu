@@ -79,12 +79,7 @@ end
 function UI_CardPoolEnenmy:Reset()
     local cards = self.HaveCards:GetAllChildren()
     for key, value in pairs(cards) do
-        local param  = {
-            cardOwner = ECardOwner.Enemy,
-            cardPosition = ECardPostion.OnHand,
-        }
-        value:UpdateSelf(param)
-        value:SetCardVisibile(ESlateVisibility.SelfHitTestInvisible)
+        value:SetVisibility(ESlateVisibility.SelfHitTestInvisible)
     end
 end
 
