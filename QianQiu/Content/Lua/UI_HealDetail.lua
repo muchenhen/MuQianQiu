@@ -10,19 +10,15 @@ function UI_HealDetail:Construct()
 end
 
 function UI_HealDetail:Initialize()
-    for i = 1, 20 do
-        self["UI_Card_" .. i]:SetVisibility(ESlateVisibility.Collapsed)
-    end
     self:PlayAnimation(self.ShowIn, 0, 1, 0, 1, false)
+    self.bCreateFinish = false
+    self.bCreateCanFinish = false
 end
 
-function UI_HealDetail:UpdateSelf(cards)
-    if next(cards) then
-        for i = 1, #cards do
-            self["UI_Card_" .. i]:SetVisibility(ESlateVisibility.Visible)
-            self["UI_Card_" .. i]:UpdateSelf(cards[i])
-        end
-    end
+function UI_HealDetail:UpdateSelf(param)
+    self.cards = param.cards
+    self.bPlayerHeal = param.bPlayerHeal
+    self.UI_HealCards:UpdateHealHaveCards(self.cards)
 end
 
 function UI_HealDetail:OnCloseClick()
@@ -30,18 +26,30 @@ function UI_HealDetail:OnCloseClick()
 end
 
 function UI_HealDetail:OnFinish()
-    ShowTip("暂未开发")
+    local self = UI_HealDetail
+    self.HealDetailSwitcher:SetActiveWidget(self.UI_FinishedStory)
+    if not self.bCreateFinish then
+        self.UI_FinishedStory:UpdateFinishedStory(self.bPlayerHeal)
+        self.bCreateFinish = true
+    end
 end
 
 function UI_HealDetail:OnFinding()
-    ShowTip("暂未开发")
+    local self = UI_HealDetail
+    self.HealDetailSwitcher:SetActiveWidget(self.UI_CanFinishStory)
+    if not self.bCreateCanFinish then
+        self.UI_CanFinishStory:UpdateCanFinishCards(self.bPlayerHeal, self.cards)
+        self.bCreateCanFinish = true
+    end
 end
 
 function UI_HealDetail:OnHaveCards()
-    ShowTip("暂未开发")
+    local self = UI_HealDetail
+    self.HealDetailSwitcher:SetActiveWidget(self.UI_HealCards)
 end
 
 function UI_HealDetail:OnDestroy()
+    self.bCreateFinish = false
 end
 
 function UI_HealDetail:OnAnimationFinished(anim)

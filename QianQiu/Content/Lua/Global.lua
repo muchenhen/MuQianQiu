@@ -71,6 +71,12 @@ t2 = {} --牌库2
 FULLt = {}
 FULLtIndex = 0
 
+PlayerFinishStories = {}
+EnemyFinishStories = {}
+
+PlayerHealCards = {}
+EnemyHealCards = {}
+
 Table.Cards = Cards
 Table.Story = Story
 Table.StoryExtra = StoryExtra
@@ -294,6 +300,25 @@ function CheckSeasons(type)
                 if PlayerSeason[key] then
                     return true
                 end
+            end
+        end
+        return false
+    end
+end
+
+-- 确认玩家或者对手牌堆中有没有指定的牌
+function CheckIsHaveThisCardInHeal(bPlayer, cardID)
+    if bPlayer then
+        for key, value in pairs(PlayerHealCards) do
+            if value == cardID then
+                return true
+            end
+        end
+        return false
+    else
+        for key, value in pairs(EnemyHealCards) do
+            if value == cardID then
+                return true
             end
         end
         return false
