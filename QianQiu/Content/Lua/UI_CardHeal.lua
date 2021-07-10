@@ -106,7 +106,7 @@ function UI_CardHeal:OnHealDetailClick()
         cards = self.cards,
         bPlayerHeal = self.bPlayerHeal
     }
-    UIStack:PushUIByName("UI_HealDetail", param)
+    UIStack:PushUIByName("CardHeal/UI_HealDetail", param)
 end
 
 function UI_CardHeal:AddNeedStoryShowList(story)

@@ -112,7 +112,7 @@ end
 function UI_Begin:OnStartClick()
     local self = UI_Begin
     InitAllStory()
-    UIStack:PushUIByName("UI_Main")
+    UIStack:PushUIByName("Main/UI_Main")
     self:RemoveFromViewport()
 end
 

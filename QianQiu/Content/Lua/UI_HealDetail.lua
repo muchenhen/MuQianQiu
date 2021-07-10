@@ -22,7 +22,8 @@ function UI_HealDetail:UpdateSelf(param)
 end
 
 function UI_HealDetail:OnCloseClick()
-    UIStack:PopUIByName("UI_HealDetail", true)
+    print("??????")
+    UIStack:PopUIByName("CardHeal/UI_HealDetail")
 end
 
 function UI_HealDetail:OnFinish()

@@ -86,7 +86,7 @@ function UI_Main:Restart()
     self.UI_CardPoolEnenmy:Reset()
     self.UI_Score:Reset()
     UIStack:PopUIByName("UI_Main")
-    UIStack:PushUIByName("UI_Begin")
+    UIStack:PushUIByName("Main/UI_Begin")
 end
 
 function UI_Main:SetChooseCardID(ID)
