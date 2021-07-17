@@ -7,9 +7,10 @@ function CommandMap:AddCommand(key, widget, func)
         func = func
     }
     if not CommandMap.FuncMap[key] then
-    -- --print("Add One Command:",key)
+        -- --print("Add One Command:",key)
+        CommandMap.FuncMap[key] = {}
     end
-    CommandMap.FuncMap[key] = value
+    CommandMap.FuncMap[key][#CommandMap.FuncMap[key] + 1] = value
 end
 
 function CommandMap:DoCommand(key, param)
@@ -18,23 +19,25 @@ function CommandMap:DoCommand(key, param)
         return
     end
     if CommandMap.FuncMap[key] then
-        local widget = CommandMap.FuncMap[key].widget
-        local func = CommandMap.FuncMap[key].func
-        if not widget then
-            error("Can not find this widget:")
-        end
-        if not func then
-            error("Can not find this function:" .. key)
-        end
-        if not param then
-            local re = func(widget)
-            if re then
-                return re
+        for key, value in pairs(CommandMap.FuncMap[key]) do
+            local widget = value.widget
+            local func = value.func
+            if not widget then
+                error("Can not find this widget:")
             end
-        else
-            local re = func(widget, param)
-            if re then
-                return re
+            if not func then
+                error("Can not find this function:" .. key)
+            end
+            if not param then
+                local re = func(widget)
+                if re then
+                    return re
+                end
+            else
+                local re = func(widget, param)
+                if re then
+                    return re
+                end
             end
         end
     end

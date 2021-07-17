@@ -7,6 +7,7 @@ end
 function UI_CardPlayer:Initialize()
     self.state = ECardState.UnChoose
     self.bClick = false
+    self.bCanTake = false -- 当前玩家有没有选择任何一张卡
 end
 
 function UI_CardPlayer:UpdateSelf(cardID)
@@ -16,10 +17,7 @@ end
 
 function UI_CardPlayer:OnCardClick()
     local self = UI_CardPlayer
-    -- self:ChangeChooseState()
-    -- CommandMap:DoCommand("SetChooseCardID", self.ID)
     if self.bClick then
-        -- CommandMap:DoCommand(CommandList.PopAndPushOneCardForPublic, self.ID)
         CommandMap:DoCommand("PlayerChooseOneCard", self.ID)
     end
 end

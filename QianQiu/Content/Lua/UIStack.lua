@@ -39,6 +39,7 @@ function UIStack:PopUIByName(uiName)
                 end
                 value.Widget:Destruct()
                 UIStack.Stack[key] = nil
+                UIStack.Layer = UIStack.Layer - 1
             end
         end
     end
