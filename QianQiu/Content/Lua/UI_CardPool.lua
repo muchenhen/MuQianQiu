@@ -6,8 +6,6 @@ function UI_CardPool:Initialize()
 end
 
 function UI_CardPool:Construct()
-    CommandMap:AddCommand("OnPlayerCardChoose", self, self.OnCardChoose)
-    CommandMap:AddCommand("OnPlayerCardUnchoose", self, self.OnCardUnchoose)
     CommandMap:AddCommand("ResetPlayerCardUnChoose", self, self.ResetPlayerCardUnChoose)
     CommandMap:AddCommand("PopAndPushOneCardForPublic", self, self.PopAndPushOneCardForPublic)
     CommandMap:AddCommand("CheckPublicSeason", self, self.CheckPublicSeason)
@@ -19,39 +17,6 @@ function UI_CardPool:FirstInitCards()
     for i = 0, cardsNum - 1 do
         local card = self.HaveCards:GetChildAt(i)
         card:UpdateSelf(self.Cards[i + 1])
-    end
-end
-
-function UI_CardPool:OnCardChoose(cardID)
-    local cardsNum = self.HaveCards:GetChildrenCount()
-    for i = 1, #self.Cards do
-        if Table.Cards[self.Cards[i]].Season == Table.Cards[cardID].Season then
-            for j = 0, cardsNum - 1 do
-                local card = self.HaveCards:GetChildAt(j)
-                if card:GetID() == self.Cards[i] then
-                    card:PlayAnimation(card.PlayerHovered, 0, 1, 0, 1, false)
-                    -- card:SetVisibility(ESlateVisibility.HitTestInvisible)
-                    card.Img_CardChoose:SetVisibility(ESlateVisibility.HitTestInvisible)
-                end
-            end
-        end
-    end
-end
-
-function UI_CardPool:OnCardUnchoose(cardID)
-    local cardsNum = self.HaveCards:GetChildrenCount()
-    for i = 1, #self.Cards do
-        if Table.Cards[self.Cards[i]].Season == Table.Cards[cardID].Season then
-            for j = 0, cardsNum - 1 do
-                local card = self.HaveCards:GetChildAt(j)
-                if card:GetID() == self.Cards[i] then
-                    card:PlayAnimation(card.PlayerUnhovered, 0, 1, 0, 1, false)
-                    card.cardState = ECardState.UnChoose
-                    -- card:SetVisibility(ESlateVisibility.SelfHitTestInvisible)
-                    card.Img_CardChoose:SetVisibility(ESlateVisibility.Collapsed)
-                end
-            end
-        end
     end
 end
 

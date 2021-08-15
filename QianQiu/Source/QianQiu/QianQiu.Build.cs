@@ -8,7 +8,7 @@ public class QianQiu : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "WebSockets" });
 		PrivateDependencyModuleNames.AddRange(new string[] { "slua_unreal", "Slate", "SlateCore", "UMG" });
 		PrivateIncludePathModuleNames.AddRange(new string[] { "slua_unreal" });
 		PublicIncludePathModuleNames.AddRange(new string[] { "slua_unreal" });
