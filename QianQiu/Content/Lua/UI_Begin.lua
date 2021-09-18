@@ -1,5 +1,4 @@
-require "Global"
-local UI_Begin = {}
+local UI_Begin = ui("UI_Begin")
 
 function UI_Begin:Initialize()
     --print("牌库选择1+2")

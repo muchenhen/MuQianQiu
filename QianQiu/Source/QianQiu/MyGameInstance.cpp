@@ -57,6 +57,7 @@ void UMyGameInstance::Init()
 
 		return MoveTemp(Content);
 		});
+	state.doFile("LuaMain");
 }
 
 void UMyGameInstance::Shutdown()

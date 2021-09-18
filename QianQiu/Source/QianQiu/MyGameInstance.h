@@ -24,7 +24,7 @@ public:
 	virtual void Shutdown() override;
 
 	UFUNCTION()
-		void LuaStateInitCallback();
+	void LuaStateInitCallback();
 
 	// create global state, freed on app exit
 	NS_SLUA::LuaState state;

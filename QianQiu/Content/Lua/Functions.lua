@@ -61,14 +61,7 @@ function LoadObject(path, className)
     return slua.loadObject(path)
 end
 
-function ConverUEPath(path)
-    if path:find("%.") == nil then
-        local fileName = LastStringBySeparator(path, "/")
-        return string.format("%s.%s", path, fileName)
-    else
-        return path
-    end
-end
+
 
 function Split(szFullString, szSeparator)
     local nFindStartIndex = 1
