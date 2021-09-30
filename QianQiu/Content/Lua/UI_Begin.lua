@@ -27,7 +27,6 @@ function UI_Begin:Construct()
 end
 
 function UI_Begin:OnOneTwoClick()
-    local self = UI_Begin
     self:PlaySwitch(1)
     self.currSwitch = 1
     StoryOne = true
@@ -37,7 +36,6 @@ function UI_Begin:OnOneTwoClick()
 end
 
 function UI_Begin:OnTwoThreeClick()
-    local self = UI_Begin
     self:PlaySwitch(2)
     self.currSwitch = 2
     StoryOne = false
@@ -47,7 +45,6 @@ function UI_Begin:OnTwoThreeClick()
 end
 
 function UI_Begin:OnOneThreeClick()
-    local self = UI_Begin
     self:PlaySwitch(3)
     self.currSwitch = 3
     StoryOne = true
@@ -57,7 +54,6 @@ function UI_Begin:OnOneThreeClick()
 end
 
 function UI_Begin:OnNormalClick()
-    local self = UI_Begin
     if self.model == 4 then
         return
     end
@@ -69,7 +65,6 @@ function UI_Begin:OnNormalClick()
 end
 
 function UI_Begin:OnMonsterClick()
-    local self = UI_Begin
     self:PlaySwitch(5)
     self.model = 5
     bNormalStory = true
@@ -78,7 +73,6 @@ function UI_Begin:OnMonsterClick()
 end
 
 function UI_Begin:OnOnlyMonsterClick()
-    local self = UI_Begin
     self:PlaySwitch(6)
     self.model = 6
     bNormalStory = false
@@ -87,7 +81,6 @@ function UI_Begin:OnOnlyMonsterClick()
 end
 
 function UI_Begin:OnDarkClick()
-    local self = UI_Begin
     if self.bDark then
         return
     end
@@ -98,7 +91,6 @@ function UI_Begin:OnDarkClick()
 end
 
 function UI_Begin:OnLightClick()
-    local self = UI_Begin
     if not self.bDark then
         return
     end
@@ -109,14 +101,12 @@ function UI_Begin:OnLightClick()
 end
 
 function UI_Begin:OnStartClick()
-    local self = UI_Begin
     InitAllStory()
     UIStack:PushUIByName("Main/UI_Main")
     self:RemoveFromViewport()
 end
 
 function UI_Begin:OnSlienceClick()
-    local self = UI_Begin
     if bPlayAudio then
         bPlayAudio = false
         self:PlaySwitch(10)
@@ -124,7 +114,6 @@ function UI_Begin:OnSlienceClick()
 end
 
 function UI_Begin:OnVoiceClick()
-    local self = UI_Begin
     if not bPlayAudio then
         bPlayAudio = true
         self:PlaySwitch(9)

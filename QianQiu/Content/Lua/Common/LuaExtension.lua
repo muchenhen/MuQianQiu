@@ -31,5 +31,22 @@ function ui(uiName)
     return class(uiName, require("Common/UIBase"))
 end
 
-_ENV.ui = ui
-_G.ui = ui
+local weakmeta = {__mode = "v"}
+function MakeCallBack(callBack, ...)
+    local parameters = setmetatable({...}, weakmeta)
+    local handle = {}
+    function handle:getParam()
+    	return parameters
+    end
+    local len_p = table.maxn(parameters)
+    local function f(...)
+        local args = {...}
+        local len_a = table.maxn(args)
+        for i = 1, len_a do
+            parameters[i+len_p] = args[i]
+        end        
+        handle.result = callBack(table.unpack(parameters, 1, len_p+len_a))
+        return handle.result
+    end
+    return f, handle
+end
