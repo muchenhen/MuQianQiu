@@ -8,7 +8,6 @@ require "Enum"
 require "UIStack"
 require "AI_Enemy"
 require "Manager/NetManager"
-require("LuaPanda").start("127.0.0.1", 8818)
 GameplayStatics = import("GameplayStatics")
 
 --import function helper

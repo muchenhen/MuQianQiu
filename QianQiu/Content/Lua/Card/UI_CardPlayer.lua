@@ -19,6 +19,7 @@ function UI_CardPlayer:OnCardClick()
     if self.bCan then
         self:ChangeChooseState()
         CommandMap:DoCommand(CommandList.PlayerTryToChoose, self.ID)        
+        CommandMap:DoCommand("SetChooseCardID", self.ID)        
     else
         CommandMap:DoCommand(CommandList.PopAndPushOneCardForPlayer, self.ID)
     end

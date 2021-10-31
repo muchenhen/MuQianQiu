@@ -1,5 +1,4 @@
-require "Global"
-local UI_StoryShow = {}
+local UI_StoryShow = ui("UI_StoryShow")
 
 function UI_StoryShow:Construct()
 
@@ -13,12 +12,15 @@ function UI_StoryShow:Initialize()
     else
         CommandMap:DoCommand(CommandList.SetStoryShowTickEnemy, false)
     end
-    self:PlayAnimation(self.ShowIn, 0, 1, 0, 1, false)
+    self:PlayAnim(self.ShowIn)
     self.bAutoClose = false
 end
 
 function UI_StoryShow:PlayStoryShowOut()
-    self:PlayAnimation(self.ShowOut, 0, 1, 0, 1, false)
+    if not self.ShowOut then
+        print(self.ShowOut)
+    end
+    self:PlayAnim(self.ShowOut)
 end
 
 function UI_StoryShow:OnAnimationFinished(anim)
