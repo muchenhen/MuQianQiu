@@ -46,6 +46,37 @@ namespace NS_SLUA {
 			IF_RPC,
 		};
 
+		static TMap<const char*, LuaVar> MetaTables;
+
+		//LuaVar GetMetaTable(const char* TypeName, lua_State* L)
+		//{
+		//	LuaVar Res;
+		//	if (MetaTables.Contains(TypeName))
+		//	{
+		//		Res = MetaTables[TypeName];
+		//		if (Res.isValid())
+		//		{
+		//			return Res;
+		//		}
+		//		else
+		//		{
+		//			MetaTables.Remove(TypeName);
+		//		}
+		//	}
+
+		//	luaL_newmetatable(L, TypeName);
+		//	lua_pushcfunction(L, LuaBase::__index);
+		//	lua_setfield(L, -2, "__index");
+		//	lua_pushcfunction(L, LuaBase::__newindex);
+		//	lua_setfield(L, -2, "__newindex");
+		//	Res.set(L, -1);
+		//	lua_pop(L, 1);
+
+		//	MetaTables.Add(TypeName, Res);
+
+		//	return Res;
+		//}
+
 		virtual bool luaImplemented(UFunction* func, void* params);
 		virtual ~LuaBase() {}
 
