@@ -1,0 +1,11 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UE4Editor-RiderLink-Win64-DebugGame.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"C:\Users\MuChenhen\Documents\GitHub\MuQianQiu\QianQiu\Plugins\Developer\RiderLink\Intermediate\Build\Win64\UE4Editor\DebugGame\RiderLink\Module.RiderLink.cpp.obj"
+"C:\Users\MuChenhen\Documents\GitHub\MuQianQiu\QianQiu\Plugins\Developer\RiderLink\Intermediate\Build\Win64\UE4Editor\DebugGame\RiderLink\Default.rc2.res"
+/OUT:"C:\Users\MuChenhen\Documents\GitHub\MuQianQiu\QianQiu\Plugins\Developer\RiderLink\Intermediate\Build\Win64\UE4Editor\DebugGame\RiderLink\UE4Editor-RiderLink-Win64-DebugGame.lib"
