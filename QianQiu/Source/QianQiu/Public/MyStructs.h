@@ -7,20 +7,10 @@
 #include "Engine/DataTable.h"
 #include "MyStructs.generated.h"
 
-/**
- * 
- */
-UCLASS()
-class QIANQIU_API UMyStructs : public UObject
+USTRUCT(Blueprintable, BlueprintType)
+struct QIANQIU_API FCardData : public FTableRowBase
 {
 	GENERATED_BODY()
-	
-};
-
-USTRUCT(BlueprintType)
-struct FCardData : public FTableRowBase
-{
-	GENERATED_USTRUCT_BODY()
 
 public:
 	UPROPERTY(EditAnywhere, DisplayName = "卡面ID")

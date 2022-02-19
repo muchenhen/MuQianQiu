@@ -5,5 +5,22 @@
 
 void UCardManager::LoadCardData()
 {
-	auto CardTable = LoadObject<UDataTable>(nullptr, UTF8_TO_TCHAR("DataTable'/Game/Tables/TB_Cards.TB_Cards'"));
+	auto DataTable = LoadObject<UDataTable>(nullptr, UTF8_TO_TCHAR("DataTable'/Game/Tables/TB_Cards.TB_Cards'"));
+	if(DataTable)
+		CardDataTable = MakeShareable(DataTable);
+}
+
+FCardData UCardManager::GetCardData(const int& CardID)
+{
+	if(CardID != 0)
+	{
+		FName RowID = FName(*FString::FromInt(CardID));
+		FString ContextString = TEXT("FCardData::FindCardData");
+		if(CardDataTable.IsValid())
+		{
+			FCardData* CardData = CardDataTable->FindRow<FCardData>(RowID, ContextString);
+			return *CardData;
+		}
+	}
+	return FCardData();
 }

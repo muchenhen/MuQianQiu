@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
+#include "MyStructs.h"
 #include "CardManager.generated.h"
 
 /**
@@ -16,9 +17,10 @@ class QIANQIU_API UCardManager : public UObject
 	
 private:
 
-	// static UDataTable* CardTable;
+	static TSharedPtr<UDataTable> CardDataTable;
 
 public:
 	
 	static void LoadCardData();
+	static FCardData GetCardData(const int& CardID);
 };
