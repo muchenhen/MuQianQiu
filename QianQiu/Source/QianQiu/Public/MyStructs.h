@@ -23,29 +23,29 @@ struct FCardData : public FTableRowBase
 	GENERATED_USTRUCT_BODY()
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, DisplayName = "卡面ID")
+	UPROPERTY(EditAnywhere, DisplayName = "卡面ID")
 	int CardID = 204;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, DisplayName = "卡面名称")
+	UPROPERTY(EditAnywhere, DisplayName = "卡面名称")
 	FString Name = "阿阮";
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, DisplayName = "卡面分值")
+	UPROPERTY(EditAnywhere, DisplayName = "卡面分值")
 	int Value = 2;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, DisplayName = "卡面属性")
+	UPROPERTY(EditAnywhere, DisplayName = "卡面属性")
 	FString Season = "春";
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, DisplayName = "卡片描述")
+	UPROPERTY(EditAnywhere, DisplayName = "卡片描述")
 	FString Describe = "楚梦沉醉朝复暮，\n清歌远上巫山低。";
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, DisplayName = "卡面类型")
+	UPROPERTY(EditAnywhere, DisplayName = "卡面类型")
 	FString Type = "Char";
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, DisplayName = "卡面贴图")
+	UPROPERTY(EditAnywhere, DisplayName = "卡面贴图")
 	FString Texture = "Tex_Char_ARuan";
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, DisplayName = "特殊卡")
+	UPROPERTY(EditAnywhere, DisplayName = "特殊卡")
 	int SpecialName = 0;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, DisplayName = "特殊卡")
+	UPROPERTY(EditAnywhere, DisplayName = "特殊卡")
 	int EffectFirst = 0;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, DisplayName = "特殊卡")
+	UPROPERTY(EditAnywhere, DisplayName = "特殊卡")
 	int ParamFirst = 0;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, DisplayName = "特殊卡")
+	UPROPERTY(EditAnywhere, DisplayName = "特殊卡")
 	int EffectSecond = 0;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, DisplayName = "特殊卡")
+	UPROPERTY(EditAnywhere, DisplayName = "特殊卡")
 	int ParamSecond = 0;
 
 	FCardData(){}
