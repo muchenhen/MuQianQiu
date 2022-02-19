@@ -20,6 +20,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="卡面相关", DisplayName="卡片ID")
 	int ID;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="卡面相关", DisplayName="卡片尺寸")
+	FVector2D CardSize;
+	
 	UFUNCTION(BlueprintCallable)
 	void SetCard(const int& CardID);
 };
