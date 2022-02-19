@@ -3,17 +3,23 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "UObject/NoExportTypes.h"
+#include "Engine/DataTable.h"
+#include "CardManager.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class QIANQIU_API CardManager : UObject
+class QIANQIU_API UCardManager : public UObject
 {
-
 	GENERATED_BODY()
+	
+private:
+
+	static UDataTable* CardTable;
 
 public:
-	CardManager();
-	~CardManager();
+	
+	static void LoadCardData();
 };

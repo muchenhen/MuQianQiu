@@ -3,10 +3,7 @@
 
 #include "CardManager.h"
 
-CardManager::CardManager()
+void UCardManager::LoadCardData()
 {
-}
-
-CardManager::~CardManager()
-{
+	CardTable = LoadObject<UDataTable>(NULL, UTF8_TO_TCHAR("DataTable'/Game/Tables/TB_Cards.TB_Cards'"));
 }
