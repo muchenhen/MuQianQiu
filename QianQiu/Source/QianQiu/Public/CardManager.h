@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
 #include "Engine/DataTable.h"
 #include "CardManager.generated.h"
 
@@ -17,7 +16,7 @@ class QIANQIU_API UCardManager : public UObject
 	
 private:
 
-	static UDataTable* CardTable;
+	// static UDataTable* CardTable;
 
 public:
 	

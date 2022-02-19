@@ -6,6 +6,6 @@
 /NAME:"UE4Editor-RiderLoggingExtension-Win64-DebugGame.dll"
 /IGNORE:4221
 /NODEFAULTLIB
-"C:\Users\MuChenhen\Documents\GitHub\MuQianQiu\QianQiu\Plugins\Developer\RiderLink\Intermediate\Build\Win64\UE4Editor\DebugGame\RiderLoggingExtension\Module.RiderLoggingExtension.cpp.obj"
-"C:\Users\MuChenhen\Documents\GitHub\MuQianQiu\QianQiu\Plugins\Developer\RiderLink\Intermediate\Build\Win64\UE4Editor\DebugGame\RiderLoggingExtension\Default.rc2.res"
-/OUT:"C:\Users\MuChenhen\Documents\GitHub\MuQianQiu\QianQiu\Plugins\Developer\RiderLink\Intermediate\Build\Win64\UE4Editor\DebugGame\RiderLoggingExtension\UE4Editor-RiderLoggingExtension-Win64-DebugGame.lib"
+"D:\Gits\MuQianQiu\QianQiu\Plugins\Developer\RiderLink\Intermediate\Build\Win64\UE4Editor\DebugGame\RiderLoggingExtension\Module.RiderLoggingExtension.cpp.obj"
+"D:\Gits\MuQianQiu\QianQiu\Plugins\Developer\RiderLink\Intermediate\Build\Win64\UE4Editor\DebugGame\RiderLoggingExtension\Default.rc2.res"
+/OUT:"D:\Gits\MuQianQiu\QianQiu\Plugins\Developer\RiderLink\Intermediate\Build\Win64\UE4Editor\DebugGame\RiderLoggingExtension\UE4Editor-RiderLoggingExtension-Win64-DebugGame.lib"

@@ -111,6 +111,7 @@ DerivedDataCache/*
 QianQiu/Intermediate/*
 QianQiu/Saved/*
 QianQiu/Plugins/Developer
+QianQiu/Plugins/Developer/*
 QianQiu/Plugins/*/Intermediate/*
 QianQiu/Plugins/*/Binaries/*
 QianQiu/Binaries/*

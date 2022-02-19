@@ -5,5 +5,5 @@
 
 void UCardManager::LoadCardData()
 {
-	CardTable = LoadObject<UDataTable>(NULL, UTF8_TO_TCHAR("DataTable'/Game/Tables/TB_Cards.TB_Cards'"));
+	auto CardTable = LoadObject<UDataTable>(nullptr, UTF8_TO_TCHAR("DataTable'/Game/Tables/TB_Cards.TB_Cards'"));
 }

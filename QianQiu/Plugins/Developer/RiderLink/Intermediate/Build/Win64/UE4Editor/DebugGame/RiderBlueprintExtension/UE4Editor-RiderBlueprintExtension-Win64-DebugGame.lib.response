@@ -6,6 +6,6 @@
 /NAME:"UE4Editor-RiderBlueprintExtension-Win64-DebugGame.dll"
 /IGNORE:4221
 /NODEFAULTLIB
-"C:\Users\MuChenhen\Documents\GitHub\MuQianQiu\QianQiu\Plugins\Developer\RiderLink\Intermediate\Build\Win64\UE4Editor\DebugGame\RiderBlueprintExtension\Module.RiderBlueprintExtension.cpp.obj"
-"C:\Users\MuChenhen\Documents\GitHub\MuQianQiu\QianQiu\Plugins\Developer\RiderLink\Intermediate\Build\Win64\UE4Editor\DebugGame\RiderBlueprintExtension\Default.rc2.res"
-/OUT:"C:\Users\MuChenhen\Documents\GitHub\MuQianQiu\QianQiu\Plugins\Developer\RiderLink\Intermediate\Build\Win64\UE4Editor\DebugGame\RiderBlueprintExtension\UE4Editor-RiderBlueprintExtension-Win64-DebugGame.lib"
+"D:\Gits\MuQianQiu\QianQiu\Plugins\Developer\RiderLink\Intermediate\Build\Win64\UE4Editor\DebugGame\RiderBlueprintExtension\Module.RiderBlueprintExtension.cpp.obj"
+"D:\Gits\MuQianQiu\QianQiu\Plugins\Developer\RiderLink\Intermediate\Build\Win64\UE4Editor\DebugGame\RiderBlueprintExtension\Default.rc2.res"
+/OUT:"D:\Gits\MuQianQiu\QianQiu\Plugins\Developer\RiderLink\Intermediate\Build\Win64\UE4Editor\DebugGame\RiderBlueprintExtension\UE4Editor-RiderBlueprintExtension-Win64-DebugGame.lib"
