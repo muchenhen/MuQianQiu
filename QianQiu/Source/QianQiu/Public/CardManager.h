@@ -17,7 +17,6 @@ class QIANQIU_API UCardManager : public UObject
 	
 private:
 
-	static TSharedPtr<UDataTable> CardDataTable;
 
 public:
 	

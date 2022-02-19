@@ -5,11 +5,12 @@
 
 #include "CardManager.h"
 
-void UCardImage::SetCard(int CardID)
+void UCardImage::SetCard(const int& CardID)
 {
 	FCardData CardData = UCardManager::GetCardData(CardID);
 	if (CardData.CardID == CardID)
 	{
-		auto Brush = LoadObject<UTexture>(NULL, UTF8_TO_TCHAR(""));
+		auto Texture = LoadObject<UTexture2D>(NULL, UTF8_TO_TCHAR("Texture2D'/Game/Texture/Tex_Card_Back.Tex_Card_Back'"));
+		SetBrushFromTexture(Texture, true);
 	}
 }

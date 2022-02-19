@@ -18,8 +18,8 @@ class QIANQIU_API UCardImage : public UImage
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="卡面相关", DisplayName="卡片ID")
-	int CardID;
+	int ID;
 
 	UFUNCTION(BlueprintCallable)
-	void SetCard(int CardID);
+	void SetCard(const int& CardID);
 };
