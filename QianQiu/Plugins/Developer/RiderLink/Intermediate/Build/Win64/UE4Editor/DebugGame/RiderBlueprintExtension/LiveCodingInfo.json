@@ -1,9 +1,0 @@
-{
-	"RemapUnityFiles": 
-	{
-		"Module.RiderBlueprintExtension.cpp.obj": [
-			"BlueprintProvider.cpp.obj",
-			"RiderBlueprintExtension.cpp.obj"
-		]
-	}
-}
