@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// 玩家类
 
 #pragma once
 
@@ -15,6 +15,7 @@ public:
 	// Sets default values for this character's properties
 	AQianQiuKe();
 
+    
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
