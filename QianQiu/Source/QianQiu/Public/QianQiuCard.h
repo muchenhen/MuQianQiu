@@ -15,8 +15,8 @@ public:
 	// Sets default values for this pawn's properties
 	AQianQiuCard();
 
-    // UPROPERTY(EditAnywhere)
-    // UObject* CardObj = LoadObject<UObject>(nullptr, )
+    UPROPERTY(EditAnywhere)
+    UStaticMeshComponent* StaticMeshComponent;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

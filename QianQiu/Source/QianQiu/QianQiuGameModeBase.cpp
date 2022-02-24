@@ -6,12 +6,16 @@
 
 void AQianQiuGameModeBase::StartPlay() {
     Super::StartPlay();
-    const UWorld* World = GetWorld();
-    FVector Pos(0,0,0); 
+    UWorld* World = GetWorld();
+    FVector Pos(0,0,0);
+    FRotator Rot(0,0,0);
     if(World)
     {
-        UClass* BP_Card_Class = StaticLoadClass( AActor::GetClass(),nullptr,TEXT("Blueprint'/Game/Model/BP_Card.BP_Card_C'"));
-        World->SpawnActor<BP_Card_Class>(Pos, FRotator::ZeroRotator);
+        // FSoftObjectPath BP_Card_Class(FString("/Game/Model/BP_Card"));
+        UClass* BP_Card_Class = StaticLoadClass(AActor::StaticClass(),nullptr,TEXT("Blueprint'/Game/Model/BP_Card.BP_Card_C'"));
+        // auto obj = BP_Card_Class.ResolveObject();
+        
+        World->SpawnActor<AActor>(BP_Card_Class, Pos, Rot);
 
     }
 }

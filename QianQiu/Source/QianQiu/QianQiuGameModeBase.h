@@ -12,7 +12,7 @@
 UCLASS()
 class QIANQIU_API AQianQiuGameModeBase : public AGameModeBase
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
-    void StartPlay() override;
+    virtual void StartPlay() override;
 };
