@@ -2,8 +2,8 @@
 
 
 #include "CardImage.h"
-
-#include "CardManager.h"
+#include "MyStructs.h"
+#include "QianQiu/Managers/CardManager.h"
 
 void UCardImage::SetCard(const int& CardID)
 {

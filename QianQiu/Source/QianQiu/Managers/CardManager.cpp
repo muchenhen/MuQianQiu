@@ -8,7 +8,7 @@ static TSharedPtr<UDataTable> CardDataTable;
 
 void UCardManager::LoadCardData()
 {
-	auto DataTable = LoadObject<UDataTable>(NULL, UTF8_TO_TCHAR("DataTable'/Game/Table/TB_Cards.TB_Cards'"));
+	UDataTable* DataTable = LoadObject<UDataTable>(NULL, UTF8_TO_TCHAR("DataTable'/Game/Table/TB_Cards.TB_Cards'"));
 	if(DataTable)
 		CardDataTable = MakeShareable(DataTable);
 }
@@ -19,10 +19,6 @@ FCardData UCardManager::GetCardData(const int& CardID)
 	{
 		FName RowID = FName(*FString::FromInt(CardID));
 		FString ContextString = TEXT("FCardData::FindCardData");
-		if(!CardDataTable.IsValid())
-		{
-			LoadCardData();
-		}
 		if(CardDataTable.IsValid())
 		{
 			FCardData* CardData = CardDataTable->FindRow<FCardData>(RowID, ContextString);

@@ -45,7 +45,7 @@ private:
 	FString GetFunctionProperties(const UFunction* Function, FString& Properties) const;
 
 	// Get readable type name for a UPROPERTY
-	FString GetTypeName(const FProperty* Property) const;
+	FString GetTypeName(const UProperty* Property) const;
 private:
 
 	TSharedPtr<class FUICommandList> PluginCommands;

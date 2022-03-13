@@ -420,7 +420,7 @@ FString FUnLuaIntelliSenseBPModule::GetFunctionProperties(const UFunction* Funct
 	return Ret;
 }
 
-FString FUnLuaIntelliSenseBPModule::GetTypeName(const FProperty* Property) const
+FString FUnLuaIntelliSenseBPModule::GetTypeName(const UProperty* Property) const
 {
 	check(Property);
 

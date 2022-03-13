@@ -16,10 +16,9 @@ class QIANQIU_API UCardManager : public UObject
 	GENERATED_BODY()
 	
 private:
-
+    TArray<FCardData> CardDataArray;
 
 public:
-	
-	static void LoadCardData();
-	static FCardData GetCardData(const int& CardID);
+    void LoadCardData();
+    static FCardData GetCardData(const int& CardID);
 };
