@@ -1,8 +1,4 @@
-require "Functions"
-require "Enums"
-
-require("LuaPanda").start("127.0.0.1",8818)
-require("socket.core")
+require "Global"
 local rawget = rawget
 local rawset = rawset
 local type = type

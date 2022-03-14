@@ -144,7 +144,7 @@ function UI_Begin:OnVoiceClick()
 end
 
 function UI_Begin:StartGame()
-    GameplayStatics.GetPlayerCharacter(nil, 0)
+    GameplayStatics.GetPlayerCharacter(G_GetWorld, 0)
     print("开始游戏")
 end
 

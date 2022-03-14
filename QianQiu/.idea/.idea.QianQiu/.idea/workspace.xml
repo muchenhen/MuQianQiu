@@ -9,98 +9,64 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="63aa9bb2-c26a-4418-93c7-7698e5099a7e" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Content/Actor/Actor_Card.uasset" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Content/Actor/Actor_GameManager.uasset" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Content/Maps/OneTwo.umap" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Content/QianQiuPlayerController.uasset" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Content/Sequence/Sq_OneTwo.uasset" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Content/Texture/UI/Checked.uasset" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Content/Texture/UI/UnChecked.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.QianQiu.dir/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.QianQiu.dir/.idea/indexLayout.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.QianQiu.dir/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.QianQiu/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.QianQiu/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.QianQiu/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/Android/AndroidEngine.ini" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/DefaultEditor.ini" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/DefaultGame.ini" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/DefaultInput.ini" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/Localization/Game_Compile.ini" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/Localization/Game_Export.ini" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/Localization/Game_ExportDialogueScript.ini" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/Localization/Game_Gather.ini" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/Localization/Game_GenerateReports.ini" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/Localization/Game_Import.ini" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/Localization/Game_ImportDialogue.ini" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/Localization/Game_ImportDialogueScript.ini" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/Localization/RegenerateGame.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.QianQiu/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.QianQiu/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/AI_Enemy.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/Actor_AudioActor.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/Card/UI_Card.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/Card/UI_CardEnemy.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/Card/UI_CardPlayer.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/Card/UI_CardPublic.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/Command.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/Common/LuaExtension.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/Common/UIBase.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/Enum.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/Extend/Table.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/Functions.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/Global.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/LuaMain.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/Manager/NetManager.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/Manager/UIManager.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/Table/Card.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/Table/Card.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/Table/Story.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/Table/Story.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/Table/StoryExtra.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/Table/text.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/TimerManager.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/UIStack.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/UI_Begin.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/UI_CanFinishStory.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/UI_CardDetail.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/UI_CardHeal.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/UI_CardPool.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/UI_CardPoolEnenmy.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/UI_CardPoolPlayer.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/UI_FinishedStory.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/UI_GameResult.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/UI_HealCards.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/UI_HealDetail.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/UI_HealStoryOne.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/UI_Main.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/UI_Round.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/UI_Score.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/UI_StaticTip.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/UI_StoryShow.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Lua/UI_Tip.lua" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Maps/MainLevel.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Maps/MainLevel.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Maps/NewMap.umap" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/QianQiuGameMode.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/QianQiuGameMode.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Script/Enums.lua" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Script/Enums.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Script/Global.lua" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Script/Global.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Script/UI/UI_Begin.lua" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Script/UI/UI_Begin.lua" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Script/UnLua.lua" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Script/UnLua.lua" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/UI/Main/UI_Begin.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/UI/Main/UI_Begin.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/BaseLib/LuaLib_Object.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/BaseLib/LuaLib_Object.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/BaseLib/LuaLib_World.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/BaseLib/LuaLib_World.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Script/socket/core.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Script/socket/core.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/LuaContext.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/LuaContext.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/LuaContext.h" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/LuaContext.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/LuaCore.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/LuaCore.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/LuaCore.h" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/LuaCore.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/LuaFunctionInjection.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/LuaFunctionInjection.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/MathLib/LuaLib_FColor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/MathLib/LuaLib_FColor.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/MathLib/LuaLib_FLinearColor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/MathLib/LuaLib_FLinearColor.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/MathLib/LuaLib_FQuat.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/MathLib/LuaLib_FQuat.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/MathLib/LuaLib_FRotator.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/MathLib/LuaLib_FRotator.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/MathLib/LuaLib_FVector.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/MathLib/LuaLib_FVector.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/MathLib/LuaLib_FVector2.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/MathLib/LuaLib_FVector2.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/MathLib/LuaLib_FVector4.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/MathLib/LuaLib_FVector4.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/MathLib/LuaLib_Math.h" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/MathLib/LuaLib_Math.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/ReflectionUtils/FunctionDesc.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/ReflectionUtils/FunctionDesc.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/ReflectionUtils/PropertyDesc.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/ReflectionUtils/PropertyDesc.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/ReflectionUtils/ReflectionRegistry.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/ReflectionUtils/ReflectionRegistry.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/ReflectionUtils/ReflectionRegistry.h" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/ReflectionUtils/ReflectionRegistry.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/UnLua.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/UnLua.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/UnLuaCompatibility.h" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/UnLuaCompatibility.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/UnLuaManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/UnLuaManager.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/UnLuaManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Private/UnLuaManager.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Public/UnLuaEx.h" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Public/UnLuaEx.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Public/UnLuaEx.inl" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLua/Public/UnLuaEx.inl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaEditor/Private/Toolbars/UnLuaEditorToolbar.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaEditor/Private/Toolbars/UnLuaEditorToolbar.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaFrameWork/Private/UnLuaFrameWorkModule.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaFrameWork/Private/UnLuaFrameWorkModule.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaIntelliSenseBP/Private/UnLuaIntelliSenseBP.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaIntelliSenseBP/Private/UnLuaIntelliSenseBP.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaIntelliSenseBP/Public/UnLuaIntelliSenseBP.h" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaIntelliSenseBP/Public/UnLuaIntelliSenseBP.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaTestSuite/Private/Specs/LuaLib_Array.spec.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaTestSuite/Private/Specs/LuaLib_Array.spec.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaTestSuite/Private/Specs/LuaLib_FColor.spec.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaTestSuite/Private/Specs/LuaLib_FColor.spec.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaTestSuite/Private/Specs/LuaLib_FIntPoint.spec.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaTestSuite/Private/Specs/LuaLib_FIntPoint.spec.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaTestSuite/Private/Specs/LuaLib_FIntVector.spec.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaTestSuite/Private/Specs/LuaLib_FIntVector.spec.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaTestSuite/Private/Specs/LuaLib_FLinearColor.spec.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaTestSuite/Private/Specs/LuaLib_FLinearColor.spec.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaTestSuite/Private/Specs/LuaLib_FQuat.spec.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaTestSuite/Private/Specs/LuaLib_FQuat.spec.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaTestSuite/Private/Specs/LuaLib_FRotator.spec.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaTestSuite/Private/Specs/LuaLib_FRotator.spec.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaTestSuite/Private/Specs/LuaLib_FTransform.spec.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaTestSuite/Private/Specs/LuaLib_FTransform.spec.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaTestSuite/Private/Specs/LuaLib_FVector.spec.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaTestSuite/Private/Specs/LuaLib_FVector.spec.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaTestSuite/Private/Specs/LuaLib_FVector2.spec.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaTestSuite/Private/Specs/LuaLib_FVector2.spec.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaTestSuite/Private/Specs/LuaLib_FVector4.spec.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaTestSuite/Private/Specs/LuaLib_FVector4.spec.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaTestSuite/Private/Specs/LuaLib_Key.spec.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaTestSuite/Private/Specs/LuaLib_Key.spec.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaTestSuite/Private/Specs/LuaLib_Map.spec.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaTestSuite/Private/Specs/LuaLib_Map.spec.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaTestSuite/Private/Specs/LuaLib_Set.spec.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaTestSuite/Private/Specs/LuaLib_Set.spec.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaTestSuite/Private/Specs/UnLuaBase.spec.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaTestSuite/Private/Specs/UnLuaBase.spec.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaTestSuite/Private/Specs/UnLuaEnum.spec.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaTestSuite/Private/Specs/UnLuaEnum.spec.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaTestSuite/Public/UnLuaTestHelpers.h" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/Source/UnLuaTestSuite/Public/UnLuaTestHelpers.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/UnLua/UnLua.uplugin" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/UnLua/UnLua.uplugin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/QianQiu.code-workspace" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/QianQiu.uproject" beforeDir="false" afterPath="$PROJECT_DIR$/QianQiu.uproject" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/QianQiu/Private/CardManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QianQiu/Managers/CardManager.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/QianQiu/Private/QianQiuCard.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/QianQiu/Private/QianQiuKe.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QianQiu/Actors/QianQiuKe.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/QianQiu/Public/CardManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QianQiu/Managers/CardManager.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/QianQiu/Public/QianQiuCard.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/QianQiu/Public/QianQiuKe.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QianQiu/Actors/QianQiuKe.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/QianQiu/UMGExtend/CardImage.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QianQiu/UMGExtend/CardImage.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Plugins/UnLua/Source/ThirdParty/Lua/src/luaconf.h" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -250,6 +216,7 @@
       <updated>1647159537994</updated>
       <workItem from="1647159564539" duration="4887000" />
       <workItem from="1647165636563" duration="4604000" />
+      <workItem from="1647254075263" duration="5864000" />
     </task>
     <servers />
   </component>
