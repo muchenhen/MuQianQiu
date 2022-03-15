@@ -3,6 +3,28 @@
 
 #include "QianQiuBlueprintFunctionLibrary.h"
 
+#include "Kismet/GameplayStatics.h"
+
 UWorld* UQianQiuBlueprintFunctionLibrary::GetWorld() const {
     return Super::GetWorld();
+}
+
+void UQianQiuBlueprintFunctionLibrary::LoadMap(FString MapName)
+{
+    FLatentActionInfo LatentActionInfo;
+    UGameplayStatics::LoadStreamLevel(this, FName(*MapName), true, true, LatentActionInfo);
+}
+
+AActor* UQianQiuBlueprintFunctionLibrary::GetActorByTag(FString Tag)
+{
+    TArray<AActor*> Actors;
+    UGameplayStatics::GetAllActorsWithTag(this, *Tag, Actors);
+    if (Actors.Num()>0)
+    {
+        return Actors[0];
+    }
+    else
+    {
+        return nullptr;
+    }
 }

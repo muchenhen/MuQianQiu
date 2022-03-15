@@ -3,6 +3,7 @@ require "Enums"
 require("LuaPanda").start("127.0.0.1",8818)
 
 GameplayStatics = UE.UGameplayStatics
+QianQiuBlueprintFunctionLibrary = UE.UQianQiuBlueprintFunctionLibrary
 
 --import function helper
 local importedClsList = {} --cache element as table { cls = class, cnt = number }

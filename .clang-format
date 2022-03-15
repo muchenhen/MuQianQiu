@@ -60,33 +60,33 @@ BinPackParameters: true
 # 大括号换行，只有当BreakBeforeBraces设置为Custom时才有效
 BraceWrapping:
   # class定义后面
-  AfterClass: false
+  AfterClass: true
   # 控制语句后面
-  AfterControlStatement: false
+  AfterControlStatement: true
   # enum定义后面
-  AfterEnum: false
+  AfterEnum: true
   # 函数定义后面
-  AfterFunction: false
+  AfterFunction: true
   # 命名空间定义后面
-  AfterNamespace: false
+  AfterNamespace: true
   # struct定义后面
-  AfterStruct: false
+  AfterStruct: true
   # union定义后面
-  AfterUnion: false
+  AfterUnion: true
   # extern之后
-  AfterExternBlock: false
+  AfterExternBlock: true
   # catch之前
-  BeforeCatch: false
+  BeforeCatch: true
   # else之前
-  BeforeElse: false
+  BeforeElse: true
   # 缩进大括号
   IndentBraces: false
   # 分离空函数
-  SplitEmptyFunction: false
+  SplitEmptyFunction: true
   # 分离空语句
-  SplitEmptyRecord: false
+  SplitEmptyRecord: true
   # 分离空命名空间
-  SplitEmptyNamespace: false
+  SplitEmptyNamespace: true
 
 # 在二元运算符前换行: None(在操作符后换行), NonAssignment(在非赋值的操作符前换行), All(在操作符前换行)
 BreakBeforeBinaryOperators: NonAssignment

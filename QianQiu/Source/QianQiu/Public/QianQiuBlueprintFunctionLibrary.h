@@ -16,4 +16,10 @@ class QIANQIU_API UQianQiuBlueprintFunctionLibrary : public UBlueprintFunctionLi
 public:
     UFUNCTION(BlueprintCallable)
     virtual UWorld* GetWorld() const override;
+
+    UFUNCTION(BlueprintCallable)
+    void LoadMap(FString MapPath);
+
+    UFUNCTION(BlueprintCallable)
+    AActor* GetActorByTag(FString Tag);
 };

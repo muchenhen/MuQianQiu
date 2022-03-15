@@ -48,7 +48,7 @@ function UI_Begin:Construct()
     self.Button_Slience.OnClicked:Add(self, self.OnSlienceClick)
     self.Button_Voice.OnClicked:Add(self, self.OnVoiceClick)
 
-    self.Button_Begin.OnClicked:Add(self, self.StartGame)
+    -- self.Button_Begin.OnClicked:Add(self, self.StartGame)
 end
 
 function UI_Begin:OnOneChooseChanged()
@@ -144,8 +144,12 @@ function UI_Begin:OnVoiceClick()
 end
 
 function UI_Begin:StartGame()
-    GameplayStatics.GetPlayerCharacter(G_GetWorld, 0)
-    print("开始游戏")
+    local MapName = "/Game/Maps/OneTwo"
+    local Tag = "QianQiuManager"
+    local QianQiuManager = QianQiuBlueprintFunctionLibrary:GetActorByTag(Tag)
+    if QianQiuManager ~= nil then
+        print("开始游戏")
+    end
 end
 
 function UI_Begin:ChangeCardDark()
