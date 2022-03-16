@@ -15,10 +15,10 @@ void UQianQiuBlueprintFunctionLibrary::LoadMap(FString MapName)
     UGameplayStatics::LoadStreamLevel(this, FName(*MapName), true, true, LatentActionInfo);
 }
 
-AActor* UQianQiuBlueprintFunctionLibrary::GetActorByTag(FString Tag)
+AActor* UQianQiuBlueprintFunctionLibrary::GetActorByTag(UObject* WorldContext, FString Tag)
 {
     TArray<AActor*> Actors;
-    UGameplayStatics::GetAllActorsWithTag(this, *Tag, Actors);
+    UGameplayStatics::GetAllActorsWithTag(WorldContext, *Tag, Actors);
     if (Actors.Num()>0)
     {
         return Actors[0];

@@ -9,10 +9,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="63aa9bb2-c26a-4418-93c7-7698e5099a7e" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../.clang-format" beforeDir="false" afterPath="$PROJECT_DIR$/../.clang-format" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.QianQiu/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.QianQiu/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Maps/MainLevel.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Maps/MainLevel.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Script/Global.lua" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Script/Global.lua" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Script/UI/UI_Begin.lua" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Script/UI/UI_Begin.lua" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/UI/Main/UI_Begin.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/UI/Main/UI_Begin.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/QianQiu/Private/QianQiuBlueprintFunctionLibrary.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QianQiu/Private/QianQiuBlueprintFunctionLibrary.cpp" afterDir="false" />
@@ -29,10 +26,12 @@
     <setting file="file://$PROJECT_DIR$/Plugins/UnLua/Source/ThirdParty/Lua/src/luaconf.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/QianQiu/Managers/QianQiuManager.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/QianQiu/Managers/QianQiuManager.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://E:/UE_5.0/Engine/Source/Runtime/Engine/Private/UnrealEngine.cpp" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="Toolset" />
   </component>
   <component name="ProjectId" id="26K5enMih3w7Rooag140slAfyY4" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -51,7 +50,7 @@
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
-    "settings.editor.selected.configurable": "CppUnrealEngineOptionsId",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -181,6 +180,8 @@
       <workItem from="1647165636563" duration="4604000" />
       <workItem from="1647254075263" duration="5864000" />
       <workItem from="1647345168466" duration="7325000" />
+      <workItem from="1647429356562" duration="1672000" />
+      <workItem from="1647431502500" duration="3189000" />
     </task>
     <servers />
   </component>

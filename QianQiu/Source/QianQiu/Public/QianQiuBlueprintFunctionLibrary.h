@@ -21,5 +21,5 @@ public:
     void LoadMap(FString MapPath);
 
     UFUNCTION(BlueprintCallable)
-    AActor* GetActorByTag(FString Tag);
+    AActor* GetActorByTag(UObject* WorldContext, FString Tag);
 };
