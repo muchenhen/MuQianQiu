@@ -146,7 +146,13 @@ end
 function UI_Begin:StartGame()
     -- local MapName = "OneTwo"
     -- GameplayStatics.OpenLevel(self, MapName, true, "")
-
+    local var = 
+    {
+        [1] = true,
+        [2] = false,
+        [3] = true
+    }
+    QianQiuBlueprintFunctionLibrary:InitCardManager(var)
     local Tag = "QianQiuManager"
     local QianQiuManager = QianQiuBlueprintFunctionLibrary:GetActorByTag(self, Tag)
     if QianQiuManager ~= nil then

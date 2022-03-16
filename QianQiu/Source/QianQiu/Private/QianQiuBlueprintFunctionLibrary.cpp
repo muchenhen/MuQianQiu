@@ -28,3 +28,11 @@ AActor* UQianQiuBlueprintFunctionLibrary::GetActorByTag(UObject* WorldContext, F
         return nullptr;
     }
 }
+
+void UQianQiuBlueprintFunctionLibrary::InitCardManager(TMap<int, bool> Versions)
+{
+    for (auto& Version : Versions)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Version %d"), Version.Key);
+    }
+}

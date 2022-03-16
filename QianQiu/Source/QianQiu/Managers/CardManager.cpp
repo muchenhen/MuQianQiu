@@ -6,6 +6,23 @@
 static TSharedPtr<UDataTable> CardDataTable;
 
 
+UCardManager::UCardManager()
+{
+}
+
+UCardManager::UCardManager(TArray<int> Versions)
+{
+    if (Versions.Num() == 2)
+    {
+        int VersionOne = Versions[0];
+        int VersionTwo = Versions[1];
+    }
+}
+
+UCardManager::~UCardManager()
+{
+}
+
 void UCardManager::LoadCardData()
 {
 	UDataTable* DataTable = LoadObject<UDataTable>(NULL, UTF8_TO_TCHAR("DataTable'/Game/Table/TB_Cards.TB_Cards'"));

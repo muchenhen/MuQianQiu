@@ -11,7 +11,8 @@
     <list default="true" id="63aa9bb2-c26a-4418-93c7-7698e5099a7e" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.QianQiu/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.QianQiu/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Script/UI/UI_Begin.lua" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Script/UI/UI_Begin.lua" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/UI/Main/UI_Begin.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/UI/Main/UI_Begin.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/QianQiu/Managers/CardManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QianQiu/Managers/CardManager.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/QianQiu/Managers/CardManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QianQiu/Managers/CardManager.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/QianQiu/Private/QianQiuBlueprintFunctionLibrary.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QianQiu/Private/QianQiuBlueprintFunctionLibrary.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/QianQiu/Public/QianQiuBlueprintFunctionLibrary.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QianQiu/Public/QianQiuBlueprintFunctionLibrary.h" afterDir="false" />
     </list>
@@ -181,7 +182,7 @@
       <workItem from="1647254075263" duration="5864000" />
       <workItem from="1647345168466" duration="7325000" />
       <workItem from="1647429356562" duration="1672000" />
-      <workItem from="1647431502500" duration="3189000" />
+      <workItem from="1647431502500" duration="7851000" />
     </task>
     <servers />
   </component>

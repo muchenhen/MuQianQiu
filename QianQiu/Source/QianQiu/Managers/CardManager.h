@@ -14,6 +14,13 @@ UCLASS()
 class QIANQIU_API UCardManager : public UObject
 {
 	GENERATED_BODY()
+
+public:
+    UCardManager();
+    UCardManager(TArray<int> Versions);
+
+    ~UCardManager();
+    
 	
 private:
     TArray<FCardData> CardDataArray;

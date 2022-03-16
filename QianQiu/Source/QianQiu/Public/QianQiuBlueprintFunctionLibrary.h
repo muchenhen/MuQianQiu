@@ -17,9 +17,12 @@ public:
     UFUNCTION(BlueprintCallable)
     virtual UWorld* GetWorld() const override;
 
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable, Category="QianQiuFunc")
     void LoadMap(FString MapPath);
 
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable, Category="QianQiuFunc")
     AActor* GetActorByTag(UObject* WorldContext, FString Tag);
+
+    UFUNCTION(BlueprintCallable, Category="QianQiuFunc")
+    void InitCardManager(TMap<int, bool> Versions);
 };
