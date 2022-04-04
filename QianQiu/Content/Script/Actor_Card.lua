@@ -12,7 +12,7 @@ local Actor_Card = Class()
 
 function Actor_Card:Initialize(Initializer)
     self.CardID = 101
-    self.CArdName = "百里屠苏"
+    self.CardName = "百里屠苏"
 end
 
 --function Actor_Card:UserConstructionScript()
@@ -22,7 +22,16 @@ end
 -- end
 
 function Actor_Card:ReceiveActorOnClicked()
-    
+    self:SetSelfImageByCardID(101)
+end
+
+function Actor_Card:SetSelfImageByCardID(CardID)
+    local MTI = self.CardMesh:GetMaterial(0)
+    if MTI then
+        MTI:Set
+        print(MTI)
+        print(bbb)
+    end
 end
 
 --function Actor_Card:ReceiveEndPlay()

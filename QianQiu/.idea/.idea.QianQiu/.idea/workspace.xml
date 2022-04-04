@@ -8,18 +8,43 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="63aa9bb2-c26a-4418-93c7-7698e5099a7e" name="Changes" comment="" />
+    <list default="true" id="63aa9bb2-c26a-4418-93c7-7698e5099a7e" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.QianQiu/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.QianQiu/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Actor/Actor_Card.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Actor/Actor_Card.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Maps/MainLevel.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Maps/MainLevel.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Maps/OneTwo.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Maps/OneTwo.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Material/MT_Card.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Material/MT_Card.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Material/MT_Card_Inst.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Model/BP_Card.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Model/BP_Card.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Model/MyQianQiuCard.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Model/MyQianQiuCard.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Script/Actor_Card.lua" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Script/Actor_Card.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Script/UI/UI_Begin.lua" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Script/UI/UI_Begin.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/QianQiu/Managers/CardManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QianQiu/Managers/CardManager.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/QianQiu/Managers/CardManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QianQiu/Managers/CardManager.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/QianQiu/Private/QianQiuBlueprintFunctionLibrary.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QianQiu/Private/QianQiuBlueprintFunctionLibrary.cpp" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/Plugins/UnLua/Source/ThirdParty/Lua/src/liolib.c" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Plugins/UnLua/Source/ThirdParty/Lua/src/ltm.h" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Plugins/UnLua/Source/ThirdParty/Lua/src/luaconf.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/QianQiu/Managers/QianQiuManager.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/QianQiu/Managers/QianQiuManager.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Plugins/UnLua/Source/ThirdParty/Lua/src/liolib.c" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Plugins/UnLua/Source/ThirdParty/Lua/src/luaconf.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Plugins/UnLua/Source/ThirdParty/Lua/src/ltm.h" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -33,21 +58,17 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "vue.rearranger.settings.migration": "true"
-  }
-}]]></component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
   <component name="RunManager" selected="C++ Project.QianQiu">
     <configuration name="QianQiu" type="CppProject" factoryName="C++ Project">
       <configuration_1>
@@ -176,12 +197,16 @@
       <workItem from="1647345168466" duration="7325000" />
       <workItem from="1647429356562" duration="1672000" />
       <workItem from="1647431502500" duration="8567000" />
+      <workItem from="1649061280501" duration="3000" />
+      <workItem from="1649068736601" duration="5427000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="UnityProjectConfiguration" hasMinimizedUI="null" />
+  <component name="UnityUnitTestConfiguration" currentTestLauncher="NUnit" />
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
@@ -192,6 +217,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />

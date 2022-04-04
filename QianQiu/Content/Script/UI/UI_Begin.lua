@@ -144,13 +144,11 @@ function UI_Begin:OnVoiceClick()
 end
 
 function UI_Begin:StartGame()
-    -- local MapName = "OneTwo"
-    -- GameplayStatics.OpenLevel(self, MapName, true, "")
     local var = 
     {
-        [1] = true,
-        [2] = false,
-        [3] = true
+        [1] = self.StoryOne,
+        [2] = self.StoryTwo,
+        [3] = self.StoryThree
     }
     QianQiuBlueprintFunctionLibrary:InitCardManager(var)
     local Tag = "QianQiuManager"

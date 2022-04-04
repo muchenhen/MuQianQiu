@@ -33,6 +33,6 @@ void UQianQiuBlueprintFunctionLibrary::InitCardManager(TMap<int, bool> Versions)
 {
     for (auto& Version : Versions)
     {
-        UE_LOG(LogTemp, Warning, TEXT("Version %d"), Version.Key);
+        UE_LOG(LogTemp, Warning, TEXT("Version %d is %s"), Version.Key, Version.Value ? TEXT("TRUE") : TEXT("FALSE"));
     }
 }

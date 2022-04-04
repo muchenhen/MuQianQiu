@@ -10,13 +10,9 @@ UCardManager::UCardManager()
 {
 }
 
-UCardManager::UCardManager(TArray<int> Versions)
+UCardManager::UCardManager(TMap<int, bool> Versions)
 {
-    if (Versions.Num() == 2)
-    {
-        int VersionOne = Versions[0];
-        int VersionTwo = Versions[1];
-    }
+    VersionMap = Versions;
 }
 
 UCardManager::~UCardManager()

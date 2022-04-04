@@ -10,21 +10,19 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(BlueprintType, Blueprintable)
 class QIANQIU_API UCardManager : public UObject
 {
 	GENERATED_BODY()
 
 public:
     UCardManager();
-    UCardManager(TArray<int> Versions);
-
+    UCardManager(TMap<int, bool> Versions);
     ~UCardManager();
     
 	
 private:
-    TArray<FCardData> CardDataArray;
-
+    TMap<int, bool> VersionMap;
 public:
     void LoadCardData();
     static FCardData GetCardData(const int& CardID);
