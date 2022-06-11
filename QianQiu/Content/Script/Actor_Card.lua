@@ -21,6 +21,10 @@ end
 -- function Actor_Card:ReceiveBeginPlay()
 -- end
 
+function Actor_Card:InitCard(CardID)
+
+end
+
 function Actor_Card:ReceiveActorOnClicked()
     self:SetSelfImageByCardID(101)
 end
