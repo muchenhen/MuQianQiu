@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MyStructs.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "QianQiuBlueprintFunctionLibrary.generated.h"
 
@@ -28,4 +29,7 @@ public:
 
     UFUNCTION(BlueprintCallable, Category="QianQiuFunc")
     FString GetProBase();
+
+    UFUNCTION(BlueprintCallable, Category="QianQiuFunc")
+    void DumpCardData(FCardData CardData);
 };

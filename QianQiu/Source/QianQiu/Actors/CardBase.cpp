@@ -15,8 +15,7 @@ ACardBase::ACardBase()
     StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
     AddInstanceComponent(StaticMesh);
     StaticMesh->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
-    StaticMesh->SetRelativeScale3D(FVector(1.8, 0.02, 2.4));
-    UStaticMesh* Mesh = LoadObject<UStaticMesh>(nullptr, TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'"));
+    UStaticMesh* Mesh = LoadObject<UStaticMesh>(nullptr, TEXT("StaticMesh'/Game/Model/FBX_Card.FBX_Card'"));
     StaticMesh->SetStaticMesh(Mesh);
     UMaterialInstance* Material = LoadObject<UMaterialInstance>(nullptr, TEXT("MaterialInstanceConstant'/Game/Material/MTI_Card.MTI_Card'"));
     StaticMesh->SetMaterial(0, Material->GetMaterial());
@@ -27,7 +26,7 @@ ACardBase::ACardBase()
 void ACardBase::BeginPlay()
 {
     Super::BeginPlay();
-    
+    // OnClicked.AddDynamic(this, &ACardBase::OnCardClick);
 }
 
 // Called every frame
@@ -36,11 +35,12 @@ void ACardBase::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 }
 
-void ACardBase::Init(FCardData CardData)
+void ACardBase::Init(FCardData InCardData)
 {
     // Texture2D'/Game/Texture/Item/Tex_Item_FengLai.Tex_Item_FengLai'
-    FString TexturePath = "/Game/Texture" / CardData.Type / CardData.Texture;
-    TexturePath = "Texture2D'" + TexturePath + "." +CardData.Texture+"'";
+    CardData = InCardData;
+    FString TexturePath = "/Game/Texture" / InCardData.Type / InCardData.Texture;
+    TexturePath = "Texture2D'" + TexturePath + "." +InCardData.Texture+"'";
     UTexture2D* Texture2D = LoadObject<UTexture2D>(nullptr, *TexturePath);
     UMaterial* Material = StaticMesh->GetMaterial(0)->GetMaterial();
     if(Material && Texture2D)
@@ -52,4 +52,9 @@ void ACardBase::Init(FCardData CardData)
         }
     }
 }
+
+// void ACardBase::OnCardClick(AActor* ClickedActor, FKey ButtonPressed)
+// {
+//     UE_LOG(LogTemp, Display, TEXT("Current Choose Card ："));
+// }
 

@@ -41,3 +41,8 @@ FString UQianQiuBlueprintFunctionLibrary::GetProBase()
 {
     return FApp::GetProjectName();
 }
+
+void UQianQiuBlueprintFunctionLibrary::DumpCardData(FCardData CardData)
+{
+    CardData.Dump();
+}

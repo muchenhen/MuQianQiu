@@ -16,13 +16,13 @@ public:
 	UPROPERTY(EditAnywhere, DisplayName = "卡面ID")
 	int CardID = 204;
 	UPROPERTY(EditAnywhere, DisplayName = "卡面名称")
-	FString Name = "阿阮";
+	FString Name = TEXT("阿阮");
 	UPROPERTY(EditAnywhere, DisplayName = "卡面分值")
 	int Value = 2;
 	UPROPERTY(EditAnywhere, DisplayName = "卡面属性")
-	FString Season = "春";
+	FString Season = TEXT("春");
 	UPROPERTY(EditAnywhere, DisplayName = "卡片描述")
-	FString Describe = "楚梦沉醉朝复暮，\n清歌远上巫山低。";
+	FString Describe = TEXT("楚梦沉醉朝复暮，\n清歌远上巫山低。");
 	UPROPERTY(EditAnywhere, DisplayName = "卡面类型")
 	FString Type = "Char";
 	UPROPERTY(EditAnywhere, DisplayName = "卡面贴图")
@@ -60,4 +60,12 @@ public:
 		ParamSecond = InParamSecond;
 	}
 
+    void Dump()
+	{
+	    UE_LOG(LogTemp, Display, TEXT("当前选择的卡面信息: "));   
+	    UE_LOG(LogTemp, Display, TEXT("ID:        %d"), CardID);   
+	    UE_LOG(LogTemp, Display, TEXT("Name:      %s"), *Name);
+	    UE_LOG(LogTemp, Display, TEXT("Value:     %d"), Value);   
+	    UE_LOG(LogTemp, Display, TEXT("Season:    %s"), *Season);
+	}
 };
