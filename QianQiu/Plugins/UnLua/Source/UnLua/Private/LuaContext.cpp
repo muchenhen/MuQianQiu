@@ -494,7 +494,7 @@ void FLuaContext::OnWorldTickStart(ELevelTick TickType, float DeltaTime)
 
     for (UInputComponent* InputComponent : CandidateInputComponents)
     {
-        if (!InputComponent->IsRegistered() || InputComponent->IsPendingKill())
+        if (!InputComponent->IsRegistered() || IsValid(InputComponent))
         {
             continue;
         }

@@ -127,7 +127,7 @@ public:
      */
     FORCEINLINE int32 AddDefaulted(int32 Count = 1)
     {
-        int32 Index = ScriptArray->Add(Count, ElementSize);
+        int32 Index = ScriptArray->Add(Count, ElementSize, __STDCPP_DEFAULT_NEW_ALIGNMENT__);
         Construct(Index, Count);
         return Index;
     }
@@ -140,7 +140,7 @@ public:
      */
     FORCEINLINE int32 AddUninitialized(int32 Count = 1)
     {
-        return ScriptArray->Add(Count, ElementSize);
+        return ScriptArray->Add(Count, ElementSize, __STDCPP_DEFAULT_NEW_ALIGNMENT__);
     }
 
     /**
@@ -174,7 +174,7 @@ public:
     {
         if (Index >= 0 && Index <= Num())
         {
-            ScriptArray->Insert(Index, 1, ElementSize);
+            ScriptArray->Insert(Index, 1, ElementSize, __STDCPP_DEFAULT_NEW_ALIGNMENT__);
             Construct(Index, 1);
             uint8 *Dest = GetData(Index);
             Inner->Copy(Dest, Item);
@@ -191,7 +191,7 @@ public:
         if (IsValidIndex(Index))
         {
             Destruct(Index);
-            ScriptArray->Remove(Index, 1, ElementSize);
+            ScriptArray->Remove(Index, 1, ElementSize, __STDCPP_DEFAULT_NEW_ALIGNMENT__);
         }
     }
 
@@ -222,7 +222,7 @@ public:
         if (Num())
         {
             Destruct(0, Num());
-            ScriptArray->Empty(0, ElementSize);
+            ScriptArray->Empty(0, ElementSize, __STDCPP_DEFAULT_NEW_ALIGNMENT__);
         }
     }
 
@@ -238,7 +238,7 @@ public:
         {
             return false;
         }
-        ScriptArray->Empty(Size, ElementSize);
+        ScriptArray->Empty(Size, ElementSize, __STDCPP_DEFAULT_NEW_ALIGNMENT__);
         return true;
     }
 
@@ -259,7 +259,7 @@ public:
             else if (Count < 0)
             {
                 Destruct(NewSize, -Count);
-                ScriptArray->Remove(NewSize, -Count, ElementSize);
+                ScriptArray->Remove(NewSize, -Count, ElementSize, __STDCPP_DEFAULT_NEW_ALIGNMENT__);
             }
         }
     }

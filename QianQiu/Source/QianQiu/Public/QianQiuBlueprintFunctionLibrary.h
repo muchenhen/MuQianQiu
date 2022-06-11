@@ -25,4 +25,7 @@ public:
 
     UFUNCTION(BlueprintCallable, Category="QianQiuFunc")
     void InitCardManager(TMap<int, bool> Versions);
+
+    UFUNCTION(BlueprintCallable, Category="QianQiuFunc")
+    FString GetProBase();
 };

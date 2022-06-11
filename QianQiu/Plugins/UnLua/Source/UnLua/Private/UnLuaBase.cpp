@@ -454,8 +454,8 @@ namespace UnLua
             int32 Num = ScriptArray->Num();
             int32 ElementSize = TypeInterface->GetSize();
             FScriptArray *DestScriptArray = new FScriptArray;       // create a new FScriptArray
-            DestScriptArray->Empty(Num, ElementSize);
-            DestScriptArray->Add(Num, ElementSize);
+            DestScriptArray->Empty(Num, ElementSize, __STDCPP_DEFAULT_NEW_ALIGNMENT__);
+            DestScriptArray->Add(Num, ElementSize, __STDCPP_DEFAULT_NEW_ALIGNMENT__);
             if (Num)
             {
                 uint8 *SrcData = (uint8*)ScriptArray->GetData();

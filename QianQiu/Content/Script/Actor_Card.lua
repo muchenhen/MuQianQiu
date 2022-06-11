@@ -26,12 +26,7 @@ function Actor_Card:ReceiveActorOnClicked()
 end
 
 function Actor_Card:SetSelfImageByCardID(CardID)
-    local MTI = self.CardMesh:GetMaterial(0)
-    if MTI then
-        MTI:Set
-        print(MTI)
-        print(bbb)
-    end
+   print(QianQiuBlueprintFunctionLibrary:GetProBase())
 end
 
 --function Actor_Card:ReceiveEndPlay()

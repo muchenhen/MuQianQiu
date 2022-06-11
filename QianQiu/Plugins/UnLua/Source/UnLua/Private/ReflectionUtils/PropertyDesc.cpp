@@ -724,6 +724,8 @@ public:
 class FArrayPropertyDesc : public FPropertyDesc, public TLuaContainerInterface<FLuaArray>
 {
 public:
+    // 这里的InProperty是FArrayProperty
+    // 对FArrayProperty的Inner再次Create FPropertyDesc 递归
     explicit FArrayPropertyDesc(FProperty *InProperty)
         : FPropertyDesc(InProperty), InnerProperty(FPropertyDesc::Create(ArrayProperty->Inner))
     {}

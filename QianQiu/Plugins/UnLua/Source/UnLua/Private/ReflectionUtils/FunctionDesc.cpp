@@ -287,6 +287,7 @@ int32 FFunctionDesc::CallUE(lua_State *L, int32 NumParams, void *Userdata)
 
     TArray<bool> CleanupFlags;
     CleanupFlags.AddZeroed(Properties.Num());
+    // 处理参数
     void *Params = PreCall(L, NumParams, FirstParamIndex, CleanupFlags, Userdata);      // prepare values of properties
 
     UFunction *FinalFunction = Function;
@@ -419,6 +420,8 @@ void* FFunctionDesc::PreCall(lua_State *L, int32 NumParams, int32 FirstParamInde
     for (int32 i = 0; i < Properties.Num(); ++i)
     {
         FPropertyDesc *Property = Properties[i];
+        // 初始化值
+        // 实际调用了Property->InitializeValue_InContainer
         Property->InitializeValue(Params);
         if (i == LatentPropertyIndex)
         {

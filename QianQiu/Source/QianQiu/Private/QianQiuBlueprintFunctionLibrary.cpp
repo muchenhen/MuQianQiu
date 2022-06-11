@@ -36,3 +36,8 @@ void UQianQiuBlueprintFunctionLibrary::InitCardManager(TMap<int, bool> Versions)
         UE_LOG(LogTemp, Warning, TEXT("Version %d is %s"), Version.Key, Version.Value ? TEXT("TRUE") : TEXT("FALSE"));
     }
 }
+
+FString UQianQiuBlueprintFunctionLibrary::GetProBase()
+{
+    return FApp::GetProjectName();
+}

@@ -10,18 +10,9 @@
   <component name="ChangeListManager">
     <list default="true" id="63aa9bb2-c26a-4418-93c7-7698e5099a7e" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.QianQiu/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.QianQiu/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Actor/Actor_Card.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Actor/Actor_Card.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Maps/MainLevel.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Maps/MainLevel.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Maps/OneTwo.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Maps/OneTwo.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Material/MT_Card.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Material/MT_Card.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Material/MT_Card_Inst.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Model/BP_Card.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Model/BP_Card.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Model/MyQianQiuCard.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Model/MyQianQiuCard.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Script/Actor_Card.lua" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Script/Actor_Card.lua" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Script/UI/UI_Begin.lua" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Script/UI/UI_Begin.lua" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/QianQiu/Managers/CardManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QianQiu/Managers/CardManager.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/QianQiu/Managers/CardManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QianQiu/Managers/CardManager.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/QianQiu/Private/QianQiuBlueprintFunctionLibrary.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QianQiu/Private/QianQiuBlueprintFunctionLibrary.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/QianQiu/Public/QianQiuBlueprintFunctionLibrary.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QianQiu/Public/QianQiuBlueprintFunctionLibrary.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,6 +50,8 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="DebuggerViewTab_PTCS_FirstProportionKey" value="0.34995976" />
+    <property name="DebuggerViewTab_PTCS_LastProportionKey" value="0.0" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
@@ -199,13 +192,15 @@
       <workItem from="1647431502500" duration="8567000" />
       <workItem from="1649061280501" duration="3000" />
       <workItem from="1649068736601" duration="5427000" />
+      <workItem from="1649315243249" duration="668000" />
+      <workItem from="1650272199921" duration="1328000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
-  <component name="UnityProjectConfiguration" hasMinimizedUI="null" />
+  <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
   <component name="UnityUnitTestConfiguration" currentTestLauncher="NUnit" />
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">

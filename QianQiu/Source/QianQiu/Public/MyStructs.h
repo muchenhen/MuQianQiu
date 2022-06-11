@@ -27,21 +27,23 @@ public:
 	FString Type = "Char";
 	UPROPERTY(EditAnywhere, DisplayName = "卡面贴图")
 	FString Texture = "Tex_Char_ARuan";
-	UPROPERTY(EditAnywhere, DisplayName = "特殊卡")
+    UPROPERTY(EditAnywhere, DisplayName = "是否为特殊牌")
+    bool Special = false;
+	UPROPERTY(EditAnywhere, DisplayName = "特殊卡名称")
 	int SpecialName = 0;
-	UPROPERTY(EditAnywhere, DisplayName = "特殊卡")
+	UPROPERTY(EditAnywhere, DisplayName = "特殊效果1")
 	int EffectFirst = 0;
-	UPROPERTY(EditAnywhere, DisplayName = "特殊卡")
+	UPROPERTY(EditAnywhere, DisplayName = "特殊效果1参数")
 	int ParamFirst = 0;
-	UPROPERTY(EditAnywhere, DisplayName = "特殊卡")
+	UPROPERTY(EditAnywhere, DisplayName = "特殊效果2")
 	int EffectSecond = 0;
-	UPROPERTY(EditAnywhere, DisplayName = "特殊卡")
+	UPROPERTY(EditAnywhere, DisplayName = "特殊效果2参数")
 	int ParamSecond = 0;
 
 	FCardData(){}
 	
 	FCardData(int InCardID, FString InName, int InValue, FString InSeason,
-		FString InType, FString InTexture,
+		FString InType, FString InTexture, bool InSpecial,
 		int InSpecialName, int InEffectFirst, int InParamFirst, int InEffectSecond, int InParamSecond)
 	{
 		CardID = InCardID;
@@ -50,6 +52,7 @@ public:
 		Season = InSeason;
 		Type = InType;
 		Texture = InTexture;
+	    Special = InSpecial;
 		SpecialName = InSpecialName;
 		EffectFirst = InEffectFirst;
 		ParamFirst = InParamFirst;
