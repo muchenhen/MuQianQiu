@@ -19,10 +19,10 @@ void AUEditorFunctionLibrary::CreateCards()
             TotalNum = 24;
             for (int i = 0; i < TotalNum; i++)
             {
-                int CardID = 100 + i + 1;
+                int32 CardID = 100 + i + 1;
                 FActorSpawnParameters ActorSpawnParameters;
-                FName ActorName = *FString(FString(TEXT("Card") + FString(FString::FromInt(CardID))));
-                ActorSpawnParameters.Name = ActorName;
+                FString ActorName = "Card" + FString::FromInt(CardID);
+                ActorSpawnParameters.Name = FName(*ActorName);
                 Location += CardSpacingDirVector;
                 CreateCard(CardUClass, CardID, Location, Rotator, ActorSpawnParameters);
             }
@@ -33,10 +33,10 @@ void AUEditorFunctionLibrary::CreateCards()
             TotalNum = 24;
             for (int i = 0; i < TotalNum; i++)
             {
-                int CardID = 200 + i + 1;
+                int32 CardID = 200 + i + 1;
                 FActorSpawnParameters ActorSpawnParameters;
-                FName ActorName = FName(*FString::FromInt(CardID));
-                ActorSpawnParameters.Name = ActorName;
+                FString ActorName = "Card" + FString::FromInt(CardID);
+                ActorSpawnParameters.Name = FName(*ActorName);
                 Location += CardSpacingDirVector;
                 CreateCard(CardUClass, CardID, Location, Rotator, ActorSpawnParameters);
             }
@@ -47,10 +47,10 @@ void AUEditorFunctionLibrary::CreateCards()
             TotalNum = 24;
             for (int i = 0; i < TotalNum; i++)
             {
-                int CardID = 300 + i + 1;
+                int32 CardID = 300 + i + 1;
                 FActorSpawnParameters ActorSpawnParameters;
-                FName ActorName = *FString(FString(TEXT("Card") + FString(FString::FromInt(CardID))));
-                ActorSpawnParameters.Name = ActorName;
+                FString ActorName = "Card" + FString::FromInt(CardID);
+                ActorSpawnParameters.Name = FName(*ActorName);
                 Location += CardSpacingDirVector;
                 CreateCard(CardUClass, CardID, Location, Rotator, ActorSpawnParameters);
             }
