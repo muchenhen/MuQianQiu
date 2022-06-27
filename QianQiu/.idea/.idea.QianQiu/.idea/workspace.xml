@@ -8,12 +8,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="63aa9bb2-c26a-4418-93c7-7698e5099a7e" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.QianQiu/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.QianQiu/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Script/Actor_Card.lua" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Script/Actor_Card.lua" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/QianQiu/Private/QianQiuBlueprintFunctionLibrary.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QianQiu/Private/QianQiuBlueprintFunctionLibrary.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/QianQiu/Public/QianQiuBlueprintFunctionLibrary.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QianQiu/Public/QianQiuBlueprintFunctionLibrary.h" afterDir="false" />
-    </list>
+    <list default="true" id="63aa9bb2-c26a-4418-93c7-7698e5099a7e" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -31,11 +26,11 @@
     </file-type-list>
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Plugins/UnLua/Source/ThirdParty/Lua/src/liolib.c" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Plugins/UnLua/Source/ThirdParty/Lua/src/ltm.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Plugins/UnLua/Source/ThirdParty/Lua/src/luaconf.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/QianQiu/Managers/QianQiuManager.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/QianQiu/Managers/QianQiuManager.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Plugins/UnLua/Source/ThirdParty/Lua/src/liolib.c" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Plugins/UnLua/Source/ThirdParty/Lua/src/luaconf.h" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Plugins/UnLua/Source/ThirdParty/Lua/src/ltm.h" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -49,19 +44,12 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="DebuggerViewTab_PTCS_FirstProportionKey" value="0.34995976" />
-    <property name="DebuggerViewTab_PTCS_LastProportionKey" value="0.0" />
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="node.js.detected.package.eslint" value="true" />
-    <property name="node.js.detected.package.tslint" value="true" />
-    <property name="node.js.selected.package.eslint" value="(autodetect)" />
-    <property name="node.js.selected.package.tslint" value="(autodetect)" />
-    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
-    <property name="vue.rearranger.settings.migration" value="true" />
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "WebServerToolWindowFactoryState": "false",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
   <component name="RunManager" selected="C++ Project.QianQiu">
     <configuration name="QianQiu" type="CppProject" factoryName="C++ Project">
       <configuration_1>
@@ -194,6 +182,7 @@
       <workItem from="1649068736601" duration="5427000" />
       <workItem from="1649315243249" duration="668000" />
       <workItem from="1650272199921" duration="1328000" />
+      <workItem from="1656337901085" duration="291000" />
     </task>
     <servers />
   </component>
@@ -212,7 +201,6 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />

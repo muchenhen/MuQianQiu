@@ -19,15 +19,12 @@ void AUEditorFunctionLibrary::CreateCards()
             TotalNum = 24;
             for (int i = 0; i < TotalNum; i++)
             {
-                const FActorSpawnParameters ActorSpawnParameters;
-                Location += CardSpacingDirVector;
-                AActor* Card = GetWorld()->SpawnActor(CardUClass, &Location, &Rotator, ActorSpawnParameters);
                 int CardID = 100 + i + 1;
-                FName RowName = FName(*FString::FromInt(CardID));
-                FString ContextString = TEXT("FCardData::FindCardData");
-                FCardData* CardData = CardDataTable->FindRow<FCardData>(RowName, ContextString);
-                ACardBase* CardBase = Cast<ACardBase>(Card);
-                CardBase->Init(*CardData);
+                FActorSpawnParameters ActorSpawnParameters;
+                FName ActorName = *FString(FString(TEXT("Card") + FString(FString::FromInt(CardID))));
+                ActorSpawnParameters.Name = ActorName;
+                Location += CardSpacingDirVector;
+                CreateCard(CardUClass, CardID, Location, Rotator, ActorSpawnParameters);
             }
             TotalNum = 0;
         }
@@ -36,15 +33,12 @@ void AUEditorFunctionLibrary::CreateCards()
             TotalNum = 24;
             for (int i = 0; i < TotalNum; i++)
             {
-                const FActorSpawnParameters ActorSpawnParameters;
-                Location += CardSpacingDirVector;
-                AActor* Card = GetWorld()->SpawnActor(CardUClass, &Location, &Rotator, ActorSpawnParameters);
                 int CardID = 200 + i + 1;
-                FName RowName = FName(*FString::FromInt(CardID));
-                FString ContextString = TEXT("FCardData::FindCardData");
-                FCardData* CardData = CardDataTable->FindRow<FCardData>(RowName, ContextString);
-                ACardBase* CardBase = Cast<ACardBase>(Card);
-                CardBase->Init(*CardData);
+                FActorSpawnParameters ActorSpawnParameters;
+                FName ActorName = FName(*FString::FromInt(CardID));
+                ActorSpawnParameters.Name = ActorName;
+                Location += CardSpacingDirVector;
+                CreateCard(CardUClass, CardID, Location, Rotator, ActorSpawnParameters);
             }
             TotalNum = 0;
         }
@@ -53,17 +47,24 @@ void AUEditorFunctionLibrary::CreateCards()
             TotalNum = 24;
             for (int i = 0; i < TotalNum; i++)
             {
-                const FActorSpawnParameters ActorSpawnParameters;
-                Location += CardSpacingDirVector;
-                AActor* Card = GetWorld()->SpawnActor(CardUClass, &Location, &Rotator, ActorSpawnParameters);
                 int CardID = 300 + i + 1;
-                FName RowName = FName(*FString::FromInt(CardID));
-                FString ContextString = TEXT("FCardData::FindCardData");
-                FCardData* CardData = CardDataTable->FindRow<FCardData>(RowName, ContextString);
-                ACardBase* CardBase = Cast<ACardBase>(Card);
-                CardBase->Init(*CardData);
+                FActorSpawnParameters ActorSpawnParameters;
+                FName ActorName = *FString(FString(TEXT("Card") + FString(FString::FromInt(CardID))));
+                ActorSpawnParameters.Name = ActorName;
+                Location += CardSpacingDirVector;
+                CreateCard(CardUClass, CardID, Location, Rotator, ActorSpawnParameters);
             }
             TotalNum = 0;
         }
     }
+}
+
+void AUEditorFunctionLibrary::CreateCard(UClass* CardUClass, const int& CardID, const FVector& Location, const FRotator& Rotator, const FActorSpawnParameters& ActorSpawnParameters)
+{
+    AActor* Card = GetWorld()->SpawnActor(CardUClass, &Location, &Rotator, ActorSpawnParameters);
+    const FName RowName = FName(*FString::FromInt(CardID));
+    const FString ContextString = TEXT("FCardData::FindCardData");
+    const FCardData* CardData = CardDataTable->FindRow<FCardData>(RowName, ContextString);
+    ACardBase* CardBase = Cast<ACardBase>(Card);
+    CardBase->Init(*CardData);
 }

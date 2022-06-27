@@ -3,6 +3,8 @@
 
 #include "CardManager.h"
 
+#include "Kismet/GameplayStatics.h"
+
 static TSharedPtr<UDataTable> CardDataTable;
 
 
@@ -39,4 +41,16 @@ FCardData UCardManager::GetCardData(const int& CardID)
 		}
 	}
 	return FCardData();
+}
+
+void UCardManager::GetAllCardsInLevel()
+{
+    TArray<AActor*> Actors;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACardBase::StaticClass(), Actors);
+    for (const auto& Card: Actors)
+    {
+        ACardBase* CardBase = Cast<ACardBase>(Card);
+        int CardID = CardBase->CardData.CardID;
+        CardsInLevel.Add(CardID, CardBase);
+    }
 }

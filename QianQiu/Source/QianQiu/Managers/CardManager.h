@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
+#include <QianQiu/Actors/CardBase.h>
 #include "MyStructs.h"
 #include "CardManager.generated.h"
 
@@ -23,7 +24,11 @@ public:
 	
 private:
     TMap<int, bool> VersionMap;
+
+    TMap<int, ACardBase*> CardsInLevel;
 public:
     void LoadCardData();
     static FCardData GetCardData(const int& CardID);
+
+    void GetAllCardsInLevel();
 };
