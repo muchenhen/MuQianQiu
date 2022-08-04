@@ -1,0 +1,99 @@
+<mxfile host="65bd71144e">
+    <diagram id="Rsd6rqLKD4PuqKIb7y_c" name="第 1 页">
+        <mxGraphModel dx="964" dy="645" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="1920" background="none" math="1" shadow="1">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="5" value="" style="edgeStyle=none;html=1;fontSize=14;fontStyle=0" edge="1" parent="1" source="2" target="8">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="680" y="132" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="2" value="玩家回合开始" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fontStyle=0" vertex="1" parent="1">
+                    <mxGeometry x="620" y="22" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" value="是" style="edgeStyle=none;html=1;fontSize=14;fontStyle=0" edge="1" parent="1" source="8" target="9">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="12" value="否" style="edgeStyle=none;html=1;fontSize=14;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontStyle=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="8" target="13">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="600" y="360" as="targetPoint"/>
+                        <mxPoint x="706" y="195" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="8" value="是否完全不能拿牌" style="rhombus;whiteSpace=wrap;html=1;fontSize=14;fontStyle=0" vertex="1" parent="1">
+                    <mxGeometry x="580" y="132" width="200" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="11" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=14;fontStyle=0;entryX=0;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="9" target="8">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="310" y="251" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="310" y="240"/>
+                            <mxPoint x="630" y="240"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="9" value="点击任何一张将随机交换为另一张未展示的牌" style="whiteSpace=wrap;html=1;fontSize=14;fontStyle=0" vertex="1" parent="1">
+                    <mxGeometry x="250" y="140" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="16" value="" style="edgeStyle=none;html=1;fontSize=14;fontStyle=0" edge="1" parent="1" source="13" target="15">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="13" value="玩家选中任何一张牌" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fontStyle=0" vertex="1" parent="1">
+                    <mxGeometry x="620" y="270" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="18" value="" style="edgeStyle=none;html=1;fontSize=14;fontStyle=0" edge="1" parent="1" source="15" target="17">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="15" value="高亮显示中间的牌" style="whiteSpace=wrap;html=1;rounded=1;fontSize=14;fontStyle=0" vertex="1" parent="1">
+                    <mxGeometry x="620" y="380" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="20" value="" style="edgeStyle=none;html=1;fontSize=14;fontStyle=0" edge="1" parent="1" source="17" target="19">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="17" value="点击一张中间高亮的牌" style="whiteSpace=wrap;html=1;rounded=1;fontSize=14;fontStyle=0" vertex="1" parent="1">
+                    <mxGeometry x="620" y="490" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="26" value="" style="edgeStyle=none;html=1;fontSize=14;fontStyle=0" edge="1" parent="1" source="19" target="25">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="19" value="两张牌进入组合堆" style="whiteSpace=wrap;html=1;rounded=1;fontSize=14;fontStyle=0" vertex="1" parent="1">
+                    <mxGeometry x="620" y="600" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="30" value="" style="edgeStyle=none;html=1;fontSize=14;fontStyle=0" edge="1" parent="1" source="21" target="29">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="21" value="检查并替换组合堆中可以替换的特殊牌" style="whiteSpace=wrap;html=1;rounded=1;fontSize=14;fontStyle=0" vertex="1" parent="1">
+                    <mxGeometry x="620" y="820" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="27" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=14;fontStyle=0" edge="1" parent="1" source="25" target="21">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="25" value="基础分计分" style="whiteSpace=wrap;html=1;rounded=1;fontSize=14;fontStyle=0" vertex="1" parent="1">
+                    <mxGeometry x="620" y="710" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="33" value="" style="edgeStyle=none;html=1;fontSize=14;fontStyle=0" edge="1" parent="1" source="29" target="32">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="29" value="检查并执行特殊机制" style="whiteSpace=wrap;html=1;rounded=1;fontSize=14;fontStyle=0" vertex="1" parent="1">
+                    <mxGeometry x="620" y="930" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="35" value="" style="edgeStyle=none;html=1;fontSize=14;fontStyle=0" edge="1" parent="1" source="32" target="34">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="32" value="检查组合堆，查询新完成的组合" style="whiteSpace=wrap;html=1;rounded=1;fontSize=14;fontStyle=0" vertex="1" parent="1">
+                    <mxGeometry x="620" y="1040" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="37" value="" style="edgeStyle=none;html=1;fontSize=14;fontStyle=0" edge="1" parent="1" source="34" target="36">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="34" value="播放新完成的组合并计分" style="whiteSpace=wrap;html=1;rounded=1;fontSize=14;fontStyle=0" vertex="1" parent="1">
+                    <mxGeometry x="620" y="1150" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="36" value="计分完毕回合结束" style="whiteSpace=wrap;html=1;rounded=1;fontSize=14;fontStyle=0" vertex="1" parent="1">
+                    <mxGeometry x="620" y="1260" width="120" height="60" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
