@@ -12,7 +12,7 @@
  * 
  */
 UCLASS(BlueprintType, Blueprintable)
-class QIANQIU_API UCardManager : public UObject
+class QIANQIU_API UCardManager : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 

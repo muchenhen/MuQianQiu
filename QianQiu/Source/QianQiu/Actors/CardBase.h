@@ -4,12 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "MyStructs.h"
-#include "UnLuaInterface.h"
 #include "GameFramework/Actor.h"
 #include "CardBase.generated.h"
 
 UCLASS()
-class QIANQIU_API ACardBase : public AActor ,public IUnLuaInterface
+class QIANQIU_API ACardBase : public AActor 
 {
     GENERATED_BODY()
 
@@ -36,11 +35,6 @@ public:
     virtual void Tick(float DeltaTime) override;
 
     void Init(FCardData InCardData);
-
-    virtual FString GetModuleName_Implementation() const override
-    {
-        return LuaScript;
-    }
 
     // UFUNCTION()
     // void OnCardClick(AActor* ClickedActor, FKey ButtonPressed);
