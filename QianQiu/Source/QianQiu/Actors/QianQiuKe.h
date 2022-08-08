@@ -36,20 +36,20 @@ public:
 
 protected:
     /* 玩家的手牌堆 */
-    UPROPERTY(VisibleAnywhere)
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, DisplayName = "手牌堆")
     TMap<int, ACardBase*> PlayerCardInHands;
 
     /* 玩家的故事堆 */
-    UPROPERTY(VisibleAnywhere)
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, DisplayName = "故事牌堆")
     TMap<int, ACardBase*> PlayerCardInStory;
 
     /* 特殊牌堆 */
-    UPROPERTY(VisibleAnywhere)
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, DisplayName = "特殊牌堆")
     TMap<int, ACardBase*> PlayerCardInSpecial;
 
     /* 玩家分数 */
-    UPROPERTY(VisibleAnywhere)
-    int Score;
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, DisplayName = "分数")
+    int Score = 0;
     
 public:
     // Sets default values for this character's properties
@@ -68,8 +68,32 @@ public:
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
     // 增加玩家分数
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable, CallInEditor)
     void AddScore(const int& ScoreIncreased);
+
+    // 设置玩家分数
+    /**
+     * @brief 直接设置玩家分数
+     * @param InScore 传入的分数参数
+     */
+    UFUNCTION(BlueprintCallable, CallInEditor)
+    void SetScore(const int& InScore);
+
+    // 传递给玩家故事堆一张牌
+    UFUNCTION(BlueprintCallable)
+    void SetCardToStory(ACardBase* CardBase);
+
+    UFUNCTION(BlueprintCallable)
+    void SetCardsToStory(TArray<ACardBase*> Cards);
+
+    UFUNCTION(BlueprintCallable)
+    TMap<int, ACardBase*> GetCardsInStory();
+
+    UFUNCTION(BlueprintCallable)
+    void SetCardToHands(ACardBase* CardBase);
+
+    UFUNCTION(BlueprintCallable)
+    void SetCardToSpecial(ACardBase* CardBase);
 
     
 };

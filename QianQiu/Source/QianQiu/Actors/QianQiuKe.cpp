@@ -32,3 +32,43 @@ void AQianQiuKe::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 
 }
 
+void AQianQiuKe::AddScore(const int& ScoreIncreased)
+{
+    Score += ScoreIncreased;
+}
+
+void AQianQiuKe::SetScore(const int& InScore)
+{
+    Score = InScore;
+}
+
+void AQianQiuKe::SetCardToStory(ACardBase* CardBase)
+{
+    if (IsValid(CardBase))
+    {
+        const int& CardID = CardBase->CardData.CardID;
+        PlayerCardInHands.Add(CardID, CardBase);
+    }
+}
+
+void AQianQiuKe::SetCardsToStory(TArray<ACardBase*> Cards)
+{
+    for (const auto& Card: Cards)
+    {
+        SetCardToStory(Card);
+    }
+}
+
+TMap<int, ACardBase*> AQianQiuKe::GetCardsInStory()
+{
+    return PlayerCardInStory;
+}
+
+void AQianQiuKe::SetCardToHands(ACardBase* CardBase)
+{
+}
+
+void AQianQiuKe::SetCardToSpecial(ACardBase* CardBase)
+{
+}
+

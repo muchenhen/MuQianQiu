@@ -21,10 +21,6 @@
 			"Enabled": true
 		},
 		{
-			"Name": "UnLua",
-			"Enabled": true
-		},
-		{
 			"Name": "Bridge",
 			"Enabled": true,
 			"SupportedTargetPlatforms": [
