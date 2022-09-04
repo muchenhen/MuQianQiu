@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MyStructs.h"
+#include "MuStructs.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "QianQiuBlueprintFunctionLibrary.generated.h"
 
@@ -22,7 +22,10 @@ public:
     void LoadMap(FString MapPath);
 
     UFUNCTION(BlueprintCallable, Category="QianQiuFunc")
-    AActor* GetActorByTag(UObject* WorldContext, FString Tag);
+    static AActor* GetActorByTag(UObject* WorldContext, FString Tag);
+
+    UFUNCTION(BlueprintCallable, Category="QianQiuFunc")
+    static void GetActorsByTag(UObject* WorldContext, FString Tag, TArray<AActor*>& Actors);
 
     UFUNCTION(BlueprintCallable, Category="QianQiuFunc")
     void InitCardManager(TMap<int, bool> Versions);

@@ -3,6 +3,8 @@
 
 #include "CardBase.h"
 
+#include "QianQiu/Managers/CardManager.h"
+
 
 // Sets default values
 ACardBase::ACardBase()
@@ -51,6 +53,12 @@ void ACardBase::Init(FCardData InCardData)
             StaticMesh->SetMaterial(0, InstanceDynamic);
         }
     }
+}
+
+void ACardBase::Init(const int& CardID)
+{
+    CardData = UCardManager::GetCardData(CardID);
+    Init(CardData);
 }
 
 // void ACardBase::OnCardClick(AActor* ClickedActor, FKey ButtonPressed)

@@ -2,7 +2,6 @@
 
 
 #include "QianQiuBlueprintFunctionLibrary.h"
-
 #include "Kismet/GameplayStatics.h"
 
 UWorld* UQianQiuBlueprintFunctionLibrary::GetWorld() const {
@@ -27,6 +26,11 @@ AActor* UQianQiuBlueprintFunctionLibrary::GetActorByTag(UObject* WorldContext, F
     {
         return nullptr;
     }
+}
+
+void UQianQiuBlueprintFunctionLibrary::GetActorsByTag(UObject* WorldContext, FString Tag, TArray<AActor*>& Actors)
+{
+    UGameplayStatics::GetAllActorsWithTag(WorldContext, *Tag, Actors);
 }
 
 void UQianQiuBlueprintFunctionLibrary::InitCardManager(TMap<int, bool> Versions)

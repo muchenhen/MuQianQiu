@@ -5,30 +5,44 @@
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
 #include <QianQiu/Actors/CardBase.h>
-#include "MyStructs.h"
+
+#include "MuStructs.h"
 #include "CardManager.generated.h"
+
+DECLARE_LOG_CATEGORY_EXTERN(LogCardManager, Display, Display);
 
 /**
  * 
  */
 UCLASS(BlueprintType, Blueprintable)
-class QIANQIU_API UCardManager : public UGameInstanceSubsystem
+class QIANQIU_API UCardManager : public UObject
 {
 	GENERATED_BODY()
 
 public:
     UCardManager();
-    UCardManager(TMap<int, bool> Versions);
-    ~UCardManager();
-    
+    virtual ~UCardManager() override;
 	
 private:
-    TMap<int, bool> VersionMap;
+    static TMap<int, bool> VersionMap;
 
-    TMap<int, ACardBase*> CardsInLevel;
+    static TMap<int, ACardBase*> CardsInLevel;
+
+    static TSharedPtr<UDataTable> CardDataTable;
+
+    static TSharedPtr<UDataTable> StoryDataTable;
+
+    static TSharedPtr<UDataTable> CardTransformTable;
 public:
-    void LoadCardData();
+    static void LoadCardData();
+
+    static void LoadCardTransform();
+    
     static FCardData GetCardData(const int& CardID);
 
-    void GetAllCardsInLevel();
+    static FTransform GetCardTransform(const FString& TransformName);
+
+    static void GetAllCardsInLevel();
+
+    static void GetCardsIDByGameMode(EGameMode GameMode, TArray<int32>& CardsID);
 };

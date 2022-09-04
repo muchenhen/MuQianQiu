@@ -4,24 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "CardBase.h"
+#include "MuStructs.h"
 #include "GameFramework/Character.h"
 #include "QianQiuKe.generated.h"
 
 
-USTRUCT()
-struct FCardSlot
-{
-    GENERATED_BODY()
-public:
-    UPROPERTY(VisibleAnywhere)
-    bool bEmpty = true;
 
-    UPROPERTY(VisibleAnywhere)
-    FTransform Transform;
-
-    UPROPERTY(VisibleAnywhere)
-    ACardBase* CardBase;
-};
 
 /*
  * 玩家类
@@ -33,6 +21,8 @@ class QIANQIU_API AQianQiuKe : public ACharacter
     GENERATED_BODY()
 
 public:
+    UFUNCTION(BlueprintCallable)
+    void ResetQianQiuKe();
 
 protected:
     /* 玩家的手牌堆 */
@@ -89,8 +79,12 @@ public:
     UFUNCTION(BlueprintCallable)
     TMap<int, ACardBase*> GetCardsInStory();
 
+    // 给玩家一张手牌
     UFUNCTION(BlueprintCallable)
     void SetCardToHands(ACardBase* CardBase);
+
+    UFUNCTION(BlueprintCallable)
+    void UpdateHandCardsTransform();
 
     UFUNCTION(BlueprintCallable)
     void SetCardToSpecial(ACardBase* CardBase);

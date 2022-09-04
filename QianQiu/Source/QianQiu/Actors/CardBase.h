@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MyStructs.h"
+#include "MuStructs.h"
 #include "GameFramework/Actor.h"
 #include "CardBase.generated.h"
 
@@ -35,6 +35,8 @@ public:
     virtual void Tick(float DeltaTime) override;
 
     void Init(FCardData InCardData);
+
+    void Init(const int& CardID);
 
     // UFUNCTION()
     // void OnCardClick(AActor* ClickedActor, FKey ButtonPressed);
