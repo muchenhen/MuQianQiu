@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "Managers/CardManager.h"
+#include "Managers/DataManager.h"
 #include "QianQiuGameModeBase.generated.h"
 
 /**

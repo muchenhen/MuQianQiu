@@ -7,8 +7,8 @@
 void AQianQiuGameModeBase::StartPlay() {
     Super::StartPlay();
     UE_LOG(LogTemp, Warning, TEXT("Game StartPlay"));
-    UCardManager::LoadCardData();
-    UCardManager::LoadCardTransform();
+    UDataManager::LoadCardData();
+    UDataManager::LoadCardTransform();
 }
 
 void AQianQiuGameModeBase::EndPlay(const EEndPlayReason::Type EndPlayReason)

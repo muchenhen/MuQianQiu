@@ -4,7 +4,7 @@
 #include "QianQiuKe.h"
 
 #include "QianQiuBlueprintFunctionLibrary.h"
-#include "QianQiu/Managers/CardManager.h"
+#include "QianQiu/Managers/DataManager.h"
 
 void AQianQiuKe::ResetQianQiuKe()
 {
@@ -85,8 +85,8 @@ void AQianQiuKe::UpdateHandCardsTransform()
     {
         return;
     }
-    FTransform StartTransform = UCardManager::GetCardTransform("PlayerAHandFirst");
-    FTransform EndTransform = UCardManager::GetCardTransform("PlayerAHandLast");
+    FTransform StartTransform = UDataManager::GetCardTransform("PlayerAHandFirst");
+    FTransform EndTransform = UDataManager::GetCardTransform("PlayerAHandLast");
     float X = (EndTransform.GetTranslation().X - StartTransform.GetTranslation().X) / PlayerCardInHands.Num();
     float Y = (EndTransform.GetTranslation().Y - StartTransform.GetTranslation().Y) / PlayerCardInHands.Num();
     int i = 0;

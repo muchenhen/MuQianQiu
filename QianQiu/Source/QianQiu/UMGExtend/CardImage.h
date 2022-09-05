@@ -6,7 +6,7 @@
 #include "Components/Image.h"
 #include "CardImage.generated.h"
 
-class UCardManager;
+class UDataManager;
 
 /**
  * 

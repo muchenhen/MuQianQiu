@@ -3,11 +3,11 @@
 
 #include "CardImage.h"
 #include "MuStructs.h"
-#include "QianQiu/Managers/CardManager.h"
+#include "QianQiu/Managers/DataManager.h"
 
 void UCardImage::SetCard(const int& CardID)
 {
-	FCardData CardData = UCardManager::GetCardData(CardID);
+	FCardData CardData = UDataManager::GetCardData(CardID);
 	if (CardData.CardID == CardID)
 	{
 		auto Texture = LoadObject<UTexture2D>(NULL, UTF8_TO_TCHAR("Texture2D'/Game/Texture/Tex_Card_Back.Tex_Card_Back'"));

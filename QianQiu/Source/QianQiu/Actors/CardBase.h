@@ -8,7 +8,7 @@
 #include "CardBase.generated.h"
 
 UCLASS()
-class QIANQIU_API ACardBase : public AActor 
+class QIANQIU_API ACardBase : public AActor
 {
     GENERATED_BODY()
 
@@ -25,12 +25,15 @@ public:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     UStaticMeshComponent* StaticMesh;
-    
+
 protected:
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
 
 public:
+    UPROPERTY(EditAnywhere)
+    int ID = 201;
+
     // Called every frame
     virtual void Tick(float DeltaTime) override;
 
@@ -40,4 +43,9 @@ public:
 
     // UFUNCTION()
     // void OnCardClick(AActor* ClickedActor, FKey ButtonPressed);
+
+#if WITH_EDITOR
+    UFUNCTION(CallInEditor)
+    void Init();
+#endif
 };

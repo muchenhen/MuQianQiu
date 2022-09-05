@@ -3,7 +3,7 @@
 
 #include "GameManager.h"
 
-#include "CardManager.h"
+#include "DataManager.h"
 
 void UGameManager::BeginGame()
 {
@@ -32,7 +32,7 @@ void UGameManager::BeginGame()
 void UGameManager::InitCards()
 {
     TArray<int32> CardsID;
-    UCardManager::GetCardsIDByGameMode(GameMode, CardsID);
+    UDataManager::GetCardsIDByGameMode(GameMode, CardsID);
 
     for (int i = 0; i < CardsID.Num(); i++)
     {
@@ -47,7 +47,7 @@ void UGameManager::InitCards()
     AllInitCardsID = CardsID;
 }
 
-void UGameManager::SendCardsToPlayer()
+void UGameManager::InitSendCards()
 {
     for(int i = 0; i < AllInitCardsID.Num() - 1; i++)
     {
@@ -55,6 +55,7 @@ void UGameManager::SendCardsToPlayer()
         ACardBase* Card = GetWorld()->SpawnActor<ACardBase>();
         Card->Init(CardID);
         // i < 20, 为玩家手牌，按照奇偶数给两个玩家发牌
+        // TODO: 需要保存一下随机发给两位玩家的牌的ID，在播放场景加载的sequence的时候给这几个ID对应的Actor做不同的表现
         if(i < 20)
         {
             if(i % 2 == 0)

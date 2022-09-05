@@ -1,28 +1,28 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "CardManager.h"
+#include "DataManager.h"
 
 #include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY(LogCardManager);
 
-TSharedPtr<UDataTable> UCardManager::CardDataTable;
-TSharedPtr<UDataTable> UCardManager::StoryDataTable;
-TSharedPtr<UDataTable> UCardManager::CardTransformTable;
+TSharedPtr<UDataTable> UDataManager::CardDataTable;
+TSharedPtr<UDataTable> UDataManager::StoryDataTable;
+TSharedPtr<UDataTable> UDataManager::CardTransformTable;
 
 
 
-UCardManager::UCardManager()
+UDataManager::UDataManager()
 {
 }
 
-UCardManager::~UCardManager()
+UDataManager::~UDataManager()
 {
 }
 
 
-void UCardManager::LoadCardData()
+void UDataManager::LoadCardData()
 {
     if (CardDataTable.IsValid())
     {
@@ -39,7 +39,7 @@ void UCardManager::LoadCardData()
     }
 }
 
-void UCardManager::LoadCardTransform()
+void UDataManager::LoadCardTransform()
 {
     if (CardTransformTable.IsValid())
     {
@@ -56,7 +56,7 @@ void UCardManager::LoadCardTransform()
     }
 }
 
-FCardData UCardManager::GetCardData(const int& CardID)
+FCardData UDataManager::GetCardData(const int& CardID)
 {
 	if(CardID != 0)
 	{
@@ -71,7 +71,7 @@ FCardData UCardManager::GetCardData(const int& CardID)
 	return FCardData();
 }
 
-FTransform UCardManager::GetCardTransform(const FString& TransformName)
+FTransform UDataManager::GetCardTransform(const FString& TransformName)
 {
     if (!TransformName.IsEmpty())
     {
@@ -88,7 +88,7 @@ FTransform UCardManager::GetCardTransform(const FString& TransformName)
     return  FTransform();
 }
 
-void UCardManager::GetAllCardsInLevel()
+void UDataManager::GetAllCardsInLevel()
 {
     // TArray<AActor*> Actors;
     // UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACardBase::StaticClass(), Actors);
@@ -100,20 +100,40 @@ void UCardManager::GetAllCardsInLevel()
     // }
 }
 
-void UCardManager::GetCardsIDByGameMode(EGameMode GameMode, TArray<int32>& CardsID)
+void UDataManager::GetCardsIDByGameMode(EGameMode GameMode, TArray<int32>& CardsID)
 {
     if (!CardDataTable.IsValid())
     {
         return;
     }
+    const FString ContextString = TEXT("FCardData::FindCardData");
+    TArray<FCardData*> CardDatas;
+    CardDataTable->GetAllRows<FCardData>(ContextString, CardDatas);
     if (GameMode == EGameMode::BC)
     {
-        const FString ContextString = TEXT("FCardData::FindCardData");
-        TArray<FCardData*> CardDatas;
-        CardDataTable->GetAllRows<FCardData>(ContextString, CardDatas);
         for (auto& CardData :CardDatas)
         {
             if (CardData->CardID / 100 == 2 || CardData->CardID / 100 == 3)
+            {
+                CardsID.Add(CardData->CardID);
+            }
+        }
+    }
+    else if (GameMode == EGameMode::AB)
+    {
+        for (auto& CardData : CardDatas)
+        {
+            if (CardData->CardID / 100 == 2 || CardData->CardID / 100 == 1)
+            {
+                CardsID.Add(CardData->CardID);
+            }
+        }
+    }
+    else if (GameMode == EGameMode::AC)
+    {
+        for (auto& CardData : CardDatas)
+        {
+            if (CardData->CardID / 100 == 1 || CardData->CardID / 100 == 3)
             {
                 CardsID.Add(CardData->CardID);
             }

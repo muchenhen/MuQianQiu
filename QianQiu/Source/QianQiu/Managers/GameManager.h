@@ -8,10 +8,8 @@
 #include "QianQiu/Actors/PublicCardsHolder.h"
 #include "GameManager.generated.h"
 
-
-
 /**
- * 
+ *
  */
 UCLASS()
 class QIANQIU_API UGameManager : public UGameInstanceSubsystem
@@ -30,13 +28,12 @@ public:
     void InitCards();
 
     UFUNCTION(BlueprintCallable)
-    void SendCardsToPlayer();
-    
-private:
+    void InitSendCards();
 
-    //随机卡牌顺序
+private:
+    // 随机卡牌顺序
     TArray<int32> AllInitCardsID;
-    
+
     // 玩家A的实例对象
     UPROPERTY()
     AQianQiuKe* PlayerA;

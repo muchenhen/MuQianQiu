@@ -1,10 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "CardBase.h"
 
-#include "QianQiu/Managers/CardManager.h"
-
+#include "QianQiu/Managers/DataManager.h"
 
 // Sets default values
 ACardBase::ACardBase()
@@ -41,13 +39,14 @@ void ACardBase::Init(FCardData InCardData)
 {
     // Texture2D'/Game/Texture/Item/Tex_Item_FengLai.Tex_Item_FengLai'
     CardData = InCardData;
+    ID = CardData.CardID;
     FString TexturePath = "/Game/Texture" / InCardData.Type / InCardData.Texture;
-    TexturePath = "Texture2D'" + TexturePath + "." +InCardData.Texture+"'";
+    TexturePath = "Texture2D'" + TexturePath + "." + InCardData.Texture + "'";
     UTexture2D* Texture2D = LoadObject<UTexture2D>(nullptr, *TexturePath);
     UMaterial* Material = StaticMesh->GetMaterial(0)->GetMaterial();
-    if(Material && Texture2D)
+    if (Material && Texture2D)
     {
-        if(UMaterialInstanceDynamic* InstanceDynamic = UMaterialInstanceDynamic::Create(Material, this))
+        if (UMaterialInstanceDynamic* InstanceDynamic = UMaterialInstanceDynamic::Create(Material, this))
         {
             InstanceDynamic->SetTextureParameterValue(FName("CardImage"), Texture2D);
             StaticMesh->SetMaterial(0, InstanceDynamic);
@@ -57,12 +56,18 @@ void ACardBase::Init(FCardData InCardData)
 
 void ACardBase::Init(const int& CardID)
 {
-    CardData = UCardManager::GetCardData(CardID);
+    CardData = UDataManager::GetCardData(CardID);
     Init(CardData);
 }
+
+#if WITH_EDITOR
+void ACardBase::Init()
+{
+    Init(ID);
+}
+#endif
 
 // void ACardBase::OnCardClick(AActor* ClickedActor, FKey ButtonPressed)
 // {
 //     UE_LOG(LogTemp, Display, TEXT("Current Choose Card ："));
 // }
-
