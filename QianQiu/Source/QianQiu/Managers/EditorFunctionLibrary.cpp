@@ -3,6 +3,7 @@
 
 #include "EditorFunctionLibrary.h"
 
+#include "Kismet/GameplayStatics.h"
 #include "QianQiu/Actors/CardBase.h"
 
 void AUEditorFunctionLibrary::CreateCards()
@@ -67,4 +68,17 @@ void AUEditorFunctionLibrary::CreateCard(UClass* CardUClass, const int& CardID, 
     const FCardData* CardData = CardDataTable->FindRow<FCardData>(RowName, ContextString);
     ACardBase* CardBase = Cast<ACardBase>(Card);
     CardBase->Init(*CardData);
+}
+
+void AUEditorFunctionLibrary::RenameAllCards()
+{
+    TArray<AActor*> Actors;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACardBase::StaticClass(), Actors);
+    int i = 0;
+    for (auto& Actor :Actors)
+    {
+        FString Name = FString::Printf(TEXT("Card_%d"), i);
+        Actor->SetActorLabel(Name,false);
+        i++;
+    }
 }

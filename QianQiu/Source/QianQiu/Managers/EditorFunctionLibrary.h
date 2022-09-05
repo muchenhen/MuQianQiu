@@ -21,36 +21,40 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Cards")
     bool First = false;
-    
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Cards")
     bool Second = true;
-    
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Cards")
     bool Third = true;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Cards")
     int FirstIDBegin = 101;
-    
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Cards")
     int FirstIDEnd = 124;
-    
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Cards")
     int SecondIDBegin = 201;
-    
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Cards")
     int SecondIDEnd = 224;
-    
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Cards")
     int ThirdIDBegin = 301;
-    
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Cards")
     int ThirdIDEnd = 324;
-    
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Cards")
-    FVector CardSpacingDirVector = FVector(0.0,0.1,0.0);
+    FVector CardSpacingDirVector = FVector(0.0, 0.1, 0.0);
 
 public:
     UFUNCTION(BlueprintCallable, CallInEditor, Category="Cards")
     void CreateCards();
+
     void CreateCard(UClass* CardUClass, const int& CardID, const FVector& Location, const FRotator& Rotator, const FActorSpawnParameters& ActorSpawnParameters);
+
+    UFUNCTION(BlueprintCallable, CallInEditor, Category="Cards")
+    void RenameAllCards();
 };
