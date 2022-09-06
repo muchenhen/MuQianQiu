@@ -16,7 +16,7 @@ public:
     UPROPERTY(EditAnywhere)
     FString LuaScript = TEXT("Actor/CardBase");
 
-    UPROPERTY(EditAnywhere)
+    UPROPERTY(EditAnywhere, Category="Card")
     FCardData CardData = FCardData();
 
 public:
@@ -45,7 +45,13 @@ public:
     // void OnCardClick(AActor* ClickedActor, FKey ButtonPressed);
 
 #if WITH_EDITOR
-    UFUNCTION(CallInEditor)
+    UFUNCTION(CallInEditor, Category="Card")
     void Init();
+
+#if WITH_EDITORONLY_DATA
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "CardDataTable",  Category="Card")
+    UDataTable* CardDataTable;
+#endif
+    
 #endif
 };

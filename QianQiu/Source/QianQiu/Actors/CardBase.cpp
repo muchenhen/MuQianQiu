@@ -63,7 +63,19 @@ void ACardBase::Init(const int& CardID)
 #if WITH_EDITOR
 void ACardBase::Init()
 {
-    Init(ID);
+    const FName RowID = FName(*FString::FromInt(ID));
+    const FString ContextString = TEXT("FCardData::FindCardData");
+    if(IsValid(CardDataTable))
+    {
+        const FCardData* Data = CardDataTable->FindRow<FCardData>(RowID, ContextString);
+        Init(*Data);
+    }
+    else
+    {
+        CardDataTable = LoadObject<UDataTable>(nullptr, UTF8_TO_TCHAR("DataTable'/Game/Table/TB_Cards.TB_Cards'"));
+        const FCardData* Data = CardDataTable->FindRow<FCardData>(RowID, ContextString);
+        Init(*Data);
+    }
 }
 #endif
 

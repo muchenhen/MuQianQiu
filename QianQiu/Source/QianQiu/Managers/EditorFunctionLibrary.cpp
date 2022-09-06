@@ -17,7 +17,7 @@ void AUEditorFunctionLibrary::CreateCards()
         int TotalNum = 0;
         if (First)
         {
-            TotalNum = 24;
+            TotalNum = 28;
             for (int i = 0; i < TotalNum; i++)
             {
                 int32 CardID = 100 + i + 1;
@@ -31,7 +31,7 @@ void AUEditorFunctionLibrary::CreateCards()
         }
         if (Second)
         {
-            TotalNum = 24;
+            TotalNum = 28;
             for (int i = 0; i < TotalNum; i++)
             {
                 int32 CardID = 200 + i + 1;
@@ -45,7 +45,7 @@ void AUEditorFunctionLibrary::CreateCards()
         }
         if (Third)
         {
-            TotalNum = 24;
+            TotalNum = 28;
             for (int i = 0; i < TotalNum; i++)
             {
                 int32 CardID = 300 + i + 1;
@@ -104,6 +104,7 @@ void AUEditorFunctionLibrary::RandomInitCards()
 
     const FString ContextString = TEXT("FCardData::FindCardData");
     TArray<FCardData*> CardDatas;
+    TArray<FCardData> Datas;
     CardDataTable->GetAllRows<FCardData>(ContextString, CardDatas);
     for (const auto& CardData : CardDatas)
     {
@@ -114,26 +115,39 @@ void AUEditorFunctionLibrary::RandomInitCards()
         if (Game == EGameMode::BC && (CardData->CardID / 100 == 2 || CardData->CardID / 100 == 3))
         {
             CardsID.Add(CardData->CardID);
+            Datas.Add(*CardData);
         }
         else if (Game == EGameMode::AB && (CardData->CardID / 100 == 2 || CardData->CardID / 100 == 1))
         {
             CardsID.Add(CardData->CardID);
+            Datas.Add(*CardData);
         }
         else if (Game == EGameMode::AC && (CardData->CardID / 100 == 1 || CardData->CardID / 100 == 3))
         {
             CardsID.Add(CardData->CardID);
+            Datas.Add(*CardData);
         }
     }
 
     UDataManager::RandomCardsID(CardsID);
 
+    auto FindData = [Datas](const int& i) {
+        FCardData CardData;
+        for (auto& Data : Datas)
+        {
+            if(Data.CardID == i)
+                CardData = Data;
+        }
+        return CardData;
+    };
+    
     if (Actors.Num() == CardsID.Num())
     {
         for (int i = 0; i < Actors.Num(); i++)
         {
             if (ACardBase* Card = Cast<ACardBase>(Actors[i]))
             {
-                Card->Init(i);
+                Card->Init(FindData(CardsID[i]));
             }
         }
     }
