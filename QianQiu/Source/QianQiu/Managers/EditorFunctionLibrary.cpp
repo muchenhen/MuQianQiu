@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "EditorFunctionLibrary.h"
 
+#include "DataManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "QianQiu/Actors/CardBase.h"
 
@@ -75,10 +75,66 @@ void AUEditorFunctionLibrary::RenameAllCards()
     TArray<AActor*> Actors;
     UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACardBase::StaticClass(), Actors);
     int i = 0;
-    for (auto& Actor :Actors)
+    for (auto& Actor : Actors)
     {
         FString Name = FString::Printf(TEXT("Card_%d"), i);
-        Actor->SetActorLabel(Name,false);
+        Actor->SetActorLabel(Name, false);
         i++;
+    }
+}
+
+void AUEditorFunctionLibrary::RandomInitCards()
+{
+    TArray<AActor*> Actors;
+    TArray<int> CardsID;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACardBase::StaticClass(), Actors);
+    EGameMode Game;
+    if (First && Second)
+    {
+        Game = EGameMode::AB;
+    }
+    else if (First && Third)
+    {
+        Game = EGameMode::AC;
+    }
+    else
+    {
+        Game = EGameMode::BC;
+    }
+
+    const FString ContextString = TEXT("FCardData::FindCardData");
+    TArray<FCardData*> CardDatas;
+    CardDataTable->GetAllRows<FCardData>(ContextString, CardDatas);
+    for (const auto& CardData : CardDatas)
+    {
+        if (CardData->Special)
+        {
+            continue;
+        }
+        if (Game == EGameMode::BC && (CardData->CardID / 100 == 2 || CardData->CardID / 100 == 3))
+        {
+            CardsID.Add(CardData->CardID);
+        }
+        else if (Game == EGameMode::AB && (CardData->CardID / 100 == 2 || CardData->CardID / 100 == 1))
+        {
+            CardsID.Add(CardData->CardID);
+        }
+        else if (Game == EGameMode::AC && (CardData->CardID / 100 == 1 || CardData->CardID / 100 == 3))
+        {
+            CardsID.Add(CardData->CardID);
+        }
+    }
+
+    UDataManager::RandomCardsID(CardsID);
+
+    if (Actors.Num() == CardsID.Num())
+    {
+        for (int i = 0; i < Actors.Num(); i++)
+        {
+            if (ACardBase* Card = Cast<ACardBase>(Actors[i]))
+            {
+                Card->Init(i);
+            }
+        }
     }
 }

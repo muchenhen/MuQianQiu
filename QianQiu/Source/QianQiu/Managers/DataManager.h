@@ -50,4 +50,8 @@ public:
      * @param CardsID 该模式下所有的卡牌ID
      */
     static void GetCardsIDByGameMode(EGameMode GameMode, TArray<int32>& CardsID);
+
+    static void RandomCardsID(TArray<int32>& CardsID);
+
+    static void GetRandomCardsIDByGameMode(EGameMode GameMode, TArray<int32>& CardsID);
 };

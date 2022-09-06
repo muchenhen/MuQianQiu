@@ -140,3 +140,22 @@ void UDataManager::GetCardsIDByGameMode(EGameMode GameMode, TArray<int32>& Cards
         }
     }
 }
+
+void UDataManager::RandomCardsID(TArray<int32>& CardsID)
+{
+    for (int i = 0; i < CardsID.Num(); i++)
+    {
+        int32 index = CardsID.Num() - i - 1 > 0 ? CardsID.Num() - i - 1 : 0;
+        int32 RandomPos = FMath::RandRange(0, index);
+        int32 a = CardsID[CardsID.Num() - 1];
+        int32 b = CardsID[RandomPos];
+        CardsID[CardsID.Num() - 1] = b;
+        CardsID[RandomPos] = a;
+    }
+}
+
+void UDataManager::GetRandomCardsIDByGameMode(EGameMode GameMode, TArray<int32>& CardsID)
+{
+    GetCardsIDByGameMode(GameMode, CardsID);
+    RandomCardsID(CardsID);
+}

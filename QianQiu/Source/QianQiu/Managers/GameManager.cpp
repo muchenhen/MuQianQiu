@@ -31,20 +31,7 @@ void UGameManager::BeginGame()
 
 void UGameManager::InitCards()
 {
-    TArray<int32> CardsID;
-    UDataManager::GetCardsIDByGameMode(GameMode, CardsID);
-
-    for (int i = 0; i < CardsID.Num(); i++)
-    {
-        int32 index = CardsID.Num() - i - 1 > 0 ? CardsID.Num() - i - 1 : 0;
-        int32 RandomPos = FMath::RandRange(0, index);
-        int32 a = CardsID[CardsID.Num() - 1];
-        int32 b = CardsID[RandomPos];
-        CardsID[CardsID.Num() - 1] = b;
-        CardsID[RandomPos] = a;
-    }
-
-    AllInitCardsID = CardsID;
+    UDataManager::GetRandomCardsIDByGameMode(GameMode, AllInitCardsID);
 }
 
 void UGameManager::InitSendCards()
