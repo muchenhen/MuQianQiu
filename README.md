@@ -1,6 +1,6 @@
 # 千秋戏
 
-## 更新于2022-6-11 22:11:20
+## 更新于2022-9-15 12:48:20
 #### 感谢
 
 https://github.com/bubububaoshe/bubububaoshe.github.io
@@ -13,7 +13,7 @@ https://github.com/bubububaoshe/bubububaoshe.github.io
 
 本项目是对《古剑奇谭三：梦付千秋星垂野》中的内置游戏《千秋戏》的玩法复刻。  
 UI系统使用UMG搭建  
-Lua插件使用[UnLua](https://github.com/Tencent/UnLua)
+逻辑使用C++和蓝图
 
 本项目没有什么目的，就是想做  
 玩法采用单机内的版本    
