@@ -60,7 +60,7 @@ void AUEditorFunctionLibrary::CreateCards()
     }
 }
 
-void AUEditorFunctionLibrary::CreateCard(UClass* CardUClass, const int& CardID, const FVector& Location, const FRotator& Rotator, const FActorSpawnParameters& ActorSpawnParameters)
+auto AUEditorFunctionLibrary::CreateCard(UClass* CardUClass, const int& CardID, const FVector& Location, const FRotator& Rotator, const FActorSpawnParameters& ActorSpawnParameters) const -> void
 {
     AActor* Card = GetWorld()->SpawnActor(CardUClass, &Location, &Rotator, ActorSpawnParameters);
     const FName RowName = FName(*FString::FromInt(CardID));
@@ -75,7 +75,7 @@ void AUEditorFunctionLibrary::RenameAllCards()
     TArray<AActor*> Actors;
     UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACardBase::StaticClass(), Actors);
     int i = 0;
-    for (auto& Actor : Actors)
+    for (const auto& Actor : Actors)
     {
         FString Name = FString::Printf(TEXT("Card_%d"), i);
         Actor->SetActorLabel(Name, false);

@@ -53,7 +53,7 @@ public:
     UFUNCTION(BlueprintCallable, CallInEditor, Category = "Cards")
     void CreateCards();
 
-    void CreateCard(UClass* CardUClass, const int& CardID, const FVector& Location, const FRotator& Rotator, const FActorSpawnParameters& ActorSpawnParameters);
+    void CreateCard(UClass* CardUClass, const int& CardID, const FVector& Location, const FRotator& Rotator, const FActorSpawnParameters& ActorSpawnParameters) const;
 
     UFUNCTION(BlueprintCallable, CallInEditor, Category = "Cards")
     void RenameAllCards();
