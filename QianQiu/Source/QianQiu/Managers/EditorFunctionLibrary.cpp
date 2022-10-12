@@ -60,7 +60,7 @@ void AUEditorFunctionLibrary::CreateCards()
     }
 }
 
-auto AUEditorFunctionLibrary::CreateCard(UClass* CardUClass, const int& CardID, const FVector& Location, const FRotator& Rotator, const FActorSpawnParameters& ActorSpawnParameters) const -> void
+void AUEditorFunctionLibrary::CreateCard(UClass* CardUClass, const int& CardID, const FVector& Location, const FRotator& Rotator, const FActorSpawnParameters& ActorSpawnParameters)
 {
     AActor* Card = GetWorld()->SpawnActor(CardUClass, &Location, &Rotator, ActorSpawnParameters);
     const FName RowName = FName(*FString::FromInt(CardID));
