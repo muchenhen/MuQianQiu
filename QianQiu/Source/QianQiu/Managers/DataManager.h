@@ -45,13 +45,22 @@ public:
     static void GetAllCardsInLevel();
 
     /**
-     * @brief ��ȡĳһ��ģʽ�����еĶ�Ӧ�Ŀ��Ƶ�ID
-     * @param GameMode Ҫ��ȡ����Ϸģʽ
-     * @param CardsID ��ģʽ�����еĿ���ID
+     * @brief 获取某一个模式下所有的对应的卡牌的ID
+     * @param GameMode 要获取的游戏模式
+     * @param CardsID 该模式下所有的卡牌ID
      */
     static void GetCardsIDByGameMode(EGameMode GameMode, TArray<int32>& CardsID);
 
+    /**
+     * @brief 将卡牌ID进行随机排序
+     * @param CardsID 卡牌ID数组
+     */
     static void RandomCardsID(TArray<int32>& CardsID);
 
+    /**
+     * @brief 获取某一个模式下所有的对应的卡牌的ID，并进行随机排序
+     * @param GameMode 
+     * @param CardsID 
+     */
     static void GetRandomCardsIDByGameMode(EGameMode GameMode, TArray<int32>& CardsID);
 };

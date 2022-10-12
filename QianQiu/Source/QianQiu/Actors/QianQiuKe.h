@@ -73,9 +73,14 @@ public:
     UFUNCTION(BlueprintCallable)
     void SetCardToStory(ACardBase* CardBase);
 
+    // 传递给玩家故事堆一堆牌
     UFUNCTION(BlueprintCallable)
     void SetCardsToStory(TArray<ACardBase*> Cards);
-
+    
+    /**
+     * @brief 获取玩家的故事牌堆
+     * @return 返回玩家的故事牌堆
+     */
     UFUNCTION(BlueprintCallable)
     TMap<int, ACardBase*> GetCardsInStory();
 

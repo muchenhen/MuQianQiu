@@ -27,11 +27,12 @@ public:
     UFUNCTION(BlueprintCallable)
     void InitCards();
 
+    // 初始化卡牌后，进行卡牌的分配，分别给玩家和公共卡池分配
     UFUNCTION(BlueprintCallable)
     void InitSendCards();
 
 private:
-    // 随机卡牌顺序
+    // 随机卡牌顺序，游戏初始化时生成
     TArray<int32> AllInitCardsID;
 
     // 玩家A的实例对象

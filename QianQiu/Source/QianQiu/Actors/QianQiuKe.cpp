@@ -85,12 +85,12 @@ void AQianQiuKe::UpdateHandCardsTransform()
     {
         return;
     }
-    FTransform StartTransform = UDataManager::GetCardTransform("PlayerAHandFirst");
-    FTransform EndTransform = UDataManager::GetCardTransform("PlayerAHandLast");
-    float X = (EndTransform.GetTranslation().X - StartTransform.GetTranslation().X) / PlayerCardInHands.Num();
-    float Y = (EndTransform.GetTranslation().Y - StartTransform.GetTranslation().Y) / PlayerCardInHands.Num();
+    const FTransform StartTransform = UDataManager::GetCardTransform("PlayerAHandFirst");
+    const FTransform EndTransform = UDataManager::GetCardTransform("PlayerAHandLast");
+    const float X = (EndTransform.GetTranslation().X - StartTransform.GetTranslation().X) / PlayerCardInHands.Num();
+    const float Y = (EndTransform.GetTranslation().Y - StartTransform.GetTranslation().Y) / PlayerCardInHands.Num();
     int i = 0;
-    for (auto& Card : PlayerCardInHands)
+    for (const auto& Card : PlayerCardInHands)
     {
         FTransform Transform = StartTransform;
         auto Translation = Transform.GetTranslation();

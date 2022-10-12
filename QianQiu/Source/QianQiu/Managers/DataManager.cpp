@@ -111,7 +111,7 @@ void UDataManager::GetCardsIDByGameMode(EGameMode GameMode, TArray<int32>& Cards
     CardDataTable->GetAllRows<FCardData>(ContextString, CardDatas);
     if (GameMode == EGameMode::BC)
     {
-        for (auto& CardData :CardDatas)
+        for (const auto& CardData :CardDatas)
         {
             if (CardData->CardID / 100 == 2 || CardData->CardID / 100 == 3)
             {
@@ -121,7 +121,7 @@ void UDataManager::GetCardsIDByGameMode(EGameMode GameMode, TArray<int32>& Cards
     }
     else if (GameMode == EGameMode::AB)
     {
-        for (auto& CardData : CardDatas)
+        for (const auto& CardData : CardDatas)
         {
             if (CardData->CardID / 100 == 2 || CardData->CardID / 100 == 1)
             {
@@ -131,7 +131,7 @@ void UDataManager::GetCardsIDByGameMode(EGameMode GameMode, TArray<int32>& Cards
     }
     else if (GameMode == EGameMode::AC)
     {
-        for (auto& CardData : CardDatas)
+        for (const auto& CardData : CardDatas)
         {
             if (CardData->CardID / 100 == 1 || CardData->CardID / 100 == 3)
             {
@@ -145,10 +145,10 @@ void UDataManager::RandomCardsID(TArray<int32>& CardsID)
 {
     for (int i = 0; i < CardsID.Num(); i++)
     {
-        int32 index = CardsID.Num() - i - 1 > 0 ? CardsID.Num() - i - 1 : 0;
-        int32 RandomPos = FMath::RandRange(0, index);
-        int32 a = CardsID[CardsID.Num() - 1];
-        int32 b = CardsID[RandomPos];
+        const int32 Index = CardsID.Num() - i - 1 > 0 ? CardsID.Num() - i - 1 : 0;
+        const int32 RandomPos = FMath::RandRange(0, Index);
+        const int32 a = CardsID[CardsID.Num() - 1];
+        const int32 b = CardsID[RandomPos];
         CardsID[CardsID.Num() - 1] = b;
         CardsID[RandomPos] = a;
     }

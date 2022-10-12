@@ -6,7 +6,9 @@
 #include "CardBase.h"
 #include "GameFramework/Character.h"
 #include "PublicCardsHolder.generated.h"
-
+/**
+ * 公共牌堆类 负责管理公共牌堆的牌
+ */
 UCLASS()
 class QIANQIU_API APublicCardsHolder : public ACharacter
 {
@@ -24,13 +26,17 @@ protected:
     virtual void BeginPlay() override;
 
 public:
-    /* 玩家的手牌堆 */
+    /* 公共牌堆 */
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, DisplayName = "公共牌堆")
     TMap<int, ACardBase*> PublicCards;
 
     UFUNCTION(BlueprintCallable)
     void ResetPublicCardsHolder();
 
+    /**
+     * @brief 向公共牌堆中添加一张牌
+     * @param CardBase 牌
+     */
     UFUNCTION(BlueprintCallable)
     void SetCardToPublicCardsHolder(ACardBase* CardBase);
 };
