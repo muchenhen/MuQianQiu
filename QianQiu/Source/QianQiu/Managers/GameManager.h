@@ -23,18 +23,26 @@ public:
     UFUNCTION(BlueprintCallable)
     void BeginGame();
 
-    // 生成随机顺序的公共手牌
+    // 生成随机顺序的公共手牌ID
     UFUNCTION(BlueprintCallable)
     void InitCards();
+    
+    // 获取场景中已经初始化的Actor
+    UFUNCTION(BlueprintCallable)
+    void GetCardsInScene();
 
     // 初始化卡牌后，进行卡牌的分配，分别给玩家和公共卡池分配
     UFUNCTION(BlueprintCallable)
     void InitSendCards();
 
 private:
-    // 随机卡牌顺序，游戏初始化时生成
+    // 随机卡牌ID顺序，游戏初始化时生成
     TArray<int32> AllInitCardsID;
 
+    // 场景中已经初始化的Actor
+    UPROPERTY()
+    TMap<int, ACardBase*> Cards;
+    
     // 玩家A的实例对象
     UPROPERTY()
     AQianQiuKe* PlayerA;

@@ -18,7 +18,7 @@
 UCLASS()
 class QIANQIU_API AQianQiuKe : public ACharacter
 {
-    GENERATED_BODY()
+    GENERATED_UCLASS_BODY()
 
 public:
     UFUNCTION(BlueprintCallable)
@@ -43,8 +43,9 @@ protected:
     
 public:
     // Sets default values for this character's properties
-    AQianQiuKe();
+    // AQianQiuKe();
 
+    // AQianQiuKe(FObjectInitializer const& ObjectInitializer);
 
 protected:
     // Called when the game starts or when spawned

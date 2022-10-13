@@ -4,34 +4,72 @@
 #include "GameManager.h"
 
 #include "DataManager.h"
+#include "Kismet/GameplayStatics.h"
 
 void UGameManager::BeginGame()
 {
     const FVector Pos(0, 0, 0);
     const FRotator Rot(0, 0, 0);
+    const FActorSpawnParameters Params;
+    UClass* QianQiuKeClass = AQianQiuKe::StaticClass();
+    // 初始化玩家
     if (! IsValid(PlayerA))
     {
-        PlayerA = GetWorld()->SpawnActor<AQianQiuKe>(Pos, Rot);
+        AActor* PlayerActorA = GetWorld()->SpawnActor(QianQiuKeClass, &Pos, &Rot, Params);
+        PlayerA = Cast<AQianQiuKe>(PlayerActorA);
     }
     if (! IsValid(PlayerB))
     {
-        PlayerB = GetWorld()->SpawnActor<AQianQiuKe>(Pos, Rot);
+        PlayerB = GetWorld()->SpawnActor<AQianQiuKe>();
     }
+    // 初始化公共卡池
     if (! IsValid(PublicCardsHolder))
     {
-        PublicCardsHolder = GetWorld()->SpawnActor<APublicCardsHolder>(Pos, Rot);
+        
+        PublicCardsHolder = GetWorld()->SpawnActor<APublicCardsHolder>(Pos, Rot, Params);
     }
-    if (IsValid(PlayerA) && IsValid(PlayerB))
+    // 玩家对象都存在的情况下进行重置
+    if (IsValid(PlayerA) && IsValid(PlayerB) && IsValid(PublicCardsHolder))
     {
         PlayerA->ResetQianQiuKe();
         PlayerB->ResetQianQiuKe();
         PublicCardsHolder->ResetPublicCardsHolder();
     }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("GameManager::BeginGame() - PlayerA or PlayerB or PublicCardsHolder is invalid!"));
+        return;
+    }
+    // 准备当前的场景中的Actors
+    if (Cards.IsEmpty())
+    {
+        GetCardsInScene();
+    }
+    // 初始化卡牌ID
+    InitCards();
+    // 发牌 并设置卡牌的位置
+    InitSendCards();
 }
 
 void UGameManager::InitCards()
 {
     UDataManager::GetRandomCardsIDByGameMode(GameMode, AllInitCardsID);
+}
+
+void UGameManager::GetCardsInScene()
+{
+    TArray<AActor*> AllActors;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACardBase::StaticClass(), AllActors);
+    for (const auto& Actor : AllActors)
+    {
+        if (IsValid(Actor))
+        {
+            if (ACardBase* Card = Cast<ACardBase>(Actor); IsValid(Card))
+            {
+                Cards.Add(Card->CardData.CardID, Card);
+            }
+        }
+    }
 }
 
 /*
@@ -45,8 +83,16 @@ void UGameManager::InitSendCards()
     {
         int32 CardID = AllInitCardsID[i];
         // TODO：已经改成了场景中初始化好了的Actor，这里不需要再创建了
-        ACardBase* Card = GetWorld()->SpawnActor<ACardBase>();
-        Card->Init(CardID);
+        ACardBase* Card;
+        if (Cards.Find(CardID))
+        {
+            Card = Cards[CardID];
+        }
+        else
+        {
+            Card = GetWorld()->SpawnActor<ACardBase>();
+            Card->Init(CardID);
+        }
         // i < 20, 为玩家手牌，按照奇偶数给两个玩家发牌
         // TODO: 需要保存一下随机发给两位玩家的牌的ID，在播放场景加载的sequence的时候给这几个ID对应的Actor做不同的表现
         if(i < 20)

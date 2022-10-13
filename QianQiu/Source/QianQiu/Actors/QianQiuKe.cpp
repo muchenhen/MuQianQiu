@@ -15,7 +15,14 @@ void AQianQiuKe::ResetQianQiuKe()
 }
 
 // Sets default values
-AQianQiuKe::AQianQiuKe()
+// AQianQiuKe::AQianQiuKe()
+// {
+//     // Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+//     PrimaryActorTick.bCanEverTick = true;
+// }
+
+AQianQiuKe::AQianQiuKe(FObjectInitializer const& ObjectInitializer)
+    : Super(ObjectInitializer)
 {
     // Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
