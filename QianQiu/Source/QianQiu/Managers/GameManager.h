@@ -8,6 +8,8 @@
 #include "QianQiu/Actors/PublicCardsHolder.h"
 #include "GameManager.generated.h"
 
+DECLARE_LOG_CATEGORY_EXTERN(LogGameManager, Log, All);
+
 /**
  *
  */

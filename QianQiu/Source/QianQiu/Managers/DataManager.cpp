@@ -100,7 +100,7 @@ void UDataManager::GetAllCardsInLevel()
     // }
 }
 
-void UDataManager::GetCardsIDByGameMode(EGameMode GameMode, TArray<int32>& CardsID)
+void UDataManager::GetCardsIDByGameMode(EGameMode GameMode, TArray<int32>& CardsID, bool bGetSpecialCard = false)
 {
     if (!CardDataTable.IsValid())
     {
@@ -113,7 +113,7 @@ void UDataManager::GetCardsIDByGameMode(EGameMode GameMode, TArray<int32>& Cards
     {
         for (const auto& CardData :CardDatas)
         {
-            if (CardData->CardID / 100 == 2 || CardData->CardID / 100 == 3)
+            if ((CardData->CardID / 100 == 2 || CardData->CardID / 100 == 3) && bGetSpecialCard == CardData->Special)
             {
                 CardsID.Add(CardData->CardID);
             }
@@ -123,7 +123,7 @@ void UDataManager::GetCardsIDByGameMode(EGameMode GameMode, TArray<int32>& Cards
     {
         for (const auto& CardData : CardDatas)
         {
-            if (CardData->CardID / 100 == 2 || CardData->CardID / 100 == 1)
+            if ((CardData->CardID / 100 == 2 || CardData->CardID / 100 == 1) && bGetSpecialCard == CardData->Special)
             {
                 CardsID.Add(CardData->CardID);
             }
@@ -131,9 +131,9 @@ void UDataManager::GetCardsIDByGameMode(EGameMode GameMode, TArray<int32>& Cards
     }
     else if (GameMode == EGameMode::AC)
     {
-        for (const auto& CardData : CardDatas)
+        for (const auto& CardData : CardDatas )
         {
-            if (CardData->CardID / 100 == 1 || CardData->CardID / 100 == 3)
+            if ((CardData->CardID / 100 == 1 || CardData->CardID / 100 == 3) && bGetSpecialCard == CardData->Special)
             {
                 CardsID.Add(CardData->CardID);
             }
@@ -156,6 +156,6 @@ void UDataManager::RandomCardsID(TArray<int32>& CardsID)
 
 void UDataManager::GetRandomCardsIDByGameMode(EGameMode GameMode, TArray<int32>& CardsID)
 {
-    GetCardsIDByGameMode(GameMode, CardsID);
+    GetCardsIDByGameMode(GameMode, CardsID, false);
     RandomCardsID(CardsID);
 }

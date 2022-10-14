@@ -6,17 +6,15 @@
 #include "DataManager.h"
 #include "Kismet/GameplayStatics.h"
 
+DEFINE_LOG_CATEGORY(LogGameManager);
+
+
 void UGameManager::BeginGame()
 {
-    const FVector Pos(0, 0, 0);
-    const FRotator Rot(0, 0, 0);
-    const FActorSpawnParameters Params;
-    UClass* QianQiuKeClass = AQianQiuKe::StaticClass();
     // 初始化玩家
     if (! IsValid(PlayerA))
     {
-        AActor* PlayerActorA = GetWorld()->SpawnActor(QianQiuKeClass, &Pos, &Rot, Params);
-        PlayerA = Cast<AQianQiuKe>(PlayerActorA);
+        PlayerA = GetWorld()->SpawnActor<AQianQiuKe>();
     }
     if (! IsValid(PlayerB))
     {
@@ -25,8 +23,7 @@ void UGameManager::BeginGame()
     // 初始化公共卡池
     if (! IsValid(PublicCardsHolder))
     {
-        
-        PublicCardsHolder = GetWorld()->SpawnActor<APublicCardsHolder>(Pos, Rot, Params);
+        PublicCardsHolder = GetWorld()->SpawnActor<APublicCardsHolder>();
     }
     // 玩家对象都存在的情况下进行重置
     if (IsValid(PlayerA) && IsValid(PlayerB) && IsValid(PublicCardsHolder))
@@ -81,7 +78,7 @@ void UGameManager::InitSendCards()
 {
     for(int i = 0; i < AllInitCardsID.Num() - 1; i++)
     {
-        int32 CardID = AllInitCardsID[i];
+        const int32 CardID = AllInitCardsID[i];
         // TODO：已经改成了场景中初始化好了的Actor，这里不需要再创建了
         ACardBase* Card;
         if (Cards.Find(CardID))
@@ -92,6 +89,7 @@ void UGameManager::InitSendCards()
         {
             Card = GetWorld()->SpawnActor<ACardBase>();
             Card->Init(CardID);
+            UE_LOG(LogGameManager, Error, TEXT("GameManager::InitSendCards() - CardID: %d is not in Cards!"), CardID);
         }
         // i < 20, 为玩家手牌，按照奇偶数给两个玩家发牌
         // TODO: 需要保存一下随机发给两位玩家的牌的ID，在播放场景加载的sequence的时候给这几个ID对应的Actor做不同的表现
@@ -113,5 +111,6 @@ void UGameManager::InitSendCards()
         }
         
     }
-    PlayerA->UpdateHandCardsTransform();
+    PlayerA->UpdateHandCardsTransform(TEXT("PlayerAHandFirst"), TEXT("PlayerAHandLast"));
+    PlayerB->UpdateHandCardsTransform(TEXT("PlayerBHandFirst"), TEXT("PlayerBHandLast"));
 }

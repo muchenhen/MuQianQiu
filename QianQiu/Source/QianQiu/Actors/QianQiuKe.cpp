@@ -2,8 +2,6 @@
 
 
 #include "QianQiuKe.h"
-
-#include "QianQiuBlueprintFunctionLibrary.h"
 #include "QianQiu/Managers/DataManager.h"
 
 void AQianQiuKe::ResetQianQiuKe()
@@ -12,20 +10,6 @@ void AQianQiuKe::ResetQianQiuKe()
     PlayerCardInStory.Empty();
     PlayerCardInSpecial.Empty();
     Score = 0;
-}
-
-// Sets default values
-// AQianQiuKe::AQianQiuKe()
-// {
-//     // Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-//     PrimaryActorTick.bCanEverTick = true;
-// }
-
-AQianQiuKe::AQianQiuKe(FObjectInitializer const& ObjectInitializer)
-    : Super(ObjectInitializer)
-{
-    // Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-    PrimaryActorTick.bCanEverTick = true;
 }
 
 // Called when the game starts or when spawned
@@ -38,12 +22,6 @@ void AQianQiuKe::BeginPlay()
 void AQianQiuKe::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-}
-
-// Called to bind functionality to input
-void AQianQiuKe::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-    Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
 void AQianQiuKe::AddScore(const int& ScoreIncreased)
@@ -86,14 +64,14 @@ void AQianQiuKe::SetCardToHands(ACardBase* CardBase)
     }
 }
 
-void AQianQiuKe::UpdateHandCardsTransform()
+void AQianQiuKe::UpdateHandCardsTransform(FString HandFirst, FString HandLast)
 {
     if (PlayerCardInHands.IsEmpty())
     {
         return;
     }
-    const FTransform StartTransform = UDataManager::GetCardTransform("PlayerAHandFirst");
-    const FTransform EndTransform = UDataManager::GetCardTransform("PlayerAHandLast");
+    const FTransform StartTransform = UDataManager::GetCardTransform(HandFirst);
+    const FTransform EndTransform = UDataManager::GetCardTransform(HandLast);
     const float X = (EndTransform.GetTranslation().X - StartTransform.GetTranslation().X) / PlayerCardInHands.Num();
     const float Y = (EndTransform.GetTranslation().Y - StartTransform.GetTranslation().Y) / PlayerCardInHands.Num();
     int i = 0;

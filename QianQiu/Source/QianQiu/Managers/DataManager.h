@@ -48,8 +48,9 @@ public:
      * @brief 获取某一个模式下所有的对应的卡牌的ID
      * @param GameMode 要获取的游戏模式
      * @param CardsID 该模式下所有的卡牌ID
+     * @param bGetSpecialCard 是否获取特殊卡牌
      */
-    static void GetCardsIDByGameMode(EGameMode GameMode, TArray<int32>& CardsID);
+    static void GetCardsIDByGameMode(EGameMode GameMode, TArray<int32>& CardsID, bool bGetSpecialCard);
 
     /**
      * @brief 将卡牌ID进行随机排序

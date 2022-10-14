@@ -10,7 +10,7 @@
  * 公共牌堆类 负责管理公共牌堆的牌
  */
 UCLASS()
-class QIANQIU_API APublicCardsHolder : public ACharacter
+class QIANQIU_API APublicCardsHolder : public AActor
 {
     GENERATED_BODY()
 

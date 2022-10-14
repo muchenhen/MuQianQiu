@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "CardBase.h"
 #include "MuStructs.h"
-#include "GameFramework/Character.h"
 #include "QianQiuKe.generated.h"
 
 
@@ -16,9 +15,9 @@
  * 玩家的牌堆、分数、组合等信息和相关方法
  */
 UCLASS()
-class QIANQIU_API AQianQiuKe : public ACharacter
+class QIANQIU_API AQianQiuKe : public AActor
 {
-    GENERATED_UCLASS_BODY()
+    GENERATED_BODY()
 
 public:
     UFUNCTION(BlueprintCallable)
@@ -54,10 +53,7 @@ protected:
 public:
     // Called every frame
     virtual void Tick(float DeltaTime) override;
-
-    // Called to bind functionality to input
-    virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+    
     // 增加玩家分数
     UFUNCTION(BlueprintCallable, CallInEditor)
     void AddScore(const int& ScoreIncreased);
@@ -90,7 +86,7 @@ public:
     void SetCardToHands(ACardBase* CardBase);
 
     UFUNCTION(BlueprintCallable)
-    void UpdateHandCardsTransform();
+    void UpdateHandCardsTransform(FString HandFirst, FString HandLast);
 
     UFUNCTION(BlueprintCallable)
     void SetCardToSpecial(ACardBase* CardBase);
