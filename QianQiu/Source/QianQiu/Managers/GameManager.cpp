@@ -79,7 +79,6 @@ void UGameManager::InitSendCards()
     for(int i = 0; i < AllInitCardsID.Num() - 1; i++)
     {
         const int32 CardID = AllInitCardsID[i];
-        // TODO：已经改成了场景中初始化好了的Actor，这里不需要再创建了
         ACardBase* Card;
         if (Cards.Find(CardID))
         {
