@@ -41,8 +41,8 @@ public:
 
     void Init(const int& CardID);
 
-    // UFUNCTION()
-    // void OnCardClick(AActor* ClickedActor, FKey ButtonPressed);
+    UFUNCTION()
+    void OnCardClick(AActor* ClickedActor, FKey ButtonPressed);
 
 #if WITH_EDITOR
     UFUNCTION(CallInEditor, Category="Card")

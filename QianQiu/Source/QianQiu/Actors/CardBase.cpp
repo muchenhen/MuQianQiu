@@ -26,7 +26,7 @@ ACardBase::ACardBase()
 void ACardBase::BeginPlay()
 {
     Super::BeginPlay();
-    // OnClicked.AddDynamic(this, &ACardBase::OnCardClick);
+    OnClicked.AddDynamic(this, &ACardBase::OnCardClick);
 }
 
 // Called every frame
@@ -79,7 +79,7 @@ void ACardBase::Init()
 }
 #endif
 
-// void ACardBase::OnCardClick(AActor* ClickedActor, FKey ButtonPressed)
-// {
-//     UE_LOG(LogTemp, Display, TEXT("Current Choose Card ："));
-// }
+void ACardBase::OnCardClick(AActor* ClickedActor, FKey ButtonPressed)
+{
+    UE_LOG(LogTemp, Display, TEXT("Current Choose Card ：%s"), *CardData.Name);
+}
