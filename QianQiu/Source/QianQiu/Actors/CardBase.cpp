@@ -94,11 +94,11 @@ void ACardBase::Move()
     FTransform CurrentTransform = GetActorTransform();
     const FVector CurrentLocation = CurrentTransform.GetLocation();
     const FVector EndLocation = EndTransform.GetLocation();
-    const FVector NewLocation = FMath::VInterpTo(CurrentLocation, EndLocation, GetWorld()->GetDeltaSeconds(), 10);
+    const FVector NewLocation = FMath::VInterpTo(CurrentLocation, EndLocation, GetWorld()->GetDeltaSeconds(), CardMoveSpeed);
 
     const FVector CurrentRotation = CurrentTransform.GetRotation().Euler();
     const FVector EndRotation = EndTransform.GetRotation().Euler();
-    const FVector NewRotation = FMath::VInterpTo(CurrentRotation, EndRotation, GetWorld()->GetDeltaSeconds(), 10);
+    const FVector NewRotation = FMath::VInterpTo(CurrentRotation, EndRotation, GetWorld()->GetDeltaSeconds(), CardMoveSpeed);
     if (NewLocation.Equals(EndLocation) && NewRotation.Equals(EndRotation))
     {
         bMoving = false;

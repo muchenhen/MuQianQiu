@@ -4,8 +4,21 @@
 
 #include "CoreMinimal.h"
 #include "CardBase.h"
-#include "GameFramework/Character.h"
 #include "PublicCardsHolder.generated.h"
+
+
+USTRUCT()
+struct FPublicCardShowTransform
+{
+    GENERATED_BODY()
+public:
+    UPROPERTY()
+    ACardBase* Card;
+
+    UPROPERTY()
+    FTransform Transform;
+};
+
 /**
  * 公共牌堆类 负责管理公共牌堆的牌
  */
@@ -31,34 +44,7 @@ public:
     TMap<int, ACardBase*> PublicCards;
 
     UPROPERTY()
-    TMap<ACardBase*, FTransform> FirstShowCardTransform;
-
-    UPROPERTY()
-    TMap<ACardBase*, FTransform> SecondShowCardTransform;
-
-    UPROPERTY()
-    TMap<ACardBase*, FTransform> ThirdShowCardTransform;
-
-    UPROPERTY()
-    TMap<ACardBase*, FTransform> FourthShowCardTransform;
-
-    UPROPERTY()
-    TMap<ACardBase*, FTransform> FifthShowCardTransform;
-
-    UPROPERTY()
-    TMap<ACardBase*, FTransform> SixthShowCardTransform;
-
-    UPROPERTY()
-    TMap<ACardBase*, FTransform> SeventhShowCardTransform;
-
-    UPROPERTY()
-    TMap<ACardBase*, FTransform> EighthShowCardTransform;
-
-    UPROPERTY()
-    TMap<ACardBase*, FTransform> NinthShowCardTransform;
-
-    UPROPERTY()
-    TMap<ACardBase*, FTransform> TenthShowCardTransform;
+    TMap<int, FPublicCardShowTransform> PublicCardShowTransforms;
     
 public:
 
@@ -66,7 +52,7 @@ public:
     void ResetPublicCardsHolder();
 
     UFUNCTION()
-    void UpdatePublicCardsHolderTransform(const FString PublicCardsHolderTop, const FString PublicCardsHolderButtom);
+    void UpdatePublicCardsHolderTransform(const FString PublicCardsHolderTop, const FString PublicCardsHolderBottom);
 
     UFUNCTION()
     void SetAllShowCardTransform();
@@ -85,5 +71,5 @@ public:
      * @brief 从公共牌堆中取出一张牌补位到展示的公共牌中
      */
     UFUNCTION(BlueprintCallable)
-    void DealCardToPublicShow();
+    ACardBase* DealCardToPublicShow();
 };

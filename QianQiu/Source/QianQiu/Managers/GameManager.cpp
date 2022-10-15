@@ -76,7 +76,7 @@ void UGameManager::GetCardsInScene()
  */
 void UGameManager::InitSendCards()
 {
-    for(int i = 0; i < AllInitCardsID.Num() - 1; i++)
+    for(int i = 0; i < AllInitCardsID.Num(); i++)
     {
         const int32 CardID = AllInitCardsID[i];
         ACardBase* Card;
@@ -108,10 +108,17 @@ void UGameManager::InitSendCards()
         {
             PublicCardsHolder->SetCardToPublicCardsHolder(Card);
         }
-        
     }
     PlayerA->UpdateHandCardsTransform(TEXT("PlayerAHandFirst"), TEXT("PlayerAHandLast"));
     PlayerB->UpdateHandCardsTransform(TEXT("PlayerBHandFirst"), TEXT("PlayerBHandLast"));
     PublicCardsHolder->UpdatePublicCardsHolderTransform(TEXT("PublicCardsHolderTop"), TEXT("PublicCardsHolderButtom"));
     PublicCardsHolder->SetAllShowCardTransform();
+}
+
+void UGameManager::ShowPublicCards()
+{
+    if (IsValid(PublicCardsHolder))
+    {
+        PublicCardsHolder->DealCardToPublicShowOnInit();
+    }
 }

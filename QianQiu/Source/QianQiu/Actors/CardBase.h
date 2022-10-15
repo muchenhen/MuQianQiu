@@ -31,6 +31,9 @@ public:
     UPROPERTY(EditAnywhere)
     int ID = 201;
 
+    UPROPERTY(EditAnywhere)
+    float CardMoveSpeed = 1.0f;
+
     // Called every frame
     virtual void Tick(float DeltaTime) override;
 

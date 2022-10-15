@@ -33,8 +33,33 @@ void APublicCardsHolder::SetCardToPublicCardsHolder(ACardBase* CardBase)
     }
 }
 
-void APublicCardsHolder::DealCardToPublicShow()
+void APublicCardsHolder::DealCardToPublicShowOnInit()
 {
+    for (auto& Item : PublicCardShowTransforms)
+    {
+        if (!IsValid(Item.Value.Card))
+        {
+            Item.Value.Card = DealCardToPublicShow();
+            if (IsValid(Item.Value.Card))
+            {
+                ACardBase* Card = Item.Value.Card;
+                const FTransform Transform = Item.Value.Transform;
+                Card->EndTransform = Transform;
+                Card->bMoving = true;
+            }
+        }
+    }
+}
+
+ACardBase* APublicCardsHolder::DealCardToPublicShow()
+{
+    ACardBase* Card = PublicCards.begin().Value();
+    if (IsValid(Card))
+    {
+        PublicCards.Remove(Card->CardData.CardID);
+        return Card;
+    }
+    return nullptr;
 }
 
 // Called every frame
@@ -43,12 +68,12 @@ void APublicCardsHolder::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 }
 
-void APublicCardsHolder::UpdatePublicCardsHolderTransform(const FString PublicCardsHolderTop, const FString PublicCardsHolderButtom)
+void APublicCardsHolder::UpdatePublicCardsHolderTransform(const FString PublicCardsHolderTop, const FString PublicCardsHolderBottom)
 {
     TMap<ACardBase*, FTransform> CardTargetTransform;
     
     const FTransform StartTransform = UDataManager::GetCardTransform(PublicCardsHolderTop);
-    const FTransform EndTransform = UDataManager::GetCardTransform(PublicCardsHolderButtom);
+    const FTransform EndTransform = UDataManager::GetCardTransform(PublicCardsHolderBottom);
     
     TArray<FTransform> TargetTransforms;
     const float X = (EndTransform.GetTranslation().X - StartTransform.GetTranslation().X) / PublicCards.Num();
@@ -91,15 +116,46 @@ void APublicCardsHolder::SetAllShowCardTransform()
     const FTransform NinthTransform = UDataManager::GetCardTransform(TEXT("NinthShowCardTransform"));
     const FTransform TenthTransform = UDataManager::GetCardTransform(TEXT("TenthShowCardTransform"));
 
-    FirstShowCardTransform.Add(nullptr, FirstTransform);
-    FirstShowCardTransform.Add(nullptr, SecondTransform);
-    FirstShowCardTransform.Add(nullptr, ThirdTransform);
-    FirstShowCardTransform.Add(nullptr, FourthTransform);
-    FirstShowCardTransform.Add(nullptr, FifthTransform);
-    FirstShowCardTransform.Add(nullptr, SixthTransform);
-    FirstShowCardTransform.Add(nullptr, SeventhTransform);
-    FirstShowCardTransform.Add(nullptr, EighthTransform);
-    FirstShowCardTransform.Add(nullptr, NinthTransform);
-    FirstShowCardTransform.Add(nullptr, TenthTransform);
+    FPublicCardShowTransform PublicCardShowTransformFirst;
+    PublicCardShowTransformFirst.Transform = FirstTransform;
+    PublicCardShowTransformFirst.Card = nullptr;
+    FPublicCardShowTransform PublicCardShowTransformSecond;
+    PublicCardShowTransformSecond.Transform = SecondTransform;
+    PublicCardShowTransformSecond.Card = nullptr;
+    FPublicCardShowTransform PublicCardShowTransformThird;
+    PublicCardShowTransformThird.Transform = ThirdTransform;
+    PublicCardShowTransformThird.Card = nullptr;
+    FPublicCardShowTransform PublicCardShowTransformFourth;
+    PublicCardShowTransformFourth.Transform = FourthTransform;
+    PublicCardShowTransformFourth.Card = nullptr;
+    FPublicCardShowTransform PublicCardShowTransformFifth;
+    PublicCardShowTransformFifth.Transform = FifthTransform;
+    PublicCardShowTransformFifth.Card = nullptr;
+    FPublicCardShowTransform PublicCardShowTransformSixth;
+    PublicCardShowTransformSixth.Transform = SixthTransform;
+    PublicCardShowTransformSixth.Card = nullptr;
+    FPublicCardShowTransform PublicCardShowTransformSeventh;
+    PublicCardShowTransformSeventh.Transform = SeventhTransform;
+    PublicCardShowTransformSeventh.Card = nullptr;
+    FPublicCardShowTransform PublicCardShowTransformEighth;
+    PublicCardShowTransformEighth.Transform = EighthTransform;
+    PublicCardShowTransformEighth.Card = nullptr;
+    FPublicCardShowTransform PublicCardShowTransformNinth;
+    PublicCardShowTransformNinth.Transform = NinthTransform;
+    PublicCardShowTransformNinth.Card = nullptr;
+    FPublicCardShowTransform PublicCardShowTransformTenth;
+    PublicCardShowTransformTenth.Transform = TenthTransform;
+    PublicCardShowTransformTenth.Card = nullptr;
+
+    PublicCardShowTransforms.Add(1, PublicCardShowTransformFirst);
+    PublicCardShowTransforms.Add(2, PublicCardShowTransformSecond);
+    PublicCardShowTransforms.Add(3, PublicCardShowTransformThird);
+    PublicCardShowTransforms.Add(4, PublicCardShowTransformFourth);
+    PublicCardShowTransforms.Add(5, PublicCardShowTransformFifth);
+    PublicCardShowTransforms.Add(6, PublicCardShowTransformSixth);
+    PublicCardShowTransforms.Add(7, PublicCardShowTransformSeventh);
+    PublicCardShowTransforms.Add(8, PublicCardShowTransformEighth);
+    PublicCardShowTransforms.Add(9, PublicCardShowTransformNinth);
+    PublicCardShowTransforms.Add(10, PublicCardShowTransformTenth);
 }
 

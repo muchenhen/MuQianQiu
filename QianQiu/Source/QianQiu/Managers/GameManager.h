@@ -37,6 +37,9 @@ public:
     UFUNCTION(BlueprintCallable)
     void InitSendCards();
 
+    UFUNCTION(BlueprintCallable)
+    void ShowPublicCards();
+
 private:
     // 随机卡牌ID顺序，游戏初始化时生成
     TArray<int32> AllInitCardsID;
