@@ -13,9 +13,6 @@ class QIANQIU_API ACardBase : public AActor
     GENERATED_BODY()
 
 public:
-    UPROPERTY(EditAnywhere)
-    FString LuaScript = TEXT("Actor/CardBase");
-
     UPROPERTY(EditAnywhere, Category="Card")
     FCardData CardData = FCardData();
 
@@ -44,14 +41,25 @@ public:
     UFUNCTION()
     void OnCardClick(AActor* ClickedActor, FKey ButtonPressed);
 
+    UFUNCTION()
+    void PlayCardMoveAnim(const FTransform& Transform);
+
+    UFUNCTION()
+    void Move();
+public:
+    UPROPERTY()
+    bool bMoving = false;
+
+    UPROPERTY()
+    FTransform EndTransform;
+
 #if WITH_EDITOR
-    UFUNCTION(CallInEditor, Category="Card")
-    void Init();
 
 #if WITH_EDITORONLY_DATA
     UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "CardDataTable",  Category="Card")
     UDataTable* CardDataTable;
 #endif
-    
+    UFUNCTION(CallInEditor, Category="Card")
+    void Init();
 #endif
 };

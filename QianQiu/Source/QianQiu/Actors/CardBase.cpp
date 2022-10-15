@@ -33,6 +33,10 @@ void ACardBase::BeginPlay()
 void ACardBase::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
+    if (bMoving)
+    {
+        Move();
+    }
 }
 
 void ACardBase::Init(FCardData InCardData)
@@ -79,7 +83,34 @@ void ACardBase::Init()
 }
 #endif
 
+void ACardBase::PlayCardMoveAnim(const FTransform& Transform)
+{
+    EndTransform = Transform;
+    bMoving = true;
+}
+
+void ACardBase::Move()
+{
+    FTransform CurrentTransform = GetActorTransform();
+    const FVector CurrentLocation = CurrentTransform.GetLocation();
+    const FVector EndLocation = EndTransform.GetLocation();
+    const FVector NewLocation = FMath::VInterpTo(CurrentLocation, EndLocation, GetWorld()->GetDeltaSeconds(), 10);
+
+    const FVector CurrentRotation = CurrentTransform.GetRotation().Euler();
+    const FVector EndRotation = EndTransform.GetRotation().Euler();
+    const FVector NewRotation = FMath::VInterpTo(CurrentRotation, EndRotation, GetWorld()->GetDeltaSeconds(), 10);
+    if (NewLocation.Equals(EndLocation) && NewRotation.Equals(EndRotation))
+    {
+        bMoving = false;
+    }
+    CurrentTransform.SetLocation(NewLocation);
+    CurrentTransform.SetRotation(FQuat::MakeFromEuler(NewRotation));
+    SetActorTransform(CurrentTransform);
+}
+
 void ACardBase::OnCardClick(AActor* ClickedActor, FKey ButtonPressed)
 {
     UE_LOG(LogTemp, Display, TEXT("Current Choose Card ：%s"), *CardData.Name);
+    const FTransform Transform = GetTransform();
+    Transform.DebugPrint();
 }

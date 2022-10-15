@@ -89,6 +89,12 @@ public:
     void UpdateHandCardsTransform(FString HandFirst, FString HandLast);
 
     UFUNCTION(BlueprintCallable)
+    void CollectHandCardsTransform(FTransform StartTransform, FTransform EndTransform, TMap<ACardBase*, FTransform>& CardTargetTransform);
+
+    UFUNCTION(BlueprintCallable)
+    void PlayCardMoveAnim(ACardBase* CardBase, FTransform EndTransform);
+
+    UFUNCTION(BlueprintCallable)
     void SetCardToSpecial(ACardBase* CardBase);
 
     

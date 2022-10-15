@@ -112,4 +112,6 @@ void UGameManager::InitSendCards()
     }
     PlayerA->UpdateHandCardsTransform(TEXT("PlayerAHandFirst"), TEXT("PlayerAHandLast"));
     PlayerB->UpdateHandCardsTransform(TEXT("PlayerBHandFirst"), TEXT("PlayerBHandLast"));
+    PublicCardsHolder->UpdatePublicCardsHolderTransform(TEXT("PublicCardsHolderTop"), TEXT("PublicCardsHolderButtom"));
+    PublicCardsHolder->SetAllShowCardTransform();
 }

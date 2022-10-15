@@ -70,10 +70,30 @@ void AQianQiuKe::UpdateHandCardsTransform(FString HandFirst, FString HandLast)
     {
         return;
     }
+
+    TMap<ACardBase*, FTransform> CardTargetTransform;
+    
     const FTransform StartTransform = UDataManager::GetCardTransform(HandFirst);
     const FTransform EndTransform = UDataManager::GetCardTransform(HandLast);
+    CollectHandCardsTransform(StartTransform, EndTransform,CardTargetTransform);
+    if (CardTargetTransform.Num() > 0)
+    {
+        for (const auto& Item : CardTargetTransform)
+        {
+            if (IsValid(Item.Key))
+            {
+                Item.Key->PlayCardMoveAnim(Item.Value);
+            }
+        }
+    }
+}
+
+void AQianQiuKe::CollectHandCardsTransform(FTransform StartTransform, FTransform EndTransform, TMap<ACardBase*, FTransform>& CardTargetTransform)
+{
+    TArray<FTransform> TargetTransforms;
     const float X = (EndTransform.GetTranslation().X - StartTransform.GetTranslation().X) / PlayerCardInHands.Num();
     const float Y = (EndTransform.GetTranslation().Y - StartTransform.GetTranslation().Y) / PlayerCardInHands.Num();
+    const float Z = (EndTransform.GetTranslation().Z - StartTransform.GetTranslation().Z) / PlayerCardInHands.Num();
     int i = 0;
     for (const auto& Card : PlayerCardInHands)
     {
@@ -81,9 +101,18 @@ void AQianQiuKe::UpdateHandCardsTransform(FString HandFirst, FString HandLast)
         auto Translation = Transform.GetTranslation();
         Translation.X += i*X;
         Translation.Y += i*Y;
+        Translation.Z += i*Z;
         Transform.SetTranslation(Translation);
-        Card.Value->SetActorTransform(Transform);
+        CardTargetTransform.Add(Card.Value, Transform);
         i++;
+    }
+}
+
+void AQianQiuKe::PlayCardMoveAnim(ACardBase* CardBase, const FTransform EndTransform)
+{
+    if (IsValid(CardBase))
+    {
+        CardBase->PlayCardMoveAnim(EndTransform);
     }
 }
 

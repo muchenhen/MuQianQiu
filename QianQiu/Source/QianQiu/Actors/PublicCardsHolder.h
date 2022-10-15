@@ -30,8 +30,46 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, DisplayName = "公共牌堆")
     TMap<int, ACardBase*> PublicCards;
 
+    UPROPERTY()
+    TMap<ACardBase*, FTransform> FirstShowCardTransform;
+
+    UPROPERTY()
+    TMap<ACardBase*, FTransform> SecondShowCardTransform;
+
+    UPROPERTY()
+    TMap<ACardBase*, FTransform> ThirdShowCardTransform;
+
+    UPROPERTY()
+    TMap<ACardBase*, FTransform> FourthShowCardTransform;
+
+    UPROPERTY()
+    TMap<ACardBase*, FTransform> FifthShowCardTransform;
+
+    UPROPERTY()
+    TMap<ACardBase*, FTransform> SixthShowCardTransform;
+
+    UPROPERTY()
+    TMap<ACardBase*, FTransform> SeventhShowCardTransform;
+
+    UPROPERTY()
+    TMap<ACardBase*, FTransform> EighthShowCardTransform;
+
+    UPROPERTY()
+    TMap<ACardBase*, FTransform> NinthShowCardTransform;
+
+    UPROPERTY()
+    TMap<ACardBase*, FTransform> TenthShowCardTransform;
+    
+public:
+
     UFUNCTION(BlueprintCallable)
     void ResetPublicCardsHolder();
+
+    UFUNCTION()
+    void UpdatePublicCardsHolderTransform(const FString PublicCardsHolderTop, const FString PublicCardsHolderButtom);
+
+    UFUNCTION()
+    void SetAllShowCardTransform();
 
     /**
      * @brief 向公共牌堆中添加一张牌
@@ -39,4 +77,13 @@ public:
      */
     UFUNCTION(BlueprintCallable)
     void SetCardToPublicCardsHolder(ACardBase* CardBase);
+
+    UFUNCTION(BlueprintCallable)
+    void DealCardToPublicShowOnInit();
+    
+    /**
+     * @brief 从公共牌堆中取出一张牌补位到展示的公共牌中
+     */
+    UFUNCTION(BlueprintCallable)
+    void DealCardToPublicShow();
 };
