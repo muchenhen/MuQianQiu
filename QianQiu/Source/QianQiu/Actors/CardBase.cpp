@@ -33,7 +33,7 @@ void ACardBase::BeginPlay()
 void ACardBase::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-    if (bMoving)
+    if (MoveState != EMoveState::Stop)
     {
         Move();
     }
@@ -83,29 +83,63 @@ void ACardBase::Init()
 }
 #endif
 
-void ACardBase::PlayCardMoveAnim(const FTransform& Transform)
+void ACardBase::PlayCardMoveAnim(const FTransform& Transform, EMoveState InMoveState)
 {
     EndTransform = Transform;
-    bMoving = true;
+    MoveState = InMoveState;
 }
 
 void ACardBase::Move()
 {
-    FTransform CurrentTransform = GetActorTransform();
-    const FVector CurrentLocation = CurrentTransform.GetLocation();
-    const FVector EndLocation = EndTransform.GetLocation();
-    const FVector NewLocation = FMath::VInterpTo(CurrentLocation, EndLocation, GetWorld()->GetDeltaSeconds(), CardMoveSpeed);
-
-    const FVector CurrentRotation = CurrentTransform.GetRotation().Euler();
-    const FVector EndRotation = EndTransform.GetRotation().Euler();
-    const FVector NewRotation = FMath::VInterpTo(CurrentRotation, EndRotation, GetWorld()->GetDeltaSeconds(), CardMoveSpeed);
-    if (NewLocation.Equals(EndLocation) && NewRotation.Equals(EndRotation))
+    // 完全移动到目标位置
+    if (MoveState == EMoveState::Stop)
     {
-        bMoving = false;
+        return;
     }
-    CurrentTransform.SetLocation(NewLocation);
-    CurrentTransform.SetRotation(FQuat::MakeFromEuler(NewRotation));
-    SetActorTransform(CurrentTransform);
+    else if(MoveState == EMoveState::MoveTransform)
+    {
+        FTransform CurrentTransform = GetActorTransform();
+        const FVector CurrentLocation = CurrentTransform.GetLocation();
+        const FVector EndLocation = EndTransform.GetLocation();
+        const FVector NewLocation = FMath::VInterpTo(CurrentLocation, EndLocation, GetWorld()->GetDeltaSeconds(), CardMoveSpeed);
+
+        const FVector CurrentRotation = CurrentTransform.GetRotation().Euler();
+        const FVector EndRotation = EndTransform.GetRotation().Euler();
+        const FVector NewRotation = FMath::VInterpTo(CurrentRotation, EndRotation, GetWorld()->GetDeltaSeconds(), CardMoveSpeed);
+        CurrentTransform.SetLocation(NewLocation);
+        CurrentTransform.SetRotation(FQuat::MakeFromEuler(NewRotation));
+        SetActorTransform(CurrentTransform);
+        if (NewLocation.Equals(EndLocation) && NewRotation.Equals(EndRotation))
+        {
+            MoveState = EMoveState::Stop;
+        }
+    }
+    else if(MoveState == EMoveState::MoveTransition)
+    {
+        FTransform CurrentTransform = GetActorTransform();
+        const FVector CurrentLocation = CurrentTransform.GetLocation();
+        const FVector EndLocation = EndTransform.GetLocation();
+        const FVector NewLocation = FMath::VInterpTo(CurrentLocation, EndLocation, GetWorld()->GetDeltaSeconds(), CardMoveSpeed);
+        CurrentTransform.SetLocation(NewLocation);
+        SetActorTransform(CurrentTransform);
+        if (NewLocation.Equals(EndLocation))
+        {
+            MoveState = EMoveState::Stop;
+        }
+    }
+    else if(MoveState == EMoveState::MoveRotation)
+    {
+        FTransform CurrentTransform = GetActorTransform();
+        const FVector CurrentRotation = CurrentTransform.GetRotation().Euler();
+        const FVector EndRotation = EndTransform.GetRotation().Euler();
+        const FVector NewRotation = FMath::VInterpTo(CurrentRotation, EndRotation, GetWorld()->GetDeltaSeconds(), CardMoveSpeed);
+        CurrentTransform.SetRotation(FQuat::MakeFromEuler(NewRotation));
+        SetActorTransform(CurrentTransform);
+        if (NewRotation.Equals(EndRotation))
+        {
+            MoveState = EMoveState::Stop;
+        }
+    }
 }
 
 void ACardBase::OnCardClick(AActor* ClickedActor, FKey ButtonPressed)

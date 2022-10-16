@@ -45,14 +45,14 @@ public:
     void OnCardClick(AActor* ClickedActor, FKey ButtonPressed);
 
     UFUNCTION()
-    void PlayCardMoveAnim(const FTransform& Transform);
+    void PlayCardMoveAnim(const FTransform& Transform, EMoveState InMoveState);
 
     UFUNCTION()
     void Move();
 public:
     UPROPERTY()
-    bool bMoving = false;
-
+    EMoveState MoveState = EMoveState::Stop;
+    
     UPROPERTY()
     FTransform EndTransform;
 

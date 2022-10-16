@@ -82,7 +82,7 @@ void AQianQiuKe::UpdateHandCardsTransform(FString HandFirst, FString HandLast)
         {
             if (IsValid(Item.Key))
             {
-                Item.Key->PlayCardMoveAnim(Item.Value);
+                Item.Key->PlayCardMoveAnim(Item.Value, EMoveState::MoveTransform);
             }
         }
     }
@@ -112,7 +112,7 @@ void AQianQiuKe::PlayCardMoveAnim(ACardBase* CardBase, const FTransform EndTrans
 {
     if (IsValid(CardBase))
     {
-        CardBase->PlayCardMoveAnim(EndTransform);
+        CardBase->PlayCardMoveAnim(EndTransform, EMoveState::MoveTransform);
     }
 }
 

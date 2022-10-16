@@ -44,8 +44,7 @@ void APublicCardsHolder::DealCardToPublicShowOnInit()
             {
                 ACardBase* Card = Item.Value.Card;
                 const FTransform Transform = Item.Value.Transform;
-                Card->EndTransform = Transform;
-                Card->bMoving = true;
+                Card->PlayCardMoveAnim(Transform, EMoveState::MoveTransition);
             }
         }
     }
@@ -97,7 +96,7 @@ void APublicCardsHolder::UpdatePublicCardsHolderTransform(const FString PublicCa
         {
             if (IsValid(Item.Key))
             {
-                Item.Key->PlayCardMoveAnim(Item.Value);
+                Item.Key->PlayCardMoveAnim(Item.Value, EMoveState::MoveTransform);
             }
         }
     }

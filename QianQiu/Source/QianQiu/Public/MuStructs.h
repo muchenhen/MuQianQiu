@@ -102,3 +102,12 @@ public:
 	    UE_LOG(LogTemp, Display, TEXT("Season:    %s"), *Season);
 	}
 };
+
+UENUM()
+enum class EMoveState
+{
+    Stop,
+    MoveTransform,
+    MoveTransition,
+    MoveRotation,
+};
