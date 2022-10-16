@@ -45,6 +45,9 @@ public:
 
     UPROPERTY()
     TMap<int, FPublicCardShowTransform> PublicCardShowTransforms;
+
+    UPROPERTY()
+    FTimerHandle TimerHandle;
     
 public:
 
@@ -66,6 +69,12 @@ public:
 
     UFUNCTION(BlueprintCallable)
     void DealCardToPublicShowOnInit();
+
+    UFUNCTION(BlueprintCallable)
+    void MoveCardTranslation(ACardBase* Card, FTransform Transform, FTimerHandle InTimerHandle);
+
+    UFUNCTION(BlueprintCallable)
+    void MoveCardRotation(ACardBase* Card, FTransform Transform, FTimerHandle InTimerHandle);
     
     /**
      * @brief 从公共牌堆中取出一张牌补位到展示的公共牌中

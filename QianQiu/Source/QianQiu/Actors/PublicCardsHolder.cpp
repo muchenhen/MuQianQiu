@@ -35,6 +35,7 @@ void APublicCardsHolder::SetCardToPublicCardsHolder(ACardBase* CardBase)
 
 void APublicCardsHolder::DealCardToPublicShowOnInit()
 {
+    int i = 1;
     for (auto& Item : PublicCardShowTransforms)
     {
         if (!IsValid(Item.Value.Card))
@@ -44,10 +45,32 @@ void APublicCardsHolder::DealCardToPublicShowOnInit()
             {
                 ACardBase* Card = Item.Value.Card;
                 const FTransform Transform = Item.Value.Transform;
-                Card->PlayCardMoveAnim(Transform, EMoveState::MoveTransition);
+                FTimerDelegate TimerDelegate;
+                FTimerHandle ATimerHandle;
+                TimerDelegate.BindUFunction(this, FName(TEXT("MoveCardTranslation")), Card, Transform, ATimerHandle);
+                GetWorld()->GetTimerManager().SetTimer(ATimerHandle, TimerDelegate, 0.5f * i , false);
+
+                FTimerDelegate RotateDelegate;
+                FTimerHandle RotateTimerHandle;
+                RotateDelegate.BindUFunction(this, FName(TEXT("MoveCardRotation")), Card, Transform, ATimerHandle);
+                GetWorld()->GetTimerManager().SetTimer(RotateTimerHandle, RotateDelegate, 0.5f * i + 2.0f, false);
+                i++;
             }
         }
     }
+}
+
+void APublicCardsHolder::MoveCardTranslation(ACardBase* Card, FTransform Transform, FTimerHandle InTimerHandle)
+{
+    Card->PlayCardMoveAnim(Transform, EMoveState::MoveTransition);
+    GetWorld()->GetTimerManager().ClearTimer(InTimerHandle);
+}
+
+
+void APublicCardsHolder::MoveCardRotation(ACardBase* Card, FTransform Transform, FTimerHandle InTimerHandle)
+{
+    Card->PlayCardMoveAnim(Transform, EMoveState::MoveRotation);
+    GetWorld()->GetTimerManager().ClearTimer(InTimerHandle);
 }
 
 ACardBase* APublicCardsHolder::DealCardToPublicShow()
@@ -104,57 +127,27 @@ void APublicCardsHolder::UpdatePublicCardsHolderTransform(const FString PublicCa
 
 void APublicCardsHolder::SetAllShowCardTransform()
 {
-    const FTransform FirstTransform = UDataManager::GetCardTransform(TEXT("FirstShowCardTransform"));
-    const FTransform SecondTransform = UDataManager::GetCardTransform(TEXT("SecondShowCardTransform"));
-    const FTransform ThirdTransform = UDataManager::GetCardTransform(TEXT("ThirdShowCardTransform"));
-    const FTransform FourthTransform = UDataManager::GetCardTransform(TEXT("FourthShowCardTransform"));
-    const FTransform FifthTransform = UDataManager::GetCardTransform(TEXT("FifthShowCardTransform"));
-    const FTransform SixthTransform = UDataManager::GetCardTransform(TEXT("SixthShowCardTransform"));
-    const FTransform SeventhTransform = UDataManager::GetCardTransform(TEXT("SeventhShowCardTransform"));
-    const FTransform EighthTransform = UDataManager::GetCardTransform(TEXT("EighthShowCardTransform"));
-    const FTransform NinthTransform = UDataManager::GetCardTransform(TEXT("NinthShowCardTransform"));
-    const FTransform TenthTransform = UDataManager::GetCardTransform(TEXT("TenthShowCardTransform"));
+    const FTransform PublicShowCardFirst = UDataManager::GetCardTransform(TEXT("PublicShowCardFirst"));
+    const FTransform PublicShowCardLast = UDataManager::GetCardTransform(TEXT("PublicShowCardLast"));
 
-    FPublicCardShowTransform PublicCardShowTransformFirst;
-    PublicCardShowTransformFirst.Transform = FirstTransform;
-    PublicCardShowTransformFirst.Card = nullptr;
-    FPublicCardShowTransform PublicCardShowTransformSecond;
-    PublicCardShowTransformSecond.Transform = SecondTransform;
-    PublicCardShowTransformSecond.Card = nullptr;
-    FPublicCardShowTransform PublicCardShowTransformThird;
-    PublicCardShowTransformThird.Transform = ThirdTransform;
-    PublicCardShowTransformThird.Card = nullptr;
-    FPublicCardShowTransform PublicCardShowTransformFourth;
-    PublicCardShowTransformFourth.Transform = FourthTransform;
-    PublicCardShowTransformFourth.Card = nullptr;
-    FPublicCardShowTransform PublicCardShowTransformFifth;
-    PublicCardShowTransformFifth.Transform = FifthTransform;
-    PublicCardShowTransformFifth.Card = nullptr;
-    FPublicCardShowTransform PublicCardShowTransformSixth;
-    PublicCardShowTransformSixth.Transform = SixthTransform;
-    PublicCardShowTransformSixth.Card = nullptr;
-    FPublicCardShowTransform PublicCardShowTransformSeventh;
-    PublicCardShowTransformSeventh.Transform = SeventhTransform;
-    PublicCardShowTransformSeventh.Card = nullptr;
-    FPublicCardShowTransform PublicCardShowTransformEighth;
-    PublicCardShowTransformEighth.Transform = EighthTransform;
-    PublicCardShowTransformEighth.Card = nullptr;
-    FPublicCardShowTransform PublicCardShowTransformNinth;
-    PublicCardShowTransformNinth.Transform = NinthTransform;
-    PublicCardShowTransformNinth.Card = nullptr;
-    FPublicCardShowTransform PublicCardShowTransformTenth;
-    PublicCardShowTransformTenth.Transform = TenthTransform;
-    PublicCardShowTransformTenth.Card = nullptr;
-
-    PublicCardShowTransforms.Add(1, PublicCardShowTransformFirst);
-    PublicCardShowTransforms.Add(2, PublicCardShowTransformSecond);
-    PublicCardShowTransforms.Add(3, PublicCardShowTransformThird);
-    PublicCardShowTransforms.Add(4, PublicCardShowTransformFourth);
-    PublicCardShowTransforms.Add(5, PublicCardShowTransformFifth);
-    PublicCardShowTransforms.Add(6, PublicCardShowTransformSixth);
-    PublicCardShowTransforms.Add(7, PublicCardShowTransformSeventh);
-    PublicCardShowTransforms.Add(8, PublicCardShowTransformEighth);
-    PublicCardShowTransforms.Add(9, PublicCardShowTransformNinth);
-    PublicCardShowTransforms.Add(10, PublicCardShowTransformTenth);
+    TArray<FTransform> TargetTransforms;
+    const float X = (PublicShowCardLast.GetTranslation().X - PublicShowCardFirst.GetTranslation().X) / 10;
+    const float Y = (PublicShowCardLast.GetTranslation().Y - PublicShowCardFirst.GetTranslation().Y) / 10;
+    const float Z = (PublicShowCardLast.GetTranslation().Z - PublicShowCardFirst.GetTranslation().Z) / 10;
+    
+    for (int i = 1; i <= 10; i++)
+    {
+        FPublicCardShowTransform PublicCardShowTransform;
+        FTransform Transform = PublicShowCardFirst;
+        auto Translation = Transform.GetTranslation();
+        Translation.X += (i-1)*X;
+        Translation.Y += (i-1)*Y;
+        Translation.Z += (i-1)*Z;
+        Transform.SetTranslation(Translation);
+        
+        PublicCardShowTransform.Transform = Transform;
+        PublicCardShowTransform.Card = nullptr;
+        PublicCardShowTransforms.Add(i, PublicCardShowTransform);
+    }
 }
 
