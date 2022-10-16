@@ -17,9 +17,33 @@ UCLASS()
 class QIANQIU_API UGameManager : public UGameInstanceSubsystem
 {
     GENERATED_BODY()
-public:
+private: // 初始化
+    
+    // 控制生成哪些卡牌
     UPROPERTY()
     EGameMode GameMode = EGameMode::BC;
+
+    // 随机卡牌ID顺序，游戏初始化时生成
+    UPROPERTY()
+    TArray<int32> AllInitCardsID;
+
+    // 场景中已经初始化的Actor
+    UPROPERTY()
+    TMap<int, ACardBase*> Cards;
+    
+    // 玩家A的实例对象
+    UPROPERTY()
+    AQianQiuKe* PlayerA;
+
+    // 玩家B的实例对象
+    UPROPERTY()
+    AQianQiuKe* PlayerB;
+
+    // 公共卡池的实例对象
+    UPROPERTY()
+    APublicCardsHolder* PublicCardsHolder;
+
+public: // 初始化用的方法
 
     // 每一局游戏开始时调用
     UFUNCTION(BlueprintCallable)
@@ -37,25 +61,28 @@ public:
     UFUNCTION(BlueprintCallable)
     void InitSendCards();
 
+    // 初始化时对公共卡池进行发牌
     UFUNCTION(BlueprintCallable)
     void ShowPublicCards();
 
-private:
-    // 随机卡牌ID顺序，游戏初始化时生成
-    TArray<int32> AllInitCardsID;
+private: // 进行游戏时
 
-    // 场景中已经初始化的Actor
+    // 当前回合数
     UPROPERTY()
-    TMap<int, ACardBase*> Cards;
+    int CurrentRound = 0;
+
+    // 当前玩家A选择的卡牌
+    UPROPERTY()
+    ACardBase* CurrentPlayerAChooseCard;
+
+    // 当前玩家B选择的卡牌
+    UPROPERTY()
+    ACardBase* CurrentPlayerBChooseCard;
+
+public:
+
+    UFUNCTION()
+    void ChangeRound();
+
     
-    // 玩家A的实例对象
-    UPROPERTY()
-    AQianQiuKe* PlayerA;
-
-    // 玩家B的实例对象
-    UPROPERTY()
-    AQianQiuKe* PlayerB;
-
-    UPROPERTY()
-    APublicCardsHolder* PublicCardsHolder;
 };

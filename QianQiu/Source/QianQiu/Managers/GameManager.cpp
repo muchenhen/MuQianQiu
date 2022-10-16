@@ -122,3 +122,7 @@ void UGameManager::ShowPublicCards()
         PublicCardsHolder->DealCardToPublicShowOnInit();
     }
 }
+
+void UGameManager::ChangeRound()
+{
+}
