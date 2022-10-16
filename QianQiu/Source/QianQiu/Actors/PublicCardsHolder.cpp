@@ -55,6 +55,8 @@ void APublicCardsHolder::DealCardToPublicShowOnInit()
                 RotateDelegate.BindUFunction(this, FName(TEXT("MoveCardRotation")), Card, Transform, ATimerHandle);
                 GetWorld()->GetTimerManager().SetTimer(RotateTimerHandle, RotateDelegate, 0.5f * i + 2.0f, false);
                 i++;
+
+                Card->SetFixedTransform(Transform);
             }
         }
     }

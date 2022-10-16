@@ -27,6 +27,9 @@ void ACardBase::BeginPlay()
 {
     Super::BeginPlay();
     OnClicked.AddDynamic(this, &ACardBase::OnCardClick);
+    OnReleased.AddDynamic(this, &ACardBase::OnCardRelease);
+    // OnBeginCursorOver.AddDynamic(this, &ACardBase::OnCardBeginCursorOver);
+    // OnEndCursorOver.AddDynamic(this, &ACardBase::OnCardEndCursorOver);
 }
 
 // Called every frame
@@ -41,7 +44,6 @@ void ACardBase::Tick(float DeltaTime)
 
 void ACardBase::Init(FCardData InCardData)
 {
-    // Texture2D'/Game/Texture/Item/Tex_Item_FengLai.Tex_Item_FengLai'
     CardData = InCardData;
     ID = CardData.CardID;
     FString TexturePath = "/Game/Texture" / InCardData.Type / InCardData.Texture;
@@ -142,9 +144,38 @@ void ACardBase::Move()
     }
 }
 
+void ACardBase::SetFixedTransform(const FTransform& Transform)
+{
+    FixedTransform = Transform;
+}
+
 void ACardBase::OnCardClick(AActor* ClickedActor, FKey ButtonPressed)
 {
     UE_LOG(LogTemp, Display, TEXT("Current Choose Card ：%s"), *CardData.Name);
-    const FTransform Transform = GetTransform();
-    Transform.DebugPrint();
+    CardData.Dump();
+    // const FTransform Transform = GetTransform();
+    // Transform.DebugPrint();
+}
+
+void ACardBase::OnCardRelease(AActor* Actor, FKey Key)
+{
+    UE_LOG(LogTemp, Display, TEXT("OnCardRelease"));
+}
+
+void ACardBase::OnCardBeginCursorOver(AActor* Actor)
+{
+    FTransform Transform = GetTransform();
+    FVector Translation = Transform.GetTranslation();
+    Translation.Z += 20;
+    Transform.SetTranslation(Translation);
+    PlayCardMoveAnim(Transform, EMoveState::MoveTransition);
+}
+
+void ACardBase::OnCardEndCursorOver(AActor* Actor)
+{
+    FTransform Transform = GetTransform();
+    FVector Translation = Transform.GetTranslation();
+    Translation.Z -= 20;
+    Transform.SetTranslation(Translation);
+    PlayCardMoveAnim(Transform, EMoveState::MoveTransition);
 }

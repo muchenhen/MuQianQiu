@@ -64,7 +64,7 @@ void AQianQiuKe::SetCardToHands(ACardBase* CardBase)
     }
 }
 
-void AQianQiuKe::UpdateHandCardsTransform(FString HandFirst, FString HandLast)
+void AQianQiuKe::InitHandCardTransformPlayAnim(FString HandFirst, FString HandLast)
 {
     if (PlayerCardInHands.IsEmpty())
     {
@@ -75,7 +75,7 @@ void AQianQiuKe::UpdateHandCardsTransform(FString HandFirst, FString HandLast)
     
     const FTransform StartTransform = UDataManager::GetCardTransform(HandFirst);
     const FTransform EndTransform = UDataManager::GetCardTransform(HandLast);
-    CollectHandCardsTransform(StartTransform, EndTransform,CardTargetTransform);
+    InitCollectHandCardsTransform(StartTransform, EndTransform,CardTargetTransform);
     if (CardTargetTransform.Num() > 0)
     {
         for (const auto& Item : CardTargetTransform)
@@ -83,12 +83,13 @@ void AQianQiuKe::UpdateHandCardsTransform(FString HandFirst, FString HandLast)
             if (IsValid(Item.Key))
             {
                 Item.Key->PlayCardMoveAnim(Item.Value, EMoveState::MoveTransform);
+                Item.Key->SetFixedTransform(Item.Value);
             }
         }
     }
 }
 
-void AQianQiuKe::CollectHandCardsTransform(FTransform StartTransform, FTransform EndTransform, TMap<ACardBase*, FTransform>& CardTargetTransform)
+void AQianQiuKe::InitCollectHandCardsTransform(FTransform StartTransform, FTransform EndTransform, TMap<ACardBase*, FTransform>& CardTargetTransform)
 {
     TArray<FTransform> TargetTransforms;
     const float X = (EndTransform.GetTranslation().X - StartTransform.GetTranslation().X) / PlayerCardInHands.Num();
@@ -105,14 +106,6 @@ void AQianQiuKe::CollectHandCardsTransform(FTransform StartTransform, FTransform
         Transform.SetTranslation(Translation);
         CardTargetTransform.Add(Card.Value, Transform);
         i++;
-    }
-}
-
-void AQianQiuKe::PlayCardMoveAnim(ACardBase* CardBase, const FTransform EndTransform)
-{
-    if (IsValid(CardBase))
-    {
-        CardBase->PlayCardMoveAnim(EndTransform, EMoveState::MoveTransform);
     }
 }
 

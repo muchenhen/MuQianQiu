@@ -27,6 +27,12 @@ protected:
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
 
+    UFUNCTION()
+    void OnCardClick(AActor* ClickedActor, FKey ButtonPressed);
+
+    UFUNCTION()
+    void OnCardRelease(AActor* Actor, FKey Key);
+    
 public:
     UPROPERTY(EditAnywhere)
     int ID = 201;
@@ -40,21 +46,30 @@ public:
     void Init(FCardData InCardData);
 
     void Init(const int& CardID);
+    
+    UFUNCTION()
+    void OnCardBeginCursorOver(AActor* Actor);
 
     UFUNCTION()
-    void OnCardClick(AActor* ClickedActor, FKey ButtonPressed);
-
+    void OnCardEndCursorOver(AActor* Actor);
+    
     UFUNCTION()
     void PlayCardMoveAnim(const FTransform& Transform, EMoveState InMoveState);
 
     UFUNCTION()
     void Move();
+
+    UFUNCTION()
+    void SetFixedTransform(const FTransform& Transform);
 public:
     UPROPERTY()
     EMoveState MoveState = EMoveState::Stop;
     
     UPROPERTY()
     FTransform EndTransform;
+
+    UPROPERTY()
+    FTransform FixedTransform;
 
 #if WITH_EDITOR
 
