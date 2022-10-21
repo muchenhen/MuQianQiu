@@ -83,6 +83,8 @@ void UGameManager::InitSendCards()
         if (Cards.Find(CardID))
         {
             Card = Cards[CardID];
+            // Card->BindAllCardInitMoveEnd(this);
+            Card->OnInitAllCardsMoveEnd.BindUFunction(this, "OnInitAllCardMoveEndCall");
         }
         else
         {
@@ -120,6 +122,18 @@ void UGameManager::ShowPublicCards()
     if (IsValid(PublicCardsHolder))
     {
         PublicCardsHolder->DealCardToPublicShowOnInit();
+    }
+}
+
+void UGameManager::OnInitAllCardMoveEndCall()
+{
+    if (MoveEndCardNum == -1)
+        return;
+    MoveEndCardNum++;
+    if (MoveEndCardNum == 56)
+    {
+        MoveEndCardNum = -1;
+        ShowPublicCards();
     }
 }
 

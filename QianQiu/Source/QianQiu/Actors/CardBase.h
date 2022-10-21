@@ -7,6 +7,10 @@
 #include "GameFramework/Actor.h"
 #include "CardBase.generated.h"
 
+DECLARE_DELEGATE(FOnInitAllCardsMoveEnd)
+
+class UGameManager;
+
 UCLASS()
 class QIANQIU_API ACardBase : public AActor
 {
@@ -40,6 +44,11 @@ public:
     UPROPERTY(EditAnywhere)
     float CardMoveSpeed = 1.0f;
 
+    UPROPERTY()
+    bool bInitAllCardMoveEnd = false;
+
+    FOnInitAllCardsMoveEnd OnInitAllCardsMoveEnd;
+    
     // Called every frame
     virtual void Tick(float DeltaTime) override;
 
@@ -61,6 +70,9 @@ public:
 
     UFUNCTION()
     void SetFixedTransform(const FTransform& Transform);
+
+    UFUNCTION()
+    void BindAllCardInitMoveEnd(UGameManager* GameManager);
 public:
     UPROPERTY()
     EMoveState MoveState = EMoveState::Stop;

@@ -2,6 +2,7 @@
 
 #include "CardBase.h"
 
+#include "Kismet/GameplayStatics.h"
 #include "QianQiu/Managers/DataManager.h"
 
 // Sets default values
@@ -36,10 +37,10 @@ void ACardBase::BeginPlay()
 void ACardBase::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-    if (MoveState != EMoveState::Stop)
-    {
+    // if (MoveState != EMoveState::Stop)
+    // {
         Move();
-    }
+    // }
 }
 
 void ACardBase::Init(FCardData InCardData)
@@ -96,6 +97,15 @@ void ACardBase::Move()
     // 完全移动到目标位置
     if (MoveState == EMoveState::Stop)
     {
+        // if (! bInitAllCardMoveEnd)
+        // {
+            // bInitAllCardMoveEnd = true;
+            if (OnInitAllCardsMoveEnd.IsBound())
+            {
+                OnInitAllCardsMoveEnd.Execute();
+                OnInitAllCardsMoveEnd.Unbind();
+            }
+        // }
         return;
     }
     else if(MoveState == EMoveState::MoveTransform)
@@ -147,6 +157,11 @@ void ACardBase::Move()
 void ACardBase::SetFixedTransform(const FTransform& Transform)
 {
     FixedTransform = Transform;
+}
+
+void ACardBase::BindAllCardInitMoveEnd(UGameManager* GameManager)
+{
+    // OnInitAllCardsMoveEnd.BindUFunction(GameManager, "OnInitAllCardMoveEndCall");
 }
 
 void ACardBase::OnCardClick(AActor* ClickedActor, FKey ButtonPressed)

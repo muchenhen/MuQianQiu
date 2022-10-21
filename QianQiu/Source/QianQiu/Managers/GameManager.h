@@ -43,6 +43,9 @@ private: // 初始化
     UPROPERTY()
     APublicCardsHolder* PublicCardsHolder;
 
+    UPROPERTY()
+    int MoveEndCardNum = 0;
+
 public: // 初始化用的方法
 
     // 每一局游戏开始时调用
@@ -65,6 +68,10 @@ public: // 初始化用的方法
     UFUNCTION(BlueprintCallable)
     void ShowPublicCards();
 
+    // 初始化后sequence结束后所有牌位移停止后调用
+    UFUNCTION()
+    void OnInitAllCardMoveEndCall();
+
 private: // 进行游戏时
 
     // 当前回合数
@@ -86,3 +93,28 @@ public:
 
     
 };
+
+class UB : UObject
+{
+    void OnSomethingEnd()
+    {
+        // A->CheckDoNextThing();
+    }
+};
+
+class UA : UObject
+{
+    TArray<UB*> B;
+
+    int i= 0;
+
+    void CheckDoNextThing()
+    {
+        i++;
+        if (i==888)
+        {
+            // do next thing;
+        }
+    }
+};
+
