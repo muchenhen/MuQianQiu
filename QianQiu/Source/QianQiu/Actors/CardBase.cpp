@@ -121,7 +121,7 @@ void ACardBase::Move()
         CurrentTransform.SetLocation(NewLocation);
         CurrentTransform.SetRotation(FQuat::MakeFromEuler(NewRotation));
         SetActorTransform(CurrentTransform);
-        if (NewLocation.Equals(EndLocation) && NewRotation.Equals(EndRotation))
+        if (NewLocation.Equals(EndLocation,0.05f) && NewRotation.Equals(EndRotation,0.05f))
         {
             MoveState = EMoveState::Stop;
         }
@@ -134,7 +134,7 @@ void ACardBase::Move()
         const FVector NewLocation = FMath::VInterpTo(CurrentLocation, EndLocation, GetWorld()->GetDeltaSeconds(), CardMoveSpeed);
         CurrentTransform.SetLocation(NewLocation);
         SetActorTransform(CurrentTransform);
-        if (NewLocation.Equals(EndLocation))
+        if (NewLocation.Equals(EndLocation,0.05f))
         {
             MoveState = EMoveState::Stop;
         }
@@ -147,7 +147,7 @@ void ACardBase::Move()
         const FVector NewRotation = FMath::VInterpTo(CurrentRotation, EndRotation, GetWorld()->GetDeltaSeconds(), CardMoveSpeed);
         CurrentTransform.SetRotation(FQuat::MakeFromEuler(NewRotation));
         SetActorTransform(CurrentTransform);
-        if (NewRotation.Equals(EndRotation))
+        if (NewRotation.Equals(EndRotation,0.05f))
         {
             MoveState = EMoveState::Stop;
         }
@@ -170,6 +170,14 @@ void ACardBase::OnCardClick(AActor* ClickedActor, FKey ButtonPressed)
     CardData.Dump();
     // const FTransform Transform = GetTransform();
     // Transform.DebugPrint();
+    if (bChoose)
+    {
+        bChoose = false;
+    }
+    else
+    {
+        bChoose = true;
+    }
 }
 
 void ACardBase::OnCardRelease(AActor* Actor, FKey Key)

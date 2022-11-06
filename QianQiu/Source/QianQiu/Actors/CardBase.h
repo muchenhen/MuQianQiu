@@ -46,8 +46,13 @@ public:
 
     UPROPERTY()
     bool bInitAllCardMoveEnd = false;
+    
+    UPROPERTY()
+    bool bChoose = false;
+
 
     FOnInitAllCardsMoveEnd OnInitAllCardsMoveEnd;
+
     
     // Called every frame
     virtual void Tick(float DeltaTime) override;
