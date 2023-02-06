@@ -105,6 +105,11 @@ void ACardBase::Move()
                 OnInitAllCardsMoveEnd.Execute();
                 OnInitAllCardsMoveEnd.Unbind();
             }
+        
+        // if (OnInitPublicCardsDealEnd.IsBound())
+        // {
+        //     OnInitPublicCardsDealEnd.Execute();
+        //     OnInitPublicCardsDealEnd.Unbind();
         // }
         return;
     }

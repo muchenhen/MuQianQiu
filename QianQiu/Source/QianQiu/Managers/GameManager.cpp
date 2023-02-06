@@ -4,6 +4,7 @@
 #include "GameManager.h"
 
 #include "DataManager.h"
+#include "UIManager.h"
 #include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY(LogGameManager);
@@ -109,6 +110,7 @@ void UGameManager::InitSendCards()
         else
         {
             PublicCardsHolder->SetCardToPublicCardsHolder(Card);
+            Card->OnInitAllCardsMoveEnd.BindUFunction(this, "OnPublicCardsMoveEndCall");
         }
     }
     PlayerA->InitHandCardTransformPlayAnim(TEXT("PlayerAHandFirst"), TEXT("PlayerAHandLast"));
@@ -134,6 +136,32 @@ void UGameManager::OnInitAllCardMoveEndCall()
     {
         MoveEndCardNum = -1;
         ShowPublicCards();
+    }
+}
+
+void UGameManager::OnPublicCardsMoveEndCall()
+{
+    if (InitPublicMoveEndCardNum == -1)
+        return;
+    InitPublicMoveEndCardNum++;
+    UE_LOG( LogGameManager, Warning, TEXT("InitPublicMoveEndCardNum: %d"), InitPublicMoveEndCardNum);
+    if (InitPublicMoveEndCardNum == 10)
+    {
+        InitPublicMoveEndCardNum = -1;
+        const UWorld* World = GetWorld();
+        if (World)
+        {
+            const UGameInstance* GameInstance = World->GetGameInstance();
+            if (GameInstance)
+            {
+                UUIManager* UIManager = GameInstance->GetSubsystem<UUIManager>();
+                if (UIManager)
+                {
+                    UIManager->CloseDisableInputUI();
+                }
+            }
+        }
+
     }
 }
 

@@ -40,11 +40,14 @@ void APublicCardsHolder::DealCardToPublicShowOnInit()
     {
         if (!IsValid(Item.Value.Card))
         {
+            // 获取即将要发出去的牌
             Item.Value.Card = DealCardToPublicShow();
             if (IsValid(Item.Value.Card))
             {
                 ACardBase* Card = Item.Value.Card;
                 const FTransform Transform = Item.Value.Transform;
+
+                // 设置延时
                 FTimerDelegate TimerDelegate;
                 FTimerHandle ATimerHandle;
                 TimerDelegate.BindUFunction(this, FName(TEXT("MoveCardTranslation")), Card, Transform, ATimerHandle);

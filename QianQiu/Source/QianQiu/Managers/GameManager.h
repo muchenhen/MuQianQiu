@@ -46,6 +46,9 @@ private: // 初始化
     UPROPERTY()
     int MoveEndCardNum = 0;
 
+    UPROPERTY()
+    int InitPublicMoveEndCardNum = 0;
+
 public: // 初始化用的方法
 
     // 每一局游戏开始时调用
@@ -71,6 +74,10 @@ public: // 初始化用的方法
     // 初始化后sequence结束后所有牌位移停止后调用
     UFUNCTION()
     void OnInitAllCardMoveEndCall();
+
+    // 初始化时公共卡池第一次发牌后牌停止位移时调用
+    UFUNCTION()
+    void OnPublicCardsMoveEndCall();
 
 private: // 进行游戏时
 

@@ -8,6 +8,7 @@
 #include "CardBase.generated.h"
 
 DECLARE_DELEGATE(FOnInitAllCardsMoveEnd)
+DECLARE_DELEGATE(FOnInitPublicCardsDealEnd) // 公共卡池发牌结束 牌的所有移动结束
 
 class UGameManager;
 
@@ -53,6 +54,7 @@ public:
 
     FOnInitAllCardsMoveEnd OnInitAllCardsMoveEnd;
 
+    FOnInitPublicCardsDealEnd OnInitPublicCardsDealEnd;
     
     // Called every frame
     virtual void Tick(float DeltaTime) override;

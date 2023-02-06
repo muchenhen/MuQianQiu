@@ -67,6 +67,9 @@ public:
     UFUNCTION(BlueprintCallable)
     void SetCardToPublicCardsHolder(ACardBase* CardBase);
 
+    /**
+     * @brief 初始化时将公共牌堆中的牌展示出来
+     */
     UFUNCTION(BlueprintCallable)
     void DealCardToPublicShowOnInit();
 
