@@ -111,3 +111,11 @@ enum class EMoveState
     MoveTransition,
     MoveRotation,
 };
+
+UENUM()
+enum class ECardBelongType
+{
+    Public,
+    PlayerA,
+    PlayerB
+};

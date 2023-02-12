@@ -8,7 +8,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="63aa9bb2-c26a-4418-93c7-7698e5099a7e" name="Changes" comment="" />
+    <list default="true" id="63aa9bb2-c26a-4418-93c7-7698e5099a7e" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.QianQiu/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.QianQiu/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Maps/OneTwo.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Maps/OneTwo.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QianQiu.uproject" beforeDir="false" afterPath="$PROJECT_DIR$/QianQiu.uproject" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/QianQiu/Actors/CardBase.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QianQiu/Actors/CardBase.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/QianQiu/Actors/CardBase.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QianQiu/Actors/CardBase.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/QianQiu/Actors/QianQiuKe.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QianQiu/Actors/QianQiuKe.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/QianQiu/Managers/GameManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QianQiu/Managers/GameManager.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/QianQiu/Public/MuStructs.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QianQiu/Public/MuStructs.h" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -25,18 +34,11 @@
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
   </component>
-  <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/Plugins/UnLua/Source/ThirdParty/Lua/src/liolib.c" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Plugins/UnLua/Source/ThirdParty/Lua/src/ltm.h" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Plugins/UnLua/Source/ThirdParty/Lua/src/luaconf.h" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/QianQiu/Managers/QianQiuManager.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/QianQiu/Managers/QianQiuManager.h" root0="FORCE_HIGHLIGHTING" />
-  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="Toolset" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectId" id="26K5enMih3w7Rooag140slAfyY4" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -46,8 +48,19 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
     "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "rider.external.source.directories": [
+      "C:\\Users\\muche\\AppData\\Roaming\\JetBrains\\Rider2022.3\\resharper-host\\DecompilerCache",
+      "C:\\Users\\muche\\AppData\\Roaming\\JetBrains\\Rider2022.3\\resharper-host\\SourcesCache",
+      "C:\\Users\\muche\\AppData\\Local\\Symbols\\src"
+    ]
   }
 }]]></component>
   <component name="RunManager" selected="C++ Project.QianQiu">
@@ -183,6 +196,11 @@
       <workItem from="1649315243249" duration="668000" />
       <workItem from="1650272199921" duration="1328000" />
       <workItem from="1656337901085" duration="291000" />
+      <workItem from="1676199836978" duration="892000" />
+      <workItem from="1676200846947" duration="353000" />
+      <workItem from="1676201534395" duration="498000" />
+      <workItem from="1676202069539" duration="1821000" />
+      <workItem from="1676204093033" duration="3544000" />
     </task>
     <servers />
   </component>
@@ -191,6 +209,10 @@
   </component>
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
   <component name="UnityUnitTestConfiguration" currentTestLauncher="NUnit" />
+  <component name="UnrealLogPanelSettings">
+    <option name="clearOnStart" value="true" />
+    <option name="showTimestamps" value="true" />
+  </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
@@ -209,7 +231,7 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://E:/UE_5.0/Engine/Source/Runtime/CoreUObject/Private/UObject/Obj.cpp</url>
+          <url>file://$PROJECT_DIR$/../../../UE_5.0/Engine/Source/Runtime/CoreUObject/Private/UObject/Obj.cpp</url>
           <line>857</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>

@@ -84,7 +84,6 @@ void UGameManager::InitSendCards()
         if (Cards.Find(CardID))
         {
             Card = Cards[CardID];
-            // Card->BindAllCardInitMoveEnd(this);
             Card->OnInitAllCardsMoveEnd.BindUFunction(this, "OnInitAllCardMoveEndCall");
         }
         else
@@ -100,10 +99,12 @@ void UGameManager::InitSendCards()
             if(i % 2 == 0)
             {
                 PlayerB->SetCardToHands(Card);
+                Card->SetCardBelongType(ECardBelongType::PlayerB);
             }
             else
             {
                 PlayerA->SetCardToHands(Card);
+                Card->SetCardBelongType(ECardBelongType::PlayerA);
             }
         }
         // 后面的全数给到公共卡池
@@ -111,10 +112,13 @@ void UGameManager::InitSendCards()
         {
             PublicCardsHolder->SetCardToPublicCardsHolder(Card);
             Card->OnInitAllCardsMoveEnd.BindUFunction(this, "OnPublicCardsMoveEndCall");
+            Card->SetCardBelongType(ECardBelongType::Public);
         }
     }
+    // 初始化玩家手牌的位置 并播放动画
     PlayerA->InitHandCardTransformPlayAnim(TEXT("PlayerAHandFirst"), TEXT("PlayerAHandLast"));
     PlayerB->InitHandCardTransformPlayAnim(TEXT("PlayerBHandFirst"), TEXT("PlayerBHandLast"));
+    // 初始化公共卡池的位置
     PublicCardsHolder->UpdatePublicCardsHolderTransform(TEXT("PublicCardsHolderTop"), TEXT("PublicCardsHolderButtom"));
     PublicCardsHolder->SetAllShowCardTransform();
 }
@@ -158,6 +162,7 @@ void UGameManager::OnPublicCardsMoveEndCall()
                 if (UIManager)
                 {
                     UIManager->CloseDisableInputUI();
+                    UE_LOG(LogGameManager, Warning, TEXT("GameManager::OnPublicCardsMoveEndCall() - CloseDisableInputUI"));
                 }
             }
         }

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "MuStructs.h"
+#include "../Public/MuStructs.h"
 #include "GameFramework/Actor.h"
 #include "CardBase.generated.h"
 
@@ -51,6 +52,9 @@ public:
     UPROPERTY()
     bool bChoose = false;
 
+    // 卡片所属类型
+    UPROPERTY()
+    ECardBelongType CardBelongType = ECardBelongType::Public;
 
     FOnInitAllCardsMoveEnd OnInitAllCardsMoveEnd;
 
@@ -80,6 +84,9 @@ public:
 
     UFUNCTION()
     void BindAllCardInitMoveEnd(UGameManager* GameManager);
+
+    UFUNCTION()
+    void SetCardBelongType(ECardBelongType InCardBelongType);
 public:
     UPROPERTY()
     EMoveState MoveState = EMoveState::Stop;

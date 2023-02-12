@@ -97,21 +97,25 @@ void ACardBase::Move()
     // 完全移动到目标位置
     if (MoveState == EMoveState::Stop)
     {
-        // if (! bInitAllCardMoveEnd)
-        // {
-            // bInitAllCardMoveEnd = true;
+        // 玩家的牌移动结束
+        if (CardBelongType == ECardBelongType::PlayerA || CardBelongType == ECardBelongType::PlayerB)
+        {
             if (OnInitAllCardsMoveEnd.IsBound())
             {
                 OnInitAllCardsMoveEnd.Execute();
                 OnInitAllCardsMoveEnd.Unbind();
             }
-        
-        // if (OnInitPublicCardsDealEnd.IsBound())
-        // {
-        //     OnInitPublicCardsDealEnd.Execute();
-        //     OnInitPublicCardsDealEnd.Unbind();
-        // }
-        return;
+        }
+
+        // 公共卡池的牌移动结束
+        if (CardBelongType == ECardBelongType::Public)
+        {
+            if (OnInitPublicCardsDealEnd.IsBound())
+            {
+                OnInitPublicCardsDealEnd.Execute();
+                OnInitPublicCardsDealEnd.Unbind();
+            }
+        }
     }
     else if(MoveState == EMoveState::MoveTransform)
     {
@@ -167,6 +171,11 @@ void ACardBase::SetFixedTransform(const FTransform& Transform)
 void ACardBase::BindAllCardInitMoveEnd(UGameManager* GameManager)
 {
     // OnInitAllCardsMoveEnd.BindUFunction(GameManager, "OnInitAllCardMoveEndCall");
+}
+
+void ACardBase::SetCardBelongType(ECardBelongType InCardBelongType)
+{
+    CardBelongType = InCardBelongType;
 }
 
 void ACardBase::OnCardClick(AActor* ClickedActor, FKey ButtonPressed)

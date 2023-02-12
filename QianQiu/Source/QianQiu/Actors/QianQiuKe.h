@@ -85,9 +85,20 @@ public:
     UFUNCTION(BlueprintCallable)
     void SetCardToHands(ACardBase* CardBase);
 
+    /**
+     * @brief 初始化玩家手牌的位置 并播放发牌动画
+     * @param HandFirst 起始位置
+     * @param HandLast 结束位置
+     */
     UFUNCTION(BlueprintCallable)
     void InitHandCardTransformPlayAnim(FString HandFirst, FString HandLast);
 
+    /**
+     * @brief 通过传入的起始位置和结束位置，计算出每张牌的目标位置
+     * @param StartTransform 起始位置
+     * @param EndTransform 结束位置
+     * @param CardTargetTransform 牌的目标位置  
+     */
     UFUNCTION(BlueprintCallable)
     void InitCollectHandCardsTransform(FTransform StartTransform, FTransform EndTransform, TMap<ACardBase*, FTransform>& CardTargetTransform);
     
