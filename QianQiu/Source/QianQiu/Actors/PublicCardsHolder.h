@@ -43,6 +43,12 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, DisplayName = "公共牌堆")
     TMap<int, ACardBase*> PublicCards;
 
+    /* 已经展示出来的公共牌堆
+     * Key 是 索引 不是ID
+     */
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, DisplayName = "公共牌堆")
+    TMap<int, ACardBase*> PublicCardsShow;
+
     UPROPERTY()
     TMap<int, FPublicCardShowTransform> PublicCardShowTransforms;
 
@@ -51,14 +57,11 @@ public:
     
 public:
 
+    /**
+     * @brief 清空公共牌堆
+     */
     UFUNCTION(BlueprintCallable)
     void ResetPublicCardsHolder();
-
-    UFUNCTION()
-    void UpdatePublicCardsHolderTransform(const FString PublicCardsHolderTop, const FString PublicCardsHolderBottom);
-
-    UFUNCTION()
-    void SetAllShowCardTransform();
 
     /**
      * @brief 向公共牌堆中添加一张牌
@@ -72,16 +75,10 @@ public:
      */
     UFUNCTION(BlueprintCallable)
     void DealCardToPublicShowOnInit();
-
-    UFUNCTION(BlueprintCallable)
-    void MoveCardTranslation(ACardBase* Card, FTransform Transform, FTimerHandle InTimerHandle);
-
-    UFUNCTION(BlueprintCallable)
-    void MoveCardRotation(ACardBase* Card, FTransform Transform, FTimerHandle InTimerHandle);
     
     /**
      * @brief 从公共牌堆中取出一张牌补位到展示的公共牌中
      */
     UFUNCTION(BlueprintCallable)
-    ACardBase* DealCardToPublicShow();
+    void SupplementedPublicShow();
 };

@@ -42,6 +42,8 @@ public:
 
     static FTransform GetCardTransform(const FString& TransformName);
 
+    static FTransform GetCardTransformByPlayerPositionAndIndex(const FString& PlayerPosition, int Index);
+
     static void GetAllCardsInLevel();
 
     /**

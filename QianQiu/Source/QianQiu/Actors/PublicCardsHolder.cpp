@@ -13,6 +13,12 @@ APublicCardsHolder::APublicCardsHolder()
     PrimaryActorTick.bCanEverTick = true;
 }
 
+// Called every frame
+void APublicCardsHolder::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+}
+
 // Called when the game starts or when spawned
 void APublicCardsHolder::BeginPlay()
 {
@@ -35,124 +41,53 @@ void APublicCardsHolder::SetCardToPublicCardsHolder(ACardBase* CardBase)
 
 void APublicCardsHolder::DealCardToPublicShowOnInit()
 {
-    int i = 1;
-    for (auto& Item : PublicCardShowTransforms)
+    // 使用迭代器遍历PublicCards 将前8张从PublicCards中移除到PublicCardsShow中
+    int Count = 1;
+    for (auto It = PublicCards.CreateIterator(); It; ++It)
     {
-        if (!IsValid(Item.Value.Card))
+        if (Count <= 8)
         {
-            // 获取即将要发出去的牌
-            Item.Value.Card = DealCardToPublicShow();
-            if (IsValid(Item.Value.Card))
-            {
-                ACardBase* Card = Item.Value.Card;
-                const FTransform Transform = Item.Value.Transform;
-
-                // 设置延时
-                FTimerDelegate TimerDelegate;
-                FTimerHandle ATimerHandle;
-                TimerDelegate.BindUFunction(this, FName(TEXT("MoveCardTranslation")), Card, Transform, ATimerHandle);
-                GetWorld()->GetTimerManager().SetTimer(ATimerHandle, TimerDelegate, 0.5f * i , false);
-
-                FTimerDelegate RotateDelegate;
-                FTimerHandle RotateTimerHandle;
-                RotateDelegate.BindUFunction(this, FName(TEXT("MoveCardRotation")), Card, Transform, ATimerHandle);
-                GetWorld()->GetTimerManager().SetTimer(RotateTimerHandle, RotateDelegate, 0.5f * i + 2.0f, false);
-                i++;
-
-                Card->SetFixedTransform(Transform);
-            }
+            ACardBase* Card = It->Value;
+            PublicCardsShow.Add(Count, Card);
+            FTransform Transform = UDataManager::GetCardTransformByPlayerPositionAndIndex("P", Count);
+            Card->SetActorTransform(Transform);
+            Card->SetCardBelongType(ECardBelongType::PublicShow);
+            It.RemoveCurrent();
+            Count++;
+        }
+        else
+        {
+            break;
         }
     }
 }
 
-void APublicCardsHolder::MoveCardTranslation(ACardBase* Card, FTransform Transform, FTimerHandle InTimerHandle)
+void APublicCardsHolder::SupplementedPublicShow()
 {
-    Card->PlayCardMoveAnim(Transform, EMoveState::MoveTransition);
-    GetWorld()->GetTimerManager().ClearTimer(InTimerHandle);
-}
-
-
-void APublicCardsHolder::MoveCardRotation(ACardBase* Card, FTransform Transform, FTimerHandle InTimerHandle)
-{
-    Card->PlayCardMoveAnim(Transform, EMoveState::MoveRotation);
-    GetWorld()->GetTimerManager().ClearTimer(InTimerHandle);
-}
-
-ACardBase* APublicCardsHolder::DealCardToPublicShow()
-{
-    ACardBase* Card = PublicCards.begin().Value();
-    if (IsValid(Card))
+    if(PublicCardsShow.Num() == 8)
     {
-        PublicCards.Remove(Card->CardData.CardID);
-        return Card;
+        return;
     }
-    return nullptr;
-}
-
-// Called every frame
-void APublicCardsHolder::Tick(float DeltaTime)
-{
-    Super::Tick(DeltaTime);
-}
-
-void APublicCardsHolder::UpdatePublicCardsHolderTransform(const FString PublicCardsHolderTop, const FString PublicCardsHolderBottom)
-{
-    TMap<ACardBase*, FTransform> CardTargetTransform;
-    
-    const FTransform StartTransform = UDataManager::GetCardTransform(PublicCardsHolderTop);
-    const FTransform EndTransform = UDataManager::GetCardTransform(PublicCardsHolderBottom);
-    
-    TArray<FTransform> TargetTransforms;
-    const float X = (EndTransform.GetTranslation().X - StartTransform.GetTranslation().X) / PublicCards.Num();
-    const float Y = (EndTransform.GetTranslation().Y - StartTransform.GetTranslation().Y) / PublicCards.Num();
-    const float Z = (EndTransform.GetTranslation().Z - StartTransform.GetTranslation().Z) / PublicCards.Num();
-    int i = 0;
-    for (const auto& Card : PublicCards)
+    // 查找当前index缺少0-7的哪个index
+    TArray<int> IndexArray;
+    for (auto It = PublicCardsShow.CreateIterator(); It; ++It)
     {
-        FTransform Transform = StartTransform;
-        auto Translation = Transform.GetTranslation();
-        Translation.X += i*X;
-        Translation.Y += i*Y;
-        Translation.Z += i*Z;
-        Transform.SetTranslation(Translation);
-        CardTargetTransform.Add(Card.Value, Transform);
-        i++;
+        IndexArray.Add(It->Key);
     }
-    if (CardTargetTransform.Num() > 0)
+    // 从PublicCards中取出IndexArray张补充到PublicCardsShow中
+    for (int i = 0; i < IndexArray.Num(); i++)
     {
-        for (const auto& Item : CardTargetTransform)
+        int Index = IndexArray[i];
+        if (PublicCards.Num() > 0)
         {
-            if (IsValid(Item.Key))
-            {
-                Item.Key->PlayCardMoveAnim(Item.Value, EMoveState::MoveTransform);
-            }
+            auto It = PublicCards.CreateIterator();
+            ACardBase* Card = It->Value;
+            PublicCardsShow.Add(Index, Card);
+            FTransform Transform = UDataManager::GetCardTransformByPlayerPositionAndIndex("P", Index);
+            Card->SetActorTransform(Transform);
+            Card->SetCardBelongType(ECardBelongType::PublicShow);
+            It.RemoveCurrent();
         }
-    }
-}
-
-void APublicCardsHolder::SetAllShowCardTransform()
-{
-    const FTransform PublicShowCardFirst = UDataManager::GetCardTransform(TEXT("PublicShowCardFirst"));
-    const FTransform PublicShowCardLast = UDataManager::GetCardTransform(TEXT("PublicShowCardLast"));
-
-    TArray<FTransform> TargetTransforms;
-    const float X = (PublicShowCardLast.GetTranslation().X - PublicShowCardFirst.GetTranslation().X) / 10;
-    const float Y = (PublicShowCardLast.GetTranslation().Y - PublicShowCardFirst.GetTranslation().Y) / 10;
-    const float Z = (PublicShowCardLast.GetTranslation().Z - PublicShowCardFirst.GetTranslation().Z) / 10;
-    
-    for (int i = 1; i <= 10; i++)
-    {
-        FPublicCardShowTransform PublicCardShowTransform;
-        FTransform Transform = PublicShowCardFirst;
-        auto Translation = Transform.GetTranslation();
-        Translation.X += (i-1)*X;
-        Translation.Y += (i-1)*Y;
-        Translation.Z += (i-1)*Z;
-        Transform.SetTranslation(Translation);
-        
-        PublicCardShowTransform.Transform = Transform;
-        PublicCardShowTransform.Card = nullptr;
-        PublicCardShowTransforms.Add(i, PublicCardShowTransform);
     }
 }
 

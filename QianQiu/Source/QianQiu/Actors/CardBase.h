@@ -8,8 +8,12 @@
 #include "GameFramework/Actor.h"
 #include "CardBase.generated.h"
 
+DECLARE_LOG_CATEGORY_EXTERN(LogCardBase, Log, All);
+
 DECLARE_DELEGATE(FOnInitAllCardsMoveEnd)
 DECLARE_DELEGATE(FOnInitPublicCardsDealEnd) // 公共卡池发牌结束 牌的所有移动结束
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerChooseCard, ACardBase*, CardActor);
 
 class UGameManager;
 
@@ -54,7 +58,7 @@ public:
 
     // 卡片所属类型
     UPROPERTY()
-    ECardBelongType CardBelongType = ECardBelongType::Public;
+    ECardBelongType CardBelongType = ECardBelongType::PublicShow;
 
     FOnInitAllCardsMoveEnd OnInitAllCardsMoveEnd;
 
@@ -96,6 +100,9 @@ public:
 
     UPROPERTY()
     FTransform FixedTransform;
+
+    UPROPERTY(BlueprintAssignable)
+    FOnPlayerChooseCard OnPlayerChooseCard;
 
 #if WITH_EDITOR
 

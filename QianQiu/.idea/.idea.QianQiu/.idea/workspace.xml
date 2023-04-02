@@ -10,12 +10,22 @@
   <component name="ChangeListManager">
     <list default="true" id="63aa9bb2-c26a-4418-93c7-7698e5099a7e" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.QianQiu/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.QianQiu/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Maps/OneTwo.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Maps/OneTwo.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/QianQiu.uproject" beforeDir="false" afterPath="$PROJECT_DIR$/QianQiu.uproject" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Actor/Actor_Card.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Actor/Actor_Card.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Maps/1_2.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Maps/1_2.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Material/MTI_Card.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Material/MTI_Card.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Material/MT_Card.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Material/MT_Card.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Table/TB_Transforms.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Table/TB_Transforms.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/QianQiu/Actors/CardBase.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QianQiu/Actors/CardBase.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/QianQiu/Actors/CardBase.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QianQiu/Actors/CardBase.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/QianQiu/Actors/PublicCardsHolder.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QianQiu/Actors/PublicCardsHolder.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/QianQiu/Actors/PublicCardsHolder.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QianQiu/Actors/PublicCardsHolder.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/QianQiu/Actors/QianQiuKe.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QianQiu/Actors/QianQiuKe.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/QianQiu/Actors/QianQiuKe.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QianQiu/Actors/QianQiuKe.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/QianQiu/Managers/DataManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QianQiu/Managers/DataManager.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/QianQiu/Managers/DataManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QianQiu/Managers/DataManager.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/QianQiu/Managers/GameManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QianQiu/Managers/GameManager.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/QianQiu/Managers/GameManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QianQiu/Managers/GameManager.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/QianQiu/Public/MuStructs.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QianQiu/Public/MuStructs.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -33,6 +43,12 @@
       <filtered-out-file-type name="TAG" />
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="mock://E:/GitHub/MuQianQiu/QianQiu/Source/QianQiu/Actors/QianQiuKe.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://E:/GitHub/MuQianQiu/QianQiu/Source/QianQiu/Actors/QianQiuKe.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://E:/GitHub/MuQianQiu/QianQiu/Source/QianQiu/Managers/DataManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../UnrealEngine/UE_5.1/Engine/Source/Runtime/Projects/Private/ProjectManager.cpp" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -52,7 +68,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "settings.editor.selected.configurable": "preferences.sourceCode.C#",
     "vue.rearranger.settings.migration": "true"
   },
   "keyToStringList": {
@@ -234,6 +250,21 @@
           <url>file://$PROJECT_DIR$/../../../UE_5.0/Engine/Source/Runtime/CoreUObject/Private/UObject/Obj.cpp</url>
           <line>857</line>
           <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/../../../UnrealEngine/UE_5.1/Engine/Source/Runtime/Projects/Private/ProjectManager.cpp</url>
+          <line>66</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Source/QianQiu/Managers/GameManager.cpp</url>
+          <line>16</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Source/QianQiu/Managers/GameManager.cpp</url>
+          <line>85</line>
+          <option name="timeStamp" value="13" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

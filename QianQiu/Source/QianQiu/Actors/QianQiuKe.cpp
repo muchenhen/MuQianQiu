@@ -112,3 +112,8 @@ void AQianQiuKe::InitCollectHandCardsTransform(FTransform StartTransform, FTrans
 void AQianQiuKe::SetCardToSpecial(ACardBase* CardBase)
 {
 }
+
+TMap<int, ACardBase*> AQianQiuKe::GetPlayerCardInHands()
+{
+    return PlayerCardInHands;
+}

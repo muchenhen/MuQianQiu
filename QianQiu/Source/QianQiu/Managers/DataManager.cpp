@@ -12,7 +12,6 @@ TSharedPtr<UDataTable> UDataManager::StoryDataTable;
 TSharedPtr<UDataTable> UDataManager::CardTransformTable;
 
 
-
 UDataManager::UDataManager()
 {
 }
@@ -28,7 +27,7 @@ void UDataManager::LoadCardData()
     {
         return;
     }
-    if(UDataTable* DataTable = LoadObject<UDataTable>(nullptr, UTF8_TO_TCHAR("DataTable'/Game/Table/TB_Cards.TB_Cards'")))
+    if (UDataTable* DataTable = LoadObject<UDataTable>(nullptr, UTF8_TO_TCHAR("DataTable'/Game/Table/TB_Cards.TB_Cards'")))
     {
         CardDataTable = MakeShareable(DataTable);
         UE_LOG(LogCardManager, Display, TEXT("LoadCardData Success."));
@@ -45,7 +44,7 @@ void UDataManager::LoadCardTransform()
     {
         return;
     }
-    if(UDataTable* DataTable = LoadObject<UDataTable>(nullptr, UTF8_TO_TCHAR("DataTable'/Game/Table/TB_Transforms.TB_Transforms'")))
+    if (UDataTable* DataTable = LoadObject<UDataTable>(nullptr, UTF8_TO_TCHAR("DataTable'/Game/Table/TB_Transforms.TB_Transforms'")))
     {
         CardTransformTable = MakeShareable(DataTable);
         UE_LOG(LogCardManager, Display, TEXT("LoadCardData Success."));
@@ -58,17 +57,17 @@ void UDataManager::LoadCardTransform()
 
 FCardData UDataManager::GetCardData(const int& CardID)
 {
-	if(CardID != 0)
-	{
+    if (CardID != 0)
+    {
         const FName RowID = FName(*FString::FromInt(CardID));
         const FString ContextString = TEXT("FCardData::FindCardData");
-		if(CardDataTable.IsValid())
-		{
-			FCardData* CardData = CardDataTable->FindRow<FCardData>(RowID, ContextString);
-			return *CardData;
-		}
-	}
-	return FCardData();
+        if (CardDataTable.IsValid())
+        {
+            FCardData* CardData = CardDataTable->FindRow<FCardData>(RowID, ContextString);
+            return *CardData;
+        }
+    }
+    return FCardData();
 }
 
 FTransform UDataManager::GetCardTransform(const FString& TransformName)
@@ -85,7 +84,46 @@ FTransform UDataManager::GetCardTransform(const FString& TransformName)
             }
         }
     }
-    return  FTransform();
+    return FTransform();
+}
+
+FTransform UDataManager::GetCardTransformByPlayerPositionAndIndex(const FString& PlayerPosition, int Index)
+{
+    if (PlayerPosition == "A")
+    {
+        FString Name;
+        if (Index <= 9)
+        {
+            Name = "A0" + FString::FromInt(Index);
+        }
+        else
+        {
+            Name = "A" + FString::FromInt(Index);
+        }
+        return GetCardTransform(Name);
+    }
+    else if (PlayerPosition == "B")
+    {
+        FString Name;
+        if (Index <= 9)
+        {
+            Name = "B0" + FString::FromInt(Index);
+        }
+        else
+        {
+            Name = "B" + FString::FromInt(Index);
+        }
+        return GetCardTransform(Name);
+    }
+    else if(PlayerPosition == "P")
+    {
+        if (Index <= 9)
+        {
+            const FString Name = "P0" + FString::FromInt(Index);
+            return GetCardTransform(Name);
+        }
+    }
+    return FTransform::Identity;
 }
 
 void UDataManager::GetAllCardsInLevel()
@@ -111,7 +149,7 @@ void UDataManager::GetCardsIDByGameMode(EGameMode GameMode, TArray<int32>& Cards
     CardDataTable->GetAllRows<FCardData>(ContextString, CardDatas);
     if (GameMode == EGameMode::BC)
     {
-        for (const auto& CardData :CardDatas)
+        for (const auto& CardData : CardDatas)
         {
             if ((CardData->CardID / 100 == 2 || CardData->CardID / 100 == 3) && bGetSpecialCard == CardData->Special)
             {
@@ -131,7 +169,7 @@ void UDataManager::GetCardsIDByGameMode(EGameMode GameMode, TArray<int32>& Cards
     }
     else if (GameMode == EGameMode::AC)
     {
-        for (const auto& CardData : CardDatas )
+        for (const auto& CardData : CardDatas)
         {
             if ((CardData->CardID / 100 == 1 || CardData->CardID / 100 == 3) && bGetSpecialCard == CardData->Special)
             {

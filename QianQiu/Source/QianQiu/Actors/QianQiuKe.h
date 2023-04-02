@@ -105,5 +105,7 @@ public:
     UFUNCTION(BlueprintCallable)
     void SetCardToSpecial(ACardBase* CardBase);
 
-    
+    // get PlayerCardInHands
+    UFUNCTION(BlueprintCallable)
+    TMap<int, ACardBase*> GetPlayerCardInHands();
 };

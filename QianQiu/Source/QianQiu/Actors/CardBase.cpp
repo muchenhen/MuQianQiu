@@ -5,6 +5,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "QianQiu/Managers/DataManager.h"
 
+DEFINE_LOG_CATEGORY(LogCardBase);
+
 // Sets default values
 ACardBase::ACardBase()
 {
@@ -39,7 +41,7 @@ void ACardBase::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
     // if (MoveState != EMoveState::Stop)
     // {
-        Move();
+    Move();
     // }
 }
 
@@ -72,7 +74,7 @@ void ACardBase::Init()
 {
     const FName RowID = FName(*FString::FromInt(ID));
     const FString ContextString = TEXT("FCardData::FindCardData");
-    if(IsValid(CardDataTable))
+    if (IsValid(CardDataTable))
     {
         const FCardData* Data = CardDataTable->FindRow<FCardData>(RowID, ContextString);
         Init(*Data);
@@ -108,7 +110,7 @@ void ACardBase::Move()
         }
 
         // 公共卡池的牌移动结束
-        if (CardBelongType == ECardBelongType::Public)
+        if (CardBelongType == ECardBelongType::PublicShow)
         {
             if (OnInitPublicCardsDealEnd.IsBound())
             {
@@ -117,7 +119,7 @@ void ACardBase::Move()
             }
         }
     }
-    else if(MoveState == EMoveState::MoveTransform)
+    else if (MoveState == EMoveState::MoveTransform)
     {
         FTransform CurrentTransform = GetActorTransform();
         const FVector CurrentLocation = CurrentTransform.GetLocation();
@@ -130,12 +132,12 @@ void ACardBase::Move()
         CurrentTransform.SetLocation(NewLocation);
         CurrentTransform.SetRotation(FQuat::MakeFromEuler(NewRotation));
         SetActorTransform(CurrentTransform);
-        if (NewLocation.Equals(EndLocation,0.05f) && NewRotation.Equals(EndRotation,0.05f))
+        if (NewLocation.Equals(EndLocation, 0.05f) && NewRotation.Equals(EndRotation, 0.05f))
         {
             MoveState = EMoveState::Stop;
         }
     }
-    else if(MoveState == EMoveState::MoveTransition)
+    else if (MoveState == EMoveState::MoveTransition)
     {
         FTransform CurrentTransform = GetActorTransform();
         const FVector CurrentLocation = CurrentTransform.GetLocation();
@@ -143,12 +145,12 @@ void ACardBase::Move()
         const FVector NewLocation = FMath::VInterpTo(CurrentLocation, EndLocation, GetWorld()->GetDeltaSeconds(), CardMoveSpeed);
         CurrentTransform.SetLocation(NewLocation);
         SetActorTransform(CurrentTransform);
-        if (NewLocation.Equals(EndLocation,0.05f))
+        if (NewLocation.Equals(EndLocation, 0.05f))
         {
             MoveState = EMoveState::Stop;
         }
     }
-    else if(MoveState == EMoveState::MoveRotation)
+    else if (MoveState == EMoveState::MoveRotation)
     {
         FTransform CurrentTransform = GetActorTransform();
         const FVector CurrentRotation = CurrentTransform.GetRotation().Euler();
@@ -156,7 +158,7 @@ void ACardBase::Move()
         const FVector NewRotation = FMath::VInterpTo(CurrentRotation, EndRotation, GetWorld()->GetDeltaSeconds(), CardMoveSpeed);
         CurrentTransform.SetRotation(FQuat::MakeFromEuler(NewRotation));
         SetActorTransform(CurrentTransform);
-        if (NewRotation.Equals(EndRotation,0.05f))
+        if (NewRotation.Equals(EndRotation, 0.05f))
         {
             MoveState = EMoveState::Stop;
         }
@@ -180,10 +182,10 @@ void ACardBase::SetCardBelongType(ECardBelongType InCardBelongType)
 
 void ACardBase::OnCardClick(AActor* ClickedActor, FKey ButtonPressed)
 {
-    UE_LOG(LogTemp, Display, TEXT("Current Choose Card ：%s"), *CardData.Name);
+    UE_LOG(LogCardBase, Display, TEXT("Current Choose Card ：%s"), *CardData.Name);
     CardData.Dump();
-    // const FTransform Transform = GetTransform();
-    // Transform.DebugPrint();
+    const FString CardBelongTypeName = UEnum::GetValueAsString<ECardBelongType>(CardBelongType);
+    UE_LOG(LogCardBase, Display, TEXT("CardBelongType ：%s"), *CardBelongTypeName);
     if (bChoose)
     {
         bChoose = false;
@@ -191,12 +193,13 @@ void ACardBase::OnCardClick(AActor* ClickedActor, FKey ButtonPressed)
     else
     {
         bChoose = true;
+        OnPlayerChooseCard.Broadcast(this);
     }
 }
 
 void ACardBase::OnCardRelease(AActor* Actor, FKey Key)
 {
-    UE_LOG(LogTemp, Display, TEXT("OnCardRelease"));
+    UE_LOG(LogCardBase, Display, TEXT("OnCardRelease"));
 }
 
 void ACardBase::OnCardBeginCursorOver(AActor* Actor)

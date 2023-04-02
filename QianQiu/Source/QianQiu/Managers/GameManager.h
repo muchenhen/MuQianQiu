@@ -63,21 +63,12 @@ public: // 初始化用的方法
     UFUNCTION(BlueprintCallable)
     void GetCardsInScene();
 
+    UFUNCTION()
+    void OnCardChoose(ACardBase* CardActor);
+    
     // 初始化卡牌后，进行卡牌的分配，分别给玩家和公共卡池分配
     UFUNCTION(BlueprintCallable)
     void InitSendCards();
-
-    // 初始化时对公共卡池进行发牌
-    UFUNCTION(BlueprintCallable)
-    void ShowPublicCards();
-
-    // 初始化后sequence结束后所有牌位移停止后调用
-    UFUNCTION()
-    void OnInitAllCardMoveEndCall();
-
-    // 初始化时公共卡池第一次发牌后牌停止位移时调用
-    UFUNCTION()
-    void OnPublicCardsMoveEndCall();
 
 private: // 进行游戏时
 
@@ -100,28 +91,3 @@ public:
 
     
 };
-
-class UB : UObject
-{
-    void OnSomethingEnd()
-    {
-        // A->CheckDoNextThing();
-    }
-};
-
-class UA : UObject
-{
-    TArray<UB*> B;
-
-    int i= 0;
-
-    void CheckDoNextThing()
-    {
-        i++;
-        if (i==888)
-        {
-            // do next thing;
-        }
-    }
-};
-

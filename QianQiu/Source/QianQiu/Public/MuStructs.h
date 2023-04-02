@@ -7,6 +7,9 @@
 #include "Engine/DataTable.h"
 #include "MuStructs.generated.h"
 
+#define ENUM_TO_STRING(EnumName, EnumValue) \
+case EnumName::EnumValue: return TEXT(#EnumValue);
+
 class ACardBase;
 UENUM()
 enum class EGameMode : uint8
@@ -116,6 +119,9 @@ UENUM()
 enum class ECardBelongType
 {
     Public,
+    PublicShow,
     PlayerA,
-    PlayerB
+    PlayerB,
+    PlayerAScore,
+    PlayerBScore,
 };
