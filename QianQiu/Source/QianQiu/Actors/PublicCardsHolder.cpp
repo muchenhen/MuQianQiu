@@ -23,7 +23,6 @@ void APublicCardsHolder::Tick(float DeltaTime)
 void APublicCardsHolder::BeginPlay()
 {
     Super::BeginPlay();
-    
 }
 
 void APublicCardsHolder::ResetPublicCardsHolder()
@@ -49,6 +48,23 @@ void APublicCardsHolder::DealCardToPublicShowOnInit()
         {
             ACardBase* Card = It->Value;
             PublicCardsShow.Add(Count, Card);
+            // 按照季节分别存储到SpringCardsShow SummerCardsShow AutumnCardsShow WinterCardsShow中
+            if (Card->CardData.Season == TEXT("春"))
+            {
+                SpringCardsShow.Add(Card);
+            }
+            else if (Card->CardData.Season == TEXT("夏"))
+            {
+                SummerCardsShow.Add(Card);
+            }
+            else if (Card->CardData.Season == TEXT("秋"))
+            {
+                AutumnCardsShow.Add(Card);
+            }
+            else if (Card->CardData.Season == TEXT("冬"))
+            {
+                WinterCardsShow.Add(Card);
+            }
             FTransform Transform = UDataManager::GetCardTransformByPlayerPositionAndIndex("P", Count);
             Card->SetActorTransform(Transform);
             Card->SetCardBelongType(ECardBelongType::PublicShow);
@@ -64,7 +80,7 @@ void APublicCardsHolder::DealCardToPublicShowOnInit()
 
 void APublicCardsHolder::SupplementedPublicShow()
 {
-    if(PublicCardsShow.Num() == 8)
+    if (PublicCardsShow.Num() == 8)
     {
         return;
     }
@@ -91,3 +107,22 @@ void APublicCardsHolder::SupplementedPublicShow()
     }
 }
 
+void APublicCardsHolder::GetNowPublicShowCardsBySeason(const FString& Season, TArray<ACardBase*>& OutCards)
+{
+    if (Season == TEXT("春"))
+    {
+        OutCards = SpringCardsShow;
+    }
+    else if (Season == TEXT("夏"))
+    {
+        OutCards = SummerCardsShow;
+    }
+    else if (Season == TEXT("秋"))
+    {
+        OutCards = AutumnCardsShow;
+    }
+    else if (Season == TEXT("冬"))
+    {
+        OutCards = WinterCardsShow;
+    }
+}

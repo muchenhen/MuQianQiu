@@ -85,6 +85,10 @@ public:
     UFUNCTION(BlueprintCallable)
     void SetCardToHands(ACardBase* CardBase);
 
+    // 从玩家手牌堆中移除一张牌、
+    UFUNCTION(BlueprintCallable)
+    void RemoveCardFromHands(ACardBase* CardBase);
+
     /**
      * @brief 初始化玩家手牌的位置 并播放发牌动画
      * @param HandFirst 起始位置

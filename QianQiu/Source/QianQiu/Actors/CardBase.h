@@ -91,6 +91,9 @@ public:
 
     UFUNCTION()
     void SetCardBelongType(ECardBelongType InCardBelongType);
+
+    UFUNCTION()
+    void SetCardChoosing(bool bInChoose);
 public:
     UPROPERTY()
     EMoveState MoveState = EMoveState::Stop;

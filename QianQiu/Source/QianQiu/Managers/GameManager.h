@@ -64,6 +64,9 @@ public: // 初始化用的方法
     void GetCardsInScene();
 
     UFUNCTION()
+    void SetSeasonCardSelected(const ACardBase* CardActor);
+    
+    UFUNCTION()
     void OnCardChoose(ACardBase* CardActor);
     
     // 初始化卡牌后，进行卡牌的分配，分别给玩家和公共卡池分配
@@ -88,6 +91,14 @@ public:
 
     UFUNCTION()
     void ChangeRound();
+
+private:
+    // 当前是否有玩家正在选择卡牌
+    UPROPERTY()
+    bool bIsPlayerChoosing = false;
+
+    UPROPERTY()
+    ACardBase* CurrentPlayerChooseCard;
 
     
 };

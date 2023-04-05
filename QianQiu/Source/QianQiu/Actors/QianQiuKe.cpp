@@ -64,6 +64,14 @@ void AQianQiuKe::SetCardToHands(ACardBase* CardBase)
     }
 }
 
+void AQianQiuKe::RemoveCardFromHands(ACardBase* CardBase)
+{
+    if (IsValid(CardBase))
+    {
+        PlayerCardInHands.Remove(CardBase->CardData.CardID);
+    }
+}
+
 void AQianQiuKe::InitHandCardTransformPlayAnim(FString HandFirst, FString HandLast)
 {
     if (PlayerCardInHands.IsEmpty())

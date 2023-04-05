@@ -107,7 +107,7 @@ public:
 };
 
 UENUM()
-enum class EMoveState
+enum class EMoveState : uint8
 {
     Stop,
     MoveTransform,
@@ -116,7 +116,7 @@ enum class EMoveState
 };
 
 UENUM()
-enum class ECardBelongType
+enum class ECardBelongType : uint8
 {
     Public,
     PublicShow,

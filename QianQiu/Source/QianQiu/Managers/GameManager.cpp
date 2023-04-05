@@ -4,7 +4,6 @@
 #include "GameManager.h"
 
 #include "DataManager.h"
-#include "UIManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -71,31 +70,56 @@ void UGameManager::GetCardsInScene()
     }
 }
 
+void UGameManager::SetSeasonCardSelected(const ACardBase* CardActor)
+{
+    const FString CardSeason = CardActor->CardData.Season;
+    TArray<ACardBase*> PublicShowCards;
+    PublicCardsHolder->GetNowPublicShowCardsBySeason(CardSeason, PublicShowCards);
+    for (ACardBase* PublicShowCard : PublicShowCards)
+    {
+        PublicShowCard->SetCardChoosing(true);
+    }
+}
+
 void UGameManager::OnCardChoose(ACardBase* CardActor)
 {
-    if(!IsValid(CardActor))
+    if (!IsValid(CardActor))
     {
         return;
     }
-    TArray<UMaterialInterface*> MaterialInterfaces = CardActor->StaticMesh->GetMaterials();
-    if (MaterialInterfaces.Num() > 0)
+    CardActor->SetCardChoosing(true);
+    // 首先确认选中的卡牌是属于谁的
+    const ECardBelongType CardBelongType = CardActor->CardBelongType;
+    // TODO:完成选中的逻辑
+
+    // 目前没有玩家正在选中自己的手牌
+    if (!bIsPlayerChoosing)
     {
-        UMaterialInterface* MaterialInterface = MaterialInterfaces[0];
-        if (UMaterialInstanceDynamic* MaterialInstanceDynamic = Cast<UMaterialInstanceDynamic>(MaterialInterface); IsValid(MaterialInstanceDynamic))
+        // 当前是玩家选中了自己的手牌
+        if (CardBelongType == ECardBelongType::PlayerA || CardBelongType == ECardBelongType::PlayerB)
         {
-            if (CardActor->bChoose)
+            // 将公共卡池中展示出来的和当前选中的卡牌同季节的卡牌设置为选中状态
+            SetSeasonCardSelected(CardActor);
+            bIsPlayerChoosing = true;
+            CurrentPlayerChooseCard = CardActor;
+        }
+    }
+    // 当前玩家已经选中了一张牌
+    else
+    {
+        // 玩家选择公共卡池中展示出来的牌
+        if (CardBelongType == ECardBelongType::PublicShow)
+        {
+            // 将玩家选中的牌和玩家现在选择的公共卡池中展示出来的牌都送进玩家的故事牌堆
             {
-                MaterialInstanceDynamic->SetScalarParameterValue("bEmissive", 1);
-            }
-            else
-            {
-                MaterialInstanceDynamic->SetScalarParameterValue("bEmissive", 0);
+                PlayerA->SetCardToStory(CurrentPlayerChooseCard);
+                PlayerA->SetCardToStory(CardActor);
+                PlayerA->RemoveCardFromHands(CurrentPlayerChooseCard);
+                PlayerA->RemoveCardFromHands(CardActor);
+                
             }
         }
     }
-    // 首先确认选中的卡牌是属于谁的
-    ECardBelongType CardBelongType = CardActor->CardBelongType;
-    // TODO:完成选中的逻辑
 }
 
 /*
@@ -110,7 +134,7 @@ void UGameManager::InitSendCards()
     const int CardNum = AllInitCardsID.Num();
     int IndexA = 1;
     int IndexB = 1;
-    int IndexPublic = 0;
+
     // AllInitCardsID 
     for (int i = 0; i < CardNum; i++)
     {
@@ -132,10 +156,10 @@ void UGameManager::InitSendCards()
         }
 
         Card->OnPlayerChooseCard.AddDynamic(this, &UGameManager::OnCardChoose);
-        
+
         // 从0开始，位置从TransformPStoreTop累计到TransformPStoreBottom，设置牌的位置
         float LerpValue = static_cast<float>(i / CardNum);
-        
+
         FTransform Transform = UKismetMathLibrary::TLerp(TransformPStoreTop, TransformPStoreBottom, LerpValue, ELerpInterpolationMode::QuatInterp);
         Card->SetActorTransform(Transform);
 
@@ -150,7 +174,6 @@ void UGameManager::InitSendCards()
             else
             {
                 PlayerA->SetCardToHands(Card);
-
             }
         }
         // 后面的全数给到公共卡池
@@ -160,7 +183,7 @@ void UGameManager::InitSendCards()
             Card->SetCardBelongType(ECardBelongType::Public);
         }
     }
-    
+
     // 初始化玩家手牌的位置
     auto CardsA = PlayerA->GetPlayerCardInHands();
     for (TTuple<int, ACardBase*> ACard : CardsA)

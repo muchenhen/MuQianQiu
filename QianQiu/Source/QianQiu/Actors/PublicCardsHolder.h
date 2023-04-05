@@ -54,6 +54,19 @@ public:
 
     UPROPERTY()
     FTimerHandle TimerHandle;
+
+private:
+    UPROPERTY()
+    TArray<ACardBase*> SpringCardsShow;
+
+    UPROPERTY()
+    TArray<ACardBase*> SummerCardsShow;
+
+    UPROPERTY()
+    TArray<ACardBase*> AutumnCardsShow;
+
+    UPROPERTY()
+    TArray<ACardBase*> WinterCardsShow;
     
 public:
 
@@ -81,4 +94,7 @@ public:
      */
     UFUNCTION(BlueprintCallable)
     void SupplementedPublicShow();
+
+    UFUNCTION(BlueprintCallable)
+    void GetNowPublicShowCardsBySeason(const FString& Season, TArray<ACardBase*>& OutCards);
 };

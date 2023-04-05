@@ -180,6 +180,30 @@ void ACardBase::SetCardBelongType(ECardBelongType InCardBelongType)
     CardBelongType = InCardBelongType;
 }
 
+void ACardBase::SetCardChoosing(bool bInChoose)
+{
+    TArray<UMaterialInterface*> MaterialInterfaces = StaticMesh->GetMaterials();
+    if (MaterialInterfaces.Num() > 0)
+    {
+        UMaterialInterface* MaterialInterface = MaterialInterfaces[0];
+        if (UMaterialInstanceDynamic* InstanceDynamic = Cast<UMaterialInstanceDynamic>(MaterialInterface))
+        {
+            if (!IsValid(InstanceDynamic))
+            {
+                return;
+            }
+            if (bInChoose)
+            {
+                InstanceDynamic->SetScalarParameterValue(FName("bEmissive"), 1.0f);
+            }
+            else
+            {
+                InstanceDynamic->SetScalarParameterValue(FName("bEmissive"), 0.0f);
+            }
+        }
+    }
+}
+
 void ACardBase::OnCardClick(AActor* ClickedActor, FKey ButtonPressed)
 {
     UE_LOG(LogCardBase, Display, TEXT("Current Choose Card ：%s"), *CardData.Name);
