@@ -97,4 +97,16 @@ public:
 
     UFUNCTION(BlueprintCallable)
     void GetNowPublicShowCardsBySeason(const FString& Season, TArray<ACardBase*>& OutCards);
+
+    /**
+     * @brief 从PublicCardsShow中移除一张牌
+     */
+    UFUNCTION(BlueprintCallable)
+    void RemoveCardFromPublicShow(ACardBase* Card);
+
+    /**
+     * @brief 将Card加入对应的季节的展示牌堆中
+     */
+    UFUNCTION(BlueprintCallable)
+    void AddCardToSeasonShow(ACardBase* Card);
 };

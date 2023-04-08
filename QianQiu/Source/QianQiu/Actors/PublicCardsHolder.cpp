@@ -84,11 +84,16 @@ void APublicCardsHolder::SupplementedPublicShow()
     {
         return;
     }
-    // 查找当前index缺少0-7的哪个index
+    // 查找PublicCardsShow 缺少 1-8 的哪个key
     TArray<int> IndexArray;
-    for (auto It = PublicCardsShow.CreateIterator(); It; ++It)
+    TArray<int> Keys;
+    PublicCardsShow.GetKeys(Keys);
+    for (int i = 1; i <= 8; i++)
     {
-        IndexArray.Add(It->Key);
+        if (!Keys.Contains(i))
+        {
+            IndexArray.Add(i);
+        }
     }
     // 从PublicCards中取出IndexArray张补充到PublicCardsShow中
     for (int i = 0; i < IndexArray.Num(); i++)
@@ -99,6 +104,7 @@ void APublicCardsHolder::SupplementedPublicShow()
             auto It = PublicCards.CreateIterator();
             ACardBase* Card = It->Value;
             PublicCardsShow.Add(Index, Card);
+            AddCardToSeasonShow(Card);
             FTransform Transform = UDataManager::GetCardTransformByPlayerPositionAndIndex("P", Index);
             Card->SetActorTransform(Transform);
             Card->SetCardBelongType(ECardBelongType::PublicShow);
@@ -124,5 +130,56 @@ void APublicCardsHolder::GetNowPublicShowCardsBySeason(const FString& Season, TA
     else if (Season == TEXT("冬"))
     {
         OutCards = WinterCardsShow;
+    }
+}
+
+void APublicCardsHolder::RemoveCardFromPublicShow(ACardBase* Card)
+{
+    if (IsValid(Card))
+    {
+        const int* Index = PublicCardsShow.FindKey(Card);
+        if (Index)
+        {
+            PublicCardsShow.Remove(*Index);
+        }
+        if (Card->CardData.Season == TEXT("春"))
+        {
+            SpringCardsShow.Remove(Card);
+        }
+        else if (Card->CardData.Season == TEXT("夏"))
+        {
+            SummerCardsShow.Remove(Card);
+        }
+        else if (Card->CardData.Season == TEXT("秋"))
+        {
+            AutumnCardsShow.Remove(Card);
+        }
+        else if (Card->CardData.Season == TEXT("冬"))
+        {
+            WinterCardsShow.Remove(Card);
+        }
+    }
+}
+
+void APublicCardsHolder::AddCardToSeasonShow(ACardBase* Card)
+{
+    if (IsValid(Card))
+    {
+        if (Card->CardData.Season == TEXT("春"))
+        {
+            SpringCardsShow.Add(Card);
+        }
+        else if (Card->CardData.Season == TEXT("夏"))
+        {
+            SummerCardsShow.Add(Card);
+        }
+        else if (Card->CardData.Season == TEXT("秋"))
+        {
+            AutumnCardsShow.Add(Card);
+        }
+        else if (Card->CardData.Season == TEXT("冬"))
+        {
+            WinterCardsShow.Add(Card);
+        }
     }
 }

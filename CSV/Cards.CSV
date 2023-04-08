@@ -1,4 +1,4 @@
-,CardID,Name,Value,Season,Describe,Type,Texture,Special,SpecialName,EffectFirst,ParamFirst,EffectSecond,ParamSecond
+Index,CardID,Name,Value,Season,Describe,Type,Texture,Special,SpecialName,EffectFirst,ParamFirst,EffectSecond,ParamSecond
 101,101,百里屠苏,2,冬,"古剑铁衣映清辉，
 百劫阎浮一念微。",Char,Tex_Char_BaiLiTuSu,0,,,,,
 102,102,风晴雪,2,春,"青丝银栉别样梳，

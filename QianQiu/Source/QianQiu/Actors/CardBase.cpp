@@ -3,6 +3,7 @@
 #include "CardBase.h"
 
 #include "Kismet/GameplayStatics.h"
+#include "QianQiu/Library/MuGameLibrary.h"
 #include "QianQiu/Managers/DataManager.h"
 
 DEFINE_LOG_CATEGORY(LogCardBase);
@@ -190,6 +191,7 @@ void ACardBase::SetCardChoosing(bool bInChoose)
         {
             if (!IsValid(InstanceDynamic))
             {
+                UE_LOG(LogCardBase, Error, TEXT("InstanceDynamic is invalid"));
                 return;
             }
             if (bInChoose)
@@ -202,23 +204,19 @@ void ACardBase::SetCardChoosing(bool bInChoose)
             }
         }
     }
+    else
+    {
+        UE_LOG(LogCardBase, Error, TEXT("MaterialInterfaces.Num() <= 0"));
+    }
 }
 
 void ACardBase::OnCardClick(AActor* ClickedActor, FKey ButtonPressed)
 {
     UE_LOG(LogCardBase, Display, TEXT("Current Choose Card ：%s"), *CardData.Name);
     CardData.Dump();
-    const FString CardBelongTypeName = UEnum::GetValueAsString<ECardBelongType>(CardBelongType);
+    const FString CardBelongTypeName = StaticEnum<ECardBelongType>()->GetNameStringByValue(static_cast<uint8>(CardBelongType));
     UE_LOG(LogCardBase, Display, TEXT("CardBelongType ：%s"), *CardBelongTypeName);
-    if (bChoose)
-    {
-        bChoose = false;
-    }
-    else
-    {
-        bChoose = true;
-        OnPlayerChooseCard.Broadcast(this);
-    }
+    OnPlayerChooseCard.Broadcast(this);
 }
 
 void ACardBase::OnCardRelease(AActor* Actor, FKey Key)

@@ -13,16 +13,16 @@ DEFINE_LOG_CATEGORY(LogGameManager);
 void UGameManager::BeginGame()
 {
     // 初始化玩家
-    if (! IsValid(PlayerA))
+    if (!IsValid(PlayerA))
     {
         PlayerA = GetWorld()->SpawnActor<AQianQiuKe>();
     }
-    if (! IsValid(PlayerB))
+    if (!IsValid(PlayerB))
     {
         PlayerB = GetWorld()->SpawnActor<AQianQiuKe>();
     }
     // 初始化公共卡池
-    if (! IsValid(PublicCardsHolder))
+    if (!IsValid(PublicCardsHolder))
     {
         PublicCardsHolder = GetWorld()->SpawnActor<APublicCardsHolder>();
     }
@@ -85,13 +85,12 @@ void UGameManager::OnCardChoose(ACardBase* CardActor)
 {
     if (!IsValid(CardActor))
     {
+        UE_LOG(LogTemp, Error, TEXT("GameManager::OnCardChoose() - CardActor is invalid!"));
         return;
     }
-    CardActor->SetCardChoosing(true);
     // 首先确认选中的卡牌是属于谁的
     const ECardBelongType CardBelongType = CardActor->CardBelongType;
     // TODO:完成选中的逻辑
-
     // 目前没有玩家正在选中自己的手牌
     if (!bIsPlayerChoosing)
     {
@@ -102,6 +101,7 @@ void UGameManager::OnCardChoose(ACardBase* CardActor)
             SetSeasonCardSelected(CardActor);
             bIsPlayerChoosing = true;
             CurrentPlayerChooseCard = CardActor;
+            CardActor->SetCardChoosing(true);
         }
     }
     // 当前玩家已经选中了一张牌
@@ -112,14 +112,51 @@ void UGameManager::OnCardChoose(ACardBase* CardActor)
         {
             // 将玩家选中的牌和玩家现在选择的公共卡池中展示出来的牌都送进玩家的故事牌堆
             {
+                // 修改牌的所属
+                CurrentPlayerChooseCard->SetCardBelongType(ECardBelongType::PlayerAScore);
+                CardActor->SetCardBelongType(ECardBelongType::PlayerAScore);
+                // 修改牌的所属数组
                 PlayerA->SetCardToStory(CurrentPlayerChooseCard);
                 PlayerA->SetCardToStory(CardActor);
                 PlayerA->RemoveCardFromHands(CurrentPlayerChooseCard);
                 PlayerA->RemoveCardFromHands(CardActor);
-                
+                // 去掉holder public show中的牌
+                PublicCardsHolder->RemoveCardFromPublicShow(CardActor);
+                // 补充holder public show中的牌
+                PublicCardsHolder->SupplementedPublicShow();
+                // 修改牌的位置
+                CurrentPlayerChooseCard->SetActorTransform(UDataManager::GetStoryDeckTransform(ECardBelongType::PlayerAScore));
+                CardActor->SetActorTransform(UDataManager::GetStoryDeckTransform(ECardBelongType::PlayerAScore));
+                // 完成了一次选择 消除选中状态
+                SetAllCardsUnSelected();
+                // 结束已经有玩家在选中自己的手牌的状态
+                bIsPlayerChoosing = false;
+            }
+        }
+        // TODO：玩家再次选择自己的牌
+        else if (CardBelongType == ECardBelongType::PlayerA)
+        {
+            const int CardID = CardActor->CardData.CardID;
+            const int CurrentPlayerChooseCardID = CurrentPlayerChooseCard->CardData.CardID;
+            // 再次选择相同的牌则取消所有选择
+            if (CardID == CurrentPlayerChooseCardID)
+            {
+                SetAllCardsUnSelected();
+                bIsPlayerChoosing = false;
+                CurrentPlayerChooseCard = nullptr;
+                return;
+            }
+            else
+            {
+                SetAllCardsUnSelected();
+                CardActor->SetCardChoosing(true);
+                SetSeasonCardSelected(CardActor);
+                bIsPlayerChoosing = true;
+                CurrentPlayerChooseCard = CardActor;
             }
         }
     }
+
 }
 
 /*
@@ -206,6 +243,14 @@ void UGameManager::InitSendCards()
     }
     // 初始化公共卡池的位置
     PublicCardsHolder->DealCardToPublicShowOnInit();
+}
+
+void UGameManager::SetAllCardsUnSelected()
+{
+    for (auto Card : Cards)
+    {
+        Card.Value->SetCardChoosing(false);
+    }
 }
 
 void UGameManager::ChangeRound()

@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "CardBase.h"
-#include "MuStructs.h"
 #include "QianQiuKe.generated.h"
 
 
@@ -39,7 +38,7 @@ protected:
     /* 玩家分数 */
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, DisplayName = "分数")
     int Score = 0;
-    
+
 public:
     // Sets default values for this character's properties
     // AQianQiuKe();
@@ -65,6 +64,19 @@ public:
      */
     UFUNCTION(BlueprintCallable, CallInEditor)
     void SetScore(const int& InScore);
+
+    /**
+     * @brief 获取玩家分数
+     * @return 返回玩家分数
+     */
+    UFUNCTION(BlueprintCallable, CallInEditor)
+    int GetScore();
+
+    /**
+     * @brief 计算玩家分数
+     */
+    UFUNCTION(BlueprintCallable)
+    void CalculateScore();
 
     // 传递给玩家故事堆一张牌
     UFUNCTION(BlueprintCallable)

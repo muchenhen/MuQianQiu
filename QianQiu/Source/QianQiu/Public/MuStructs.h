@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
 #include "Engine/DataTable.h"
 #include "MuStructs.generated.h"
 
@@ -96,8 +95,8 @@ public:
 		ParamSecond = InParamSecond;
 	}
 
-    void Dump()
-	{
+    void Dump() const
+    {
 	    UE_LOG(LogTemp, Display, TEXT("当前选择的卡面信息: "));   
 	    UE_LOG(LogTemp, Display, TEXT("ID:        %d"), CardID);   
 	    UE_LOG(LogTemp, Display, TEXT("Name:      %s"), *Name);
@@ -106,7 +105,29 @@ public:
 	}
 };
 
-UENUM()
+// StoryData
+USTRUCT(Blueprintable, BlueprintType)
+struct QIANQIU_API FStoryData : public FTableRowBase
+{
+    GENERATED_BODY()
+public:
+    UPROPERTY(EditAnywhere, DisplayName = "名称")
+    FString Name = TEXT("厨房功夫");
+
+    UPROPERTY(EditAnywhere, DisplayName = "相关卡片名称")
+    TArray<FString> CardsName;
+
+    UPROPERTY(EditAnywhere, DisplayName = "相关卡片ID")
+    TArray<int> CardsID;
+
+    UPROPERTY(EditAnywhere, DisplayName = "分数")
+    int Score = 0;
+
+    UPROPERTY(EditAnywhere, DisplayName = "对应音频")
+    FString AudioID = TEXT("A01");
+};
+
+UENUM(BlueprintType)
 enum class EMoveState : uint8
 {
     Stop,
@@ -115,7 +136,7 @@ enum class EMoveState : uint8
     MoveRotation,
 };
 
-UENUM()
+UENUM(BlueprintType)
 enum class ECardBelongType : uint8
 {
     Public,

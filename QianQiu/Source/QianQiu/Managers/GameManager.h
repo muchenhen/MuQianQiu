@@ -73,6 +73,10 @@ public: // 初始化用的方法
     UFUNCTION(BlueprintCallable)
     void InitSendCards();
 
+    // 将所有卡设置为未选中
+    UFUNCTION()
+    void SetAllCardsUnSelected();
+
 private: // 进行游戏时
 
     // 当前回合数
@@ -99,6 +103,5 @@ private:
 
     UPROPERTY()
     ACardBase* CurrentPlayerChooseCard;
-
     
 };

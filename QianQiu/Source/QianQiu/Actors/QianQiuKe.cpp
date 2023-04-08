@@ -34,6 +34,26 @@ void AQianQiuKe::SetScore(const int& InScore)
     Score = InScore;
 }
 
+int AQianQiuKe::GetScore()
+{
+    return Score;
+}
+
+void AQianQiuKe::CalculateScore()
+{
+    // TODO: 计算分数
+    // 计算所有卡的基础分数
+    for (const TTuple<int, ACardBase*> CardInStory : PlayerCardInStory)
+    {
+        if (IsValid(CardInStory.Value))
+        {
+            Score += CardInStory.Value->CardData.Value;
+        }
+    }
+    // 计算生成的故事分数
+    
+}
+
 void AQianQiuKe::SetCardToStory(ACardBase* CardBase)
 {
     if (IsValid(CardBase))

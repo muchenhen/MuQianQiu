@@ -2,11 +2,11 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "Engine/DataTable.h"
 #include <QianQiu/Actors/CardBase.h>
 
+#include "CoreMinimal.h"
 #include "MuStructs.h"
+#include "Engine/DataTable.h"
 #include "DataManager.generated.h"
 
 DECLARE_LOG_CATEGORY_EXTERN(LogCardManager, Display, Display);
@@ -41,6 +41,8 @@ public:
     static FCardData GetCardData(const int& CardID);
 
     static FTransform GetCardTransform(const FString& TransformName);
+
+    static FTransform GetStoryDeckTransform(ECardBelongType CardBelongType);
 
     static FTransform GetCardTransformByPlayerPositionAndIndex(const FString& PlayerPosition, int Index);
 

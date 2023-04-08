@@ -87,6 +87,31 @@ FTransform UDataManager::GetCardTransform(const FString& TransformName)
     return FTransform();
 }
 
+FTransform UDataManager::GetStoryDeckTransform(ECardBelongType CardBelongType)
+{
+    if (CardBelongType == ECardBelongType::PlayerAScore)
+    {
+        // 从ACLeftTop、ACRightTop、ACLeftBottom、ACRightBottom的范围中随机一个位置
+        FTransform ACLeftTop = GetCardTransform("ACLeftTop");
+        FTransform ACRightTop = GetCardTransform("ACRightTop");
+        FTransform ACLeftBottom = GetCardTransform("ACLeftBottom");
+        FTransform ACRightBottom = GetCardTransform("ACRightBottom");
+        FVector ACLeftTopTranslation = ACLeftTop.GetTranslation();
+        FVector ACRightTopTranslation = ACRightTop.GetTranslation();
+        FVector ACLeftBottomTranslation = ACLeftBottom.GetTranslation();
+        FVector ACRightBottomTranslation = ACRightBottom.GetTranslation();
+        FRotator Rotator;
+        FVector RandomTranslation = FVector(FMath::RandRange(ACLeftTopTranslation.X, ACRightTopTranslation.X), FMath::RandRange(ACLeftTopTranslation.Y, ACLeftBottomTranslation.Y), FMath::RandRange(ACLeftTopTranslation.Z, ACRightBottomTranslation.Z));
+        FTransform RandomTransform = FTransform(Rotator,RandomTranslation);
+        return RandomTransform;
+    }
+    else if (CardBelongType == ECardBelongType::PlayerBScore)
+    {
+        return GetCardTransform("BStoryDeck");
+    }
+    return FTransform::Identity;
+}
+
 FTransform UDataManager::GetCardTransformByPlayerPositionAndIndex(const FString& PlayerPosition, int Index)
 {
     if (PlayerPosition == "A")
@@ -115,7 +140,7 @@ FTransform UDataManager::GetCardTransformByPlayerPositionAndIndex(const FString&
         }
         return GetCardTransform(Name);
     }
-    else if(PlayerPosition == "P")
+    else if (PlayerPosition == "P")
     {
         if (Index <= 9)
         {
@@ -142,6 +167,7 @@ void UDataManager::GetCardsIDByGameMode(EGameMode GameMode, TArray<int32>& Cards
 {
     if (!CardDataTable.IsValid())
     {
+        UE_LOG(LogCardManager, Error, TEXT("CardDataTable is not valid."));
         return;
     }
     const FString ContextString = TEXT("FCardData::FindCardData");

@@ -60,4 +60,7 @@ public:
 
     UFUNCTION(BlueprintCallable, CallInEditor, Category = "Cards")
     void RandomInitCards();
+
+    UFUNCTION(BlueprintCallable, CallInEditor, Category = "Cards")
+    static void ReadStoryCSVtoDataTable(UDataTable* DataTable, FString CSVPath);
 };

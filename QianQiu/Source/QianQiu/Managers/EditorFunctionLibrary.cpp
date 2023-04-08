@@ -135,12 +135,11 @@ void AUEditorFunctionLibrary::RandomInitCards()
         FCardData CardData;
         for (auto& Data : Datas)
         {
-            if(Data.CardID == i)
-                CardData = Data;
+            if (Data.CardID == i) CardData = Data;
         }
         return CardData;
     };
-    
+
     if (Actors.Num() == CardsID.Num())
     {
         for (int i = 0; i < Actors.Num(); i++)
@@ -149,6 +148,46 @@ void AUEditorFunctionLibrary::RandomInitCards()
             {
                 Card->Init(FindData(CardsID[i]));
             }
+        }
+    }
+}
+
+void AUEditorFunctionLibrary::ReadStoryCSVtoDataTable(UDataTable* DataTable, FString CSVPath)
+{
+    if (DataTable)
+    {
+        DataTable->EmptyTable();
+        TArray<FString> FileContent;
+        // 将UTF-8 CSV文件读取到FileContent中
+        FFileHelper::LoadFileToStringArray(FileContent, *CSVPath);
+        // 从第二行开始读取
+        // 1,厨房功夫,风晴雪;焦炭;谢衣,102;128;206,10,A01
+        // int FString TArray<FString> TArray<int> int FString
+        // 
+        for (int i = 1; i < FileContent.Num(); i++)
+        {
+            FString Line = FileContent[i];
+            TArray<FString> LineArray;
+            Line.ParseIntoArray(LineArray, TEXT(","), true);
+
+            FStoryData StoryData;
+            StoryData.Name = LineArray[1];
+            TArray<FString> CardsNameArray;
+            LineArray[2].ParseIntoArray(CardsNameArray, TEXT(";"), true);
+            TArray<FString> CardsIDArray;
+            LineArray[3].ParseIntoArray(CardsIDArray, TEXT(";"), true);
+            TArray<int> CardsIDArrayInt;
+            for (const auto& CardID : CardsIDArray)
+            {
+                CardsIDArrayInt.Add(FCString::Atoi(*CardID));
+            }
+            StoryData.CardsName = CardsNameArray;
+            StoryData.CardsID = CardsIDArrayInt;
+            StoryData.Score = FCString::Atoi(*LineArray[4]);
+            StoryData.AudioID = LineArray[5];
+            // i to FName
+            const FName RowName = FName(*FString::FromInt(i));
+            DataTable->AddRow(RowName, StoryData);
         }
     }
 }
