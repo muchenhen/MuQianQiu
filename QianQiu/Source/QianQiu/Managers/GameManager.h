@@ -96,10 +96,16 @@ public:
     UFUNCTION()
     void ChangeRound();
 
-private:
     // 当前是否有玩家正在选择卡牌
+    UFUNCTION()
+    bool GetIsPlayerChoosing();
+    
+private:
     UPROPERTY()
-    bool bIsPlayerChoosing = false;
+    bool bIsPlayerAChoosing = false;
+
+    UPROPERTY()
+    bool bIsPlayerBChoosing = false;
 
     UPROPERTY()
     ACardBase* CurrentPlayerChooseCard;

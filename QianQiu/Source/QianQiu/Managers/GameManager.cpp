@@ -92,14 +92,14 @@ void UGameManager::OnCardChoose(ACardBase* CardActor)
     const ECardBelongType CardBelongType = CardActor->CardBelongType;
     // TODO:完成选中的逻辑
     // 目前没有玩家正在选中自己的手牌
-    if (!bIsPlayerChoosing)
+    if (!GetIsPlayerChoosing())
     {
         // 当前是玩家选中了自己的手牌
-        if (CardBelongType == ECardBelongType::PlayerA || CardBelongType == ECardBelongType::PlayerB)
+        if (CardBelongType == ECardBelongType::PlayerA)
         {
             // 将公共卡池中展示出来的和当前选中的卡牌同季节的卡牌设置为选中状态
             SetSeasonCardSelected(CardActor);
-            bIsPlayerChoosing = true;
+            bIsPlayerAChoosing = true;
             CurrentPlayerChooseCard = CardActor;
             CardActor->SetCardChoosing(true);
         }
@@ -110,8 +110,9 @@ void UGameManager::OnCardChoose(ACardBase* CardActor)
         // 玩家选择公共卡池中展示出来的牌
         if (CardBelongType == ECardBelongType::PublicShow)
         {
-            // 将玩家选中的牌和玩家现在选择的公共卡池中展示出来的牌都送进玩家的故事牌堆
+            if (bIsPlayerAChoosing)
             {
+                // 将玩家选中的牌和玩家现在选择的公共卡池中展示出来的牌都送进玩家的故事牌堆
                 // 修改牌的所属
                 CurrentPlayerChooseCard->SetCardBelongType(ECardBelongType::PlayerAScore);
                 CardActor->SetCardBelongType(ECardBelongType::PlayerAScore);
@@ -130,10 +131,11 @@ void UGameManager::OnCardChoose(ACardBase* CardActor)
                 // 完成了一次选择 消除选中状态
                 SetAllCardsUnSelected();
                 // 结束已经有玩家在选中自己的手牌的状态
-                bIsPlayerChoosing = false;
+                bIsPlayerAChoosing = false;
+                // 玩家回合结束
+                ChangeRound();
             }
         }
-        // TODO：玩家再次选择自己的牌
         else if (CardBelongType == ECardBelongType::PlayerA)
         {
             const int CardID = CardActor->CardData.CardID;
@@ -142,7 +144,7 @@ void UGameManager::OnCardChoose(ACardBase* CardActor)
             if (CardID == CurrentPlayerChooseCardID)
             {
                 SetAllCardsUnSelected();
-                bIsPlayerChoosing = false;
+                bIsPlayerAChoosing = false;
                 CurrentPlayerChooseCard = nullptr;
                 return;
             }
@@ -151,12 +153,11 @@ void UGameManager::OnCardChoose(ACardBase* CardActor)
                 SetAllCardsUnSelected();
                 CardActor->SetCardChoosing(true);
                 SetSeasonCardSelected(CardActor);
-                bIsPlayerChoosing = true;
+                bIsPlayerAChoosing = true;
                 CurrentPlayerChooseCard = CardActor;
             }
         }
     }
-
 }
 
 /*
@@ -255,4 +256,24 @@ void UGameManager::SetAllCardsUnSelected()
 
 void UGameManager::ChangeRound()
 {
+    CurrentRound++;
+    // 判断当前是哪个玩家的回合 偶数为A 奇数为B
+    if (CurrentRound % 2 == 0)
+    {
+    }
+    else
+    {
+        if (PlayerB)
+        {
+            if (PlayerB->GetIsAI())
+            {
+                PlayerB->AIActionSimple();
+            }
+        }
+    }
+}
+
+bool UGameManager::GetIsPlayerChoosing()
+{
+    return bIsPlayerAChoosing || bIsPlayerBChoosing;
 }

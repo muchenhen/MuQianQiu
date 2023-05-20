@@ -124,4 +124,17 @@ public:
     // get PlayerCardInHands
     UFUNCTION(BlueprintCallable)
     TMap<int, ACardBase*> GetPlayerCardInHands();
+
+private:
+
+    UPROPERTY()
+    bool bIsAI = false;
+    
+public:
+
+    UFUNCTION()
+    void AIActionSimple();
+
+    UFUNCTION()
+    bool GetIsAI();
 };

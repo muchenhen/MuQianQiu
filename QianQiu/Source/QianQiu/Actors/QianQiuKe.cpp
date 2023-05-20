@@ -145,3 +145,12 @@ TMap<int, ACardBase*> AQianQiuKe::GetPlayerCardInHands()
 {
     return PlayerCardInHands;
 }
+
+void AQianQiuKe::AIActionSimple()
+{
+}
+
+bool AQianQiuKe::GetIsAI()
+{
+    return bIsAI;
+}
