@@ -1,0 +1,9 @@
+Binaries/*
+DerivedDataCache/*
+Intermediate/*
+Platforms/*
+Saved/*
+.vs/*
+.vsconfig
+Plugins/*
+.idea/*
