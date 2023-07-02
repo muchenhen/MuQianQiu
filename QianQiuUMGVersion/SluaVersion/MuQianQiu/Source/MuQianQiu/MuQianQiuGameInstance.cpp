@@ -3,6 +3,8 @@
 
 #include "MuQianQiuGameInstance.h"
 
+#include "MuBPFunction.h"
+
 // read file content
 static uint8* ReadFile(IPlatformFile& PlatformFile, FString path, uint32& len)
 {
@@ -90,6 +92,7 @@ void UMuQianQiuGameInstance::CreateLuaState()
         return MoveTemp(Content);
     });
     State->init();
+    UMuBPFunction::SetGameInstance(this);
 }
 
 void UMuQianQiuGameInstance::CloseLuaState()

@@ -2,14 +2,22 @@ require("Global")
 
 local UI_GameStart = {}
 
+function UI_GameStart:Initialize()
+
+end
+
 function UI_GameStart:Construct()
     print("UI_GameStart:Construct")
-    self.Button_GameStart.OnClicked:Add(self.OnButtonClicked)
+    self.Button_GameStart.OnClicked:Add(MakeCallBack(self.OnStartClick, self))
     print(self.Button_GameStart)
 end
 
-function UI_GameStart:OnButtonClicked()
-    print("UI_GameStart:OnButtonClicked")
+function UI_GameStart:OnStartClick()
+    print("UI_GameStart:OnStartClick")
+    InitCardOnBegin()
+    local UI_GameMain = MuBPFunction.CreateUserWidget("UI_GameMain")
+    UI_GameMain:AddToViewport(0)
+    self:RemoveFromParent()
 end
 
 
