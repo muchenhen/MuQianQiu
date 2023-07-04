@@ -1,21 +1,32 @@
 MuBPFunction = import("MuBPFunction")
 
-Min1 = 101
-Max1 = 124
-Min2 = 201
-Max2 = 224
-Min3 = 301
-Max3 = 324
+GameManager = {}
 
-CardIDList = {}
+GameManager.Min1 = 101
+GameManager.Max1 = 124
+GameManager.Min2 = 201
+GameManager.Max2 = 224
+GameManager.Min3 = 301
+GameManager.Max3 = 324
 
-function GameStart()
+GameManager.PlayerAScore = 0
+GameManager.PlayerBScore = 0
+
+CardStoreIDList = {}
+
+function GameManager:GameStart()
+    GameManager.PlayerAScore = 0
+    GameManager.PlayerBScore = 0
 end
 
-function GameEnd()
+function GameManager:GameEnd()
 end
 
-function Shuffle(array)
+function GameManager:GameRestart()
+end
+
+-- 洗牌
+function GameManager:Shuffle(array)
     local counter = #array
 
     while counter > 1 do
@@ -27,12 +38,28 @@ function Shuffle(array)
     return array
 end
 
-function InitCardOnBegin()
-    for i = Min2, Max2 do
-        table.insert(CardIDList, i)
+function GameManager:InitCardOnBegin()
+    -- 清空CardIDList
+    CardStoreIDList = {}
+    for i = GameManager.Min2, GameManager.Max2 do
+        table.insert(CardStoreIDList, i)
     end
-    for i = Min3, Max3 do
-        table.insert(CardIDList, i)
+    for i = GameManager.Min3, GameManager.Max3 do
+        table.insert(CardStoreIDList, i)
     end
-    Shuffle(CardIDList)
+    self:Shuffle(CardStoreIDList)
+end
+
+function GameManager:GetOneCardFromStore()
+    local cardID = CardStoreIDList[1]
+    table.remove(CardStoreIDList, 1)
+    return cardID
+end
+
+function GameManager:GetPlayerAScore()
+    return GameManager.PlayerAScore
+end
+
+function GameManager:GetPlayerBScore()
+    return GameManager.PlayerBScore
 end

@@ -1,7 +1,8 @@
 require("socket.core")
 require("LuaPanda").start("127.0.0.1", 8818)
-
+require("Enums")
 require("GameManager")
+require("LuaTimer")
 
 local weakmeta = {__mode = "v"}
 --[[
