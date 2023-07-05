@@ -17,6 +17,9 @@ CardStoreIDList = {}
 function GameManager:GameStart()
     GameManager.PlayerAScore = 0
     GameManager.PlayerBScore = 0
+ 
+    -- print(MuBPFunction.GetCardInfo(101))
+    self:InitCardOnBegin()
 end
 
 function GameManager:GameEnd()

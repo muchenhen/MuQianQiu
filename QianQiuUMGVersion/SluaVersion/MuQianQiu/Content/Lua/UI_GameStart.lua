@@ -1,5 +1,7 @@
 require("Global")
 
+DataManager = import("DataManager")
+
 local UI_GameStart = {}
 
 function UI_GameStart:Initialize()
@@ -14,7 +16,9 @@ function UI_GameStart:Construct()
 end
 
 function UI_GameStart:OnStartClick()
-    GameManager:InitCardOnBegin()
+    local CardData = DataManager.GetCardData(101)
+    print(CardData.Name)
+    GameManager:GameStart()
     local UI_GameMain = MuBPFunction.CreateUserWidget("UI_GameMain")
     UI_GameMain:AddToViewport(0)
     self:RemoveFromParent()
@@ -23,6 +27,5 @@ end
 function UI_GameStart:OnDestroy()
     -- body
 end
-
 
 return Class(nil, nil, UI_GameStart)
