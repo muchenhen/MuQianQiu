@@ -9,54 +9,37 @@
 #define ENUM_TO_STRING(EnumName, EnumValue) \
 case EnumName::EnumValue: return TEXT(#EnumValue);
 
-UENUM()
-enum class EGameMode : uint8
-{
-    AB, // 1+2
-    AC, // 1+3
-    BC  // 2+3
-};
-
-USTRUCT(Blueprintable, BlueprintType)
-struct MUQIANQIU_API FCardPosition : public FTableRowBase
-{
-    GENERATED_BODY()
-public:
-    UPROPERTY(BlueprintReadWrite, DisplayName = "卡牌位置")
-    FTransform CardTransform = FTransform();
-};
-
 USTRUCT(Blueprintable, BlueprintType)
 struct MUQIANQIU_API FCardData : public FTableRowBase
 {
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(BlueprintReadWrite, DisplayName = "卡面ID")
+	UPROPERTY(BlueprintReadWrite)
 	int CardID = 204;
-	UPROPERTY(BlueprintReadWrite, DisplayName = "卡面名称")
+	UPROPERTY(BlueprintReadWrite)
 	FString Name = TEXT("阿阮");
-	UPROPERTY(BlueprintReadWrite, DisplayName = "卡面分值")
+	UPROPERTY(BlueprintReadWrite)
 	int Value = 2;
-	UPROPERTY(BlueprintReadWrite, DisplayName = "卡面属性")
+	UPROPERTY(BlueprintReadWrite)
 	FString Season = TEXT("春");
-	UPROPERTY(BlueprintReadWrite, DisplayName = "卡片描述")
+	UPROPERTY(BlueprintReadWrite)
 	FString Describe = TEXT("楚梦沉醉朝复暮，\n清歌远上巫山低。");
-	UPROPERTY(BlueprintReadWrite, DisplayName = "卡面类型")
+	UPROPERTY(BlueprintReadWrite)
 	FString Type = "Char";
-	UPROPERTY(BlueprintReadWrite, DisplayName = "卡面贴图")
+	UPROPERTY(BlueprintReadWrite)
 	FString Texture = "Tex_Char_ARuan";
-    UPROPERTY(BlueprintReadWrite, DisplayName = "是否为特殊牌")
+    UPROPERTY(BlueprintReadWrite)
     bool Special = false;
-	UPROPERTY(BlueprintReadWrite, DisplayName = "特殊卡名称")
+	UPROPERTY(BlueprintReadWrite)
 	int SpecialName = 0;
-	UPROPERTY(BlueprintReadWrite, DisplayName = "特殊效果1")
+	UPROPERTY(BlueprintReadWrite)
 	int EffectFirst = 0;
-	UPROPERTY(BlueprintReadWrite, DisplayName = "特殊效果1参数")
+	UPROPERTY(BlueprintReadWrite)
 	int ParamFirst = 0;
-	UPROPERTY(BlueprintReadWrite, DisplayName = "特殊效果2")
+	UPROPERTY(BlueprintReadWrite)
 	int EffectSecond = 0;
-	UPROPERTY(BlueprintReadWrite, DisplayName = "特殊效果2参数")
+	UPROPERTY(BlueprintReadWrite)
 	int ParamSecond = 0;
 
 	FCardData(){}
@@ -95,18 +78,18 @@ struct MUQIANQIU_API FStoryData : public FTableRowBase
 {
     GENERATED_BODY()
 public:
-    UPROPERTY(BlueprintReadWrite, DisplayName = "名称")
+    UPROPERTY(BlueprintReadWrite)
     FString Name = TEXT("厨房功夫");
 
-    UPROPERTY(BlueprintReadWrite, DisplayName = "相关卡片名称")
+    UPROPERTY(BlueprintReadWrite)
     TArray<FString> CardsName;
 
-    UPROPERTY(BlueprintReadWrite, DisplayName = "相关卡片ID")
+    UPROPERTY(BlueprintReadWrite)
     TArray<int> CardsID;
 
-    UPROPERTY(BlueprintReadWrite, DisplayName = "分数")
+    UPROPERTY(BlueprintReadWrite)
     int Score = 0;
 
-    UPROPERTY(BlueprintReadWrite, DisplayName = "对应音频")
+    UPROPERTY(BlueprintReadWrite)
     FString AudioID = TEXT("A01");
 };

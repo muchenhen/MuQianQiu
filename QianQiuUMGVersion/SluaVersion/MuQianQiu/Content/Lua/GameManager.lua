@@ -12,14 +12,30 @@ GameManager.Max3 = 324
 GameManager.PlayerAScore = 0
 GameManager.PlayerBScore = 0
 
+GameManager.GameRound = EGameRound.PlayerA
+
 CardStoreIDList = {}
 
 function GameManager:GameStart()
     GameManager.PlayerAScore = 0
     GameManager.PlayerBScore = 0
- 
-    -- print(MuBPFunction.GetCardInfo(101))
+
+    GameManager.GameRound = EGameRound.PlayerA
+    self.RoundNum = 0
     self:InitCardOnBegin()
+end
+
+function GameManager:ChangeRound()
+    self.RoundNum = self.RoundNum + 1
+    if self.RoundNum == 19 then
+        
+    else
+        if GameManager.GameRound == EGameRound.PlayerA then
+            GameManager.GameRound = EGameRound.PlayerB
+        else
+            GameManager.GameRound = EGameRound.PlayerA
+        end
+    end
 end
 
 function GameManager:GameEnd()
