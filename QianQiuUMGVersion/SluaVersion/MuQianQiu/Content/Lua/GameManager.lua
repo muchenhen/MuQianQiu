@@ -12,6 +12,11 @@ GameManager.Max3 = 324
 GameManager.PlayerAScore = 0
 GameManager.PlayerBScore = 0
 
+GameManager.PlayerAChoosing = false
+GameManager.PlayerAChoosingCard = nil
+
+GameManager.PlayerBChoosing = false
+
 GameManager.GameRound = EGameRound.PlayerA
 
 CardStoreIDList = {}
