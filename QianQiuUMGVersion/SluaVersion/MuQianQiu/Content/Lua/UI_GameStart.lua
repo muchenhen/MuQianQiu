@@ -2,6 +2,10 @@ require("Global")
 
 local UI_GameStart = {}
 
+function UI_GameStart:print_hello()
+    print("Hello!")
+end
+
 function UI_GameStart:Initialize()
     self.bHasScriptImplementedTick = true
 end

@@ -17,9 +17,14 @@ class MUQIANQIU_API UDataManager : public UGameInstanceSubsystem
 private:
     static TSharedPtr<UDataTable> CardDataTable;
 
+    static TSharedPtr<UDataTable> StoryDataTable;
+
 public:
     UDataManager();
 
     UFUNCTION(BlueprintCallable, Category = "DataManager")
     static FCardData GetCardData(int CardID);
+
+    UFUNCTION(BlueprintCallable, Category = "DataManager")
+    static TArray<FStoryData> GetAllStoryData();
 };

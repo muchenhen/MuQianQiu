@@ -61,3 +61,12 @@ UUserWidget* UMuBPFunction::CreateUserWidget(const FString& WidgetPath)
     }
     return Widget;
 }
+
+FVector2D UMuBPFunction::GetWidgetAbsolutePosition(const UWidget* Widget)
+{
+    if (!Widget)
+    {
+        return FVector2D::ZeroVector;
+    }
+    return Widget->GetTickSpaceGeometry().GetAbsolutePosition();
+}

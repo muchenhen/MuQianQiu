@@ -2,8 +2,11 @@ require("socket.core")
 require("LuaPanda").start("127.0.0.1", 8818)
 require("Enums")
 require("GameManager")
-require("LuaTimer")
+LuaTimer = require("LuaTimer")
+Timer = LuaTimer:new()
 DataManager = import("DataManager")
+
+bAIMode = true
 
 local weakmeta = {__mode = "v"}
 --[[
@@ -36,3 +39,11 @@ function MakeCallBack(callBack, ...)
 end
 
 UI_PATH = "/Game/UserWidget/"
+
+function LogLuaIntArray(Array)
+    local Str = ""
+    for i = 0, Array:Num() - 1 do
+       Str = Str .. Array:Get(i) .. " "
+    end
+    return Str
+end

@@ -40,6 +40,30 @@ function UI_Card:PlayChooseAnim()
     end
 end
 
+function UI_Card:SetChooseState(bChoosing, bAnim)
+    if bChoosing then
+        self.bChoosed = true
+        if bAnim then
+            self:PlayAnimationForward(self.ChooseAnim, 1.0, false)
+        end
+        self.Image_Choosed:SetVisibility(ESlateVisibility.HitTestInvisible)
+    else
+        self.bChoosed = false
+        if bAnim then
+            self:PlayAnimationReverse(self.ChooseAnim, 1.0, false)
+        end
+        self.Image_Choosed:SetVisibility(ESlateVisibility.Hidden)
+    end
+end
+
+function UI_Card:ClearChooseState()
+    if self.bChoosed then
+        self:PlayAnimationReverse(self.ChooseAnim, 1.0, false)
+        self.Image_Choosed:SetVisibility(ESlateVisibility.Hidden)
+        self.bChoosed = false
+    end
+end
+
 function UI_Card:OnDestroy()
     -- body
 end

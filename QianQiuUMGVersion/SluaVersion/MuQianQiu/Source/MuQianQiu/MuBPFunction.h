@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MuStructs.h"
+#include "Components/Image.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "MuBPFunction.generated.h"
 
@@ -27,4 +29,7 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "MuBPFunction")
     static UUserWidget* CreateUserWidget(const FString& WidgetPath);
+
+    UFUNCTION(BlueprintCallable, Category = "MuBPFunction")
+    static FVector2D GetWidgetAbsolutePosition(const UWidget* Widget);
 };

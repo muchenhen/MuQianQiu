@@ -24,3 +24,10 @@ ECardOwnerType =
     PlayerASpecial = 6,
     PlayerBSpecial = 7
 }
+
+EAIMode = 
+{
+    Easy = 0,
+    Normal = 1,
+    Hard = 2
+}

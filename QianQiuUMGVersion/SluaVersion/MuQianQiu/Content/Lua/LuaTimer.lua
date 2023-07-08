@@ -1,9 +1,7 @@
 local LuaTimer = {}
 
 function LuaTimer:new()
-    local timer = {
-        tasks = {},
-    }
+    local timer = {tasks = {}}
 
     setmetatable(timer, self)
     self.__index = self
@@ -12,12 +10,8 @@ function LuaTimer:new()
 end
 
 function LuaTimer:Add(delay, func)
-    local task = {
-        delay = delay,
-        func = func,
-        time = os.time() + delay,
-    }
-
+    local task = {delay = delay, func = func, time = os.time() + delay}
+    print(task.delay, task.time)
     table.insert(self.tasks, task)
 end
 

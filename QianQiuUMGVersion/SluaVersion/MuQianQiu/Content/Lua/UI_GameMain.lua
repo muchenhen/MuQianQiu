@@ -8,6 +8,7 @@ UI_GameMain.Cards_B = {}
 UI_GameMain.Cards_P = {}
 
 function UI_GameMain:Initialize()
+    self.bHasScriptImplementedTick = true
     self:SetVisibility(ESlateVisibility.Hidden)
 
     -- Card实例加到对应的table里 需要数字做索引
@@ -18,6 +19,10 @@ function UI_GameMain:Initialize()
     end
 
     self:OnInit()
+end
+
+function UI_GameMain:Tick()
+   Timer:Update()
 end
 
 function UI_GameMain:OnInit()
@@ -47,64 +52,189 @@ function UI_GameMain:OnInit()
 
     self:PlayAnimationForward(self.InitAnim, 1.0, false)
     self:SetVisibility(ESlateVisibility.Visible)
+
+    if AIPlayer.bAIMode then
+        AIPlayer.Cards = self.Cards_B
+        AIPlayer.PCards = self.Cards_P
+    end
 end
 
 function UI_GameMain:OnCardClicked(Card)
-    print(Card.CardID, Card.Name, Card.Value, Card.Season)
-
     -- 玩家A的回合 并且点击的是玩家A的卡牌
     if Card.CardOwner == ECardOwnerType.PlayerA and GameManager.GameRound == EGameRound.PlayerA then
-        Card:PlayChooseAnim()
         -- 玩家当前不处于已选中一张手牌的状态
         if not GameManager.PlayerAChoosing then
+            print("玩家A选择自己的手牌：" .. Card.CardID, Card.Name, Card.Value, Card.Season)
             self:OnPlayerChooseCard(Card, true)
             GameManager.PlayerAChoosing = true
             GameManager.PlayerAChoosingCard = Card
         -- 玩家当前处于已选中一张手牌的状态
         else
-            self:OnPlayerChooseCard(Card, false)
-            GameManager.PlayerAChoosing = false
-            GameManager.PlayerAChoosingCard = nil
+            -- 如果 玩家当前记录的选择的牌 和 Card（现在被点击的牌） 是同一张牌 则取消选择
+            if GameManager.PlayerAChoosingCard == Card then
+                self:OnPlayerChooseCard(Card, false)
+                GameManager.PlayerAChoosing = false
+                GameManager.PlayerAChoosingCard = nil
+            -- 如果 玩家当前记录的选择的牌 和 Card（现在被点击的牌） 不是同一张牌 则取消选择 并选择新的牌
+            else
+                self:ClearAllChooseState()
+                self:OnPlayerChooseCard(Card, true)
+                GameManager.PlayerAChoosing = true
+                GameManager.PlayerAChoosingCard = Card
+            end
         end
     -- 玩家B的回合 并且点击的是玩家B的卡牌
     elseif Card.CardOwner == ECardOwnerType.PlayerB and GameManager.GameRound == EGameRound.PlayerB then
-        Card:PlayChooseAnim()
+        -- AI模式
+        if bAIMode then
+            -- AI模式 AI当前不处于已选中一张手牌的状态
+            if not AIPlayer.AIChoosing then
+                print("AI选择自己的手牌：" .. Card.CardID, Card.Name, Card.Value, Card.Season)
+                self:OnPlayerChooseCard(Card, true)
+                AIPlayer.AIChoosing = true
+                AIPlayer.AIChoosingCard = Card
+                GameManager.PlayerBChoosing = true
+                GameManager.PlayerBChoosingCard = Card
+                Timer:Add(1, function()
+                    AIPlayer:DoAction()
+                end)
+            end
+        else
+            if not GameManager.PlayerBChoosing then
+                print("玩家B选择自己的手牌：" .. Card.CardID, Card.Name, Card.Value, Card.Season)
+
+            else
+                
+            end
+        end
+        
     -- 玩家A的回合 但是点击的是P区的卡牌
     elseif Card.CardOwner == ECardOwnerType.Public and GameManager.GameRound == EGameRound.PlayerA then
         -- 玩家当前处于已选中一张手牌的状态
         if GameManager.PlayerAChoosing then
             -- 如果 玩家当前选择的牌 和 Card（被点击P区的牌）的Season相同
             if GameManager.PlayerAChoosingCard.Season == Card.Season then
-                -- 将两张牌移动到玩家A的牌堆
-                print(self.Card_A_Deal.Slot:GetPosition())
-                print(self.Card_A_Deal.Slot:GetSize())
-                print(self.Card_A_Deal.Slot)
-
-                -- 更新玩家A的分数
-
-                -- 补充P区的牌
-
-                -- 切换到玩家B的回合
+                print("玩家A拿走了一张牌：" .. Card.CardID, Card.Name, Card.Value, Card.Season)
+                -- 玩家A回合结束 进入结算
+                self:RoundCheck(GameManager.PlayerAChoosingCard, Card)
             end
 
         -- 玩家当前不处于已选中一张手牌的状态
         else
         end
+    -- 玩家B的回合 但是点击的是P区的卡牌
+    elseif Card.CardOwner == ECardOwnerType.Public and GameManager.GameRound == EGameRound.PlayerB then
+        -- AI模式
+        if AIPlayer.bAIMode then
+            -- AI当前处于已选中一张手牌的状态
+            if AIPlayer.AIChoosing then
+                -- 如果 AI当前选择的牌 和 Card（被点击P区的牌）的Season相同 不会让AI乱选 一定会选相同的
+                if AIPlayer.AIChoosingCard.Season == Card.Season then
+                    print("AI拿走了一张牌：" .. Card.CardID, Card.Name, Card.Value, Card.Season)
+                    -- AI回合结束 进入结算
+                    self:RoundCheck(AIPlayer.AIChoosingCard, Card)
+                end
+            end
+        else
+
+        end
     end
+end
+
+function UI_GameMain:RoundCheck(PlayerCard, PublicCard)
+    local Player = PlayerCard.CardOwner
+    -- 记录P区的牌的位置信息
+    self:SavaOldPublicCardInfo(PublicCard)
+    -- 清除选中状态
+    self:ClearAllChooseState()
+    -- 更新玩家的分数
+    GameManager:UpdatePlayerScore(PlayerCard, PublicCard)
+    -- 将两张牌移动到对应玩家的牌堆
+    self:MoveCardsToDeal(PlayerCard, PublicCard)
+    -- 更新UI分数
+    if Player == ECardOwnerType.PlayerA then
+        self.Text_PlayerAScore:SetText(GameManager:GetPlayerAScore())
+    elseif Player == ECardOwnerType.PlayerB then
+        self.Text_PlayerBScore:SetText(GameManager:GetPlayerBScore())
+    end
+    -- 补充P区的牌
+    self:SetNewPublicCardInfo()
+    -- 设置两张牌的Owner
+    if Player == ECardOwnerType.PlayerA then
+        PlayerCard:SetCardOwner(ECardOwnerType.PlayerADeal)
+        PublicCard:SetCardOwner(ECardOwnerType.PlayerADeal)
+    else
+        PlayerCard:SetCardOwner(ECardOwnerType.PlayerBDeal)
+        PublicCard:SetCardOwner(ECardOwnerType.PlayerBDeal)
+    end
+    -- 切换回合
+    GameManager:ChangeRound()
+end
+
+function UI_GameMain:SavaOldPublicCardInfo(PublicCard)
+    UI_GameMain.OldPublicCardPosition = PublicCard.Slot:GetPosition()
+    UI_GameMain.OldPublicCardRenderTransformAngle = PublicCard:GetRenderTransformAngle()
+    UI_GameMain.OldPublicCardAnchor = PublicCard.Slot:GetAnchors()
+    UI_GameMain.OldPublicCardLayer = PublicCard.Slot:GetZOrder()
+    UI_GameMain.OldPublicCardLayout = PublicCard.Slot:GetLayout()
+end
+
+function UI_GameMain:SetNewPublicCardInfo()
+    local NewCard = MuBPFunction.CreateUserWidget("UI_Card")
+    local NewPublicCardID = GameManager:GetOneCardFromStore()
+    self.PublicCards:AddChild(NewCard)
+    NewCard:SetVisibility(ESlateVisibility.Visible)
+    NewCard:SetCardID(NewPublicCardID)
+    NewCard:SetCardOwner(ECardOwnerType.Public)
+    NewCard:AddOnClickEvent(MakeCallBack(self.OnCardClicked, self))
+    NewCard.Slot:SetAnchors(UI_GameMain.OldPublicCardAnchor)
+    NewCard.Slot:SetPosition(UI_GameMain.OldPublicCardPosition)
+    NewCard.Slot:SetZorder(UI_GameMain.OldPublicCardLayer)
+    NewCard.Slot:SetLayout(UI_GameMain.OldPublicCardLayout)
+    NewCard:SetRenderTransformAngle(UI_GameMain.OldPublicCardRenderTransformAngle)
+end
+
+function UI_GameMain:MoveCardsToDeal(PlayerCard, PublicCard)
+    -- 获取Deal区的位置
+    local AnimPosPlayer = nil
+    local AnimPosPublic = nil
+    if PlayerCard.CardOwner == ECardOwnerType.PlayerA then
+        AnimPosPlayer = self.Card_A_Deal.Slot:GetPosition()
+        AnimPosPublic = self.Card_P_A_Deal.Slot:GetPosition()
+    else
+        AnimPosPlayer = self.Card_B_Deal.Slot:GetPosition()
+        AnimPosPublic = self.Card_P_B_Deal.Slot:GetPosition()
+    end
+
+    -- 移动到Deal区
+    PlayerCard.Slot:SetPosition(AnimPosPlayer)
+    PublicCard.Slot:SetPosition(AnimPosPublic)
+end
+
+function UI_GameMain:ClearAllChooseState()
+    GameManager.PlayerAChoosing = false
+    GameManager.PlayerAChoosingCard = nil
+    -- 遍历Cards_A
+    for index = 1, 10 do
+        self.Cards_A[index]:ClearChooseState()
+    end
+    -- 遍历Cards_B
+    for index = 1, 10 do
+        self.Cards_B[index]:ClearChooseState()
+    end
+    -- 遍历Cards_P
+    for index = 1, 8 do
+        self.Cards_P[index]:ClearChooseState()
+    end
+
 end
 
 function UI_GameMain:OnPlayerChooseCard(Card, bChoosing)
     -- 遍历Cards_P找到Season相同的卡牌
     for index = 1, 8 do
         if self.Cards_P[index].Season == Card.Season then
-            self.Cards_P[index]:PlayChooseAnim()
-            if bChoosing then
-                Card.Image_Choosed:SetVisibility(ESlateVisibility.HitTestInvisible)
-                self.Cards_P[index].Image_Choosed:SetVisibility(ESlateVisibility.HitTestInvisible)
-            else
-                Card.Image_Choosed:SetVisibility(ESlateVisibility.Hidden)
-                self.Cards_P[index].Image_Choosed:SetVisibility(ESlateVisibility.Hidden)
-            end
+            self.Cards_P[index]:SetChooseState(bChoosing, true)
+            Card:SetChooseState(bChoosing, true)
         end
     end
 end
