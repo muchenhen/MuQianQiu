@@ -167,6 +167,7 @@ function UI_GameMain:RoundCheck(PlayerCard, PublicCard)
         PlayerCard:SetCardOwner(ECardOwnerType.PlayerBDeal)
         PublicCard:SetCardOwner(ECardOwnerType.PlayerBDeal)
     end
+      
     -- 切换回合
     GameManager:ChangeRound()
 end
@@ -177,6 +178,13 @@ function UI_GameMain:SavaOldPublicCardInfo(PublicCard)
     UI_GameMain.OldPublicCardAnchor = PublicCard.Slot:GetAnchors()
     UI_GameMain.OldPublicCardLayer = PublicCard.Slot:GetZOrder()
     UI_GameMain.OldPublicCardLayout = PublicCard.Slot:GetLayout()
+    -- 记录PublicCard是self.Cards_P的第几个
+    for i = 1, #self.Cards_P do
+        if self.Cards_P[i].CardID == PublicCard.CardID then
+            UI_GameMain.OldPublicCardIndex = i
+            break
+        end
+    end
 end
 
 function UI_GameMain:SetNewPublicCardInfo()
@@ -192,6 +200,8 @@ function UI_GameMain:SetNewPublicCardInfo()
     NewCard.Slot:SetZorder(UI_GameMain.OldPublicCardLayer)
     NewCard.Slot:SetLayout(UI_GameMain.OldPublicCardLayout)
     NewCard:SetRenderTransformAngle(UI_GameMain.OldPublicCardRenderTransformAngle)
+    -- 将self.Cards_P中的牌更新
+    self.Cards_P[UI_GameMain.OldPublicCardIndex] = NewCard
 end
 
 function UI_GameMain:MoveCardsToDeal(PlayerCard, PublicCard)
@@ -201,9 +211,28 @@ function UI_GameMain:MoveCardsToDeal(PlayerCard, PublicCard)
     if PlayerCard.CardOwner == ECardOwnerType.PlayerA then
         AnimPosPlayer = self.Card_A_Deal.Slot:GetPosition()
         AnimPosPublic = self.Card_P_A_Deal.Slot:GetPosition()
+        -- 趁机更新self.Cards_A 将PlayerCard从self.Cards_A中移除 并重新生成table
+        local NewCards_A = {}
+        local index = 1
+        for key, value in pairs(self.Cards_A) do
+            if value.CardID ~= PlayerCard.CardID then
+                NewCards_A[index] = value
+                index = index + 1
+            end
+        end
+        self.Cards_A = NewCards_A
     else
         AnimPosPlayer = self.Card_B_Deal.Slot:GetPosition()
         AnimPosPublic = self.Card_P_B_Deal.Slot:GetPosition()
+        -- 趁机更新self.Cards_B 将PlayerCard从self.Cards_B中移除 并重新生成table
+        local NewCards_B = {}
+        local index = 1
+        for key, value in pairs(self.Cards_B) do
+            if value.CardID ~= PlayerCard.CardID then
+                NewCards_B[index] = value
+                index = index + 1
+            end
+        end
     end
 
     -- 移动到Deal区
@@ -214,12 +243,12 @@ end
 function UI_GameMain:ClearAllChooseState()
     GameManager.PlayerAChoosing = false
     GameManager.PlayerAChoosingCard = nil
-    -- 遍历Cards_A
-    for index = 1, 10 do
+    -- 遍历Cards_A 数量不定
+    for index = 1, #self.Cards_A do
         self.Cards_A[index]:ClearChooseState()
     end
     -- 遍历Cards_B
-    for index = 1, 10 do
+    for index = 1, #self.Cards_B do
         self.Cards_B[index]:ClearChooseState()
     end
     -- 遍历Cards_P
