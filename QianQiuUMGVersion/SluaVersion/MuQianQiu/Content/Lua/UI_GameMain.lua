@@ -178,6 +178,7 @@ function UI_GameMain:SavaOldPublicCardInfo(PublicCard)
     UI_GameMain.OldPublicCardAnchor = PublicCard.Slot:GetAnchors()
     UI_GameMain.OldPublicCardLayer = PublicCard.Slot:GetZOrder()
     UI_GameMain.OldPublicCardLayout = PublicCard.Slot:GetLayout()
+    UI_GameMain.OldPublicCardSize = PublicCard.Slot:GetSize()
     -- 记录PublicCard是self.Cards_P的第几个
     for i = 1, #self.Cards_P do
         if self.Cards_P[i].CardID == PublicCard.CardID then
@@ -199,6 +200,7 @@ function UI_GameMain:SetNewPublicCardInfo()
     NewCard.Slot:SetPosition(UI_GameMain.OldPublicCardPosition)
     NewCard.Slot:SetZorder(UI_GameMain.OldPublicCardLayer)
     NewCard.Slot:SetLayout(UI_GameMain.OldPublicCardLayout)
+    NewCard.Slot:SetSize(UI_GameMain.OldPublicCardSize)
     NewCard:SetRenderTransformAngle(UI_GameMain.OldPublicCardRenderTransformAngle)
     -- 将self.Cards_P中的牌更新
     self.Cards_P[UI_GameMain.OldPublicCardIndex] = NewCard
@@ -241,8 +243,6 @@ function UI_GameMain:MoveCardsToDeal(PlayerCard, PublicCard)
 end
 
 function UI_GameMain:ClearAllChooseState()
-    GameManager.PlayerAChoosing = false
-    GameManager.PlayerAChoosingCard = nil
     -- 遍历Cards_A 数量不定
     for index = 1, #self.Cards_A do
         self.Cards_A[index]:ClearChooseState()

@@ -60,10 +60,15 @@ function GameManager:ChangeRound()
                 Timer:Add(1, function()
                     AIPlayer:DoAction()
                 end)
-                
             end
+            GameManager.PlayerAChoosing = false
+            GameManager.PlayerAChoosingCard = nil
         else
             GameManager.GameRound = EGameRound.PlayerA
+            AIPlayer.AIChoosing = false
+            AIPlayer.AIChoosingCard = nil
+            GameManager.PlayerBChoosing = false
+            GameManager.PlayerBChoosingCard = nil
         end
     end
 end
@@ -114,16 +119,20 @@ function GameManager:GetPlayerBScore()
 end
 
 function GameManager:UpdatePlayerScore(PlayerCard, PublicCard)
-
-
     if PlayerCard.CardOwner == ECardOwnerType.PlayerA then
         table.insert(self.PlayerADealCards, PlayerCard.CardID)
         table.insert(self.PlayerADealCards, PublicCard.CardID)
         self.PlayerAScore = self.PlayerAScore + PlayerCard.Value + PublicCard.Value
+        print("玩家A获得了 " .. PlayerCard.Value + PublicCard.Value .. " 分, " .. "Deal卡牌：" .. PlayerCard.Name .. " " .. PublicCard.Name, "分数从 " .. self.PlayerAScore - PlayerCard.Value - PublicCard.Value .. " 变为 " .. self.PlayerAScore)
     elseif PlayerCard.CardOwner == ECardOwnerType.PlayerB then
         table.insert(self.PlayerBDealCards, PlayerCard.CardID)
         table.insert(self.PlayerBDealCards, PublicCard.CardID)
         self.PlayerBScore = self.PlayerBScore + PlayerCard.Value + PublicCard.Value
+        if not AIPlayer.bAIMode then
+            print("玩家B获得了 " .. PlayerCard.Value + PublicCard.Value .. " 分, " .. "Deal卡牌：" .. PlayerCard.Name .. " " .. PublicCard.Name, "分数从 " .. self.PlayerBScore - PlayerCard.Value - PublicCard.Value .. " 变为 " .. self.PlayerBScore)
+        else
+            print("AI获得了 " .. PlayerCard.Value + PublicCard.Value .. " 分, " .. "Deal卡牌：" .. PlayerCard.Name .. " " .. PublicCard.Name, "分数从 " .. self.PlayerBScore - PlayerCard.Value - PublicCard.Value .. " 变为 " .. self.PlayerBScore)
+        end
     end
 
     -- 遍历所有故事
@@ -142,13 +151,17 @@ function GameManager:UpdatePlayerScore(PlayerCard, PublicCard)
                 if bPlayerHaveAllRequiredCard then
                     self.PlayerAScore = Value.Story.Score + self.PlayerAScore
                     Value.bFinished = true
-                    print("玩家A完成了故事：" .. Value.Story.Name .. "，获得了" .. Value.Story.Score .. "分" .. "相关卡牌名称为：" .. LogLuaIntArray(Value.Story.CardsName))
+                    print("玩家A完成了故事：" .. Value.Story.Name .. "，额外获得了 " .. Value.Story.Score .. " 分, " .. "相关卡牌：" .. LogLuaIntArray(Value.Story.CardsName), "分数从 " .. self.PlayerAScore - Value.Story.Score .. " 变为 " .. self.PlayerAScore)
                 end
             elseif PlayerCard.CardOwner == ECardOwnerType.PlayerB then
                 if bPlayerHaveAllRequiredCard then
                     self.PlayerBScore = Value.Story.Score + self.PlayerBScore
                     Value.bFinished = true
-                    print("玩家B完成了故事：" .. Value.Story.Name .. "，获得了" .. Value.Story.Score .. "分" .. "相关卡牌名称为：" .. LogLuaIntArray(Value.Story.CardsName))
+                    if not AIPlayer.bAIMode then
+                        print("玩家B完成了故事：" .. Value.Story.Name .. "，额外获得了 " .. Value.Story.Score .. " 分, " .. "相关卡牌：" .. LogLuaIntArray(Value.Story.CardsName), "分数从 " .. self.PlayerBScore - Value.Story.Score .. " 变为 " .. self.PlayerBScore)
+                    else
+                        print("AI完成了故事：" .. Value.Story.Name .. "，额外获得了 " .. Value.Story.Score .. " 分, " .. "相关卡牌：" .. LogLuaIntArray(Value.Story.CardsName), "分数从 " .. self.PlayerBScore - Value.Story.Score .. " 变为 " .. self.PlayerBScore)
+                    end
                 end
             end
         end

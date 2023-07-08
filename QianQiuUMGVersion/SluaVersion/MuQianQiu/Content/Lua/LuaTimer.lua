@@ -11,7 +11,6 @@ end
 
 function LuaTimer:Add(delay, func)
     local task = {delay = delay, func = func, time = os.time() + delay}
-    print(task.delay, task.time)
     table.insert(self.tasks, task)
 end
 
