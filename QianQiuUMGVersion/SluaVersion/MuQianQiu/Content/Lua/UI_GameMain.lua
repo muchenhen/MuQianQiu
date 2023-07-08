@@ -64,10 +64,36 @@ function UI_GameMain:OnCardClicked(Card)
     if Card.CardOwner == ECardOwnerType.PlayerA and GameManager.GameRound == EGameRound.PlayerA then
         -- 玩家当前不处于已选中一张手牌的状态
         if not GameManager.PlayerAChoosing then
+            -- TODO: 这里要按顺序判断
+            -- 1. 玩家A的手牌中 是否已经不存在任何一张 在P区能找到相同Season的 牌， 如果不存在 则会进入弃牌重选流程 选择一张手牌弃掉 并从牌库中抽一张牌
+            -- 2. 玩家A选择的牌 在P区 是否存在有相同Season的牌 要进行不同的表现
+
             print("玩家A选择自己的手牌：" .. Card.CardID, Card.Name, Card.Value, Card.Season)
-            self:OnPlayerChooseCard(Card, true)
-            GameManager.PlayerAChoosing = true
-            GameManager.PlayerAChoosingCard = Card
+
+            if GameManager.PLayerAChangingCard then
+                local NewCardID = GameManager:ReturnCardToStore(CardID)
+                Card:SetCardID(NewCardID)
+                -- 重新检查
+                if self:CheckPlayerCardsIfCanContinue() then
+                    GameManager.PLayerAChangingCard = false
+
+                    GameManager.PlayerAChoosing = false
+                    GameManager.PlayerAChoosingCard = nil
+                end
+            end
+
+            -- 玩家A手中的牌至少存在一张在P区能找到相同Season的牌 继续游戏
+            if self:CheckPlayerCardsIfCanContinue() then
+                self:OnPlayerChooseCard(Card, true)
+                GameManager.PlayerAChoosing = true
+                GameManager.PlayerAChoosingCard = Card
+            -- 玩家A手中的牌不存在任何一张能在P区找到相同Season的牌 进入弃牌重选流程
+            else
+                -- 标记进入玩家A的换牌模式
+                GameManager.PLayerAChangingCard = true
+                print("由于玩家A的手牌无法继续游戏，将进入选牌重抽模式，接下来选择的牌会被送回牌库并重新洗牌后获得一张新牌")
+            end
+
         -- 玩家当前处于已选中一张手牌的状态
         else
             -- 如果 玩家当前记录的选择的牌 和 Card（现在被点击的牌） 是同一张牌 则取消选择
@@ -83,6 +109,22 @@ function UI_GameMain:OnCardClicked(Card)
                 GameManager.PlayerAChoosingCard = Card
             end
         end
+        
+    -- 玩家A的回合 但是点击的是P区的卡牌
+    elseif Card.CardOwner == ECardOwnerType.Public and GameManager.GameRound == EGameRound.PlayerA then
+        -- 玩家当前处于已选中一张手牌的状态
+        if GameManager.PlayerAChoosing then
+            -- 如果 玩家当前选择的牌 和 Card（被点击P区的牌）的Season相同
+            if GameManager.PlayerAChoosingCard.Season == Card.Season then
+                print("玩家A拿走了一张牌：" .. Card.CardID, Card.Name, Card.Value, Card.Season)
+                -- 玩家A回合结束 进入结算
+                self:RoundCheck(GameManager.PlayerAChoosingCard, Card)
+            end
+
+        -- 玩家当前不处于已选中一张手牌的状态
+        else
+        end
+
     -- 玩家B的回合 并且点击的是玩家B的卡牌
     elseif Card.CardOwner == ECardOwnerType.PlayerB and GameManager.GameRound == EGameRound.PlayerB then
         -- AI模式
@@ -107,21 +149,7 @@ function UI_GameMain:OnCardClicked(Card)
                 
             end
         end
-        
-    -- 玩家A的回合 但是点击的是P区的卡牌
-    elseif Card.CardOwner == ECardOwnerType.Public and GameManager.GameRound == EGameRound.PlayerA then
-        -- 玩家当前处于已选中一张手牌的状态
-        if GameManager.PlayerAChoosing then
-            -- 如果 玩家当前选择的牌 和 Card（被点击P区的牌）的Season相同
-            if GameManager.PlayerAChoosingCard.Season == Card.Season then
-                print("玩家A拿走了一张牌：" .. Card.CardID, Card.Name, Card.Value, Card.Season)
-                -- 玩家A回合结束 进入结算
-                self:RoundCheck(GameManager.PlayerAChoosingCard, Card)
-            end
 
-        -- 玩家当前不处于已选中一张手牌的状态
-        else
-        end
     -- 玩家B的回合 但是点击的是P区的卡牌
     elseif Card.CardOwner == ECardOwnerType.Public and GameManager.GameRound == EGameRound.PlayerB then
         -- AI模式
@@ -139,6 +167,22 @@ function UI_GameMain:OnCardClicked(Card)
 
         end
     end
+end
+
+function UI_GameMain:CheckPlayerCardsIfCanContinue()
+    -- 遍历self.Cards_A中的所有牌
+    for i = 1, #self.Cards_A do
+        local Card = self.Cards_A[i]
+        -- 遍历self.Cards_P中的所有牌
+        for j = 1, #self.Cards_P do
+            local PublicCard = self.Cards_P[j]
+            -- 如果玩家A的手牌中存在一张牌 在P区能找到相同Season的牌
+            if Card.Season == PublicCard.Season then
+                return true
+            end
+        end
+    end
+    return false
 end
 
 function UI_GameMain:RoundCheck(PlayerCard, PublicCard)

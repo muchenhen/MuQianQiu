@@ -168,6 +168,7 @@ function GameManager:UpdatePlayerScore(PlayerCard, PublicCard)
     end
 end
 
+-- 判断玩家是否拥有某张卡牌
 function GameManager:IsPlayerHaveThisCard(CardID, CardOwner)
     local Cards = nil
     if CardOwner == ECardOwnerType.PlayerA then
@@ -182,4 +183,11 @@ function GameManager:IsPlayerHaveThisCard(CardID, CardOwner)
         end
     end
     return false
+end
+
+-- 送回Store一张牌 重新洗牌 并返回一张新牌
+function GameManager:ReturnCardToStore(CardID)
+    table.insert(CardStoreIDList, CardID)
+    self:Shuffle(CardStoreIDList)
+    return self:GetOneCardFromStore()
 end
