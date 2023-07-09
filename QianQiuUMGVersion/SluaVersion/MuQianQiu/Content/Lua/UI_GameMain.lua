@@ -65,10 +65,6 @@ function UI_GameMain:OnCardClicked(Card)
     if Card.CardOwner == ECardOwnerType.PlayerA and GameManager.GameRound == EGameRound.PlayerA then
         -- 玩家当前不处于已选中一张手牌的状态
         if not GameManager.PlayerAChoosing then
-            -- TODO: 这里要按顺序判断
-            -- 1. 玩家A的手牌中 是否已经不存在任何一张 在P区能找到相同Season的 牌， 如果不存在 则会进入弃牌重选流程 选择一张手牌弃掉 并从牌库中抽一张牌
-            -- 2. 玩家A选择的牌 在P区 是否存在有相同Season的牌 要进行不同的表现
-
             print("玩家A选择自己的手牌：" .. Card.CardID, Card.Name, Card.Value, Card.Season)
 
             -- 玩家A手中的牌不存在在P区能找到相同Season的牌 进入弃牌重选流程

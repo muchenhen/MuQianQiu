@@ -233,10 +233,9 @@ end
 
 -- 送回Store一张牌 重新洗牌 并返回一张新牌
 function GameManager:ReturnCardToStore(CardID, Player)
-    -- TODO: WARNING!!!
-    -- 有可能会出现，没有展示出来的牌库中剩下的是同一个Season的牌，玩家手上也是同一个Season的牌
-    -- 但是，展示出来的牌中没有这个Season的牌，这样会无限循环
+    -- 检查是否需要整个Public重新洗牌
     self:CheckbNeedShuffleAllPublicCards(Player)
+    
     if GameManager.bNeedShuffleAllPublicCards then
         -- 将 CardID 和 UI_Main.Cards_P中的牌全部放回牌库
         table.insert(CardStoreIDList, CardID)
