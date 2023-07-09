@@ -73,7 +73,7 @@ function UI_GameMain:OnCardClicked(Card)
 
             -- 玩家A手中的牌不存在在P区能找到相同Season的牌 进入弃牌重选流程
             if GameManager.PLayerAChangingCard then
-                local NewCardID = GameManager:ReturnCardToStore(Card.CardID)
+                local NewCardID = GameManager:ReturnCardToStore(Card.CardID, EPlayer.PlayerA)
                 print(string.format("玩家A使用 %d %s 交换了 %d %s", Card.CardID, Card.Name, NewCardID, DataManager.GetCardData(NewCardID).Name))
                 Card:SetCardID(NewCardID)
                 -- 重新检查
@@ -136,7 +136,7 @@ function UI_GameMain:OnCardClicked(Card)
 
                 -- 玩家B手中的牌不存在在P区能找到相同Season的牌 进入弃牌重选流程
                 if GameManager.PLayerBChangingCard then
-                    local NewCardID = GameManager:ReturnCardToStore(Card.CardID)
+                    local NewCardID = GameManager:ReturnCardToStore(Card.CardID, EPlayer.PlayerB)
                     print(string.format("AI使用 %d %s 交换了 %d %s", Card.CardID, Card.Name, NewCardID, DataManager.GetCardData(NewCardID).Name))
                     Card:SetCardID(NewCardID)
                     -- 重新检查

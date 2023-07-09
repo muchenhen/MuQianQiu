@@ -7,6 +7,7 @@ function UI_GameStart:print_hello()
 end
 
 function UI_GameStart:Initialize()
+    GameManager.UI_GameStart = self
     self.bHasScriptImplementedTick = true
 end
 

@@ -18,16 +18,17 @@ GameManager.PlayerBScore = 0
 
 GameManager.PlayerAChoosing = false
 GameManager.PlayerAChoosingCard = nil
-
-GameManager.PlayerADealCards = {}
-
 GameManager.PlayerBChoosing = false
 GameManager.PlayerBChoosingCard = nil
 
+GameManager.PlayerADealCards = {}
 GameManager.PlayerBDealCards = {}
 
 GameManager.GameRound = EGameRound.PlayerA
 
+GameManager.bNeedShuffleAllPublicCards = false
+
+GameManager.UI_GameStart = nil
 GameManager.UI_Main = nil
 
 CardStoreIDList = {}
@@ -49,6 +50,7 @@ function GameManager:GameStart()
     self:InitCardOnBegin()
 
     GameManager.PlayerADealCards = {}
+    GameManager.PlayerBDealCards = {}
 end
 
 function GameManager:ChangeRound()
@@ -112,8 +114,12 @@ function GameManager:GameEnd()
         UI_GameEnd:SetWinner(ECardOwnerType.PlayerB, GameManager.PlayerAScore)
     else
         print("平局")
+        UI_GameEnd:SetWinner(nil, GameManager.PlayerAScore)
     end
     UI_GameEnd:AddToViewport(0)
+    GameManager.PlayerAScore = 0
+    GameManager.PlayerBScore = 0
+    self.RoundNum = 0
 end
 
 function GameManager:GameRestart()
@@ -226,8 +232,95 @@ function GameManager:IsPlayerHaveThisCard(CardID, CardOwner)
 end
 
 -- 送回Store一张牌 重新洗牌 并返回一张新牌
-function GameManager:ReturnCardToStore(CardID)
-    table.insert(CardStoreIDList, CardID)
-    self:Shuffle(CardStoreIDList)
-    return self:GetOneCardFromStore()
+function GameManager:ReturnCardToStore(CardID, Player)
+    -- TODO: WARNING!!!
+    -- 有可能会出现，没有展示出来的牌库中剩下的是同一个Season的牌，玩家手上也是同一个Season的牌
+    -- 但是，展示出来的牌中没有这个Season的牌，这样会无限循环
+    self:CheckbNeedShuffleAllPublicCards(Player)
+    if GameManager.bNeedShuffleAllPublicCards then
+        -- 将 CardID 和 UI_Main.Cards_P中的牌全部放回牌库
+        table.insert(CardStoreIDList, CardID)
+        for i = 1, #self.UI_Main.Cards_P do
+            local Card = self.UI_Main.Cards_P[i]
+            table.insert(CardStoreIDList, Card.CardID)
+        end
+        self:Shuffle(CardStoreIDList)
+        -- 重新设置UI_Main.Cards_P中的牌
+        for i = 1, #self.UI_Main.Cards_P do
+            local CardID = self:GetOneCardFromStore()
+            local Card = self.UI_Main.Cards_P[i]
+            Card:SetCardID(CardID)
+        end
+        return self:GetOneCardFromStore()
+    else
+        table.insert(CardStoreIDList, CardID)
+        self:Shuffle(CardStoreIDList)
+        return self:GetOneCardFromStore()
+    end
+end
+
+function GameManager:CheckbNeedShuffleAllPublicCards(Player)
+    if Player == EPlayer.PlayerA then
+        -- 遍历玩家A的手牌 确认CardStoreIDList中的所有牌 是否都是同一个Season
+
+        -- 获取玩家A的手牌的所有Season
+        local ACardSeasons = {}
+        for i = 1, #self.UI_Main.Cards_A do
+            local ACardSeasn = self.UI_Main.Cards_A[i].Season
+            table.insert(ACardSeasons, ACardSeasn)
+        end
+
+        -- 获取CardStoreIDList中的所有Season
+        local CardStoreSeasons = {}
+        for j = 1, #CardStoreIDList do
+            local StoreCardID = CardStoreIDList[j]
+            local StoreCardData = DataManager.GetCardData(StoreCardID)
+            table.insert(CardStoreSeasons, StoreCardData.Season)
+        end
+
+        -- 比较两个Seasons是否存在相同的
+        for i = 1, #ACardSeasons do
+            local ACardSeason = ACardSeasons[i]
+            for j = 1, #CardStoreSeasons do
+                local StoreCardSeason = CardStoreSeasons[j]
+                if ACardSeason == StoreCardSeason then
+                    self.bNeedShuffleAllPublicCards = false
+                    return
+                end
+            end
+        end
+        self.bNeedShuffleAllPublicCards = true
+
+    elseif Player == EPlayer.PlayerB then
+        -- 遍历玩家B的手牌 确认CardStoreIDList中的所有牌 是否都是同一个Season
+        
+        -- 获取玩家B的手牌的所有Season
+        local BCardSeasons = {}
+        for i = 1, #self.UI_Main.Cards_B do
+            local BCardSeasn = self.UI_Main.Cards_B[i].Season
+            table.insert(BCardSeasons, BCardSeasn)
+        end
+
+        -- 获取CardStoreIDList中的所有Season
+        local CardStoreSeasons = {}
+        for j = 1, #CardStoreIDList do
+            local StoreCardID = CardStoreIDList[j]
+            local StoreCardData = DataManager.GetCardData(StoreCardID)
+            table.insert(CardStoreSeasons, StoreCardData.Season)
+        end
+
+        -- 比较两个Seasons是否存在相同的
+        for i = 1, #BCardSeasons do
+            local BCardSeason = BCardSeasons[i]
+            for j = 1, #CardStoreSeasons do
+                local StoreCardSeason = CardStoreSeasons[j]
+                if BCardSeason == StoreCardSeason then
+                    self.bNeedShuffleAllPublicCards = false
+                    return
+                end
+            end
+        end
+
+        self.bNeedShuffleAllPublicCards = true
+    end
 end
