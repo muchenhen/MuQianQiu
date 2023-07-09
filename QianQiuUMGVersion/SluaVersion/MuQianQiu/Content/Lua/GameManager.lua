@@ -55,6 +55,7 @@ function GameManager:ChangeRound()
     self.RoundNum = self.RoundNum + 1
     if self.RoundNum == 20 then
         print("游戏结束")
+        self:GameEnd()
     else
         if GameManager.GameRound == EGameRound.PlayerA then
             GameManager.GameRound = EGameRound.PlayerB
@@ -102,6 +103,17 @@ function GameManager:CheckPlayerCardsIfCanContinue(GameRound)
 end
 
 function GameManager:GameEnd()
+    local UI_GameEnd = MuBPFunction.CreateUserWidget("UI_GameEnd")
+    if GameManager.PlayerAScore > GameManager.PlayerBScore then
+        print("玩家A获胜, 玩家A得分：" .. GameManager.PlayerAScore .. " 玩家B得分：" .. GameManager.PlayerBScore)
+        UI_GameEnd:SetWinner(ECardOwnerType.PlayerA, GameManager.PlayerAScore)
+    elseif GameManager.PlayerAScore < GameManager.PlayerBScore then
+        print("玩家B获胜, 玩家A得分：" .. GameManager.PlayerAScore .. " 玩家B得分：" .. GameManager.PlayerBScore)
+        UI_GameEnd:SetWinner(ECardOwnerType.PlayerB, GameManager.PlayerAScore)
+    else
+        print("平局")
+    end
+    UI_GameEnd:AddToViewport(0)
 end
 
 function GameManager:GameRestart()

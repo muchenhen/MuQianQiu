@@ -21,7 +21,7 @@ function UI_GameStart:OnStartClick()
     GameManager:GameStart()
     local UI_GameMain = MuBPFunction.CreateUserWidget("UI_GameMain")
     UI_GameMain:AddToViewport(0)
-    self:RemoveFromParent()
+    self:SetVisibility(ESlateVisibility.Hidden)
 end
 
 function UI_GameStart:OnDestroy()

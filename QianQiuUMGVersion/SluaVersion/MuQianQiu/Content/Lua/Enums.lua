@@ -31,3 +31,9 @@ EAIMode =
     Normal = 1,
     Hard = 2
 }
+
+EPlayer = 
+{
+    PlayerA = 0,
+    PlayerB = 1
+}
