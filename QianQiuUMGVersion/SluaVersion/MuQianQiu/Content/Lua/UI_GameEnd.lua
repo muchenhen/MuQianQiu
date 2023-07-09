@@ -12,7 +12,11 @@ function UI_GameEnd:Construct()
 end
 
 function UI_GameEnd:OnReStartClick()
-   
+    GameManager.UI_Main:RemoveFromParent()
+    GameManager:GameStart()
+    local UI_GameMain = MuBPFunction.CreateUserWidget("UI_GameMain")
+    UI_GameMain:AddToViewport(0)
+    self:RemoveFromParent()
 end
 
 function UI_GameEnd:OnReturnClick()
