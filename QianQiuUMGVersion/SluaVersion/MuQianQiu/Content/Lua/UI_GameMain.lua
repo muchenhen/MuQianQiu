@@ -8,6 +8,7 @@ UI_GameMain.Cards_B = {}
 UI_GameMain.Cards_P = {}
 
 function UI_GameMain:Initialize()
+    GameManager.UI_Main = self
     self.bHasScriptImplementedTick = true
     self:SetVisibility(ESlateVisibility.Hidden)
 
@@ -70,29 +71,29 @@ function UI_GameMain:OnCardClicked(Card)
 
             print("玩家A选择自己的手牌：" .. Card.CardID, Card.Name, Card.Value, Card.Season)
 
+            -- 玩家A手中的牌不存在在P区能找到相同Season的牌 进入弃牌重选流程
             if GameManager.PLayerAChangingCard then
-                local NewCardID = GameManager:ReturnCardToStore(CardID)
+                local NewCardID = GameManager:ReturnCardToStore(Card.CardID)
+                print(string.format("玩家A使用 %d %s 交换了 %d %s", Card.CardID, Card.Name, NewCardID, DataManager.GetCardData(NewCardID).Name))
                 Card:SetCardID(NewCardID)
                 -- 重新检查
                 if self:CheckPlayerCardsIfCanContinue() then
+                    print("玩家A交换手牌完成，通过检查，继续游戏")
                     GameManager.PLayerAChangingCard = false
 
                     GameManager.PlayerAChoosing = false
                     GameManager.PlayerAChoosingCard = nil
+                else
+                    print("玩家A交换手牌完成，未通过检查，继续交换")
                 end
-            end
 
             -- 玩家A手中的牌至少存在一张在P区能找到相同Season的牌 继续游戏
-            if self:CheckPlayerCardsIfCanContinue() then
+            else
                 self:OnPlayerChooseCard(Card, true)
                 GameManager.PlayerAChoosing = true
                 GameManager.PlayerAChoosingCard = Card
-            -- 玩家A手中的牌不存在任何一张能在P区找到相同Season的牌 进入弃牌重选流程
-            else
-                -- 标记进入玩家A的换牌模式
-                GameManager.PLayerAChangingCard = true
-                print("由于玩家A的手牌无法继续游戏，将进入选牌重抽模式，接下来选择的牌会被送回牌库并重新洗牌后获得一张新牌")
             end
+
 
         -- 玩家当前处于已选中一张手牌的状态
         else
@@ -132,14 +133,36 @@ function UI_GameMain:OnCardClicked(Card)
             -- AI模式 AI当前不处于已选中一张手牌的状态
             if not AIPlayer.AIChoosing then
                 print("AI选择自己的手牌：" .. Card.CardID, Card.Name, Card.Value, Card.Season)
-                self:OnPlayerChooseCard(Card, true)
-                AIPlayer.AIChoosing = true
-                AIPlayer.AIChoosingCard = Card
-                GameManager.PlayerBChoosing = true
-                GameManager.PlayerBChoosingCard = Card
-                Timer:Add(1, function()
-                    AIPlayer:DoAction()
-                end)
+
+                -- 玩家B手中的牌不存在在P区能找到相同Season的牌 进入弃牌重选流程
+                if GameManager.PLayerBChangingCard then
+                    local NewCardID = GameManager:ReturnCardToStore(Card.CardID)
+                    print(string.format("AI使用 %d %s 交换了 %d %s", Card.CardID, Card.Name, NewCardID, DataManager.GetCardData(NewCardID).Name))
+                    Card:SetCardID(NewCardID)
+                    -- 重新检查
+                    if self:CheckPlayerCardsIfCanContinue() then
+                        print("AI交换牌完成，通过检查，可以继续游戏")
+                        GameManager.PLayerBChangingCard = false
+                        AIPlayer.AIChoosing = false
+                        AIPlayer.AIChoosingCard = nil
+                    else
+                        print("AI交换牌完成，未通过检查，需要继续交换")
+                    end
+                    Timer:Add(1, function()
+                        AIPlayer:DoAction()
+                    end)
+
+                -- 玩家B手中的牌至少存在一张在P区能找到相同Season的牌 继续游戏
+                else
+                    self:OnPlayerChooseCard(Card, true)
+                    AIPlayer.AIChoosing = true
+                    AIPlayer.AIChoosingCard = Card
+                    GameManager.PlayerBChoosing = true
+                    GameManager.PlayerBChoosingCard = Card
+                    Timer:Add(1, function()
+                        AIPlayer:DoAction()
+                    end)
+                end
             end
         else
             if not GameManager.PlayerBChoosing then
@@ -170,15 +193,30 @@ function UI_GameMain:OnCardClicked(Card)
 end
 
 function UI_GameMain:CheckPlayerCardsIfCanContinue()
-    -- 遍历self.Cards_A中的所有牌
-    for i = 1, #self.Cards_A do
-        local Card = self.Cards_A[i]
-        -- 遍历self.Cards_P中的所有牌
-        for j = 1, #self.Cards_P do
-            local PublicCard = self.Cards_P[j]
-            -- 如果玩家A的手牌中存在一张牌 在P区能找到相同Season的牌
-            if Card.Season == PublicCard.Season then
-                return true
+    if GameManager.GameRound == EGameRound.PlayerA then
+        -- 遍历self.Cards_A中的所有牌
+        for i = 1, #self.Cards_A do
+            local Card = self.Cards_A[i]
+            -- 遍历self.Cards_P中的所有牌
+            for j = 1, #self.Cards_P do
+                local PublicCard = self.Cards_P[j]
+                -- 如果玩家A的手牌中存在一张牌 在P区能找到相同Season的牌
+                if Card.Season == PublicCard.Season then
+                    return true
+                end
+            end
+        end
+    else
+        -- 遍历self.Cards_B中的所有牌
+        for i = 1, #self.Cards_B do
+            local Card = self.Cards_B[i]
+            -- 遍历self.Cards_P中的所有牌
+            for j = 1, #self.Cards_P do
+                local PublicCard = self.Cards_P[j]
+                -- 如果玩家B的手牌中存在一张牌 在P区能找到相同Season的牌
+                if Card.Season == PublicCard.Season then
+                    return true
+                end
             end
         end
     end
@@ -278,6 +316,12 @@ function UI_GameMain:MoveCardsToDeal(PlayerCard, PublicCard)
                 NewCards_B[index] = value
                 index = index + 1
             end
+        end
+        self.Cards_B = NewCards_B
+        -- 如果是AI 更新AIPlayer.Cards
+        if AIPlayer.bAIMode then
+            AIPlayer.Cards = self.Cards_B
+            AIPlayer.PCards = self.Cards_P
         end
     end
 

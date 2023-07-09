@@ -28,6 +28,8 @@ GameManager.PlayerBDealCards = {}
 
 GameManager.GameRound = EGameRound.PlayerA
 
+GameManager.UI_Main = nil
+
 CardStoreIDList = {}
 
 function GameManager:GameStart()
@@ -51,24 +53,50 @@ end
 
 function GameManager:ChangeRound()
     self.RoundNum = self.RoundNum + 1
-    if self.RoundNum == 19 then
-        
+    if self.RoundNum == 20 then
+        print("游戏结束")
     else
         if GameManager.GameRound == EGameRound.PlayerA then
             GameManager.GameRound = EGameRound.PlayerB
+            GameManager.PlayerAChoosing = false
+            GameManager.PlayerAChoosingCard = nil
+            if AIPlayer.bAIMode then
+                print("AI开始行动")
+            else
+                print("玩家B开始行动")
+            end
+            self:CheckPlayerCardsIfCanContinue(EGameRound.PlayerB)
             if AIPlayer.bAIMode then
                 Timer:Add(1, function()
                     AIPlayer:DoAction()
                 end)
             end
-            GameManager.PlayerAChoosing = false
-            GameManager.PlayerAChoosingCard = nil
         else
             GameManager.GameRound = EGameRound.PlayerA
             AIPlayer.AIChoosing = false
             AIPlayer.AIChoosingCard = nil
             GameManager.PlayerBChoosing = false
             GameManager.PlayerBChoosingCard = nil
+            print("玩家A开始行动")
+            self:CheckPlayerCardsIfCanContinue(EGameRound.PlayerA)
+        end
+    end
+end
+
+function GameManager:CheckPlayerCardsIfCanContinue(GameRound)
+    if GameRound == EGameRound.PlayerA then
+        self.PLayerAChangingCard = not self.UI_Main:CheckPlayerCardsIfCanContinue() 
+        if self.PLayerAChangingCard then
+            print("由于玩家A的手牌无法继续游戏，将进入选牌重抽模式，接下来选择的牌会被送回牌库并重新洗牌后获得一张新牌")
+        end
+    else
+        self.PLayerBChangingCard = not self.UI_Main:CheckPlayerCardsIfCanContinue() 
+        if self.PLayerBChangingCard then
+            if AIPlayer.bAIMode then
+                print("由于AI的手牌无法继续游戏，将进入选牌重抽模式，接下来选择的牌会被送回牌库并重新洗牌后获得一张新牌")
+            else
+                print("由于玩家B的手牌无法继续游戏，将进入选牌重抽模式，接下来选择的牌会被送回牌库并重新洗牌后获得一张新牌")
+            end
         end
     end
 end
