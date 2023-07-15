@@ -4,6 +4,7 @@
 #include "MuBPFunction.h"
 
 #include "Blueprint/UserWidget.h"
+#include "Engine/GameEngine.h"
 
 UGameInstance* UMuBPFunction::GameInstance = nullptr;
 
@@ -69,4 +70,60 @@ FVector2D UMuBPFunction::GetWidgetAbsolutePosition(const UWidget* Widget)
         return FVector2D::ZeroVector;
     }
     return Widget->GetTickSpaceGeometry().GetAbsolutePosition();
+}
+
+FVector2D UMuBPFunction::GetMonitorBestDisplaySize()
+{
+    FVector2D Size = FVector2D::ZeroVector;
+#if PLATFORM_WINDOWS
+
+    const UGameEngine* GameEngine = Cast<UGameEngine>(GEngine);
+    if (!GameEngine)
+    {
+        return Size;
+    }
+    const auto ViewportWidget = GameEngine->GetGameViewportWidget();
+    const TSharedPtr<SWindow> WindowToResize = FSlateApplication::Get().FindWidgetWindow( ViewportWidget.ToSharedRef());
+
+    if( WindowToResize.IsValid() )
+    {
+        const FVector2D OldWindowPos = WindowToResize->GetPositionInScreen();
+        const FVector2D OldWindowSize = WindowToResize->GetClientSizeInScreen();
+        const EWindowMode::Type OldWindowMode = WindowToResize->GetWindowMode();
+
+        const FSlateRect BestWorkArea = FSlateApplication::Get().GetWorkArea(FSlateRect::FromPointAndExtent(OldWindowPos, OldWindowSize));
+        Size = BestWorkArea.GetSize();
+		
+        FDisplayMetrics DisplayMetrics;
+        FSlateApplication::Get().GetInitialDisplayMetrics(DisplayMetrics);
+
+        // if (DisplayMetrics.MonitorInfo.Num() > 0)
+        // {
+        //     // Try to find the monitor that the viewport belongs to based on BestWorkArea.
+        //     // For widowed fullscreen and fullscreen modes it should be top left position of one of monitors.
+        //     FPlatformRect DisplayRect = DisplayMetrics.MonitorInfo[0].DisplayRect;
+        //
+        //     int32 NativeWidth = DisplayMetrics.MonitorInfo[0].NativeWidth;
+        //     int32 NativeHeight = DisplayMetrics.MonitorInfo[0].NativeHeight;
+        //     for (int32 Index = 1; Index < DisplayMetrics.MonitorInfo.Num(); ++Index)
+        //     {
+        //         const FMonitorInfo& MonitorInfo = DisplayMetrics.MonitorInfo[Index];
+        //         if (BestWorkArea.GetTopLeft() == FVector2D(MonitorInfo.WorkArea.Left, MonitorInfo.WorkArea.Top))
+        //         {
+        //             NativeWidth = DisplayMetrics.MonitorInfo[Index].NativeWidth;
+        //             NativeHeight = DisplayMetrics.MonitorInfo[Index].NativeHeight;
+        //         }
+        //     }
+        //     FullscreenBestSize.X = NativeWidth;
+        //     FullscreenBestSize.Y = NativeHeight;
+        // }
+        // else
+        // {
+        //     FullscreenBestSize.X = DisplayMetrics.PrimaryDisplayWidth;
+        //     FullscreenBestSize.Y = DisplayMetrics.PrimaryDisplayHeight;
+        // }
+    }
+    
+#endif
+    return Size;
 }

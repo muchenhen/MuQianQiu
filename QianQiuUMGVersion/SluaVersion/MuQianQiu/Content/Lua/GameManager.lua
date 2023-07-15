@@ -31,6 +31,8 @@ GameManager.bNeedShuffleAllPublicCards = false
 GameManager.UI_GameStart = nil
 GameManager.UI_Main = nil
 
+GameManager.StoryNeedToShow = {}
+
 CardStoreIDList = {}
 
 function GameManager:GameStart()
@@ -198,6 +200,8 @@ function GameManager:UpdatePlayerScore(PlayerCard, PublicCard)
                     self.PlayerAScore = Value.Story.Score + self.PlayerAScore
                     Value.bFinished = true
                     print("玩家A完成了故事：" .. Value.Story.Name .. "，额外获得了 " .. Value.Story.Score .. " 分, " .. "相关卡牌：" .. LogLuaIntArray(Value.Story.CardsName), "分数从 " .. self.PlayerAScore - Value.Story.Score .. " 变为 " .. self.PlayerAScore)
+                    -- TODO: 显示故事完成的UI
+                    -- table.insert(self.StoryNeedToShow
                 end
             elseif PlayerCard.CardOwner == ECardOwnerType.PlayerB then
                 if bPlayerHaveAllRequiredCard then
