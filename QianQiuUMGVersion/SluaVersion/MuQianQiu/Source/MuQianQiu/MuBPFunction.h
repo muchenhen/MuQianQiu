@@ -32,4 +32,7 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "MuBPFunction")
     static FVector2D GetWidgetAbsolutePosition(const UWidget* Widget);
+
+    UFUNCTION(BlueprintCallable, Category = "MuBPFunction")
+    static FVector2D GetMonitorBestDisplaySize();
 };
