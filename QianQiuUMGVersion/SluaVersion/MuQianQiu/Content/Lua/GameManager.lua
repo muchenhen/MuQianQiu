@@ -29,7 +29,7 @@ GameManager.GameRound = EGameRound.PlayerA
 GameManager.bNeedShuffleAllPublicCards = false
 
 GameManager.UI_GameStart = nil
-GameManager.UI_Main = nil
+GameManager.UI_GameMain = nil
 
 GameManager.StoryNeedToShow = {}
 
@@ -90,12 +90,12 @@ end
 
 function GameManager:CheckPlayerCardsIfCanContinue(GameRound)
     if GameRound == EGameRound.PlayerA then
-        self.PLayerAChangingCard = not self.UI_Main:CheckPlayerCardsIfCanContinue() 
+        self.PLayerAChangingCard = not self.UI_GameMain:CheckPlayerCardsIfCanContinue() 
         if self.PLayerAChangingCard then
             print("由于玩家A的手牌无法继续游戏，将进入选牌重抽模式，接下来选择的牌会被送回牌库并重新洗牌后获得一张新牌")
         end
     else
-        self.PLayerBChangingCard = not self.UI_Main:CheckPlayerCardsIfCanContinue() 
+        self.PLayerBChangingCard = not self.UI_GameMain:CheckPlayerCardsIfCanContinue() 
         if self.PLayerBChangingCard then
             if AIPlayer.bAIMode then
                 print("由于AI的手牌无法继续游戏，将进入选牌重抽模式，接下来选择的牌会被送回牌库并重新洗牌后获得一张新牌")
@@ -200,8 +200,7 @@ function GameManager:UpdatePlayerScore(PlayerCard, PublicCard)
                     self.PlayerAScore = Value.Story.Score + self.PlayerAScore
                     Value.bFinished = true
                     print("玩家A完成了故事：" .. Value.Story.Name .. "，额外获得了 " .. Value.Story.Score .. " 分, " .. "相关卡牌：" .. LogLuaIntArray(Value.Story.CardsName), "分数从 " .. self.PlayerAScore - Value.Story.Score .. " 变为 " .. self.PlayerAScore)
-                    -- TODO: 显示故事完成的UI
-                    -- table.insert(self.StoryNeedToShow
+                    table.insert(self.StoryNeedToShow, Value.Story.StoryID)
                 end
             elseif PlayerCard.CardOwner == ECardOwnerType.PlayerB then
                 if bPlayerHaveAllRequiredCard then
@@ -209,12 +208,38 @@ function GameManager:UpdatePlayerScore(PlayerCard, PublicCard)
                     Value.bFinished = true
                     if not AIPlayer.bAIMode then
                         print("玩家B完成了故事：" .. Value.Story.Name .. "，额外获得了 " .. Value.Story.Score .. " 分, " .. "相关卡牌：" .. LogLuaIntArray(Value.Story.CardsName), "分数从 " .. self.PlayerBScore - Value.Story.Score .. " 变为 " .. self.PlayerBScore)
+                        table.insert(self.StoryNeedToShow, Value.Story.StoryID)
                     else
                         print("AI完成了故事：" .. Value.Story.Name .. "，额外获得了 " .. Value.Story.Score .. " 分, " .. "相关卡牌：" .. LogLuaIntArray(Value.Story.CardsName), "分数从 " .. self.PlayerBScore - Value.Story.Score .. " 变为 " .. self.PlayerBScore)
+                        table.insert(self.StoryNeedToShow, Value.Story.StoryID)
                     end
                 end
             end
         end
+    end
+end
+
+function GameManager:ShowStory()
+    if #self.StoryNeedToShow > 0 then
+        self.UI_GameMain.bStoryShowing = true
+        local StoryID = self.StoryNeedToShow[1]
+        table.remove(self.StoryNeedToShow, 1)
+        local StoryData = DataManager.GetStoryData(StoryID)
+        local CardsID = StoryData.CardsID
+        local UI_StoryShow = MuBPFunction.CreateUserWidget("UI_StoryShow")
+        GameManager.CurrentStoryShow = UI_StoryShow
+        UI_StoryShow:SetStoryInfo(StoryData)
+        UI_StoryShow:AddToViewport(99)
+        UI_StoryShow:PlayAnimationForward(UI_StoryShow.Show, 1.0, false)
+
+        Timer:Add(UI_StoryShow.Show:GetEndTime() + 0.1, function ()
+            GameManager.CurrentStoryShow:RemoveFromParent()
+            GameManager:ShowStory()
+        end)
+    else
+        self.UI_GameMain.bStoryShowing = false
+        self.UI_GameMain.bCheckStoryShow = false
+        self.UI_GameMain.bNeedChangeRound = true
     end
 end
 
@@ -241,17 +266,17 @@ function GameManager:ReturnCardToStore(CardID, Player)
     self:CheckbNeedShuffleAllPublicCards(Player)
     
     if GameManager.bNeedShuffleAllPublicCards then
-        -- 将 CardID 和 UI_Main.Cards_P中的牌全部放回牌库
+        -- 将 CardID 和 UI_GameMain.Cards_P中的牌全部放回牌库
         table.insert(CardStoreIDList, CardID)
-        for i = 1, #self.UI_Main.Cards_P do
-            local Card = self.UI_Main.Cards_P[i]
+        for i = 1, #self.UI_GameMain.Cards_P do
+            local Card = self.UI_GameMain.Cards_P[i]
             table.insert(CardStoreIDList, Card.CardID)
         end
         self:Shuffle(CardStoreIDList)
         -- 重新设置UI_Main.Cards_P中的牌
-        for i = 1, #self.UI_Main.Cards_P do
+        for i = 1, #self.UI_GameMain.Cards_P do
             local CardID = self:GetOneCardFromStore()
-            local Card = self.UI_Main.Cards_P[i]
+            local Card = self.UI_GameMain.Cards_P[i]
             Card:SetCardID(CardID)
         end
         return self:GetOneCardFromStore()
@@ -268,8 +293,8 @@ function GameManager:CheckbNeedShuffleAllPublicCards(Player)
 
         -- 获取玩家A的手牌的所有Season
         local ACardSeasons = {}
-        for i = 1, #self.UI_Main.Cards_A do
-            local ACardSeasn = self.UI_Main.Cards_A[i].Season
+        for i = 1, #self.UI_GameMain.Cards_A do
+            local ACardSeasn = self.UI_GameMain.Cards_A[i].Season
             table.insert(ACardSeasons, ACardSeasn)
         end
 
@@ -299,8 +324,8 @@ function GameManager:CheckbNeedShuffleAllPublicCards(Player)
         
         -- 获取玩家B的手牌的所有Season
         local BCardSeasons = {}
-        for i = 1, #self.UI_Main.Cards_B do
-            local BCardSeasn = self.UI_Main.Cards_B[i].Season
+        for i = 1, #self.UI_GameMain.Cards_B do
+            local BCardSeasn = self.UI_GameMain.Cards_B[i].Season
             table.insert(BCardSeasons, BCardSeasn)
         end
 

@@ -53,3 +53,18 @@ TArray<FStoryData> UDataManager::GetAllStoryData()
     }
     return StoryData;
 }
+
+FStoryData UDataManager::GetStoryData(int StoryID)
+{
+    if (StoryID != 0)
+    {
+        const FName RowID = FName(*FString::FromInt(StoryID));
+        const FString ContextString = TEXT("FStoryData::FindStoryData");
+        if (StoryDataTable.IsValid())
+        {
+            FStoryData* StoryData = StoryDataTable->FindRow<FStoryData>(RowID, ContextString);
+            return *StoryData;
+        }
+    }
+    return FStoryData();
+}
