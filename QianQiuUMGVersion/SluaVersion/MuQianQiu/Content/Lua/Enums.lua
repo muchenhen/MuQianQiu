@@ -37,3 +37,19 @@ EPlayer =
     PlayerA = 0,
     PlayerB = 1
 }
+
+EHorizontalAlignment =
+{
+    HAlign_Fill = 0,
+    HAlign_Left = 1,
+    HAlign_Center = 2,
+    HAlign_Right = 3
+}
+
+EVerticalAlignment = 
+{
+    VAlign_Fill = 0,
+    VAlign_Top = 1,
+    VAlign_Center = 2,
+    VAlign_Bottom = 3
+}

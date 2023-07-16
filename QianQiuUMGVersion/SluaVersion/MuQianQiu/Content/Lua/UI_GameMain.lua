@@ -7,8 +7,12 @@ UI_GameMain.Cards_A = {}
 UI_GameMain.Cards_B = {}
 UI_GameMain.Cards_P = {}
 
+UI_GameMain.StoryNeedToShow = {}
+UI_GameMain.bCheckStoryShow = false
+UI_GameMain.bStoryShowing = false
+
 function UI_GameMain:Initialize()
-    GameManager.UI_Main = self
+    GameManager.UI_GameMain = self
     self.bHasScriptImplementedTick = true
     self:SetVisibility(ESlateVisibility.Hidden)
 
@@ -24,6 +28,17 @@ end
 
 function UI_GameMain:Tick()
    Timer:Update()
+
+   if self.bCheckStoryShow and not self.bStoryShowing then
+        self.bStoryShowing = true
+        GameManager:ShowStory()
+   end
+
+   if self.bNeedChangeRound then
+        -- 切换回合
+        GameManager:ChangeRound()
+        self.bNeedChangeRound = false
+   end
 end
 
 function UI_GameMain:OnInit()
@@ -245,9 +260,9 @@ function UI_GameMain:RoundCheck(PlayerCard, PublicCard)
         PlayerCard:SetCardOwner(ECardOwnerType.PlayerBDeal)
         PublicCard:SetCardOwner(ECardOwnerType.PlayerBDeal)
     end
-      
-    -- 切换回合
-    GameManager:ChangeRound()
+
+    -- 开始检查故事展示
+    self.bCheckStoryShow = true
 end
 
 function UI_GameMain:SavaOldPublicCardInfo(PublicCard)

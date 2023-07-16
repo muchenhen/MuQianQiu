@@ -27,4 +27,7 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "DataManager")
     static TArray<FStoryData> GetAllStoryData();
+
+    UFUNCTION(BlueprintCallable, Category = "DataManager")
+    FStoryData GetStoryData(int StoryID);
 };

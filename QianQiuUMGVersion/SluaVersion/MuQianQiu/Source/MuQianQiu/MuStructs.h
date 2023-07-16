@@ -79,6 +79,9 @@ struct MUQIANQIU_API FStoryData : public FTableRowBase
     GENERATED_BODY()
 public:
     UPROPERTY(BlueprintReadWrite, EditAnywhere)
+    int StoryID = 1;
+    
+    UPROPERTY(BlueprintReadWrite, EditAnywhere)
     FString Name = TEXT("厨房功夫");
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere)
