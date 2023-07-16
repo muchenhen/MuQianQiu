@@ -19,6 +19,15 @@ function UI_StoryShow:SetStoryInfo(StoryData)
     self.Text_StoryValue:SetText(StoryData.Score)
 end
 
+function UI_StoryShow:Close()
+    self.CloseAnim:UnbindAllFromAnimationFinished(self)
+    self:PlayAnimationForward(self.CloseAnim, 1.0, false)
+    local Delay = self.CloseAnim:GetEndTime() + 0.1
+    Timer:Add(Delay, function ()
+        self:RemoveFromParent()
+    end)
+end
+
 function UI_StoryShow:Construct()
 
 end

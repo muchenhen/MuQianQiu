@@ -35,4 +35,7 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "MuBPFunction")
     static FVector2D GetMonitorBestDisplaySize();
+
+    UFUNCTION(BlueprintCallable, Category = "MuBPFunction")
+    static USoundBase* LoadSoundBase(const FString& SoundPath);
 };

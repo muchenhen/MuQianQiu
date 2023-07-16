@@ -12,7 +12,7 @@ function UI_GameEnd:Construct()
 end
 
 function UI_GameEnd:OnReStartClick()
-    GameManager.UI_Main:RemoveFromParent()
+    GameManager.UI_GameMain:RemoveFromParent()
     GameManager:GameStart()
     local UI_GameMain = MuBPFunction.CreateUserWidget("UI_GameMain")
     UI_GameMain:AddToViewport(0)
@@ -20,7 +20,7 @@ function UI_GameEnd:OnReStartClick()
 end
 
 function UI_GameEnd:OnReturnClick()
-    GameManager.UI_Main:RemoveFromParent()
+    GameManager.UI_GameMain:RemoveFromParent()
     GameManager.UI_GameStart:SetVisibility(ESlateVisibility.Visible)
     self:RemoveFromParent()
 end
