@@ -337,8 +337,31 @@ function UI_GameMain:MoveCardsToDeal(PlayerCard, PublicCard)
     end
 
     -- 移动到Deal区
+    if PlayerCard.CardOwner == ECardOwnerType.PlayerA then
+        self.PlayerACards:RemoveChild(PlayerCard)
+        self.Score:AddChild(PlayerCard)
+        self.PublicCards:RemoveChild(PublicCard)
+        self.Score:AddChild(PublicCard)
+        self:UpdateDealCardLayout(PlayerCard, self.Card_A_Deal)
+        self:UpdateDealCardLayout(PublicCard, self.Card_P_A_Deal)
+    elseif PlayerCard.CardOwner == ECardOwnerType.PlayerB then
+        self.PlayerBCards:RemoveChild(PlayerCard)
+        self.Score:AddChild(PlayerCard)
+        self.PublicCards:RemoveChild(PublicCard)
+        self.Score:AddChild(PublicCard)
+        self:UpdateDealCardLayout(PlayerCard, self.Card_B_Deal)
+        self:UpdateDealCardLayout(PublicCard, self.Card_P_B_Deal)
+
+    end
     PlayerCard.Slot:SetPosition(AnimPosPlayer)
     PublicCard.Slot:SetPosition(AnimPosPublic)
+end
+
+function UI_GameMain:UpdateDealCardLayout(Card, AimCard)
+    Card.Slot:SetAnchors(AimCard.Slot:GetAnchors())
+    Card.Slot:SetZorder(AimCard.Slot:GetZOrder())
+    Card.Slot:SetLayout(AimCard.Slot:GetLayout())
+    Card.Slot:SetSize(AimCard.Slot:GetSize())
 end
 
 function UI_GameMain:ClearAllChooseState()
