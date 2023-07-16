@@ -127,3 +127,16 @@ FVector2D UMuBPFunction::GetMonitorBestDisplaySize()
 #endif
     return Size;
 }
+
+USoundBase* UMuBPFunction::LoadSoundBase(const FString& SoundPath)
+{
+    FString Path = TEXT("/Game/Audio") / SoundPath;
+    Path = "SoundWave'" + Path + "." + SoundPath + "'";
+    USoundBase* SoundBase = LoadObject<USoundBase>(nullptr, *Path);
+    if (SoundBase == nullptr)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("LoadSoundBase failed: %s"), *Path);
+        return SoundBase;
+    }
+    return SoundBase;
+}

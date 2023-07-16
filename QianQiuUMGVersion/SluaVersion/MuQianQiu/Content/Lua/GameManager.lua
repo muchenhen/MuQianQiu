@@ -219,6 +219,11 @@ function GameManager:UpdatePlayerScore(PlayerCard, PublicCard)
     end
 end
 
+function GameManager:CheckStory()
+    GameManager.CurrentStoryShow:Close()
+    GameManager:ShowStory()
+end
+
 function GameManager:ShowStory()
     if #self.StoryNeedToShow > 0 then
         self.UI_GameMain.bStoryShowing = true
@@ -231,11 +236,12 @@ function GameManager:ShowStory()
         UI_StoryShow:SetStoryInfo(StoryData)
         UI_StoryShow:AddToViewport(99)
         UI_StoryShow:PlayAnimationForward(UI_StoryShow.Show, 1.0, false)
-
-        Timer:Add(UI_StoryShow.Show:GetEndTime() + 0.1, function ()
-            GameManager.CurrentStoryShow:RemoveFromParent()
-            GameManager:ShowStory()
-        end)
+        local AudioID = StoryData.AudioID
+        local Audio = MuBPFunction.LoadSoundBase(AudioID)
+        GameManager.A_AudioPlayer.Audio:SetSound(Audio)
+        GameManager.A_AudioPlayer.Audio:Play(0)
+        GameManager.A_AudioPlayer.Audio.OnAudioFinished:Clear()
+        GameManager.A_AudioPlayer.Audio.OnAudioFinished:Add(GameManager.CheckStory)
     else
         self.UI_GameMain.bStoryShowing = false
         self.UI_GameMain.bCheckStoryShow = false
