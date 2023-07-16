@@ -10,7 +10,14 @@
  * 
  */
 UCLASS()
-class MUQIANQIU_API UMuWorldSubsystem : public UWorldSubsystem
+class MUQIANQIU_API UMuWorldSubsystem : public UTickableWorldSubsystem
 {
     GENERATED_BODY()
+    
+public:
+    virtual void Tick(float DeltaTime) override;
+
+    virtual TStatId GetStatId() const override;
+    
+    bool bWindowResized = false;
 };

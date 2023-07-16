@@ -96,32 +96,6 @@ FVector2D UMuBPFunction::GetMonitorBestDisplaySize()
 		
         FDisplayMetrics DisplayMetrics;
         FSlateApplication::Get().GetInitialDisplayMetrics(DisplayMetrics);
-
-        // if (DisplayMetrics.MonitorInfo.Num() > 0)
-        // {
-        //     // Try to find the monitor that the viewport belongs to based on BestWorkArea.
-        //     // For widowed fullscreen and fullscreen modes it should be top left position of one of monitors.
-        //     FPlatformRect DisplayRect = DisplayMetrics.MonitorInfo[0].DisplayRect;
-        //
-        //     int32 NativeWidth = DisplayMetrics.MonitorInfo[0].NativeWidth;
-        //     int32 NativeHeight = DisplayMetrics.MonitorInfo[0].NativeHeight;
-        //     for (int32 Index = 1; Index < DisplayMetrics.MonitorInfo.Num(); ++Index)
-        //     {
-        //         const FMonitorInfo& MonitorInfo = DisplayMetrics.MonitorInfo[Index];
-        //         if (BestWorkArea.GetTopLeft() == FVector2D(MonitorInfo.WorkArea.Left, MonitorInfo.WorkArea.Top))
-        //         {
-        //             NativeWidth = DisplayMetrics.MonitorInfo[Index].NativeWidth;
-        //             NativeHeight = DisplayMetrics.MonitorInfo[Index].NativeHeight;
-        //         }
-        //     }
-        //     FullscreenBestSize.X = NativeWidth;
-        //     FullscreenBestSize.Y = NativeHeight;
-        // }
-        // else
-        // {
-        //     FullscreenBestSize.X = DisplayMetrics.PrimaryDisplayWidth;
-        //     FullscreenBestSize.Y = DisplayMetrics.PrimaryDisplayHeight;
-        // }
     }
     
 #endif
