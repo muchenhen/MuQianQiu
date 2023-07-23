@@ -73,6 +73,9 @@ function UI_GameMain:OnInit()
         AIPlayer.Cards = self.Cards_B
         AIPlayer.PCards = self.Cards_P
     end
+
+    -- 绑定A查看故事按钮
+    self.Button_PlayerAStoryDetail.OnClicked:Add(MakeCallBack(self.OnPlayerAStoryDetailClick, self))
 end
 
 function UI_GameMain:OnCardClicked(Card)
@@ -382,12 +385,20 @@ end
 
 function UI_GameMain:OnPlayerChooseCard(Card, bChoosing)
     -- 遍历Cards_P找到Season相同的卡牌
+    local bFind = false
     for index = 1, 8 do
         if self.Cards_P[index].Season == Card.Season then
             self.Cards_P[index]:SetChooseState(bChoosing, true)
-            Card:SetChooseState(bChoosing, true)
+            bFind = true
         end
     end
+    Card:SetChooseState(bChoosing, true)
+end
+
+function UI_GameMain:OnPlayerAStoryDetailClick()
+    local UI_PlayerStories = MuBPFunction.CreateUserWidget("UI_PlayerStories")
+    UI_PlayerStories:UpdatePlayerStoryStates(EPlayer.PlayerA)
+
 end
 
 function UI_GameMain:OnDestroy()
