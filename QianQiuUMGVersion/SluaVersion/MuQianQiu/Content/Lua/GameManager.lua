@@ -88,6 +88,9 @@ function GameManager:ChangeRound()
     end
 end
 
+-- @brief 检查玩家的手牌是否可以继续游戏
+-- @param GameRound: EGameRound
+-- @return bool 是否需要进入选牌重抽模式
 function GameManager:CheckPlayerCardsIfCanContinue(GameRound)
     if GameRound == EGameRound.PlayerA then
         self.PLayerAChangingCard = not self.UI_GameMain:CheckPlayerCardsIfCanContinue() 
@@ -164,6 +167,10 @@ end
 
 function GameManager:GetPlayerBScore()
     return GameManager.PlayerBScore
+end
+
+function GameManager:GetPlayerADealCards()
+    return GameManager.PlayerADealCards
 end
 
 function GameManager:UpdatePlayerScore(PlayerCard, PublicCard)
