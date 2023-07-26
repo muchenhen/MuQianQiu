@@ -11,8 +11,10 @@ function UI_PlayerStories:UpdatePlayerStoryStates(Player)
     local StoryUncompleted = {}
     local Cards
     if Player == EPlayer.PlayerA then
+        self.Player = EPlayer.PlayerA
         Cards = GameManager:GetPlayerADealCards()
     elseif Player == EPlayer.PlayerB then
+        self.Player = EPlayer.PlayerB
         Cards = GameManager:GetPlayerBDealCards()
     end
     for i = 1, #Cards do
@@ -29,9 +31,9 @@ function UI_PlayerStories:UpdatePlayerStoryStates(Player)
             end
             if bHasCard then
                 if Story.bFinished then
-                    table.insert(StoryCompleted, Story)
+                    self:InsertStory(Story, StoryCompleted)
                 else
-                    table.insert(StoryUncompleted, Story)
+                    self:InsertStory(Story, StoryUncompleted)
                 end
             end
         end
@@ -51,7 +53,31 @@ function UI_PlayerStories:UpdatePlayerStoryStates(Player)
         UI_PlayerStory:InitCards(Story)
         self.UI_PlayerStoryUncompleted:AddChild(UI_PlayerStory)
     end
+    self:UpdateAllPlayerStoryHaveState()
     self:AddToViewport(1)
+end
+
+function UI_PlayerStories:InsertStory(Story, InTable)
+    -- 加入之前要进行去重检查
+    for key, value in pairs(InTable) do
+        if value.Story.StoryID == Story.Story.StoryID then
+            return
+        end
+    end
+    table.insert(InTable, Story)
+end
+
+function UI_PlayerStories:UpdateAllPlayerStoryHaveState()
+    local PlayerStorys = self.UI_PlayerStoryCompleted:GetAllChildren()
+    for i=0, PlayerStorys:Num()-1 do
+        local Card = PlayerStorys:Get(i)
+        Card:UpdateCardHaveState(self.Player)
+    end
+    PlayerStorys = self.UI_PlayerStoryUncompleted:GetAllChildren()
+    for i=0, PlayerStorys:Num()-1 do
+        local Card = PlayerStorys:Get(i)
+        Card:UpdateCardHaveState(self.Player)
+    end
 end
 
 function UI_PlayerStories:OnDestroy()
