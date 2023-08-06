@@ -307,6 +307,12 @@ function UI_GameMain:MoveCardsToDeal(PlayerCard, PublicCard)
     local AnimPosPlayer = nil
     local AnimPosPublic = nil
     if PlayerCard.CardOwner == ECardOwnerType.PlayerA then
+        -- 获取当前Deal下面有几张牌
+        local PlayerACardNum = #GameManager.PlayerADealCards
+        -- 更新一下两张牌的ZOrder
+        PlayerCard.Slot:SetZorder(PlayerACardNum + 1)
+        PublicCard.Slot:SetZorder(PlayerACardNum + 2)
+
         AnimPosPlayer = self.Card_A_Deal.Slot:GetPosition()
         AnimPosPublic = self.Card_P_A_Deal.Slot:GetPosition()
         -- 趁机更新self.Cards_A 将PlayerCard从self.Cards_A中移除 并重新生成table
@@ -320,6 +326,12 @@ function UI_GameMain:MoveCardsToDeal(PlayerCard, PublicCard)
         end
         self.Cards_A = NewCards_A
     else
+        -- 获取当前Deal下面有几张牌
+        local PlayerBCardNum = #GameManager.PlayerBDealCards
+        -- 更新一下两张牌的ZOrder
+        PlayerCard.Slot:SetZorder(PlayerBCardNum + 1)
+        PublicCard.Slot:SetZorder(PlayerBCardNum + 2)
+
         AnimPosPlayer = self.Card_B_Deal.Slot:GetPosition()
         AnimPosPublic = self.Card_P_B_Deal.Slot:GetPosition()
         -- 趁机更新self.Cards_B 将PlayerCard从self.Cards_B中移除 并重新生成table
