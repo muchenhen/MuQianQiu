@@ -216,6 +216,7 @@ function UI_GameMain:CheckPlayerCardsIfCanContinue()
                 local PublicCard = self.Cards_P[j]
                 -- 如果玩家A的手牌中存在一张牌 在P区能找到相同Season的牌
                 if Card.Season == PublicCard.Season then
+                    GameManager.UI_ChangeCardTip:HideChangeCardTip()
                     return true
                 end
             end
@@ -229,11 +230,13 @@ function UI_GameMain:CheckPlayerCardsIfCanContinue()
                 local PublicCard = self.Cards_P[j]
                 -- 如果玩家B的手牌中存在一张牌 在P区能找到相同Season的牌
                 if Card.Season == PublicCard.Season then
+                    GameManager.UI_ChangeCardTip:HideChangeCardTip()
                     return true
                 end
             end
         end
     end
+    GameManager.UI_ChangeCardTip:ShowChangeCardTip()
     return false
 end
 

@@ -37,6 +37,8 @@ CardStoreIDList = {}
 
 GameManager.UI_RoundTip = nil
 
+GameManager.UI_ChangeCardTip = nil
+
 function GameManager:GameStart()
     GameManager.PlayerAScore = 0
     GameManager.PlayerBScore = 0
@@ -57,7 +59,7 @@ function GameManager:GameStart()
     GameManager.PlayerBDealCards = {}
 
     GameManager.UI_RoundTip = MuBPFunction.CreateUserWidget("UI_RoundTip")
-
+    GameManager.UI_ChangeCardTip = MuBPFunction.CreateUserWidget("UI_ChangeCardTip")
 end
 
 function GameManager:ChangeRound()
