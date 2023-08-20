@@ -89,7 +89,6 @@ FVector2D UMuBPFunction::GetMonitorBestDisplaySize()
     {
         const FVector2D OldWindowPos = WindowToResize->GetPositionInScreen();
         const FVector2D OldWindowSize = WindowToResize->GetClientSizeInScreen();
-        const EWindowMode::Type OldWindowMode = WindowToResize->GetWindowMode();
 
         const FSlateRect BestWorkArea = FSlateApplication::Get().GetWorkArea(FSlateRect::FromPointAndExtent(OldWindowPos, OldWindowSize));
         Size = BestWorkArea.GetSize();

@@ -20,8 +20,8 @@ end
 
 function UI_GameStart:OnStartClick()
     GameManager:GameStart()
-    local UI_GameMain = MuBPFunction.CreateUserWidget("UI_GameMain")
-    UI_GameMain:AddToViewport(0)
+    local UI_ChooseSpecial = MuBPFunction.CreateUserWidget("UI_ChooseSpecial")
+    UI_ChooseSpecial:AddToViewport(0)
     self:SetVisibility(ESlateVisibility.Hidden)
 end
 

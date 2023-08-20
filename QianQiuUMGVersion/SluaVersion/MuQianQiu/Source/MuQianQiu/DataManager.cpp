@@ -68,3 +68,21 @@ FStoryData UDataManager::GetStoryData(int StoryID)
     }
     return FStoryData();
 }
+
+TArray<FCardData> UDataManager::GetAllSpecialCardDatas()
+{
+    TArray<FCardData*> CardDataArray;
+    if (CardDataTable.IsValid())
+    {
+        CardDataTable->GetAllRows<FCardData>(nullptr, CardDataArray);
+    }
+    TArray<FCardData> CardData;
+    for (int i = 0; i < CardDataArray.Num(); i++)
+    {
+        if (CardDataArray[i]->Special)
+        {
+            CardData.Add(*CardDataArray[i]);
+        }
+    }
+    return CardData;
+}
