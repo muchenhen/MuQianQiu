@@ -18,6 +18,14 @@ function UI_ChooseSpecial:Initialize()
     end
 end
 
+function UI_ChooseSpecial:OnCardClick(Card)
+    if Card.bChoosed then
+        Card:SetChooseState(false, false)
+    else
+        Card:SetChooseState(true, false)
+    end
+end
+
 function UI_ChooseSpecial:OnStartClick()
     local UI_GameMain = MuBPFunction.CreateUserWidget("UI_GameMain")
     UI_GameMain:AddToViewport(0)
@@ -25,8 +33,8 @@ function UI_ChooseSpecial:OnStartClick()
 end
 
 function UI_ChooseSpecial:TileView_SpecialCards_OnEntryInitialized(Item, Widget)
-    -- local CardData = DataManager.GetCardData(Index)
     Widget:SetCardID(Item.CardID)
+    Widget:AddOnClickEvent(MakeCallBack(self.OnCardClick, self))
 end
 
 function UI_ChooseSpecial:OnDestroy()
