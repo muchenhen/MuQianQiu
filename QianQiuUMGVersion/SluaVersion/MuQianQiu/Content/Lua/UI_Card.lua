@@ -14,6 +14,7 @@ function UI_Card:SetCardID(CardID)
     self.Name = CardInfo.Name
     self.Value = CardInfo.Value
     self.Season = CardInfo.Season
+    self.SpecialName = CardInfo.SpecialName
 end
 
 function UI_Card:SetCardOwner(Owner)
