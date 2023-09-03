@@ -40,6 +40,9 @@ function UI_ChooseSpecial:ChooseCard(Card)
         end
         for i=1, #self.ChoosedCards do
             if self.ChoosedCards[i].SpecialName == Card.SpecialName then
+                local UI_Tip = MuBPFunction.CreateUserWidget("UI_Tip")
+                UI_Tip:AddToViewport(0)
+                UI_Tip:ShowTip("同一角色只能选择一张特殊牌")
                 print("同一角色只能选择一张特殊牌")
                 return
             end
