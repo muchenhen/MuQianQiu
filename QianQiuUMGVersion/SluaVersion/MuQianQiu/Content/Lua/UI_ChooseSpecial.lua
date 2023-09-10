@@ -25,6 +25,8 @@ end
 --- 选择一张特殊牌，检查是否可选：同一人物不能选择超过一张。累计不能超过十张
 ---@param Card any
 function UI_ChooseSpecial:ChooseCard(Card)
+    self.UI_CardDetail:SetVisibility(ESlateVisibility.HitTestInvisible)
+    self.UI_CardDetail:SetCardID(Card.CardID)
     if Card.bChoosed then
         Card:SetChooseState(false, false)
         for i=1, #self.ChoosedCards do
