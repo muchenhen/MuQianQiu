@@ -21,8 +21,7 @@ function UI_CardDetail:SetCardID(CardID)
 
     self.UI_Card:SetCardID(self.CardID)
 
-    self.RelativeCardNames = self:GetRelativeCardNames(self.SpecialName)
-    self.StoryNames = self:GetStoryNames(self.CardID)
+    self.RelativeCardNames, self.StoryNames = self:GetRelative(self.SpecialName)
     self.SkillOneDesc = self:GetSkillDesc(self.SkillOneID, self.SkillOneParam)
     self.SkillTwoDesc = self:GetSkillDesc(self.SkillTwoID, self.SkillTwoParam)
 
@@ -30,10 +29,12 @@ function UI_CardDetail:SetCardID(CardID)
     self.Text_CardSeason:SetText(self.Season)
     self.Text_CardValue:SetText(self.Value)
     self.Text_RelativeCard:SetText(self.RelativeCardNames)
+    self.Text_Stories:SetText(self.StoryNames)
 end
 
-function UI_CardDetail:GetRelativeCardNames(CardID)
+function UI_CardDetail:GetRelative(CardID)
     local RelativeCardNames = {}
+    local RelativeStories = {}
 
     local AllStories = GameManager.AllStory
     for key, value in pairs(AllStories) do
@@ -42,6 +43,7 @@ function UI_CardDetail:GetRelativeCardNames(CardID)
         -- CardsID中是否包含CardID
         for i=0, CardsID:Num()-1 do
             if CardsID:Get(i) == CardID then
+                self:AddToRelativeStories(RelativeStories, value.Story.Name)
                 -- 将CardsName中的所有卡牌名字加入RelativeCardNames (不重复)
                 for j=0, CardsName:Num()-1 do
                     local bExist = false
@@ -61,16 +63,28 @@ function UI_CardDetail:GetRelativeCardNames(CardID)
 
     local RelativeCardNameString = ""
     for i=1, #RelativeCardNames do
-        RelativeCardNameString = RelativeCardNameString .. RelativeCardNames[i] .. " "
+        RelativeCardNameString = RelativeCardNameString .. '[' .. RelativeCardNames[i] .. ']' .. " "
     end
 
-    return RelativeCardNameString
+    local RelativeStoryString = ""
+    for i=1, #RelativeStories do
+        RelativeStoryString = RelativeStoryString .. '[' .. RelativeStories[i] .. ']' .. " "
+    end
+
+    return RelativeCardNameString, RelativeStoryString
 end
 
-function UI_CardDetail:GetStoryNames(CardID)
-    local StoryNames = {}
-
-    return StoryNames
+function UI_CardDetail:AddToRelativeStories(RelativeStories, Story)
+    local bExist = false
+    for i=1, #RelativeStories do
+        if RelativeStories[i] == Story then
+            bExist = true
+            break
+        end
+    end
+    if not bExist then
+        table.insert(RelativeStories, Story)
+    end
 end
 
 function UI_CardDetail:GetSkillDesc(SkillID, SkillParam)
