@@ -5,6 +5,7 @@ Platforms/*
 Saved/*
 .vs/*
 .vsconfig
-Plugins/*
+# Plugins/*
 .idea/*
 package/*
+Build/*
