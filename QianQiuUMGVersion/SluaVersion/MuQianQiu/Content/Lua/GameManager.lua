@@ -285,8 +285,9 @@ end
 -- 送回Store一张牌 重新洗牌 并返回一张新牌
 function GameManager:ReturnCardToStore(CardID, Player)
     -- 检查是否需要整个Public重新洗牌
-    self:CheckbNeedShuffleAllPublicCards(Player)
-    
+    -- self:CheckbNeedShuffleAllPublicCards(Player)
+    -- 由于实际上不重新将public一起洗牌，基本无法成功继续游戏，强制重洗所有牌
+    GameManager.bNeedShuffleAllPublicCards = true
     if GameManager.bNeedShuffleAllPublicCards then
         -- 将 CardID 和 UI_GameMain.Cards_P中的牌全部放回牌库
         table.insert(CardStoreIDList, CardID)
