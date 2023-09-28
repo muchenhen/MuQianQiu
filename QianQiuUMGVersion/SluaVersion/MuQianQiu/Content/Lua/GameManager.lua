@@ -39,6 +39,8 @@ GameManager.UI_RoundTip = nil
 
 GameManager.UI_ChangeCardTip = nil
 
+GameManager.PlayerASpecialCards = {}
+
 function GameManager:GameStart()
     GameManager.PlayerAScore = 0
     GameManager.PlayerBScore = 0

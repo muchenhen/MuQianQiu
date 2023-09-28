@@ -55,6 +55,8 @@ function UI_ChooseSpecial:ChooseCard(Card)
 end
 
 function UI_ChooseSpecial:OnStartClick()
+    GameManager.PlayerASpecialCards = self.ChoosedCards
+    print("特殊牌选择完毕")
     local UI_GameMain = MuBPFunction.CreateUserWidget("UI_GameMain")
     UI_GameMain:AddToViewport(0)
     self:SetVisibility(ESlateVisibility.Hidden)

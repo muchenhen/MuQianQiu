@@ -66,6 +66,9 @@ function UI_GameMain:OnInit()
         self.Cards_P[index]:AddOnClickEvent(MakeCallBack(self.OnCardClicked, self))
     end
 
+    -- 设置特殊卡
+    self:InitSpecialCards()
+
     self:PlayAnimationForward(self.InitAnim, 1.0, false)
     self:SetVisibility(ESlateVisibility.Visible)
 
@@ -414,6 +417,25 @@ function UI_GameMain:OnPlayerAStoryDetailClick()
     local UI_PlayerStories = MuBPFunction.CreateUserWidget("UI_PlayerStories")
     UI_PlayerStories:UpdatePlayerStoryStates(EPlayer.PlayerA)
 
+end
+
+function UI_GameMain:InitSpecialCards()
+    local SpecialCardsNum = #GameManager.PlayerASpecialCards
+    print("特殊牌数量：" .. SpecialCardsNum)
+    local MaxXOffset = self.CanvasPanel_PlayerASpecialCards.Slot:GetSize().X - 256
+    local XOffset = MaxXOffset / (SpecialCardsNum - 1)
+    -- 创建所有的特殊牌
+    for key, value in pairs(GameManager.PlayerASpecialCards) do
+        local NewCard = MuBPFunction.CreateUserWidget("UI_Card")
+        NewCard:SetCardID(value.CardID)
+        NewCard:SetCardOwner(ECardOwnerType.PlayerASpecial)
+        self.CanvasPanel_PlayerASpecialCards:AddChild(NewCard)
+        NewCard:SetVisibility(ESlateVisibility.HitTestInvisible)
+        NewCard.Slot:SetAutoSize(true)
+        local Pos = NewCard.Slot:GetPosition()
+        Pos.X = (key - 1) * XOffset
+        NewCard.Slot:SetPosition(Pos)
+    end
 end
 
 function UI_GameMain:OnDestroy()
