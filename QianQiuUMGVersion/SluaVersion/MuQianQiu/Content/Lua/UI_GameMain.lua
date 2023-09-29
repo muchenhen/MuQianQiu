@@ -79,6 +79,11 @@ function UI_GameMain:OnInit()
 
     -- 绑定A查看故事按钮
     self.Button_PlayerAStoryDetail.OnClicked:Add(MakeCallBack(self.OnPlayerAStoryDetailClick, self))
+
+    local Delay = self.InitAnim:GetEndTime() + 0.1
+    Timer:Add(1, function()
+        self:CheckSpecialCards()
+    end)
 end
 
 function UI_GameMain:OnCardClicked(Card)
@@ -435,6 +440,17 @@ function UI_GameMain:InitSpecialCards()
         local Pos = NewCard.Slot:GetPosition()
         Pos.X = (key - 1) * XOffset
         NewCard.Slot:SetPosition(Pos)
+    end
+end
+
+function UI_GameMain:CheckSpecialCards()
+    for key, value in pairs(GameManager.PlayerASpecialCards) do
+        local CardID = value.SpecialName
+        for index = 1, 10 do
+            if (self.Cards_A[index].CardID == CardID) then
+                self.Cards_A[index]:SetSpecialCardID(value.CardID)
+            end
+        end
     end
 end
 
