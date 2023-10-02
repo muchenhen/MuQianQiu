@@ -6,20 +6,19 @@ function UI_ChooseSpecial:Initialize()
     self.Button_Begin.OnClicked:Add(MakeCallBack(self.OnStartClick, self))
 
     self.TileView_SpecialCards.BP_OnEntryInitialized:Add(MakeCallBack(self.TileView_SpecialCards_OnEntryInitialized, self))
+    self.TileView_SpecialCards.BP_OnItemClicked:Add(MakeCallBack(self.TileView_SpecialCards_OnItemClicked, self))
+
 
     self.AllSpecialCards = DataManager.GetAllSpecialCardDatas()
     for i=0, self.AllSpecialCards:Num()-1 do
         local CardData = self.AllSpecialCards:Get(i)
         local NewCard = MuBPFunction.CreateUserWidget("UI_Card")
+        NewCard.Button:SetVisibility(ESlateVisibility.Hidden)
         NewCard:SetCardID(CardData.CardID)
         self.TileView_SpecialCards:AddItem(NewCard)
     end
 
     self.ChoosedCards = {}
-end
-
-function UI_ChooseSpecial:OnCardClick(Card)
-    self:ChooseCard(Card)
 end
 
 --- 选择一张特殊牌，检查是否可选：同一人物不能选择超过一张。累计不能超过十张
@@ -63,8 +62,14 @@ function UI_ChooseSpecial:OnStartClick()
 end
 
 function UI_ChooseSpecial:TileView_SpecialCards_OnEntryInitialized(Item, Widget)
+    Widget.Button:SetVisibility(ESlateVisibility.Hidden)
     Widget:SetCardID(Item.CardID)
-    Widget:AddOnClickEvent(MakeCallBack(self.OnCardClick, self))
+    Widget:SetChooseState(Item.bChoosed, false)
+end
+
+function UI_ChooseSpecial:TileView_SpecialCards_OnItemClicked(Item)
+    self:ChooseCard(Item)
+    self.TileView_SpecialCards:RegenerateAllEntries()
 end
 
 function UI_ChooseSpecial:OnDestroy()

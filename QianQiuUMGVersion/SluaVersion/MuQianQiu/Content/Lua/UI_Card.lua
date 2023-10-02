@@ -4,7 +4,6 @@ local UI_Card = {}
 
 function UI_Card:Initialize()
     self.Button.OnClicked:Add(MakeCallBack(self.OnClick, self))
-    self.bChoosed = false
 end
 
 function UI_Card:SetCardID(CardID)
