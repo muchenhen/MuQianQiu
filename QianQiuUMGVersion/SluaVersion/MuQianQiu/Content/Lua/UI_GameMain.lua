@@ -448,7 +448,7 @@ function UI_GameMain:CheckSpecialCards()
         local CardID = value.SpecialName
         for index = 1, 10 do
             if (self.Cards_A[index].CardID == CardID) then
-                self.Cards_A[index]:SetSpecialCardID(value.CardID)
+                self.Cards_A[index]:SetCardID(value.CardID)
             end
         end
     end

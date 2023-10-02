@@ -9,25 +9,14 @@ end
 
 function UI_Card:SetCardID(CardID)
     self.CardID = CardID
-    self:InitTexture()
     local CardInfo = DataManager.GetCardData(CardID)
     self.Name = CardInfo.Name
     self.Value = CardInfo.Value
     self.Season = CardInfo.Season
     self.SpecialName = CardInfo.SpecialName
     self.Special = CardInfo.Special
-end
-
-function UI_Card:SetSpecialCardID(SepcialCardID)
-    self.CardID = SepcialCardID
+    self.CardShowID = CardID
     self:InitTexture()
-    local CardInfo = DataManager.GetCardData(SepcialCardID)
-    self.Name = CardInfo.Name
-    self.Value = CardInfo.Value
-    self.Season = CardInfo.Season
-    self.SpecialID = CardInfo.SepcialCardID
-    self.CardID = CardInfo.SpecialName
-    self.Special = CardInfo.Special
 end
 
 function UI_Card:SetCardOwner(Owner)
