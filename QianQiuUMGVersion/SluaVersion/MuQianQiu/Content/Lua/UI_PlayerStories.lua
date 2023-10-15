@@ -19,6 +19,8 @@ function UI_PlayerStories:UpdatePlayerStoryStates(Player)
     end
     for i = 1, #Cards do
         local CardID = Cards[i]
+        -- 检查是否有特殊牌的ID
+        CardID = GameManager:GetStoryCardID(CardID)
         for key, Story in pairs(GameManager.AllStory) do
             -- Story.CardsID中有没有CardID
             local bHasCard = false

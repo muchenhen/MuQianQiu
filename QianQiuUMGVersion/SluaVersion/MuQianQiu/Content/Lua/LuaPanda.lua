@@ -53,7 +53,7 @@ local customGetSocketInstance = nil;    --支持用户实现一个自定义调�
 local consoleLogLevel = 2;           --打印在控制台(print)的日志等级 0 : all/ 1: info/ 2: error.
 --用户设置项END
 
-local debuggerVer = "3.2.0";                 --debugger版本号
+local debuggerVer = "3.3.1";                 --debugger版本号
 LuaPanda = {};
 local this = LuaPanda;
 local tools = {};     --引用的开源工具，包括json解析和table展开工具等
@@ -531,11 +531,23 @@ function this.doctor()
                 local lua_ver;
                 if _VERSION == "Lua 5.1" then
                     lua_ver = "501";
+                elseif _VERSION == "Lua 5.4" then
+                    lua_ver = "504";
                 else
                     lua_ver = "503";
                 end
                 local x86Path = clibPath .. platform .."/x86/".. lua_ver .. clibExt;
                 local x64Path = clibPath .. platform .."/x86_64/".. lua_ver .. clibExt;
+                local armPath = clibPath .. platform .."/arm_64/".. lua_ver .. clibExt;
+
+                if platform == "mac" then
+                    -- mac下先检测arm库
+                    strTable[#strTable + 1] = "尝试引用arm库: ".. armPath;
+                    if this.tryRequireClib("libpdebug", armPath) then
+                        strTable[#strTable + 1] = "\n引用成功";
+                        return;
+                    end
+                end
 
                 strTable[#strTable + 1] = "尝试引用x64库: ".. x64Path;
                 if this.tryRequireClib("libpdebug", x64Path) then
@@ -1326,7 +1338,7 @@ function this.dataProcess( dataStr )
         end
 
         --查找c++的hook库是否存在.  当lua5.4时默认不使用c库
-        if tostring(dataTable.info.useCHook) == "true" and "Lua 5.4" ~= _VERSION then
+        if tostring(dataTable.info.useCHook) == "true" then
             userSetUseClib = true;      --用户确定使用clib
             if isUserSetClibPath == true then   --如果用户自设了clib路径
                 if luapanda_chook ~= nil then
@@ -1345,17 +1357,25 @@ function this.dataProcess( dataStr )
                 local lua_ver;
                 if _VERSION == "Lua 5.1" then
                     lua_ver = "501";
+                elseif _VERSION == "Lua 5.4" then
+                    lua_ver = "504";
                 else
                     lua_ver = "503";
                 end
 
                 local x86Path = clibPath.. platform .."/x86/".. lua_ver .. clibExt;
                 local x64Path = clibPath.. platform .."/x86_64/".. lua_ver .. clibExt;
+                local armPath = clibPath .. platform .."/arm_64/".. lua_ver .. clibExt;
 
                 if luapanda_chook ~= nil then
                     hookLib = luapanda_chook;
                 else
-                    if not(this.tryRequireClib("libpdebug", x64Path) or this.tryRequireClib("libpdebug", x86Path)) then
+                    local requireCLibSuccess = false;
+                    if platform == "mac" then
+                        requireCLibSuccess = this.tryRequireClib("libpdebug", armPath)
+                    end
+
+                    if not requireCLibSuccess and not(this.tryRequireClib("libpdebug", x64Path) or this.tryRequireClib("libpdebug", x86Path)) then
                         this.printToVSCode("Require clib failed, use Lua to continue debug, use LuaPanda.doctor() for more information.", 1);
                     end
                 end
@@ -2874,7 +2894,7 @@ function this.getVariable( checkLayer, isFormatVariable , offset)
         end
 
         --(*temporary)是系统变量，过滤掉。这里假设(*temporary)仅出现在最后
-        if "(*temporary)" ~= tostring(n) then
+        if "(*temporary)" ~= tostring(n) and "(temporary)" ~= tostring(n) then
             local var = {};
             var.name = n;
             var.type = tostring(type(v));

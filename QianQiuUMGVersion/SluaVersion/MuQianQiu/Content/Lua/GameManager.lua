@@ -377,3 +377,21 @@ function GameManager:CheckbNeedShuffleAllPublicCards(Player)
         self.bNeedShuffleAllPublicCards = true
     end
 end
+
+function GameManager:CheckCardIDIsSpecial(CardID)
+    local CardData = DataManager.GetCardData(CardID)
+    if CardData.Special then
+        return true
+    else
+        return false
+    end
+end
+
+function GameManager:GetStoryCardID(CardID)
+    if self:CheckCardIDIsSpecial(CardID) then
+        local CardData = DataManager.GetCardData(CardID)
+        return CardData.SpecialName
+    else
+        return CardID    
+    end
+end
