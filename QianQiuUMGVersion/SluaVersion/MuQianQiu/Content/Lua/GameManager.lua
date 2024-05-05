@@ -56,12 +56,25 @@ function GameManager:GameStart()
 
     self.RoundNum = 0
     self:InitCardOnBegin()
+    -- 处理特殊牌
 
     GameManager.PlayerADealCards = {}
     GameManager.PlayerBDealCards = {}
 
     GameManager.UI_RoundTip = MuBPFunction.CreateUserWidget("UI_RoundTip")
     GameManager.UI_ChangeCardTip = MuBPFunction.CreateUserWidget("UI_ChangeCardTip")
+end
+
+function GameManager:InitCardOnBegin()
+    -- 清空CardIDList
+    CardStoreIDList = {}
+    for i = GameManager.Min2, GameManager.Max2 do
+        table.insert(CardStoreIDList, i)
+    end
+    for i = GameManager.Min3, GameManager.Max3 do
+        table.insert(CardStoreIDList, i)
+    end
+    self:Shuffle(CardStoreIDList)
 end
 
 function GameManager:ChangeRound()
@@ -152,18 +165,6 @@ function GameManager:Shuffle(array)
     end
 
     return array
-end
-
-function GameManager:InitCardOnBegin()
-    -- 清空CardIDList
-    CardStoreIDList = {}
-    for i = GameManager.Min2, GameManager.Max2 do
-        table.insert(CardStoreIDList, i)
-    end
-    for i = GameManager.Min3, GameManager.Max3 do
-        table.insert(CardStoreIDList, i)
-    end
-    self:Shuffle(CardStoreIDList)
 end
 
 function GameManager:GetOneCardFromStore()
