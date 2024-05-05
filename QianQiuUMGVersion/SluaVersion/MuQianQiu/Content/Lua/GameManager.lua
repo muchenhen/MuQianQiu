@@ -56,7 +56,6 @@ function GameManager:GameStart()
 
     self.RoundNum = 0
     self:InitCardOnBegin()
-    -- 处理特殊牌
 
     GameManager.PlayerADealCards = {}
     GameManager.PlayerBDealCards = {}

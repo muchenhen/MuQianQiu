@@ -80,6 +80,9 @@ function UI_GameMain:OnInit()
     -- 绑定A查看故事按钮
     self.Button_PlayerAStoryDetail.OnClicked:Add(MakeCallBack(self.OnPlayerAStoryDetailClick, self))
 
+    -- 绑定查看特殊牌
+    self.Button_SeePlayerASpecialCard.OnClicked:Add(MakeCallBack(self.OnButtonSeePlayerASpecialCardsClick, self))
+
     local Delay = self.InitAnim:GetEndTime() + 0.1
     Timer:Add(1, function()
         self:CheckSpecialCards()
@@ -441,6 +444,8 @@ function UI_GameMain:InitSpecialCards()
         Pos.X = (key - 1) * XOffset
         NewCard.Slot:SetPosition(Pos)
     end
+
+
 end
 
 function UI_GameMain:CheckSpecialCards()
@@ -452,6 +457,12 @@ function UI_GameMain:CheckSpecialCards()
             end
         end
     end
+end
+
+function UI_GameMain:OnButtonSeePlayerASpecialCardsClick()
+    print("查看玩家A特殊牌")
+    local UI_SeeSpecial = MuBPFunction.CreateUserWidget("UI_SeeSpecial")
+    UI_SeeSpecial:AddToViewport(0)
 end
 
 function UI_GameMain:OnDestroy()
