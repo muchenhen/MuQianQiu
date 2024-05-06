@@ -6,7 +6,6 @@ function UI_SeeSpecial:Initialize()
     self.Button_Close.OnClicked:Add(MakeCallBack(self.OnButtonCloseClick, self))
 
     for i=1, 10 do
-        -- self["UI_Card_01"] to self["UI_Card_10"]
         local UI_Card = self["UI_Card_"..string.format("%02d", i)]
         UI_Card:SetVisibility(ESlateVisibility.Hidden)
     end
