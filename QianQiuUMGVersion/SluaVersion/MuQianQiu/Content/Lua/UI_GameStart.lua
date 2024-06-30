@@ -19,10 +19,15 @@ function UI_GameStart:Construct()
 end
 
 function UI_GameStart:OnStartClick()
-    GameManager:GameStart()
-    local UI_ChooseSpecial = MuBPFunction.CreateUserWidget("UI_ChooseSpecial")
-    UI_ChooseSpecial:AddToViewport(0)
-    self:SetVisibility(ESlateVisibility.Hidden)
+    local UseFirst = self.UseFirst:IsChecked()
+    local UseSecond = self.UseSecond:IsChecked()
+    local UseThird = self.UseThird:IsChecked()
+    GameManager:SetVersions(UseFirst, UseSecond, UseThird)
+    if GameManager:GameStart() then
+        local UI_ChooseSpecial = MuBPFunction.CreateUserWidget("UI_ChooseSpecial")
+        UI_ChooseSpecial:AddToViewport(0)
+        self:SetVisibility(ESlateVisibility.Hidden)
+    end
 end
 
 function UI_GameStart:OnDestroy()

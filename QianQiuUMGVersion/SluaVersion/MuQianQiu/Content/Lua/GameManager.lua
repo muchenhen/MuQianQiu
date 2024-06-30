@@ -4,6 +4,10 @@ MuBPFunction = import("MuBPFunction")
 
 GameManager = {}
 
+GameManager.UseFirst = false
+GameManager.UseSecond = false
+GameManager.UseThird = false
+
 GameManager.Min1 = 101
 GameManager.Max1 = 124
 GameManager.Min2 = 201
@@ -41,7 +45,19 @@ GameManager.UI_ChangeCardTip = nil
 
 GameManager.PlayerASpecialCards = {}
 
+function GameManager:SetVersions(bUseFirst, bUseSecond, bUseThird)
+    GameManager.UseFirst = bUseFirst
+    GameManager.UseSecond = bUseSecond
+    GameManager.UseThird = bUseThird
+end
+
 function GameManager:GameStart()
+    -- 检查一下，启用的版本少于2个的话，无法继续游戏
+    if not GameManager.UseFirst and not GameManager.UseSecond and not GameManager.UseThird then
+        UIManager:ShowTip("启用的版本少于2个，无法继续游戏")
+        return false
+    end
+
     GameManager.PlayerAScore = 0
     GameManager.PlayerBScore = 0
 
@@ -62,6 +78,7 @@ function GameManager:GameStart()
 
     GameManager.UI_RoundTip = MuBPFunction.CreateUserWidget("UI_RoundTip")
     GameManager.UI_ChangeCardTip = MuBPFunction.CreateUserWidget("UI_ChangeCardTip")
+    return true
 end
 
 function GameManager:InitCardOnBegin()
