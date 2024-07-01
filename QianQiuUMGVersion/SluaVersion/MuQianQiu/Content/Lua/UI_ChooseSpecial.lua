@@ -8,10 +8,34 @@ function UI_ChooseSpecial:Initialize()
     self.TileView_SpecialCards.BP_OnEntryInitialized:Add(MakeCallBack(self.TileView_SpecialCards_OnEntryInitialized, self))
     self.TileView_SpecialCards.BP_OnItemClicked:Add(MakeCallBack(self.TileView_SpecialCards_OnItemClicked, self))
 
-
     self.AllSpecialCards = DataManager.GetAllSpecialCardDatas()
-    for i=0, self.AllSpecialCards:Num()-1 do
+
+    -- 根据GameManager中的UseFirst, UseSecond, UseThird，筛选出可用的特殊牌
+    local NewSpecialCards = {}
+    for i = 0, self.AllSpecialCards:Num() - 1 do
         local CardData = self.AllSpecialCards:Get(i)
+        -- CardData.CardID / 100 取整
+        local version = math.floor(CardData.CardID / 100)
+        if GameManager.UseFirst then
+            if version == 1 then
+                table.insert(NewSpecialCards, CardData)
+            end
+        end
+        if GameManager.UseSecond then
+            if version == 2 then
+                table.insert(NewSpecialCards, CardData)
+            end
+        end
+        if GameManager.UseThird then
+            if version == 3 then
+                table.insert(NewSpecialCards, CardData)
+            end
+        end
+    end
+    self.AllSpecialCards = NewSpecialCards
+
+    for i = 1, #self.AllSpecialCards do
+        local CardData = self.AllSpecialCards[i]
         local NewCard = MuBPFunction.CreateUserWidget("UI_Card")
         NewCard.Button:SetVisibility(ESlateVisibility.Hidden)
         NewCard:SetCardID(CardData.CardID)
@@ -28,7 +52,7 @@ function UI_ChooseSpecial:ChooseCard(Card)
     self.UI_CardDetail:SetCardID(Card.CardID)
     if Card.bChoosed then
         Card:SetChooseState(false, false)
-        for i=1, #self.ChoosedCards do
+        for i = 1, #self.ChoosedCards do
             if self.ChoosedCards[i] == Card then
                 table.remove(self.ChoosedCards, i)
                 break
@@ -39,7 +63,7 @@ function UI_ChooseSpecial:ChooseCard(Card)
             print("最多选择10张特殊牌")
             return
         end
-        for i=1, #self.ChoosedCards do
+        for i = 1, #self.ChoosedCards do
             if self.ChoosedCards[i].SpecialName == Card.SpecialName then
                 UIManager:ShowTip("同一角色只能选择一张特殊牌")
                 return
@@ -70,7 +94,6 @@ function UI_ChooseSpecial:TileView_SpecialCards_OnItemClicked(Item)
 end
 
 function UI_ChooseSpecial:OnDestroy()
-
 end
 
 return Class(nil, nil, UI_ChooseSpecial)
