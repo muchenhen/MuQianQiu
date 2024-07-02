@@ -84,11 +84,22 @@ end
 function GameManager:InitCardOnBegin()
     -- 清空CardIDList
     CardStoreIDList = {}
-    for i = GameManager.Min2, GameManager.Max2 do
-        table.insert(CardStoreIDList, i)
+
+    -- 根据UseFirst, UseSecond, UseThird，将对应版本的卡牌ID存入CardStoreIDList
+    if GameManager.UseFirst then
+        for i = GameManager.Min1, GameManager.Max1 do
+            table.insert(CardStoreIDList, i)
+        end
     end
-    for i = GameManager.Min3, GameManager.Max3 do
-        table.insert(CardStoreIDList, i)
+    if GameManager.UseSecond then
+        for i = GameManager.Min2, GameManager.Max2 do
+            table.insert(CardStoreIDList, i)
+        end
+    end
+    if GameManager.UseThird then
+        for i = GameManager.Min3, GameManager.Max3 do
+            table.insert(CardStoreIDList, i)
+        end
     end
     self:Shuffle(CardStoreIDList)
 end
