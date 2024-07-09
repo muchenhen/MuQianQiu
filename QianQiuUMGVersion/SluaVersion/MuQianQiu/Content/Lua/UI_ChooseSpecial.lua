@@ -80,6 +80,7 @@ function UI_ChooseSpecial:OnStartClick()
     local UI_GameMain = MuBPFunction.CreateUserWidget("UI_GameMain")
     UI_GameMain:AddToViewport(0)
     self:SetVisibility(ESlateVisibility.Hidden)
+    GameManager:UpdateSpecialCardsForHand()
 end
 
 function UI_ChooseSpecial:TileView_SpecialCards_OnEntryInitialized(Item, Widget)

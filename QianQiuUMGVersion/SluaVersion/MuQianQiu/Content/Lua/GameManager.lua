@@ -423,3 +423,39 @@ function GameManager:GetStoryCardID(CardID)
         return CardID    
     end
 end
+
+function GameManager:UpdateSpecialCardsForHand()
+    if GameManager.UseFirst then
+        for i = GameManager.Min1, GameManager.Max1 do
+            local CardData = DataManager.GetCardData(i)
+            if CardData.Special then
+                local NewCard = MuBPFunction.CreateUserWidget("UI_Card")
+                NewCard:SetCardID(i)
+                NewCard.Button:SetVisibility(ESlateVisibility.Hidden)
+                GameManager.UI_GameMain.TileView_SpecialCards:AddItem(NewCard)
+            end
+        end
+    end
+    if GameManager.UseSecond then
+        for i = GameManager.Min2, GameManager.Max2 do
+            local CardData = DataManager.GetCardData(i)
+            if CardData.Special then
+                local NewCard = MuBPFunction.CreateUserWidget("UI_Card")
+                NewCard:SetCardID(i)
+                NewCard.Button:SetVisibility(ESlateVisibility.Hidden)
+                GameManager.UI_GameMain.TileView_SpecialCards:AddItem(NewCard)
+            end
+        end
+    end
+    if GameManager.UseThird then
+        for i = GameManager.Min3, GameManager.Max3 do
+            local CardData = DataManager.GetCardData(i)
+            if CardData.Special then
+                local NewCard = MuBPFunction.CreateUserWidget("UI_Card")
+                NewCard:SetCardID(i)
+                NewCard.Button:SetVisibility(ESlateVisibility.Hidden)
+                GameManager.UI_GameMain.TileView_SpecialCards:AddItem(NewCard)
+            end
+        end
+    end
+end
