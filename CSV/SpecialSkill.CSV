@@ -1,2 +1,3 @@
-Index,SkillID,SkillDesc
-1,1,若巫之国在公共卡池中，则下一回合一定出现巫之国
+Index,SkillID,SpeciallName,SkillDesc
+1,1
+1,1,刘兄·比木,若巫之国在公共卡池中，则下一回合一定出现巫之国
