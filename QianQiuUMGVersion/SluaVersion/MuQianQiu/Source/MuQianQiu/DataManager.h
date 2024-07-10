@@ -19,6 +19,8 @@ private:
 
     static TSharedPtr<UDataTable> StoryDataTable;
 
+    static TSharedPtr<UDataTable> SkillDataTable;
+
 public:
     UDataManager();
 
@@ -33,4 +35,7 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "DataManager")
     static TArray<FCardData> GetAllSpecialCardDatas();
+
+    UFUNCTION(BlueprintCallable, Category = "DataManager")
+    static FSkillData GetSkillData(int SkillID);
 };

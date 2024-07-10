@@ -14,22 +14,20 @@ function UI_CardDetail:SetCardID(CardID)
     self.Value = CardInfo.Value
     self.bSpecial = CardInfo.Special
     self.SpecialName = CardInfo.SpecialName
-    self.SkillOneID = CardInfo.EffectFirst
-    self.SkillOneParam = CardInfo.ParamFirst
-    self.SkillTwoID = CardInfo.EffectSecond
-    self.SkillTwoParam = CardInfo.ParamSecond
+    -- TArray<int>
+    self.SkillsID = CardInfo.SkillsID
 
     self.UI_Card:SetCardID(self.CardID)
 
     self.RelativeCardNames, self.StoryNames = self:GetRelative(self.SpecialName)
-    self.SkillOneDesc = self:GetSkillDesc(self.SkillOneID, self.SkillOneParam)
-    self.SkillTwoDesc = self:GetSkillDesc(self.SkillTwoID, self.SkillTwoParam)
 
     self.Text_CardName:SetText(self.CardName)
     self.Text_CardSeason:SetText(self.Season)
     self.Text_CardValue:SetText(self.Value)
     self.Text_RelativeCard:SetText(self.RelativeCardNames)
     self.Text_Stories:SetText(self.StoryNames)
+
+    self:UpdateSkillInfo()
 end
 
 function UI_CardDetail:GetRelative(CardID)
@@ -87,10 +85,24 @@ function UI_CardDetail:AddToRelativeStories(RelativeStories, Story)
     end
 end
 
-function UI_CardDetail:GetSkillDesc(SkillID, SkillParam)
-    local SkillDesc = ""
-
-    return SkillDesc
+function UI_CardDetail:UpdateSkillInfo()
+    for i=0, self.SkillsID:Num()-1 do
+        local SkillInfo = DataManager.GetSkillData(self.SkillsID:Get(i))
+        if i==0 then
+            self.Text_SkillOne:SetText("技能一：" .. SkillInfo.SkillDesc)
+        elseif i==1 then
+            self.Text_SkillTwo:SetText("技能二：" .. SkillInfo.SkillDesc)
+        end
+    end
+    if self.SkillsID:Num()==0 then
+        self.Text_SkillOne:SetVisibility(ESlateVisibility.Hidden)
+        self.Text_SkillTwo:SetVisibility(ESlateVisibility.Hidden)
+    elseif self.SkillsID:Num()==1 then
+        self.Text_SkillOne:SetVisibility(ESlateVisibility.SelfHitTestInvisible)
+        self.Text_SkillTwo:SetVisibility(ESlateVisibility.Hidden)
+    else
+        self.Text_SkillTwo:SetVisibility(ESlateVisibility.SelfHitTestInvisible)
+    end
 end
 
 function UI_CardDetail:OnDestroy()

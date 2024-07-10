@@ -5,6 +5,7 @@
 
 TSharedPtr<UDataTable> UDataManager::CardDataTable;
 TSharedPtr<UDataTable> UDataManager::StoryDataTable;
+TSharedPtr<UDataTable> UDataManager::SkillDataTable;
 
 UDataManager::UDataManager()
 {
@@ -20,6 +21,13 @@ UDataManager::UDataManager()
         if (UDataTable* DataTable = LoadObject<UDataTable>(nullptr, UTF8_TO_TCHAR("DataTable'/Game/Table/DT_Stories.DT_Stories'")))
         {
             StoryDataTable = MakeShareable(DataTable);
+        }
+    }
+    if (!SkillDataTable.IsValid())
+    {
+        if (UDataTable* DataTable = LoadObject<UDataTable>(nullptr, UTF8_TO_TCHAR("DataTable'/Game/Table/DT_Skills.DT_Skills'")))
+        {
+            SkillDataTable = MakeShareable(DataTable);
         }
     }
 }
@@ -85,4 +93,19 @@ TArray<FCardData> UDataManager::GetAllSpecialCardDatas()
         }
     }
     return CardData;
+}
+
+FSkillData UDataManager::GetSkillData(int SkillID)
+{
+    if (SkillID != 0)
+    {
+        const FName RowID = FName(*FString::FromInt(SkillID));
+        const FString ContextString = TEXT("FSkillData::FindSkillData");
+        if (SkillDataTable.IsValid())
+        {
+            FSkillData* SkillData = SkillDataTable->FindRow<FSkillData>(RowID, ContextString);
+            return *SkillData;
+        }
+    }
+    return FSkillData();
 }
