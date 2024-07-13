@@ -2,6 +2,9 @@ require("GameManager")
 
 -- 禁用技能
 -- 禁用对方的特殊技能
+-- 两种：
+-- 1. 禁用任意指定的一张当前对方拥有的特殊牌的技能
+-- 2. 禁用的卡牌列表有限，只能禁用列表
 function GameManager:DoBanSpecialSkill()
     
 end
@@ -11,8 +14,12 @@ function GameManager:DoEnsureCardShowInPublic()
     
 end
 
--- 增加指定故事的分数，注意只增加发动技能的玩家的分数
-function GameManager:DoRaiseStoryScore()
+-- Describe： 增加指定故事的分数，注意只增加发动技能的玩家的分数
+-- Param： storyId 故事的id
+-- Param： score 增加的分数
+-- Param:  playerIndex 玩家的索引
+function GameManager:DoRaiseStoryScore(storyId, score, playerIndex)
+    
     
 end
 
