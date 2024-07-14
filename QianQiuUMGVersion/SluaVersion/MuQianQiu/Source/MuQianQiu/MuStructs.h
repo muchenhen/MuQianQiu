@@ -98,8 +98,32 @@ struct MUQIANQIU_API FSkillData : public FTableRowBase
 
 public:
     UPROPERTY(BlueprintReadWrite)
-    int SkillID = 1;
-    
+    int CardID = 1;
+
     UPROPERTY(BlueprintReadWrite)
-    FString SkillDesc = TEXT("技能描述");
+    FString CardName = TEXT("阿阮·山鬼");
+
+    UPROPERTY(BlueprintReadWrite)
+    FString Skill1Type = TEXT("保证出现");
+
+    UPROPERTY(BlueprintReadWrite)
+    FString Skill1Target = TEXT("夏夷则");
+
+    UPROPERTY(BlueprintReadWrite)
+    TArray<int> Skill1TargetID = { 203 };
+
+    UPROPERTY(BlueprintReadWrite)
+    int Skill1Value = 0;
+
+    UPROPERTY(BlueprintReadWrite)
+    FString Skill2Type = TEXT("翻开对手手牌");
+
+    UPROPERTY(BlueprintReadWrite)
+    FString Skill2Target = TEXT("");
+
+    UPROPERTY(BlueprintReadWrite)
+    TArray<int> Skill2TargetID;
+
+    UPROPERTY(BlueprintReadWrite)
+    int Skill2Value = 0;
 };
