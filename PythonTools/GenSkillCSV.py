@@ -123,13 +123,37 @@ def ReadStoryCSV(file_path):
 
 # Index	CardID	CardName	Skill1Type	Skill1Target	Skill1TargetID	Skill1Value	Skill2Type	Skill2Target	Skill2TargetID	Skill2Value
 def WriteSkillCSV():
-    # 写入技能表 Index从1开始累加 其他信息从技能表格内容中获取，utf-8编码
+    # 写入技能表 Index从1开始累加 其他信息从技能表格内容中获取，utf-8编码，每次写入前清空文件
     with open(技能信息CSV表路径, "w", newline='', encoding='utf-8') as csvfile:
         fieldnames = ["Index", "CardID", "CardName", "Skill1Type", "Skill1Target", "Skill1TargetID", "Skill1Value", "Skill2Type", "Skill2Target", "Skill2TargetID", "Skill2Value"]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         for index, row in 技能表格内容.items():
-            writer.writerow({"Index":index, "CardID":row["CardID"], "CardName":row["CardName"], "Skill1Type":row["Skill1Type"], "Skill1Target":row["Skill1Target"], "Skill1TargetID":row["Skill1TargetID"], "Skill1Value":row["Skill1Value"], "Skill2Type":row["Skill2Type"], "Skill2Target":row["Skill2Target"], "Skill2TargetID":row["Skill2TargetID"], "Skill2Value":row["Skill2Value"]})
+            # 有一些nan的值，处理成空字符串
+            for key in row:
+                if pd.isna(row[key]):
+                    row[key] = ""
+            # Skill1TargetID和Skill2TargetID中如果有分号分隔符，替换成逗号
+            if isinstance(row["Skill1TargetID"], str) and ";" in row["Skill1TargetID"]:
+                row["Skill1TargetID"] = row["Skill1TargetID"].replace(";", ",")
+            if isinstance(row["Skill2TargetID"], str) and ";" in row["Skill2TargetID"]:
+                row["Skill2TargetID"] = row["Skill2TargetID"].replace(";", ",")
+            # Skill1TargetID和Skill2TargetID中如果有逗号分隔，两边加上小括号，并且最后写入文件的字符串小括号外侧要有双引号包裹
+            if isinstance(row["Skill1TargetID"], str) and "," in row["Skill1TargetID"]:
+                row["Skill1TargetID"] = f"({row['Skill1TargetID']})"
+            if isinstance(row["Skill2TargetID"], str) and "," in row["Skill2TargetID"]:
+                row["Skill2TargetID"] = f"({row['Skill2TargetID']})"
+            writer.writerow({"Index":index, 
+                             "CardID":row["CardID"], 
+                             "CardName":row["CardName"], 
+                             "Skill1Type":row["Skill1Type"], 
+                             "Skill1Target":row["Skill1Target"], 
+                             "Skill1TargetID":row["Skill1TargetID"], 
+                             "Skill1Value":row["Skill1Value"], 
+                             "Skill2Type":row["Skill2Type"], 
+                             "Skill2Target":row["Skill2Target"], 
+                             "Skill2TargetID":row["Skill2TargetID"], 
+                             "Skill2Value":row["Skill2Value"]})
      
 
 # 主函数
@@ -188,13 +212,13 @@ def main():
                 row["Skill1TargetID"] = f"{北洛ID},{云无月ID},{岑缨ID},{姬轩辕ID}"
             if row["Skill2Target"] == "古剑奇谭一":
                 # 目标是古剑奇谭一，意思就是目标卡是 百里屠苏、风晴雪、方兰生、襄铃、红玉、尹千觞
-                row["Skill2Target"] = f"{百里屠苏ID},{风晴雪ID},{方兰生ID},{襄铃ID},{红玉ID},{尹千觞ID}"
+                row["Skill2TargetID"] = f"{百里屠苏ID},{风晴雪ID},{方兰生ID},{襄铃ID},{红玉ID},{尹千觞ID}"
             if row["Skill2Target"] == "古剑奇谭二":
                 # 目标是古剑奇谭二，目标卡是 乐无异、闻人羽、夏夷则、阿阮
-                row["Skill2Target"] = f"{乐无异ID},{闻人羽ID},{夏夷则ID},{阿阮ID}"
+                row["Skill2TargetID"] = f"{乐无异ID},{闻人羽ID},{夏夷则ID},{阿阮ID}"
             if row["Skill2Target"] == "古剑奇谭三":
                 # 北洛、云无月、岑缨、姬轩辕
-                row["Skill2Target"] = f"{北洛ID},{云无月ID},{岑缨ID},{姬轩辕ID}"
+                row["Skill2TargetID"] = f"{北洛ID},{云无月ID},{岑缨ID},{姬轩辕ID}"
 
             # 有多个实际的Target的情况，这种情况下Skill1TargetID和Skill2TargetID是一个分号分隔的字符串
             if isinstance(row["Skill1Target"], str) and ";" in row["Skill1Target"]:
