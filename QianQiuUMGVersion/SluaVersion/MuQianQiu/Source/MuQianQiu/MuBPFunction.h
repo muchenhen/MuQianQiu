@@ -15,15 +15,16 @@ UCLASS()
 class MUQIANQIU_API UMuBPFunction : public UBlueprintFunctionLibrary
 {
     GENERATED_BODY()
+
 private:
     static UGameInstance* GameInstance;
-    
+
 public:
     static void SetGameInstance(UGameInstance* InGameInstance);
-    
+
     UFUNCTION(BlueprintCallable, Category = "MuBPFunction")
     static void Test(const FString& String);
-    
+
     UFUNCTION(BlueprintCallable, Category = "MuBPFunction")
     static UTexture2D* LoadTexture2D(FString CardType, FString TexturePath);
 
@@ -38,4 +39,10 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "MuBPFunction")
     static USoundBase* LoadSoundBase(const FString& SoundPath);
+
+    UFUNCTION(BlueprintCallable, Category = "Widget")
+    static FVector2D GetWidgetPositionInViewport(UWidget* Widget);
+
+    UFUNCTION(BlueprintCallable, Category = "Widget")
+    static void SetWidgetPositionInViewport(UWidget* Widget, const FVector2D& NewPosition);
 };
