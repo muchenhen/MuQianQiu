@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://8p14juupi406"]
+
+[ext_resource type="Script" path="res://NetServerTest.gd" id="1_jifgq"]
+
+[node name="Main" type="Node2D"]
+
+[node name="NetServerTest" type="Node2D" parent="."]
+script = ExtResource("1_jifgq")
