@@ -21,3 +21,5 @@ color = Color(0.745098, 0.647059, 0.32549, 1)
 script = ExtResource("1_jifgq")
 
 [node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="Cards" type="Node" parent="."]

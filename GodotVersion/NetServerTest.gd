@@ -10,12 +10,12 @@ var connection_timer = 0.0
 var last_status = -1
 
 func _ready():
-	return
+	pass
 	print("Attempting to connect to %s:%d" % [host, port])
 	connect_to_server()
 
 func _process(delta):
-	return
+	pass
 	connection_timer += delta
 	
 	if connection_timer >= 0.5:  # 每0.5秒检查一次状态

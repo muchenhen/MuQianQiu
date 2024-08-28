@@ -1,0 +1,10 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"godotTools.editorPath.godot4": "e:\\GitHub\\godot\\bin\\godot.windows.editor.dev.x86_64.exe"
+	}
+}
