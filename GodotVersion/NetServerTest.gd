@@ -89,12 +89,12 @@ func send_message(message: String):
 	else:
 		print("Not connected. Can't send message.")
 
-func _input(event):
-	if event is InputEventKey and event.pressed:
-		if event.keycode == KEY_SPACE:
-			send_message("Hello again!")
-		elif event.keycode == KEY_ESCAPE:
-			disconnect_from_server()
+# func _input(event):
+	# if event is InputEventKey and event.pressed:
+	# 	if event.keycode == KEY_SPACE:
+	# 		send_message("Hello again!")
+	# 	elif event.keycode == KEY_ESCAPE:
+	# 		disconnect_from_server()
 
 func disconnect_from_server():
 	if connected or connecting:
