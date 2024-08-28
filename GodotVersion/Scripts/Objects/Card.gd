@@ -28,4 +28,5 @@ func _load_image() -> void:
 	if texture:
 		self.texture = loaded_texture
 	else:
-		print("Failed to load texture: " + path)
+		print("Failed to load texture: " + path + ". Will use default texture instead.")
+		self.texture = load("res://Textures/Cards/2/Tex_ARuan.png")
