@@ -9,6 +9,7 @@ var cards = []
 var animation_manager: AnimationManager
 var current_stage = 0
 var stages = [
+	"card_spread_out",
 	"circular_rotation",
 	"spread_and_scale",
 	"sunburst_formation",
@@ -54,6 +55,27 @@ func start_next_stage_timer(duration: float):
 	timer.connect("timeout", Callable(self, "execute_next_stage"))
 	current_stage += 1
 
+func card_spread_out():
+	var radius = 400
+	var center = Vector2(0, 0)
+	var angle_step = 2 * PI / DECK_SIZE
+	var duration = 2.0
+
+	for i in range(DECK_SIZE):
+		var angle = i * angle_step
+		var card = cards[i]
+		
+		# 设置卡片的初始位置（原点）
+		card.position = center
+		
+		# 设置卡片的初始旋转，使其垂直于圆心
+		card.rotation = angle + PI/2
+		
+		# 开始扇形展开动画
+		animation_manager.start_spread_out_movement(card, center, radius, angle, duration)
+
+	start_next_stage_timer(duration)
+
 func circular_rotation():
 	var radius = 400
 	var center = Vector2.ZERO
@@ -64,8 +86,8 @@ func circular_rotation():
 		var card = cards[i]
 		
 		# 设置卡片的初始位置
-		var initial_position = center + Vector2(cos(angle), sin(angle)) * radius
-		card.position = initial_position
+		# var initial_position = center + Vector2(cos(angle), sin(angle)) * radius
+		# card.position = initial_position
 		
 		# 设置卡片的旋转，使其垂直于圆心
 		card.rotation = angle + PI/2  # 加上 PI/2 使卡片垂直于半径

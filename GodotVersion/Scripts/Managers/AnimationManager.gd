@@ -66,6 +66,18 @@ func start_rotation(obj: Node2D, speed: float, duration: float):
 		"active": true
 	}
 
+func start_spread_out_movement(obj: Node2D, center: Vector2, radius: float, target_angle: float, duration: float):
+	animated_objects[obj] = {
+		"type": "spread_out_movement",
+		"center": center,
+		"radius": radius,
+		"start_angle": target_angle,  # 起始角度就是目标角度，因为我们只想让卡片沿半径方向移动
+		"target_angle": target_angle,
+		"duration": duration,
+		"elapsed_time": 0,
+		"active": true
+	}
+
 func _update_animation(obj: Node2D, delta: float):
 	var anim = animated_objects[obj]
 	anim["elapsed_time"] += delta
@@ -90,6 +102,14 @@ func _update_animation(obj: Node2D, delta: float):
 		
 		"rotation":
 			obj.rotate(anim["speed"] * delta)
+
+		"spread_out_movement":
+			# 使用缓动函数来创建加速效果
+			var eased_t = ease(t, 2.5)  # 调整缓动指数以获得所需的加速效果
+			var current_radius = anim["radius"] * eased_t
+			var current_angle = anim["start_angle"] + eased_t * PI * 0.25  # 添加一个小的旋转，范围是1/4圈
+			obj.global_position = anim["center"] + Vector2(cos(current_angle), sin(current_angle)) * current_radius
+			obj.rotation = current_angle + PI/2  # 使卡片始终垂直于半径
 	
 	if t >= 1.0:
 		_end_animation(obj)
