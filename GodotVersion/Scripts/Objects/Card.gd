@@ -16,6 +16,7 @@ extends Sprite2D
 @onready var sprite: Sprite2D = $Sprite2D
 
 func _ready() -> void:
+	print("Card ready: " + Name)
 	update_card()
 
 func update_card() -> void:
