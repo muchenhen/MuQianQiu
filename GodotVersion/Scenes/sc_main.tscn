@@ -1,0 +1,24 @@
+[gd_scene load_steps=2 format=3 uid="uid://8p14juupi406"]
+
+[ext_resource type="Script" path="res://main.gd" id="1_lc1tl"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_lc1tl")
+
+[node name="BGColor" type="ColorRect" parent="."]
+custom_minimum_size = Vector2(1920, 1080)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 1920.0
+offset_bottom = 1080.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.745098, 0.647059, 0.32549, 1)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(960, 540)
+
+[node name="Cards" type="Node" parent="."]
+
+[node name="UI" type="Node" parent="."]
