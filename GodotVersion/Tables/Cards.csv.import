@@ -6,10 +6,10 @@ uid="uid://3jdgtgebmdr2"
 
 [deps]
 
-files=["res://Tables/Cards.CardID.translation", "res://Tables/Cards.Name.translation", "res://Tables/Cards.Score.translation", "res://Tables/Cards.Season.translation", "res://Tables/Cards.Describe.translation", "res://Tables/Cards.Special.translation", "res://Tables/Cards.SpecialName.translation", "res://Tables/Cards.SkillsID.translation"]
+files=["res://Tables/Cards.Name.translation", "res://Tables/Cards.Score.translation", "res://Tables/Cards.Season.translation", "res://Tables/Cards.Describe.translation", "res://Tables/Cards.Special.translation", "res://Tables/Cards.SpecialName.translation", "res://Tables/Cards.SkillsID.translation"]
 
 source_file="res://Tables/Cards.csv"
-dest_files=["res://Tables/Cards.CardID.translation", "res://Tables/Cards.Name.translation", "res://Tables/Cards.Score.translation", "res://Tables/Cards.Season.translation", "res://Tables/Cards.Describe.translation", "res://Tables/Cards.Special.translation", "res://Tables/Cards.SpecialName.translation", "res://Tables/Cards.SkillsID.translation"]
+dest_files=["res://Tables/Cards.Name.translation", "res://Tables/Cards.Score.translation", "res://Tables/Cards.Season.translation", "res://Tables/Cards.Describe.translation", "res://Tables/Cards.Special.translation", "res://Tables/Cards.SpecialName.translation", "res://Tables/Cards.SkillsID.translation"]
 
 [params]
 
