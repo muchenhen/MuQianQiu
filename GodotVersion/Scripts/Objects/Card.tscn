@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://b6vosary0xtcn"]
 
-[ext_resource type="Texture2D" uid="uid://cjwjrnc35u8gn" path="res://Textures/Cards/2/Tex_ARuan.png" id="1_jlb4m"]
+[ext_resource type="Texture2D" uid="uid://mya44gk3rdrr" path="res://Textures/Cards/2/Tex_ARuan.png" id="1_jlb4m"]
 [ext_resource type="Script" path="res://Scripts/Objects/Card.gd" id="2_67uyw"]
 
 [node name="Card" type="Sprite2D"]

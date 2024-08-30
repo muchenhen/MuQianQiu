@@ -1,7 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://8p14juupi406"]
+[gd_scene load_steps=2 format=3 uid="uid://8p14juupi406"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_lc1tl"]
-[ext_resource type="PackedScene" uid="uid://b6vosary0xtcn" path="res://Scripts/Objects/Card.tscn" id="2_7x1s6"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_lc1tl")
@@ -21,8 +20,5 @@ color = Color(0.745098, 0.647059, 0.32549, 1)
 position = Vector2(960, 540)
 
 [node name="Cards" type="Node" parent="."]
-
-[node name="Card" parent="Cards" instance=ExtResource("2_7x1s6")]
-position = Vector2(888, 456)
 
 [node name="UI" type="Node" parent="."]

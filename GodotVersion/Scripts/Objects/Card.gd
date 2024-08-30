@@ -11,6 +11,9 @@ var Describe: String = "楚梦沉醉朝复暮，\n清歌远上巫山低。"
 var BaseID: int = 201
 var Special: bool = false
 
+const CARD_WIDTH: int = 240
+const CARD_HEIGHT: int = 320
+
 @onready var sprite: Sprite2D = $Sprite2D
 
 func _ready() -> void:
@@ -30,8 +33,7 @@ func initialize(p_id: int, p_name: String, p_pinyin_name: String, p_score: int, 
 	update_card()
 
 func update_card() -> void:
-	if Engine.is_editor_hint():
-		_load_image()
+	_load_image()
 
 func _load_image() -> void:
 	var path = "res://Textures/Cards/" + Type + "/Tex_" + PinyinName + ".png"
@@ -45,3 +47,6 @@ func _load_image() -> void:
 func set_pinyin_name(value: String) -> void:
 	PinyinName = value
 	update_card()
+
+func get_size() -> Vector2:
+	return Vector2(CARD_WIDTH, CARD_HEIGHT)

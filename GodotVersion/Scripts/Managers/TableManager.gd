@@ -34,7 +34,7 @@ func load_csv(file_path: String) -> void:
 		if line_number == 0:
 			headers = line
 		else:
-			var id = line[0]
+			var id = int(line[0])  # 确保 ID 是整数
 			var row = {}
 			for i in range(1, min(line.size(), headers.size())):
 				row[headers[i]] = parse_value(line[i])
@@ -66,12 +66,12 @@ func get_table(table_name: String) -> Dictionary:
 	return tables.get(table_name, {})
 
 # 获取行
-func get_row(table_name: String, id: String) -> Dictionary:
+func get_row(table_name: String, id: int) -> Dictionary:
 	var table = get_table(table_name)
 	return table.get(id, {})
 
 # 获取特定值
-func get_value(table_name: String, id: String, column: String):
+func get_value(table_name: String, id: int, column: String):
 	var row = get_row(table_name, id)
 	return row.get(column)
 
