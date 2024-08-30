@@ -2,6 +2,8 @@ extends Node
 
 class_name GameManager
 
+var tableManager = TableManager.get_instance()
+
 var sc_start = preload("res://scenes/sc_start.tscn")
 var sc_main = preload("res://scenes/sc_main.tscn")
 var current_scene = null
@@ -13,6 +15,8 @@ func _ready():
 		instance = self
 	else:
 		queue_free()
+
+	tableManager.load_csv("res://Tables/Cards.csv")
 	
 	set_process_mode(Node.PROCESS_MODE_ALWAYS)
 	load_start_scene()
