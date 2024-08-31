@@ -72,7 +72,7 @@ func create_cards_for_this_game() -> Array:
 func create_one_card(card_id:int) -> Node:
 	var card = CARD.instantiate()
 	var card_info = tableManager.get_row("Cards", card_id)
-	card.initialize(card_id, card_info["Name"], card_info["PinyinName"], card_info["Score"], card_info["Season"], card_info["BaseID"], card_info["Special"])
+	card.initialize(card_id, card_info)
 	return card
 
 func init_cards_position_to_public_area(cards):

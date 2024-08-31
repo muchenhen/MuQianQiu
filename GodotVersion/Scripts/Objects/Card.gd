@@ -17,19 +17,27 @@ var back_texture: Texture = null
 
 func _ready() -> void:
 	back_texture = load(BACK_TEXTURE_PATH)
+	# 绑定点击事件
+	connect("pressed", Callable(self, "_on_card_clicked"))
 	update_card()
 
-func initialize(p_id: int, p_name: String, p_pinyin_name: String, p_score: int, p_season: String, p_base_id: int, p_special: bool) -> void:
-	ID = p_id
-	Name = p_name
-	PinyinName = p_pinyin_name
-	# Type 是 ID三位数字的第一个数字
+func initialize(card_id, card_info) -> void:
+	ID = card_id
+	Name = card_info["Name"]
+	PinyinName = card_info["PinyinName"]
 	Type = str(int(str(ID)[0]))
-	Score = p_score
-	Season = p_season
-	BaseID = p_base_id
-	Special = p_special
+	Score = card_info["Score"]
+	Season = card_info["Season"]
+	Describe = card_info["Describe"]
+	BaseID = card_info["BaseID"]
+	Special = card_info["Special"]
 	update_card()
+
+func _on_card_clicked() -> void:
+	# 打印的时候去掉换行符
+	var debug_describe = Describe.replace("\n", "")
+	# 打印卡牌所有信息
+	print("Card clicked: ", Name, " ID: ", ID, " Type: ", Type, " Score: ", Score, " Season: ", Season, " Describe: ", debug_describe, " BaseID: ", BaseID, " Special: ", Special)
 
 func update_card() -> void:
 	_load_image()
