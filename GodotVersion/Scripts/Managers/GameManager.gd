@@ -110,7 +110,7 @@ func animate_next_card():
 		var card = card_data["card"]
 		var position = card_data["position"]
 		
-		animation_manager.start_parabolic_movement(card, position, 100, 1, Callable(self, "send_card_anim_end"), [card])
+		animation_manager.start_linear_movement(card, position, 1, animation_manager.EaseType.EASE_IN_OUT, Callable(self, "send_card_anim_end"), [card])
 		current_card_index += 1
 		
 		# 设置下一张卡片动画的延迟
