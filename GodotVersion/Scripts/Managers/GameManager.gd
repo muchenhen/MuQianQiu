@@ -80,24 +80,21 @@ func send_card_for_play(cards):
 	current_card_index = 0
 	
 	var pos_array_player_a = cardManager.init_cards_position_tile(
-		cardManager.PLAYER_B_CARD_AREA_SIZE,
-		cardManager.PLAYER_B_CARD_AREA_POS,
-		10)
-	for i in range(pos_array_player_a.size()):
-		var position = pos_array_player_a[i]
-		var card = cards.pop_back()
-		# card.update_card()
-		cards_to_animate.append({"card": card, "position": position})
-	
+										cardManager.PLAYER_B_CARD_AREA_SIZE,
+										cardManager.PLAYER_B_CARD_AREA_POS,
+										10)
+
 	var pos_array_player_b = cardManager.init_cards_position_tile(
-		cardManager.PlAYER_A_CARD_AREA_SIZE,
-		cardManager.PLAYER_A_CARD_AREA_POS,
-		10)
-	for i in range(pos_array_player_b.size()):
-		var position = pos_array_player_b[i]
-		var card = cards.pop_back()
-		# card.update_card()
-		cards_to_animate.append({"card": card, "position": position})
+										cardManager.PlAYER_A_CARD_AREA_SIZE,
+										cardManager.PLAYER_A_CARD_AREA_POS,
+										10)
+
+	for i in range(pos_array_player_a.size() + pos_array_player_b.size()):
+		# A和B玩家轮流发牌
+		if i % 2 == 0:
+			cards_to_animate.append({"card": cards.pop_back(), "position": pos_array_player_a.pop_front()})
+		else:
+			cards_to_animate.append({"card": cards.pop_back(), "position": pos_array_player_b.pop_front()})
 
 	for i in range(cardManager.PUBLIC_CARDS_POS.size()):
 		var position = cardManager.PUBLIC_CARDS_POS[i]
