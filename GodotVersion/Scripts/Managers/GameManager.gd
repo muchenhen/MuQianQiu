@@ -51,6 +51,7 @@ func start_new_game():
 		card.name = "Card_" + str(card.ID)
 		# 添加到Cards节点下
 		current_scene.get_node("Cards").add_child(card)
+		card.set_card_back()
 
 # 同步加载场景
 func load_scene(scene):

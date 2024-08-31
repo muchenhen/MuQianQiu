@@ -21,4 +21,10 @@ position = Vector2(960, 540)
 
 [node name="Cards" type="Node" parent="."]
 
+[node name="ColorRect" type="ColorRect" parent="Cards"]
+offset_left = 1304.0
+offset_top = 376.0
+offset_right = 1736.0
+offset_bottom = 696.0
+
 [node name="UI" type="Node" parent="."]

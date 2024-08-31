@@ -1,5 +1,5 @@
 @tool
-extends Sprite2D
+extends TextureButton
 
 var ID: int = 201
 var Name: String = "阿阮"
@@ -14,10 +14,13 @@ var Special: bool = false
 const CARD_WIDTH: int = 240
 const CARD_HEIGHT: int = 320
 
-@onready var sprite: Sprite2D = $Sprite2D
+const BACK_TEXTURE_PATH: String = "res://Textures/Cards/Tex_Back.png"
+
+var back_texture: Texture = null
 
 func _ready() -> void:
 	print("Card ready: " + Name)
+	back_texture = load(BACK_TEXTURE_PATH)
 	update_card()
 
 func initialize(p_id: int, p_name: String, p_pinyin_name: String, p_score: int, p_season: String, p_base_id: int, p_special: bool) -> void:
@@ -39,14 +42,14 @@ func _load_image() -> void:
 	var path = "res://Textures/Cards/" + Type + "/Tex_" + PinyinName + ".png"
 	var loaded_texture = load(path)
 	if loaded_texture:
-		self.texture = loaded_texture
+		self.texture_normal  = loaded_texture
 	else:
 		print("Failed to load texture: " + path + ". Will use default texture instead.")
-		self.texture = load("res://Textures/Cards/2/Tex_ARuan.png")
+		self.texture_normal  = load("res://Textures/Cards/2/Tex_ARuan.png")
 
 func set_pinyin_name(value: String) -> void:
 	PinyinName = value
 	update_card()
 
-func get_size() -> Vector2:
-	return Vector2(CARD_WIDTH, CARD_HEIGHT)
+func set_card_back() -> void:
+	self.texture_normal  = back_texture
