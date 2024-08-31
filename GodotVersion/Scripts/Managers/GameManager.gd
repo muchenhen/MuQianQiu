@@ -9,6 +9,8 @@ var sc_start = preload("res://scenes/sc_start.tscn")
 var sc_main = preload("res://scenes/sc_main.tscn")
 var current_scene = null
 
+var current_all_cards
+
 static var instance: GameManager = null
 
 func _ready():
@@ -36,14 +38,36 @@ func start_new_game():
 	load_scene(sc_main)
 
 	var cards = cardManager.create_cards_for_this_game()
+	current_all_cards = cards
 	cardManager.init_cards_position_to_public_area(cards)
-	# 将卡牌添加到场景 垂直位置为屏幕中央，水平位置均匀分布但是左右距离屏幕边缘200
 	for i in range(cards.size()):
 		var card = cards[i]
 		card.name = "Card_" + str(card.ID)
-		# 添加到Cards节点下
 		current_scene.get_node("Cards").add_child(card)
 		card.set_card_back()
+
+	# 进入发牌流程 持续一段时间 结束后才能让玩家操作
+	send_card_for_play(cards)
+
+func send_card_for_play(cards):
+	var pos_array_player_a = cardManager.init_cards_position_tile(
+		cardManager.PLAYER_B_CARD_AREA_SIZE,
+		cardManager.PLAYER_B_CARD_AREA_POS,
+		10)
+	for i in range(pos_array_player_a.size()):
+		var position = pos_array_player_a[i]
+		var card = cards.pop_back()
+		card.position = position
+		card.update_card()
+	var pos_array_player_b = cardManager.init_cards_position_tile(
+		cardManager.PlAYER_A_CARD_AREA_SIZE,
+		cardManager.PLAYER_A_CARD_AREA_POS,
+		10)
+	for i in range(pos_array_player_b.size()):
+		var position = pos_array_player_b[i]
+		var card = cards.pop_back()
+		card.position = position
+		card.update_card()
 
 # 同步加载场景
 func load_scene(scene):

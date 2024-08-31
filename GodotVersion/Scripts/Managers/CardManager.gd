@@ -12,6 +12,14 @@ const PUBLIC_CARD_AREA_SIZE: Vector2 = Vector2(450, 256)
 const CARD_WIDTH: int = 192
 const CARD_HEIGHT: int = 256
 
+# 玩家B区域
+const PLAYER_B_CARD_AREA_POS: Vector2 = Vector2(384, 64)
+const PLAYER_B_CARD_AREA_SIZE: Vector2 = Vector2(1152, 256)
+
+# 玩家A区域
+const PLAYER_A_CARD_AREA_POS: Vector2 = Vector2(384, 768)
+const PlAYER_A_CARD_AREA_SIZE: Vector2 = Vector2(1152, 256)
+
 
 var tableManager = TableManager.get_instance()
 
@@ -62,26 +70,29 @@ func init_cards_position_to_public_area(cards):
 	if card_count == 0:
 		return
 
-	# 计算最右边卡片的左边缘位置
-	var rightmost_pos_x = PUBLIC_CARD_AREA_POS.x + PUBLIC_CARD_AREA_SIZE.x - CARD_WIDTH
-
-	# 计算间隔
-	var gap_width = (PUBLIC_CARD_AREA_SIZE.x - CARD_WIDTH) / (card_count - 1)
-
+	var pos_array = init_cards_position_tile(PUBLIC_CARD_AREA_SIZE, PUBLIC_CARD_AREA_POS, card_count)
 	# 从左到右放置卡片
-	var current_x = PUBLIC_CARD_AREA_POS.x
 	for i in range(card_count):
 		var card = cards[i]
-		if i != 0:
-			current_x += gap_width
-
-		# 如果当前位置已经超过最右位置，则将卡片放在最右边
-		print("当前X坐标: ", current_x, "最右边位置: ", rightmost_pos_x)
-		if current_x < rightmost_pos_x:
-			card.position.x = current_x
-		else:
-			card.position.x = rightmost_pos_x
-
+		card.position.x = pos_array[i].x
 		# 设置Y坐标（垂直居中）
 		card.position.y = PUBLIC_CARD_AREA_POS.y
-		print("卡牌位置: ", card.position)
+
+func init_cards_position_tile(area_size:Vector2, area_pos:Vector2, card_count:int) -> Array:
+	# 最右的位置
+	var rightmost_pos_x = area_pos.x + area_size.x - CARD_WIDTH
+
+	var gap_width = (area_size.x - CARD_WIDTH) / (card_count - 1)
+
+	var card_pos_array = []
+	var current_x = area_pos.x
+	for i in range(card_count):
+		if i != 0:
+			current_x += gap_width
+		
+		if current_x < rightmost_pos_x:
+			card_pos_array.push_back(Vector2(current_x, area_pos.y))
+		else:
+			card_pos_array.push_back(Vector2(rightmost_pos_x, area_pos.y))
+	
+	return card_pos_array

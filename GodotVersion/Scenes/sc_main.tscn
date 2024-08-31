@@ -29,5 +29,13 @@ offset_left = 1400.0
 offset_top = 416.0
 offset_right = 1850.0
 offset_bottom = 672.0
+color = Color(1, 0.552941, 1, 1)
+metadata/_edit_lock_ = true
+
+[node name="ColorRect2" type="ColorRect" parent="Cards"]
+offset_left = 384.0
+offset_top = 64.0
+offset_right = 1536.0
+offset_bottom = 320.0
 
 [node name="UI" type="Node" parent="."]
