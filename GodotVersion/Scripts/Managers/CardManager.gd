@@ -20,6 +20,8 @@ const PLAYER_B_CARD_AREA_SIZE: Vector2 = Vector2(1152, 256)
 const PLAYER_A_CARD_AREA_POS: Vector2 = Vector2(384, 768)
 const PlAYER_A_CARD_AREA_SIZE: Vector2 = Vector2(1152, 256)
 
+# 公共牌堆的八张牌的位置
+var PUBLIC_CARDS_POS = []
 
 var tableManager = TableManager.get_instance()
 
@@ -34,6 +36,10 @@ static func get_instance() -> CardManager:
 		instance = CardManager.new()
 	return instance
 
+func collect_public_deal_cards_pos(cards_pos:Array):
+	for i in range(cards_pos.size()):
+		var pos = cards_pos[i]
+		PUBLIC_CARDS_POS.append(pos)
 
 func collect_cardIDs_for_this_game(types:Array) -> void:
 	var cards = tableManager.get_table("Cards")

@@ -53,7 +53,7 @@ offset_right = 1384.0
 offset_bottom = 672.0
 metadata/_edit_lock_ = true
 
-[node name="PublicDealCard" type="ColorRect" parent="Cards"]
+[node name="PublicDealCard1" type="ColorRect" parent="Cards"]
 visible = false
 offset_left = 328.0
 offset_top = 416.0

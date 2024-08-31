@@ -9,7 +9,7 @@ func _process(delta):
 		if animated_objects[obj].has("active") and animated_objects[obj]["active"]:
 			_update_animation(obj, delta)
 
-func start_linear_movement(obj: Node, target: Vector2, duration: float):
+func start_linear_movement(obj: Node, target: Vector2, duration: float, callback: Callable = Callable(), callback_args: Array = []):
 	var start_pos = obj.global_position
 	animated_objects[obj] = {
 		"type": "linear_movement",
@@ -17,10 +17,12 @@ func start_linear_movement(obj: Node, target: Vector2, duration: float):
 		"target": target,
 		"duration": duration,
 		"elapsed_time": 0,
-		"active": true
+		"active": true,
+		"callback": callback,
+		"callback_args": callback_args
 	}
 
-func start_parabolic_movement(obj: Node, target: Vector2, height: float, duration: float):
+func start_parabolic_movement(obj: Node, target: Vector2, height: float, duration: float, callback: Callable = Callable(), callback_args: Array = []):
 	var start_pos = obj.global_position
 	animated_objects[obj] = {
 		"type": "parabolic_movement",
@@ -29,10 +31,12 @@ func start_parabolic_movement(obj: Node, target: Vector2, height: float, duratio
 		"height": height,
 		"duration": duration,
 		"elapsed_time": 0,
-		"active": true
+		"active": true,
+		"callback": callback,
+		"callback_args": callback_args
 	}
 
-func start_circular_movement(obj: Node, center: Vector2, radius: float, start_angle: float, duration: float):
+func start_circular_movement(obj: Node, center: Vector2, radius: float, start_angle: float, duration: float, callback: Callable = Callable(), callback_args: Array = []):
 	animated_objects[obj] = {
 		"type": "circular_movement",
 		"center": center,
@@ -40,10 +44,12 @@ func start_circular_movement(obj: Node, center: Vector2, radius: float, start_an
 		"start_angle": start_angle,
 		"duration": duration,
 		"elapsed_time": 0,
-		"active": true
+		"active": true,
+		"callback": callback,
+		"callback_args": callback_args
 	}
 
-func start_movement_with_scale(obj: Node, target: Vector2, target_scale: Vector2, duration: float):
+func start_movement_with_scale(obj: Node, target: Vector2, target_scale: Vector2, duration: float, callback: Callable = Callable(), callback_args: Array = []):
 	var start_pos = obj.global_position
 	var start_scale = obj.scale
 	animated_objects[obj] = {
@@ -54,28 +60,34 @@ func start_movement_with_scale(obj: Node, target: Vector2, target_scale: Vector2
 		"target_scale": target_scale,
 		"duration": duration,
 		"elapsed_time": 0,
-		"active": true
+		"active": true,
+		"callback": callback,
+		"callback_args": callback_args
 	}
 
-func start_rotation(obj: Node, speed: float, duration: float):
+func start_rotation(obj: Node, speed: float, duration: float, callback: Callable = Callable(), callback_args: Array = []):
 	animated_objects[obj] = {
 		"type": "rotation",
 		"speed": speed,
 		"duration": duration,
 		"elapsed_time": 0,
-		"active": true
+		"active": true,
+		"callback": callback,
+		"callback_args": callback_args
 	}
 
-func start_spread_out_movement(obj: Node, center: Vector2, radius: float, target_angle: float, duration: float):
+func start_spread_out_movement(obj: Node, center: Vector2, radius: float, target_angle: float, duration: float, callback: Callable = Callable(), callback_args: Array = []):
 	animated_objects[obj] = {
 		"type": "spread_out_movement",
 		"center": center,
 		"radius": radius,
-		"start_angle": target_angle,  # 起始角度就是目标角度，因为我们只想让卡片沿半径方向移动
+		"start_angle": target_angle,
 		"target_angle": target_angle,
 		"duration": duration,
 		"elapsed_time": 0,
-		"active": true
+		"active": true,
+		"callback": callback,
+		"callback_args": callback_args
 	}
 
 func _update_animation(obj: Node, delta: float):
@@ -116,6 +128,8 @@ func _update_animation(obj: Node, delta: float):
 
 func _end_animation(obj: Node):
 	animated_objects[obj]["active"] = false
+	if animated_objects[obj]["callback"].is_valid():
+		animated_objects[obj]["callback"].callv(animated_objects[obj]["callback_args"])
 
 func is_object_animating(obj: Node) -> bool:
 	return animated_objects.has(obj) and animated_objects[obj]["active"]

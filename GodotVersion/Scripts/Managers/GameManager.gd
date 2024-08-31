@@ -30,6 +30,7 @@ func _ready():
 		animation_timer.one_shot = true
 		animation_timer.connect("timeout", Callable(self, "animate_next_card"))
 		add_child(animation_timer)
+
 	else:
 		return
 	
@@ -60,6 +61,14 @@ func start_new_game():
 		current_scene.get_node("Cards").add_child(card)
 		card.set_card_back()
 
+	# 收集公共牌区域的位置
+	var public_deal_cards = []
+	for i in range(1, 9):
+		var node_name = "PublicDealCard" + str(i)
+		var pos = current_scene.get_node("Cards").get_node(node_name).position
+		public_deal_cards.push_back(pos)
+	cardManager.collect_public_deal_cards_pos(public_deal_cards)
+
 	# 进入发牌流程 持续一段时间 结束后才能让玩家操作
 	send_card_for_play(cards)
 
@@ -74,7 +83,7 @@ func send_card_for_play(cards):
 	for i in range(pos_array_player_a.size()):
 		var position = pos_array_player_a[i]
 		var card = cards.pop_back()
-		card.update_card()
+		# card.update_card()
 		cards_to_animate.append({"card": card, "position": position})
 	
 	var pos_array_player_b = cardManager.init_cards_position_tile(
@@ -84,7 +93,12 @@ func send_card_for_play(cards):
 	for i in range(pos_array_player_b.size()):
 		var position = pos_array_player_b[i]
 		var card = cards.pop_back()
-		card.update_card()
+		# card.update_card()
+		cards_to_animate.append({"card": card, "position": position})
+
+	for i in range(cardManager.PUBLIC_CARDS_POS.size()):
+		var position = cardManager.PUBLIC_CARDS_POS[i]
+		var card = cards.pop_back()
 		cards_to_animate.append({"card": card, "position": position})
 	
 	# 开始第一张卡的动画
@@ -96,12 +110,12 @@ func animate_next_card():
 		var card = card_data["card"]
 		var position = card_data["position"]
 		
-		animation_manager.start_parabolic_movement(card, position, 100, 2)
+		animation_manager.start_parabolic_movement(card, position, 100, 1, Callable(self, "send_card_anim_end"), [card])
 		current_card_index += 1
 		
 		# 设置下一张卡片动画的延迟
 		# 这里设置为0.5秒，你可以根据需要调整
-		animation_timer.start(0.5)
+		animation_timer.start(0.25)
 	else:
 		# 所有卡片动画播放完毕
 		print("All cards animated")
@@ -110,6 +124,10 @@ func animate_next_card():
 func stop_animation_sequence():
 	animation_timer.stop()
 	current_card_index = cards_to_animate.size()  # 这将阻止进一步的动画
+
+func send_card_anim_end(card):
+	card.update_card()
+	
 
 # 同步加载场景
 func load_scene(scene):
