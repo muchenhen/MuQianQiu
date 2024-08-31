@@ -2,14 +2,18 @@ extends Node
 
 class_name GameManager
 
-var tableManager = TableManager.get_instance()
-var cardManager = CardManager.get_instance()
+var table_manager = TableManager.get_instance()
+var card_manager = CardManager.get_instance()
+
+var input_manager: InputManager
+
+var animation_manager: AnimationManager
+
 
 var sc_start = preload("res://scenes/sc_start.tscn")
 var sc_main = preload("res://scenes/sc_main.tscn")
 var current_scene = null
 
-var animation_manager: AnimationManager
 
 var current_all_cards
 
@@ -26,6 +30,9 @@ func _ready():
 		animation_manager = AnimationManager.new()
 		add_child(animation_manager)
 
+		input_manager = InputManager.new()
+		add_child(input_manager)
+
 		animation_timer = Timer.new()
 		animation_timer.one_shot = true
 		animation_timer.connect("timeout", Callable(self, "animate_next_card"))
@@ -35,26 +42,28 @@ func _ready():
 		return
 	
 
-	tableManager.load_csv("res://Tables/Cards.csv")
+	table_manager.load_csv("res://Tables/Cards.csv")
 	
 	set_process_mode(Node.PROCESS_MODE_ALWAYS)
 	
 	# 确保在准备就绪后立即加载开始场景
 	call_deferred("load_start_scene")
+	# input_manager.block_input()
+	
 
 # 开始新游戏
 func start_new_game():
 	print("开始新游戏")
 	
-	cardManager.collect_cardIDs_for_this_game([2,3])
-	print("本局游戏卡牌 ID: ", cardManager.cardIDs)
-	cardManager.shuffle_cardIDs()
+	card_manager.collect_cardIDs_for_this_game([2,3])
+	print("本局游戏卡牌 ID: ", card_manager.cardIDs)
+	card_manager.shuffle_cardIDs()
 	
 	load_scene(sc_main)
 
-	var cards = cardManager.create_cards_for_this_game()
+	var cards = card_manager.create_cards_for_this_game()
 	current_all_cards = cards
-	cardManager.init_cards_position_to_public_area(cards)
+	card_manager.init_cards_position_to_public_area(cards)
 	for i in range(cards.size()):
 		var card = cards[i]
 		card.name = "Card_" + str(card.ID)
@@ -70,23 +79,24 @@ func start_new_game():
 		public_deal_cards_pos.push_back(card.position)
 		public_deal_cards_rotation.push_back(card.rotation)
 
-	cardManager.collect_public_deal_cards_pos(public_deal_cards_pos, public_deal_cards_rotation)
+	card_manager.collect_public_deal_cards_pos(public_deal_cards_pos, public_deal_cards_rotation)
 
 	# 进入发牌流程 持续一段时间 结束后才能让玩家操作
+	input_manager.block_input()
 	send_card_for_play(cards)
 
 func send_card_for_play(cards):
 	cards_to_animate = []
 	current_card_index = 0
 	
-	var pos_array_player_a = cardManager.init_cards_position_tile(
-										cardManager.PLAYER_B_CARD_AREA_SIZE,
-										cardManager.PLAYER_B_CARD_AREA_POS,
+	var pos_array_player_a = card_manager.init_cards_position_tile(
+										card_manager.PLAYER_B_CARD_AREA_SIZE,
+										card_manager.PLAYER_B_CARD_AREA_POS,
 										10)
 
-	var pos_array_player_b = cardManager.init_cards_position_tile(
-										cardManager.PlAYER_A_CARD_AREA_SIZE,
-										cardManager.PLAYER_A_CARD_AREA_POS,
+	var pos_array_player_b = card_manager.init_cards_position_tile(
+										card_manager.PlAYER_A_CARD_AREA_SIZE,
+										card_manager.PLAYER_A_CARD_AREA_POS,
 										10)
 
 	for i in range(pos_array_player_a.size() + pos_array_player_b.size()):
@@ -96,9 +106,9 @@ func send_card_for_play(cards):
 		else:
 			cards_to_animate.append({"card": cards.pop_back(), "position": pos_array_player_b.pop_front()})
 
-	for i in range(cardManager.PUBLIC_CARDS_POS.size()):
-		var position = cardManager.PUBLIC_CARDS_POS[i]
-		var rotation = cardManager.PUBLIC_CRADS_ROTATION[i]
+	for i in range(card_manager.PUBLIC_CARDS_POS.size()):
+		var position = card_manager.PUBLIC_CARDS_POS[i]
+		var rotation = card_manager.PUBLIC_CRADS_ROTATION[i]
 		var card = cards.pop_back()
 		cards_to_animate.append({"card": card, "position": position, "rotation":rotation })
 	
@@ -125,6 +135,7 @@ func animate_next_card():
 	else:
 		# 所有卡片动画播放完毕
 		print("All cards animated")
+		input_manager.allow_input()
 
 # 如果你需要中止动画序列
 func stop_animation_sequence():
