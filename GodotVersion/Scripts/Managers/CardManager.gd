@@ -48,9 +48,11 @@ func collect_cardIDs_for_this_game(types:Array) -> void:
 	for card_id in cards.keys():
 		if card_id == 0:
 			continue
+		var card_info = cards[card_id]
 		var type = int(str(card_id)[0])
 		if types.find(type) != -1:
-			cardIDs.append(card_id)
+			if not card_info["Special"]:
+				cardIDs.append(card_id)
 
 func shuffle_cardIDs() -> void:
 	cardIDs.shuffle()
