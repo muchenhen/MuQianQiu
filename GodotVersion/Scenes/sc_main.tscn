@@ -38,4 +38,10 @@ offset_top = 64.0
 offset_right = 1536.0
 offset_bottom = 320.0
 
+[node name="ColorRect3" type="ColorRect" parent="Cards"]
+offset_left = 384.0
+offset_top = 768.0
+offset_right = 1536.0
+offset_bottom = 1024.0
+
 [node name="UI" type="Node" parent="."]
