@@ -4,6 +4,8 @@
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_lc1tl")
+metadata/_edit_horizontal_guides_ = [360.0, 720.0]
+metadata/_edit_vertical_guides_ = [320.0, 1600.0]
 
 [node name="BGColor" type="ColorRect" parent="."]
 custom_minimum_size = Vector2(1920, 1080)
@@ -15,6 +17,7 @@ offset_bottom = 1080.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.745098, 0.647059, 0.32549, 1)
+metadata/_edit_lock_ = true
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(960, 540)
@@ -22,9 +25,9 @@ position = Vector2(960, 540)
 [node name="Cards" type="Node" parent="."]
 
 [node name="ColorRect" type="ColorRect" parent="Cards"]
-offset_left = 1304.0
-offset_top = 376.0
-offset_right = 1736.0
-offset_bottom = 696.0
+offset_left = 1400.0
+offset_top = 416.0
+offset_right = 1850.0
+offset_bottom = 672.0
 
 [node name="UI" type="Node" parent="."]

@@ -11,15 +11,11 @@ var Describe: String = "楚梦沉醉朝复暮，\n清歌远上巫山低。"
 var BaseID: int = 201
 var Special: bool = false
 
-const CARD_WIDTH: int = 240
-const CARD_HEIGHT: int = 320
-
 const BACK_TEXTURE_PATH: String = "res://Textures/Cards/Tex_Back.png"
 
 var back_texture: Texture = null
 
 func _ready() -> void:
-	print("Card ready: " + Name)
 	back_texture = load(BACK_TEXTURE_PATH)
 	update_card()
 

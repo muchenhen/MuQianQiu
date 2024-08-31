@@ -4,15 +4,9 @@
 [ext_resource type="Script" path="res://Scripts/Objects/Card.gd" id="2_67uyw"]
 
 [node name="Card" type="TextureButton"]
-offset_left = -96.0
-offset_top = -128.0
-offset_right = 96.0
-offset_bottom = 128.0
+offset_right = 192.0
+offset_bottom = 256.0
 texture_normal = ExtResource("1_jlb4m")
-texture_pressed = ExtResource("1_jlb4m")
-texture_hover = ExtResource("1_jlb4m")
-texture_disabled = ExtResource("1_jlb4m")
-texture_focused = ExtResource("1_jlb4m")
 ignore_texture_size = true
 stretch_mode = 0
 script = ExtResource("2_67uyw")

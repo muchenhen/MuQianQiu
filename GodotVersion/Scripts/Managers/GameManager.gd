@@ -36,18 +36,10 @@ func start_new_game():
 	load_scene(sc_main)
 
 	var cards = cardManager.create_cards_for_this_game()
+	cardManager.init_cards_position_to_public_area(cards)
 	# 将卡牌添加到场景 垂直位置为屏幕中央，水平位置均匀分布但是左右距离屏幕边缘200
 	for i in range(cards.size()):
 		var card = cards[i]
-		var viewport_size = get_viewport().size
-		var width = viewport_size.x
-		var height = viewport_size.y
-		var card_width = card.get_size().x
-		var card_height = card.get_size().y
-		var x = 200 + (width - 200 - card_width) / (cards.size() - 1) * i
-		# 垂直位置居中的情况下一个向上偏移卡牌高度的一半 一个向下偏移卡牌高度的一半
-		var y = height / 2 - card_height / 2
-		card.set_position(Vector2(x, y))
 		card.name = "Card_" + str(card.ID)
 		# 添加到Cards节点下
 		current_scene.get_node("Cards").add_child(card)
