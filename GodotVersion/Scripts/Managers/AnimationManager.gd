@@ -18,11 +18,25 @@ func _process(delta):
 		if animated_objects[obj].has("active") and animated_objects[obj]["active"]:
 			_update_animation(obj, delta)
 
-func start_linear_movement(obj: Node, target: Vector2, duration: float, ease_type: EaseType = EaseType.LINEAR, callback: Callable = Callable(), callback_args: Array = []):
+func start_linear_movement_pos(obj: Node, target: Vector2, duration: float, ease_type: EaseType = EaseType.LINEAR, callback: Callable = Callable(), callback_args: Array = []):
 	var start_pos = obj.global_position
 	animated_objects[obj] = {
-		"type": "linear_movement",
+		"type": "linear_movement_pos",
 		"start_pos": start_pos,
+		"target": target,
+		"duration": duration,
+		"elapsed_time": 0,
+		"active": true,
+		"ease_type": ease_type,
+		"callback": callback,
+		"callback_args": callback_args
+	}
+
+func start_linear_movement_rotation(obj: Node, target: float, duration: float, ease_type: EaseType = EaseType.LINEAR, callback: Callable = Callable(), callback_args: Array = []):
+	var start_rotation = obj.rotation
+	animated_objects[obj] = {
+		"type": "linear_movement_rotation",
+		"start_rotation": start_rotation,
 		"target": target,
 		"duration": duration,
 		"elapsed_time": 0,
@@ -75,17 +89,6 @@ func start_movement_with_scale(obj: Node, target: Vector2, target_scale: Vector2
 		"callback_args": callback_args
 	}
 
-func start_rotation(obj: Node, speed: float, duration: float, callback: Callable = Callable(), callback_args: Array = []):
-	animated_objects[obj] = {
-		"type": "rotation",
-		"speed": speed,
-		"duration": duration,
-		"elapsed_time": 0,
-		"active": true,
-		"callback": callback,
-		"callback_args": callback_args
-	}
-
 func start_spread_out_movement(obj: Node, center: Vector2, radius: float, target_angle: float, duration: float, callback: Callable = Callable(), callback_args: Array = []):
 	animated_objects[obj] = {
 		"type": "spread_out_movement",
@@ -106,9 +109,13 @@ func _update_animation(obj: Node, delta: float):
 	var raw_t = min(anim["elapsed_time"] / anim["duration"], 1.0)
 	
 	match anim["type"]:
-		"linear_movement":
+		"linear_movement_pos":
 			var t = _apply_easing(raw_t, anim["ease_type"])
 			obj.global_position = anim["start_pos"].lerp(anim["target"], t)
+
+		"linear_movement_rotation":
+			var t = _apply_easing(raw_t, anim["ease_type"])
+			obj.rotation = lerp_angle(anim["start_rotation"], anim["target"], t)
 		
 		"parabolic_movement":
 			var pos = anim["start_pos"].lerp(anim["target"], raw_t)

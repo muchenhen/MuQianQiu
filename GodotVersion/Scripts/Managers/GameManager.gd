@@ -62,12 +62,15 @@ func start_new_game():
 		card.set_card_back()
 
 	# 收集公共牌区域的位置
-	var public_deal_cards = []
+	var public_deal_cards_pos = []
+	var public_deal_cards_rotation = []
 	for i in range(1, 9):
 		var node_name = "PublicDealCard" + str(i)
-		var pos = current_scene.get_node("Cards").get_node(node_name).position
-		public_deal_cards.push_back(pos)
-	cardManager.collect_public_deal_cards_pos(public_deal_cards)
+		var card = current_scene.get_node("Cards").get_node(node_name)
+		public_deal_cards_pos.push_back(card.position)
+		public_deal_cards_rotation.push_back(card.rotation)
+
+	cardManager.collect_public_deal_cards_pos(public_deal_cards_pos, public_deal_cards_rotation)
 
 	# 进入发牌流程 持续一段时间 结束后才能让玩家操作
 	send_card_for_play(cards)
@@ -98,8 +101,9 @@ func send_card_for_play(cards):
 
 	for i in range(cardManager.PUBLIC_CARDS_POS.size()):
 		var position = cardManager.PUBLIC_CARDS_POS[i]
+		var rotation = cardManager.PUBLIC_CRADS_ROTATION[i]
 		var card = cards.pop_back()
-		cards_to_animate.append({"card": card, "position": position})
+		cards_to_animate.append({"card": card, "position": position, "rotation":rotation })
 	
 	# 开始第一张卡的动画
 	animate_next_card()
@@ -109,8 +113,13 @@ func animate_next_card():
 		var card_data = cards_to_animate[current_card_index]
 		var card = card_data["card"]
 		var position = card_data["position"]
+
+		animation_manager.start_linear_movement_pos(card, position, 1, animation_manager.EaseType.EASE_IN_OUT, Callable(self, "send_card_anim_end"), [card])
 		
-		animation_manager.start_linear_movement(card, position, 1, animation_manager.EaseType.EASE_IN_OUT, Callable(self, "send_card_anim_end"), [card])
+		if "rotation" in card_data:
+			var rotation = card_data["rotation"]
+			animation_manager.start_linear_movement_rotation(card, rotation, 1, animation_manager.EaseType.EASE_IN_OUT)
+
 		current_card_index += 1
 		
 		# 设置下一张卡片动画的延迟
