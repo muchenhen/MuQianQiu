@@ -9,16 +9,30 @@ var sc_start = preload("res://scenes/sc_start.tscn")
 var sc_main = preload("res://scenes/sc_main.tscn")
 var current_scene = null
 
+var animation_manager: AnimationManager
+
 var current_all_cards
+
+var cards_to_animate = []
+var current_card_index = 0
+var animation_timer: Timer
+
 
 static var instance: GameManager = null
 
 func _ready():
 	if instance == null:
 		instance = self
+		animation_manager = AnimationManager.new()
+		add_child(animation_manager)
+
+		animation_timer = Timer.new()
+		animation_timer.one_shot = true
+		animation_timer.connect("timeout", Callable(self, "animate_next_card"))
+		add_child(animation_timer)
 	else:
-		queue_free()
 		return
+	
 
 	tableManager.load_csv("res://Tables/Cards.csv")
 	
@@ -50,6 +64,9 @@ func start_new_game():
 	send_card_for_play(cards)
 
 func send_card_for_play(cards):
+	cards_to_animate = []
+	current_card_index = 0
+	
 	var pos_array_player_a = cardManager.init_cards_position_tile(
 		cardManager.PLAYER_B_CARD_AREA_SIZE,
 		cardManager.PLAYER_B_CARD_AREA_POS,
@@ -57,8 +74,9 @@ func send_card_for_play(cards):
 	for i in range(pos_array_player_a.size()):
 		var position = pos_array_player_a[i]
 		var card = cards.pop_back()
-		card.position = position
 		card.update_card()
+		cards_to_animate.append({"card": card, "position": position})
+	
 	var pos_array_player_b = cardManager.init_cards_position_tile(
 		cardManager.PlAYER_A_CARD_AREA_SIZE,
 		cardManager.PLAYER_A_CARD_AREA_POS,
@@ -66,8 +84,32 @@ func send_card_for_play(cards):
 	for i in range(pos_array_player_b.size()):
 		var position = pos_array_player_b[i]
 		var card = cards.pop_back()
-		card.position = position
 		card.update_card()
+		cards_to_animate.append({"card": card, "position": position})
+	
+	# 开始第一张卡的动画
+	animate_next_card()
+
+func animate_next_card():
+	if current_card_index < cards_to_animate.size():
+		var card_data = cards_to_animate[current_card_index]
+		var card = card_data["card"]
+		var position = card_data["position"]
+		
+		animation_manager.start_parabolic_movement(card, position, 100, 2)
+		current_card_index += 1
+		
+		# 设置下一张卡片动画的延迟
+		# 这里设置为0.5秒，你可以根据需要调整
+		animation_timer.start(0.5)
+	else:
+		# 所有卡片动画播放完毕
+		print("All cards animated")
+
+# 如果你需要中止动画序列
+func stop_animation_sequence():
+	animation_timer.stop()
+	current_card_index = cards_to_animate.size()  # 这将阻止进一步的动画
 
 # 同步加载场景
 func load_scene(scene):

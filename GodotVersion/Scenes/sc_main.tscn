@@ -24,7 +24,7 @@ position = Vector2(960, 540)
 
 [node name="Cards" type="Node" parent="."]
 
-[node name="ColorRect" type="ColorRect" parent="Cards"]
+[node name="Public" type="ColorRect" parent="Cards"]
 offset_left = 1400.0
 offset_top = 416.0
 offset_right = 1850.0
@@ -32,16 +32,97 @@ offset_bottom = 672.0
 color = Color(1, 0.552941, 1, 1)
 metadata/_edit_lock_ = true
 
-[node name="ColorRect2" type="ColorRect" parent="Cards"]
+[node name="BHand" type="ColorRect" parent="Cards"]
 offset_left = 384.0
 offset_top = 64.0
 offset_right = 1536.0
 offset_bottom = 320.0
+metadata/_edit_lock_ = true
 
-[node name="ColorRect3" type="ColorRect" parent="Cards"]
+[node name="AHand" type="ColorRect" parent="Cards"]
 offset_left = 384.0
 offset_top = 768.0
 offset_right = 1536.0
 offset_bottom = 1024.0
+metadata/_edit_lock_ = true
+
+[node name="PublicDeal" type="ColorRect" parent="Cards"]
+offset_left = 328.0
+offset_top = 416.0
+offset_right = 1384.0
+offset_bottom = 672.0
+metadata/_edit_lock_ = true
+
+[node name="PublicDealCard" type="ColorRect" parent="Cards"]
+visible = false
+offset_left = 328.0
+offset_top = 416.0
+offset_right = 520.0
+offset_bottom = 672.0
+rotation = -0.18675
+color = Color(1, 0, 0, 1)
+
+[node name="PublicDealCard2" type="ColorRect" parent="Cards"]
+visible = false
+offset_left = 448.0
+offset_top = 440.0
+offset_right = 640.0
+offset_bottom = 696.0
+rotation = 0.113446
+color = Color(1, 0, 0, 1)
+
+[node name="PublicDealCard3" type="ColorRect" parent="Cards"]
+visible = false
+offset_left = 551.0
+offset_top = 384.0
+offset_right = 743.0
+offset_bottom = 640.0
+rotation = -0.123918
+color = Color(1, 0, 0, 1)
+
+[node name="PublicDealCard4" type="ColorRect" parent="Cards"]
+visible = false
+offset_left = 649.0
+offset_top = 472.0
+offset_right = 841.0
+offset_bottom = 728.0
+rotation = -0.261799
+color = Color(1, 0, 0, 1)
+
+[node name="PublicDealCard5" type="ColorRect" parent="Cards"]
+visible = false
+offset_left = 791.0
+offset_top = 376.0
+offset_right = 983.0
+offset_bottom = 632.0
+rotation = -0.0795466
+color = Color(1, 0, 0, 1)
+
+[node name="PublicDealCard6" type="ColorRect" parent="Cards"]
+visible = false
+offset_left = 956.0
+offset_top = 432.0
+offset_right = 1148.0
+offset_bottom = 688.0
+rotation = 0.162868
+color = Color(1, 0, 0, 1)
+
+[node name="PublicDealCard7" type="ColorRect" parent="Cards"]
+visible = false
+offset_left = 1091.0
+offset_top = 368.0
+offset_right = 1283.0
+offset_bottom = 624.0
+rotation = 0.261799
+color = Color(1, 0, 0, 1)
+
+[node name="PublicDealCard8" type="ColorRect" parent="Cards"]
+visible = false
+offset_left = 1176.0
+offset_top = 456.0
+offset_right = 1368.0
+offset_bottom = 712.0
+rotation = -0.0715585
+color = Color(1, 0, 0, 1)
 
 [node name="UI" type="Node" parent="."]

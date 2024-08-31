@@ -9,7 +9,7 @@ func _process(delta):
 		if animated_objects[obj].has("active") and animated_objects[obj]["active"]:
 			_update_animation(obj, delta)
 
-func start_linear_movement(obj: Node2D, target: Vector2, duration: float):
+func start_linear_movement(obj: Node, target: Vector2, duration: float):
 	var start_pos = obj.global_position
 	animated_objects[obj] = {
 		"type": "linear_movement",
@@ -20,7 +20,7 @@ func start_linear_movement(obj: Node2D, target: Vector2, duration: float):
 		"active": true
 	}
 
-func start_parabolic_movement(obj: Node2D, target: Vector2, height: float, duration: float):
+func start_parabolic_movement(obj: Node, target: Vector2, height: float, duration: float):
 	var start_pos = obj.global_position
 	animated_objects[obj] = {
 		"type": "parabolic_movement",
@@ -32,7 +32,7 @@ func start_parabolic_movement(obj: Node2D, target: Vector2, height: float, durat
 		"active": true
 	}
 
-func start_circular_movement(obj: Node2D, center: Vector2, radius: float, start_angle: float, duration: float):
+func start_circular_movement(obj: Node, center: Vector2, radius: float, start_angle: float, duration: float):
 	animated_objects[obj] = {
 		"type": "circular_movement",
 		"center": center,
@@ -43,7 +43,7 @@ func start_circular_movement(obj: Node2D, center: Vector2, radius: float, start_
 		"active": true
 	}
 
-func start_movement_with_scale(obj: Node2D, target: Vector2, target_scale: Vector2, duration: float):
+func start_movement_with_scale(obj: Node, target: Vector2, target_scale: Vector2, duration: float):
 	var start_pos = obj.global_position
 	var start_scale = obj.scale
 	animated_objects[obj] = {
@@ -57,7 +57,7 @@ func start_movement_with_scale(obj: Node2D, target: Vector2, target_scale: Vecto
 		"active": true
 	}
 
-func start_rotation(obj: Node2D, speed: float, duration: float):
+func start_rotation(obj: Node, speed: float, duration: float):
 	animated_objects[obj] = {
 		"type": "rotation",
 		"speed": speed,
@@ -66,7 +66,7 @@ func start_rotation(obj: Node2D, speed: float, duration: float):
 		"active": true
 	}
 
-func start_spread_out_movement(obj: Node2D, center: Vector2, radius: float, target_angle: float, duration: float):
+func start_spread_out_movement(obj: Node, center: Vector2, radius: float, target_angle: float, duration: float):
 	animated_objects[obj] = {
 		"type": "spread_out_movement",
 		"center": center,
@@ -78,7 +78,7 @@ func start_spread_out_movement(obj: Node2D, center: Vector2, radius: float, targ
 		"active": true
 	}
 
-func _update_animation(obj: Node2D, delta: float):
+func _update_animation(obj: Node, delta: float):
 	var anim = animated_objects[obj]
 	anim["elapsed_time"] += delta
 	var t = min(anim["elapsed_time"] / anim["duration"], 1.0)
@@ -114,8 +114,8 @@ func _update_animation(obj: Node2D, delta: float):
 	if t >= 1.0:
 		_end_animation(obj)
 
-func _end_animation(obj: Node2D):
+func _end_animation(obj: Node):
 	animated_objects[obj]["active"] = false
 
-func is_object_animating(obj: Node2D) -> bool:
+func is_object_animating(obj: Node) -> bool:
 	return animated_objects.has(obj) and animated_objects[obj]["active"]
