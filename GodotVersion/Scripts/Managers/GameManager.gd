@@ -97,6 +97,7 @@ func start_new_game():
 		card.name = "Card_" + str(card.ID)
 		current_scene.get_node("Cards").add_child(card)
 		card.set_card_back()
+		card.connect("card_clicked", Callable(self, "on_card_clicked"))
 
 	# 收集公共牌区域的位置
 	var public_deal_cards_pos = []
@@ -175,21 +176,34 @@ func animate_next_card():
 		print("发牌完毕")
 		input_manager.allow_input()
 
+# 如果需要中止动画序列
+func stop_animation_sequence():
+	animation_timer.stop()
+	current_card_index = cards_to_animate.size()  # 这将阻止进一步的动画
+
+#  单个发牌动画结束后的回调
+func send_card_anim_end(card):
+	card.update_card()
+
 func change_round():
 	round += 1
 	print("第", round, "轮")
 	
 	# 奇数轮为玩家A操作，偶数轮为玩家B操作
 
+func on_card_clicked(card):
+	print("Card clicked: ", card.Name, " ID: ", card.ID)
+	# 将公共区域手牌全部设置为未选中
+	for key in player_public_hand_cards.keys():
+		player_public_hand_cards[key].card.set_card_unchooesd()
+	# 将公共区域手牌中和当前点击的手牌有相同Season的牌设置为选中
+	for key in player_public_hand_cards.keys():
+		var public_card = player_public_hand_cards[key]
+		if public_card.isEmpty:
+			continue
+		if public_card.card.Season == card.Season:
+			public_card.card.set_card_chooesd()
 
-# 如果需要中止动画序列
-func stop_animation_sequence():
-	animation_timer.stop()
-	current_card_index = cards_to_animate.size()  # 这将阻止进一步的动画
-
-func send_card_anim_end(card):
-	card.update_card()
-	
 
 # 同步加载场景
 func load_scene(scene):

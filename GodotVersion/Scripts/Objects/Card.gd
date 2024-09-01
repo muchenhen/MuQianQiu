@@ -11,6 +11,8 @@ var Describe: String = "楚梦沉醉朝复暮，\n清歌远上巫山低。"
 var BaseID: int = 201
 var Special: bool = false
 
+signal card_clicked(card)
+
 var choosed = false
 
 var is_enable_click = true
@@ -48,6 +50,8 @@ func _on_card_clicked() -> void:
 	# 打印卡牌所有信息
 	print("Card clicked: ", Name, " ID: ", ID, " Type: ", Type, " Score: ", Score, " Season: ", Season, " Describe: ", debug_describe, " BaseID: ", BaseID, " Special: ", Special)
 	change_card_chooesd()
+	# 发送信号
+	emit_signal("card_clicked", self)
 
 func update_card() -> void:
 	_load_image()
