@@ -47,7 +47,22 @@ var cards_to_animate = []
 var current_card_index = 0
 var animation_timer: Timer
 
-var round = 0
+enum GameRound{
+	WAITING = 0,
+	PLAYER_A = 1,
+	PLAYER_B = 2
+}
+
+var current_round = GameRound.WAITING
+
+enum PlayerChooseState{
+	# 未选中任何卡片，此时可以选择手牌
+	CHOOSE_NONE = 0,
+	# 选中一张手牌，此时可以选择公共区域中可选择的牌，或者取消选择，或者选择另一张手牌
+	CHOOSE_HAND = 1,
+	# 选中手牌的基础上，选择了一张公共区域中的牌，确认本回合的选择，切换回合
+	CHOOSE_PUBLIC = 2
+}
 
 
 static var instance: GameManager = null
@@ -119,13 +134,13 @@ func send_card_for_play(cards):
 	current_card_index = 0
 	
 	var pos_array_player_a = card_manager.init_cards_position_tile(
-										card_manager.PLAYER_B_CARD_AREA_SIZE,
-										card_manager.PLAYER_B_CARD_AREA_POS,
+										card_manager.PLAYER_A_CARD_AREA_SIZE,
+										card_manager.PLAYER_A_CARD_AREA_POS,
 										10)
 
 	var pos_array_player_b = card_manager.init_cards_position_tile(
-										card_manager.PlAYER_A_CARD_AREA_SIZE,
-										card_manager.PLAYER_A_CARD_AREA_POS,
+										card_manager.PLAYER_B_CARD_AREA_SIZE,
+										card_manager.PLAYER_B_CARD_AREA_POS,
 										10)
 
 	for i in range(pos_array_player_a.size() + pos_array_player_b.size()):
@@ -170,11 +185,16 @@ func animate_next_card():
 	else:
 		# 所有卡片动画播放完毕
 		print("All cards animated")
-		print("玩家A手牌: ", player_a_hand_cards)
-		print("玩家B手牌: ", player_b_hand_cards)
-		print("公共区域手牌: ", player_public_hand_cards)
+		print("玩家A手牌: ", player_a_hand_cards.keys())
+		print("玩家B手牌: ", player_b_hand_cards.keys())
+		for key in player_public_hand_cards.keys():
+			var public_card = player_public_hand_cards[key]
+			if public_card.isEmpty:
+				continue
+			print("公共区域手牌 ", key, " ID: ", public_card.card.ID)
 		print("发牌完毕")
 		input_manager.allow_input()
+		start_round()
 
 # 如果需要中止动画序列
 func stop_animation_sequence():
@@ -185,11 +205,21 @@ func stop_animation_sequence():
 func send_card_anim_end(card):
 	card.update_card()
 
-func change_round():
-	round += 1
-	print("第", round, "轮")
+func start_round():
+	print("开始新一轮")
 	
-	# 奇数轮为玩家A操作，偶数轮为玩家B操作
+	# 重置所有卡片的选中状态
+	for key in player_public_hand_cards.keys():
+		player_public_hand_cards[key].card.set_card_unchooesd()
+	
+	# 重置当前轮次
+	current_round = GameRound.PLAYER_A
+
+func change_round():
+	if current_round == GameRound.PLAYER_A:
+		current_round = GameRound.PLAYER_B
+	else:
+		current_round = GameRound.PLAYER_A	
 
 func on_card_clicked(card):
 	print("Card clicked: ", card.Name, " ID: ", card.ID)
@@ -203,6 +233,18 @@ func on_card_clicked(card):
 			continue
 		if public_card.card.Season == card.Season:
 			public_card.card.set_card_chooesd()
+	# 如果当前轮次是玩家A 设置玩家A的其他手牌为未选中
+	if current_round == GameRound.PLAYER_A:
+		for key in player_a_hand_cards.keys():
+			if key != card.ID:
+				print("设置玩家A的 ", key, " 为未选中")
+				player_a_hand_cards[key].set_card_unchooesd()
+	# 如果当前轮次是玩家B 设置玩家B的其他手牌为未选中
+	else:
+		for key in player_b_hand_cards.keys():
+			if key != card.ID:
+				player_b_hand_cards[key].set_card_unchooesd()
+
 
 
 # 同步加载场景

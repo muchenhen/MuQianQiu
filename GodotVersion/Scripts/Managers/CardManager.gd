@@ -18,7 +18,7 @@ const PLAYER_B_CARD_AREA_SIZE: Vector2 = Vector2(1152, 256)
 
 # 玩家A区域
 const PLAYER_A_CARD_AREA_POS: Vector2 = Vector2(384, 768)
-const PlAYER_A_CARD_AREA_SIZE: Vector2 = Vector2(1152, 256)
+const PLAYER_A_CARD_AREA_SIZE: Vector2 = Vector2(1152, 256)
 
 # 公共牌堆的八张牌的位置
 var PUBLIC_CARDS_POS = []
