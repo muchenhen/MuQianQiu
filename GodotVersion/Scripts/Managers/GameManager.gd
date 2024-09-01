@@ -17,9 +17,37 @@ var current_scene = null
 
 var current_all_cards
 
+var player_a_hand_cards = {}
+var player_b_hand_cards = {}
+
+class PublicHandCardInfo:
+	var card: Node
+	var position: Vector2
+	var rotation: float
+	var isEmpty: bool
+
+	func _init(p_card = null, p_position = Vector2(), p_rotation = 0, p_isEmpty = true):
+		self.card = p_card
+		self.position = p_position
+		self.rotation = p_rotation
+		self.isEmpty = p_isEmpty
+
+var player_public_hand_cards = {
+	1: PublicHandCardInfo.new(),
+	2: PublicHandCardInfo.new(),
+	3: PublicHandCardInfo.new(),
+	4: PublicHandCardInfo.new(),
+	5: PublicHandCardInfo.new(),
+	6: PublicHandCardInfo.new(),
+	7: PublicHandCardInfo.new(),
+	8: PublicHandCardInfo.new()
+}
+
 var cards_to_animate = []
 var current_card_index = 0
 var animation_timer: Timer
+
+var round = 0
 
 
 static var instance: GameManager = null
@@ -101,15 +129,21 @@ func send_card_for_play(cards):
 
 	for i in range(pos_array_player_a.size() + pos_array_player_b.size()):
 		# A和B玩家轮流发牌
+		var card = cards.pop_back()
 		if i % 2 == 0:
-			cards_to_animate.append({"card": cards.pop_back(), "position": pos_array_player_a.pop_front()})
+			cards_to_animate.append({"card": card, "position": pos_array_player_a.pop_front()})
+			player_a_hand_cards[card.ID] = card
 		else:
-			cards_to_animate.append({"card": cards.pop_back(), "position": pos_array_player_b.pop_front()})
+			cards_to_animate.append({"card": card, "position": pos_array_player_b.pop_front()})
+			player_b_hand_cards[card.ID] = card
 
 	for i in range(card_manager.PUBLIC_CARDS_POS.size()):
 		var position = card_manager.PUBLIC_CARDS_POS[i]
 		var rotation = card_manager.PUBLIC_CRADS_ROTATION[i]
 		var card = cards.pop_back()
+		# 公共卡池的手牌禁止点击
+		card.disable_click()
+		player_public_hand_cards[i + 1] = PublicHandCardInfo.new( card, position, rotation, false)
 		cards_to_animate.append({"card": card, "position": position, "rotation":rotation })
 	
 	# 开始第一张卡的动画
@@ -135,9 +169,20 @@ func animate_next_card():
 	else:
 		# 所有卡片动画播放完毕
 		print("All cards animated")
+		print("玩家A手牌: ", player_a_hand_cards)
+		print("玩家B手牌: ", player_b_hand_cards)
+		print("公共区域手牌: ", player_public_hand_cards)
+		print("发牌完毕")
 		input_manager.allow_input()
 
-# 如果你需要中止动画序列
+func change_round():
+	round += 1
+	print("第", round, "轮")
+	
+	# 奇数轮为玩家A操作，偶数轮为玩家B操作
+
+
+# 如果需要中止动画序列
 func stop_animation_sequence():
 	animation_timer.stop()
 	current_card_index = cards_to_animate.size()  # 这将阻止进一步的动画
@@ -172,7 +217,7 @@ func load_scene(scene):
 	
 	# 打印整个场景树
 	print("当前场景树:")
-	print_scene_tree(get_tree().root)
+	# print_scene_tree(get_tree().root)
 
 # 打印场景树的辅助函数
 func print_scene_tree(node, indent=""):

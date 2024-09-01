@@ -24,6 +24,8 @@ const PlAYER_A_CARD_AREA_SIZE: Vector2 = Vector2(1152, 256)
 var PUBLIC_CARDS_POS = []
 var PUBLIC_CRADS_ROTATION = []
 
+
+
 var tableManager = TableManager.get_instance()
 
 var cardIDs = []
@@ -75,6 +77,7 @@ func create_one_card(card_id:int) -> Node:
 	card.initialize(card_id, card_info)
 	return card
 
+# 初始化公共区域手牌的每一个位置
 func init_cards_position_to_public_area(cards):
 	var card_count = cards.size()
 	if card_count == 0:

@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://b6vosary0xtcn"]
+[gd_scene load_steps=4 format=3 uid="uid://b6vosary0xtcn"]
 
 [ext_resource type="Texture2D" uid="uid://mya44gk3rdrr" path="res://Textures/Cards/2/Tex_ARuan.png" id="1_jlb4m"]
 [ext_resource type="Script" path="res://Scripts/Objects/Card.gd" id="2_67uyw"]
+[ext_resource type="Texture2D" uid="uid://dwxj7konvmmje" path="res://Textures/Cards/Tex_CardGlow.PNG" id="3_mp0un"]
 
 [node name="Card" type="TextureButton"]
 offset_right = 192.0
@@ -10,3 +11,23 @@ texture_normal = ExtResource("1_jlb4m")
 ignore_texture_size = true
 stretch_mode = 0
 script = ExtResource("2_67uyw")
+
+[node name="Image_ChooesdBG" type="TextureRect" parent="."]
+visible = false
+custom_minimum_size = Vector2(192, 256)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -96.0
+offset_top = -128.0
+offset_right = 96.0
+offset_bottom = 128.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.355, 1.355)
+pivot_offset = Vector2(96, 128)
+texture = ExtResource("3_mp0un")
+expand_mode = 1

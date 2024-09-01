@@ -11,12 +11,19 @@ var Describe: String = "楚梦沉醉朝复暮，\n清歌远上巫山低。"
 var BaseID: int = 201
 var Special: bool = false
 
+var choosed = false
+
+var is_enable_click = true
+
+var Image_ChooesdBG : TextureRect = null
+
 const BACK_TEXTURE_PATH: String = "res://Textures/Cards/Tex_Back.png"
 
 var back_texture: Texture = null
 
 func _ready() -> void:
 	back_texture = load(BACK_TEXTURE_PATH)
+	Image_ChooesdBG = get_node("Image_ChooesdBG")
 	# 绑定点击事件
 	connect("pressed", Callable(self, "_on_card_clicked"))
 	update_card()
@@ -34,10 +41,13 @@ func initialize(card_id, card_info) -> void:
 	update_card()
 
 func _on_card_clicked() -> void:
+	if not is_enable_click:
+		return
 	# 打印的时候去掉换行符
 	var debug_describe = Describe.replace("\n", "")
 	# 打印卡牌所有信息
 	print("Card clicked: ", Name, " ID: ", ID, " Type: ", Type, " Score: ", Score, " Season: ", Season, " Describe: ", debug_describe, " BaseID: ", BaseID, " Special: ", Special)
+	change_card_chooesd()
 
 func update_card() -> void:
 	_load_image()
@@ -57,3 +67,26 @@ func set_pinyin_name(value: String) -> void:
 
 func set_card_back() -> void:
 	self.texture_normal  = back_texture
+
+func set_card_chooesd() -> void:
+	Image_ChooesdBG.visible = true
+	choosed = true
+
+func set_card_unchooesd() -> void:
+	Image_ChooesdBG.visible = false
+	choosed = false
+
+func get_card_chooesd() -> bool:
+	return choosed
+
+func change_card_chooesd() -> void:
+	if choosed:
+		set_card_unchooesd()
+	else:
+		set_card_chooesd()
+
+func disable_click() -> void:
+	is_enable_click = false
+
+func enable_click() -> void:
+	is_enable_click = true
