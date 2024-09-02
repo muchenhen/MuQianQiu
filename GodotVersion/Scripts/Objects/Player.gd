@@ -16,12 +16,26 @@ var player_finish_stories = []
 
 var hand_cards_pos_array = []
 
+enum PlayerState{
+    # 不在自己的回合中
+    WAITING = 0,
+    # 自己的回合中，未选择卡片
+    SELF_ROUND_UNCHOOSING = 1,
+    # 自己的回合中，已选择卡片
+    SELF_ROUND_CHOOSING = 2,
+    # 自己的回合中，选了手牌并选了公共区域的卡片
+    SELF_ROUND_CHOOSING_FINISHED = 3,
+}
+
+var player_state
+
 enum PlayerPos{
     A = 0,
     B = 1
 }
 
-func initialize(player_pos) -> void:
+func initialize(p_name, player_pos) -> void:
+    player_name = p_name
     if player_pos == PlayerPos.A:
         hand_cards_pos_array = card_manager.init_cards_position_tile(
 										card_manager.PLAYER_A_CARD_AREA_SIZE,
@@ -39,5 +53,20 @@ func set_hand_cards(cards: Array) -> void:
 
 func set_one_hand_card(card: Node) -> void:
     hand_cards[card.ID] = card
+    card.connect("card_clicked", Callable(self, "on_card_clicked"))
 
+func set_player_state(state: PlayerState) -> void:
+    player_state = state
+    print("当前玩家 ", player_name, " 状态: ", player_state)
 
+func on_card_clicked(card: Node) -> void:
+    if player_state == PlayerState.SELF_ROUND_UNCHOOSING:
+        card.set_card_chooesd()
+        set_player_state(PlayerState.SELF_ROUND_CHOOSING)
+    elif player_state == PlayerState.SELF_ROUND_CHOOSING:
+        #  todo
+        # card.set_card_unchooesd()
+        # set_player_state(PlayerState.SELF_ROUND_UNCHOOSING)
+        return
+    elif player_state == PlayerState.SELF_ROUND_CHOOSING_FINISHED:
+        return

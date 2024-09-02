@@ -81,8 +81,8 @@ func _ready():
 		animation_timer.connect("timeout", Callable(self, "animate_next_card"))
 		add_child(animation_timer)
 
-		player_a.initialize(Player.PlayerPos.A)
-		player_b.initialize(Player.PlayerPos.B)
+		player_a.initialize("PlayerA", Player.PlayerPos.A)
+		player_b.initialize("PlayerB", Player.PlayerPos.B)
 	else:
 		return
 	
@@ -114,7 +114,6 @@ func start_new_game():
 		card.name = "Card_" + str(card.ID)
 		current_scene.get_node("Cards").add_child(card)
 		card.set_card_back()
-		card.connect("card_clicked", Callable(self, "on_card_clicked"))
 
 	# 收集公共牌区域的位置
 	var public_deal_cards_pos = []
@@ -151,6 +150,7 @@ func send_card_for_play(cards):
 		var card = cards.pop_back()
 		# 公共卡池的手牌禁止点击
 		card.disable_click()
+		card.connect("card_clicked", Callable(self, "on_card_clicked"))
 		player_public_hand_cards[i + 1] = PublicHandCardInfo.new( card, position, rotation, false)
 		cards_to_animate.append({"card": card, "position": position, "rotation":rotation })
 	
@@ -164,17 +164,17 @@ func animate_next_card():
 		var card = card_data["card"]
 		var position = card_data["position"]
 
-		animation_manager.start_linear_movement_pos(card, position, 1, animation_manager.EaseType.EASE_IN_OUT, Callable(self, "send_card_anim_end"), [card])
+		animation_manager.start_linear_movement_pos(card, position, 0.6, animation_manager.EaseType.EASE_IN_OUT, Callable(self, "send_card_anim_end"), [card])
 		
 		if "rotation" in card_data:
 			var rotation = card_data["rotation"]
-			animation_manager.start_linear_movement_rotation(card, rotation, 1, animation_manager.EaseType.EASE_IN_OUT)
+			animation_manager.start_linear_movement_rotation(card, rotation, 0.6, animation_manager.EaseType.EASE_IN_OUT)
 
 		current_card_index += 1
 		
 		# 设置下一张卡片动画的延迟
 		# 这里设置为0.5秒，你可以根据需要调整
-		animation_timer.start(0.25)
+		animation_timer.start(0.1)
 	else:
 		# 所有卡片动画播放完毕
 		print("All cards animated")
@@ -209,10 +209,23 @@ func start_round():
 	current_round = GameRound.PLAYER_A
 
 func change_round():
+	if current_round == GameRound.WAITING:
+		change_to_a_round()
+
 	if current_round == GameRound.PLAYER_A:
-		current_round = GameRound.PLAYER_B
+		change_to_b_round()
 	else:
-		current_round = GameRound.PLAYER_A	
+		change_to_a_round()
+
+func change_to_a_round():
+	current_round = GameRound.PLAYER_A
+	player_b.set_player_state(Player.PlayerState.WAITING)
+	player_a.set_player_state(Player.PlayerState.SELF_ROUND_UNCHOOSING)
+
+func change_to_b_round():
+	current_round = GameRound.PLAYER_B
+	player_a.set_player_state(Player.PlayerState.WAITING)
+	player_b.set_player_state(Player.PlayerState.SELF_ROUND_UNCHOOSING)
 
 func on_card_clicked(card):
 	print("Card clicked: ", card.Name, " ID: ", card.ID)
