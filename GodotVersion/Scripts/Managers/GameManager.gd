@@ -9,39 +9,15 @@ var input_manager: InputManager
 
 var animation_manager: AnimationManager
 
-
 var sc_start = preload("res://scenes/sc_start.tscn")
 var sc_main = preload("res://scenes/sc_main.tscn")
 var current_scene = null
-
 
 var current_all_cards
 
 var player_a = Player.new()
 var player_b = Player.new()
-
-class PublicHandCardInfo:
-	var card: Node
-	var position: Vector2
-	var rotation: float
-	var isEmpty: bool
-
-	func _init(p_card = null, p_position = Vector2(), p_rotation = 0, p_isEmpty = true):
-		self.card = p_card
-		self.position = p_position
-		self.rotation = p_rotation
-		self.isEmpty = p_isEmpty
-
-var player_public_hand_cards = {
-	1: PublicHandCardInfo.new(),
-	2: PublicHandCardInfo.new(),
-	3: PublicHandCardInfo.new(),
-	4: PublicHandCardInfo.new(),
-	5: PublicHandCardInfo.new(),
-	6: PublicHandCardInfo.new(),
-	7: PublicHandCardInfo.new(),
-	8: PublicHandCardInfo.new()
-}
+var public_deal = PublicCardDeal.new()
 
 var cards_to_animate = []
 var current_card_index = 0
@@ -63,7 +39,6 @@ enum PlayerChooseState{
 	# 选中手牌的基础上，选择了一张公共区域中的牌，确认本回合的选择，切换回合
 	CHOOSE_PUBLIC = 2
 }
-
 
 static var instance: GameManager = null
 
@@ -151,7 +126,7 @@ func send_card_for_play(cards):
 		# 公共卡池的手牌禁止点击
 		card.disable_click()
 		card.connect("card_clicked", Callable(self, "on_card_clicked"))
-		player_public_hand_cards[i + 1] = PublicHandCardInfo.new( card, position, rotation, false)
+		public_deal.set_one_hand_card(card, position, rotation)
 		cards_to_animate.append({"card": card, "position": position, "rotation":rotation })
 	
 
@@ -180,8 +155,8 @@ func animate_next_card():
 		print("All cards animated")
 		print("玩家A手牌: ", player_a.hand_cards.keys())
 		print("玩家B手牌: ", player_b.hand_cards.keys())
-		for key in player_public_hand_cards.keys():
-			var public_card = player_public_hand_cards[key]
+		for key in public_deal.hand_cards.keys():
+			var public_card = public_deal.hand_cards[key]
 			if public_card.isEmpty:
 				continue
 			print("公共区域手牌 ", key, " ID: ", public_card.card.ID)
@@ -202,8 +177,8 @@ func start_round():
 	print("开始新一轮")
 	
 	# 重置所有卡片的选中状态
-	for key in player_public_hand_cards.keys():
-		player_public_hand_cards[key].card.set_card_unchooesd()
+	for key in public_deal.hand_cards.keys():
+		public_deal.hand_cards[key].card.set_card_unchooesd()
 	
 	# 重置当前轮次
 	current_round = GameRound.PLAYER_A
@@ -226,30 +201,6 @@ func change_to_b_round():
 	current_round = GameRound.PLAYER_B
 	player_a.set_player_state(Player.PlayerState.WAITING)
 	player_b.set_player_state(Player.PlayerState.SELF_ROUND_UNCHOOSING)
-
-func on_card_clicked(card):
-	print("Card clicked: ", card.Name, " ID: ", card.ID)
-	# 将公共区域手牌全部设置为未选中
-	for key in player_public_hand_cards.keys():
-		player_public_hand_cards[key].card.set_card_unchooesd()
-	# 将公共区域手牌中和当前点击的手牌有相同Season的牌设置为选中
-	for key in player_public_hand_cards.keys():
-		var public_card = player_public_hand_cards[key]
-		if public_card.isEmpty:
-			continue
-		if public_card.card.Season == card.Season:
-			public_card.card.set_card_chooesd()
-	# 如果当前轮次是玩家A 设置玩家A的其他手牌为未选中
-	if current_round == GameRound.PLAYER_A:
-		for key in player_a.hand_cards.keys():
-			if key != card.ID:
-				player_a.hand_cards[key].set_card_unchooesd()
-	# 如果当前轮次是玩家B 设置玩家B的其他手牌为未选中
-	else:
-		for key in player_b.hand_cards.keys():
-			if key != card.ID:
-				player_b.hand_cards[key].set_card_unchooesd()
-
 
 
 # 同步加载场景
