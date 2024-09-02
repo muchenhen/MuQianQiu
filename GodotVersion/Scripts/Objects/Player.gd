@@ -16,6 +16,10 @@ var player_finish_stories = []
 
 var hand_cards_pos_array = []
 
+var current_choosing_card_id = -1
+
+signal player_choose_card(Player)
+
 enum PlayerState{
     # 不在自己的回合中
     WAITING = 0,
@@ -63,10 +67,15 @@ func on_card_clicked(card: Node) -> void:
     if player_state == PlayerState.SELF_ROUND_UNCHOOSING:
         card.set_card_chooesd()
         set_player_state(PlayerState.SELF_ROUND_CHOOSING)
+        current_choosing_card_id = card.ID
+        player_choose_card.emit()
+        emit_signal("player_choose_card", self)
     elif player_state == PlayerState.SELF_ROUND_CHOOSING:
-        #  todo
-        # card.set_card_unchooesd()
-        # set_player_state(PlayerState.SELF_ROUND_UNCHOOSING)
+        if current_choosing_card_id == card.ID:
+            card.set_card_unchooesd()
+            set_player_state(PlayerState.SELF_ROUND_UNCHOOSING)
+            current_choosing_card_id = -1
+            emit_signal("player_choose_card", self)
         return
     elif player_state == PlayerState.SELF_ROUND_CHOOSING_FINISHED:
         return

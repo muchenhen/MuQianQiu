@@ -58,6 +58,9 @@ func _ready():
 
 		player_a.initialize("PlayerA", Player.PlayerPos.A)
 		player_b.initialize("PlayerB", Player.PlayerPos.B)
+		public_deal.bind_players(player_a, player_b)
+
+		current_round = GameRound.WAITING
 	else:
 		return
 	
@@ -181,13 +184,12 @@ func start_round():
 		public_deal.hand_cards[key].card.set_card_unchooesd()
 	
 	# 重置当前轮次
-	current_round = GameRound.PLAYER_A
+	change_round()
 
 func change_round():
 	if current_round == GameRound.WAITING:
 		change_to_a_round()
-
-	if current_round == GameRound.PLAYER_A:
+	elif current_round == GameRound.PLAYER_A:
 		change_to_b_round()
 	else:
 		change_to_a_round()
