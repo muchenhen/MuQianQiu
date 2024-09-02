@@ -17,8 +17,6 @@ var current_scene = null
 
 var current_all_cards
 
-var player_b_hand_cards = {}
-
 var player_a = Player.new()
 var player_b = Player.new()
 
@@ -83,6 +81,8 @@ func _ready():
 		animation_timer.connect("timeout", Callable(self, "animate_next_card"))
 		add_child(animation_timer)
 
+		player_a.initialize(Player.PlayerPos.A)
+		player_b.initialize(Player.PlayerPos.B)
 	else:
 		return
 	
@@ -134,25 +134,15 @@ func start_new_game():
 func send_card_for_play(cards):
 	cards_to_animate = []
 	current_card_index = 0
-	
-	var pos_array_player_a = card_manager.init_cards_position_tile(
-										card_manager.PLAYER_A_CARD_AREA_SIZE,
-										card_manager.PLAYER_A_CARD_AREA_POS,
-										10)
 
-	var pos_array_player_b = card_manager.init_cards_position_tile(
-										card_manager.PLAYER_B_CARD_AREA_SIZE,
-										card_manager.PLAYER_B_CARD_AREA_POS,
-										10)
-
-	for i in range(pos_array_player_a.size() + pos_array_player_b.size()):
+	for i in range(player_a.hand_cards_pos_array.size() + player_b.hand_cards_pos_array.size()):
 		# A和B玩家轮流发牌
 		var card = cards.pop_back()
 		if i % 2 == 0:
-			cards_to_animate.append({"card": card, "position": pos_array_player_a.pop_front()})
+			cards_to_animate.append({"card": card, "position": player_a.hand_cards_pos_array.pop_front()})
 			player_a.set_one_hand_card(card)
 		else:
-			cards_to_animate.append({"card": card, "position": pos_array_player_b.pop_front()})
+			cards_to_animate.append({"card": card, "position": player_b.hand_cards_pos_array.pop_front()})
 			player_b.set_one_hand_card(card)
 
 	for i in range(card_manager.PUBLIC_CARDS_POS.size()):
