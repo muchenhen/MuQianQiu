@@ -51,6 +51,7 @@ func _on_card_clicked() -> void:
 	print("Card clicked: ", Name, " ID: ", ID, " Type: ", Type, " Score: ", Score, " Season: ", Season, " Describe: ", debug_describe, " BaseID: ", BaseID, " Special: ", Special)
 	change_card_chooesd()
 	# 发送信号
+	card_clicked.emit()
 	emit_signal("card_clicked", self)
 
 func update_card() -> void:

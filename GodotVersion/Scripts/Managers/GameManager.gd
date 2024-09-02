@@ -17,8 +17,10 @@ var current_scene = null
 
 var current_all_cards
 
-var player_a_hand_cards = {}
 var player_b_hand_cards = {}
+
+var player_a = Player.new()
+var player_b = Player.new()
 
 class PublicHandCardInfo:
 	var card: Node
@@ -148,10 +150,10 @@ func send_card_for_play(cards):
 		var card = cards.pop_back()
 		if i % 2 == 0:
 			cards_to_animate.append({"card": card, "position": pos_array_player_a.pop_front()})
-			player_a_hand_cards[card.ID] = card
+			player_a.set_one_hand_card(card)
 		else:
 			cards_to_animate.append({"card": card, "position": pos_array_player_b.pop_front()})
-			player_b_hand_cards[card.ID] = card
+			player_b.set_one_hand_card(card)
 
 	for i in range(card_manager.PUBLIC_CARDS_POS.size()):
 		var position = card_manager.PUBLIC_CARDS_POS[i]
@@ -162,6 +164,7 @@ func send_card_for_play(cards):
 		player_public_hand_cards[i + 1] = PublicHandCardInfo.new( card, position, rotation, false)
 		cards_to_animate.append({"card": card, "position": position, "rotation":rotation })
 	
+
 	# 开始第一张卡的动画
 	animate_next_card()
 
@@ -185,8 +188,8 @@ func animate_next_card():
 	else:
 		# 所有卡片动画播放完毕
 		print("All cards animated")
-		print("玩家A手牌: ", player_a_hand_cards.keys())
-		print("玩家B手牌: ", player_b_hand_cards.keys())
+		print("玩家A手牌: ", player_a.hand_cards.keys())
+		print("玩家B手牌: ", player_b.hand_cards.keys())
 		for key in player_public_hand_cards.keys():
 			var public_card = player_public_hand_cards[key]
 			if public_card.isEmpty:
@@ -235,15 +238,14 @@ func on_card_clicked(card):
 			public_card.card.set_card_chooesd()
 	# 如果当前轮次是玩家A 设置玩家A的其他手牌为未选中
 	if current_round == GameRound.PLAYER_A:
-		for key in player_a_hand_cards.keys():
+		for key in player_a.hand_cards.keys():
 			if key != card.ID:
-				print("设置玩家A的 ", key, " 为未选中")
-				player_a_hand_cards[key].set_card_unchooesd()
+				player_a.hand_cards[key].set_card_unchooesd()
 	# 如果当前轮次是玩家B 设置玩家B的其他手牌为未选中
 	else:
-		for key in player_b_hand_cards.keys():
+		for key in player_b.hand_cards.keys():
 			if key != card.ID:
-				player_b_hand_cards[key].set_card_unchooesd()
+				player_b.hand_cards[key].set_card_unchooesd()
 
 
 
