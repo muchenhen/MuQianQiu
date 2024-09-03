@@ -119,4 +119,6 @@ func init_cards_position_tile(area_size:Vector2, area_pos:Vector2, card_count:in
 	return card_pos_array
 
 func get_random_deal_card_rotation() -> float:
-	return randf_range(PLAYER_A_DEAL_CARD_ROTATION_MIN, PLAYER_A_DEAL_CARD_ROTATION_MAX)
+	var random_angle = randf_range(PLAYER_A_DEAL_CARD_ROTATION_MIN, PLAYER_A_DEAL_CARD_ROTATION_MAX)
+	# 角度转弧度
+	return deg_to_rad(random_angle)

@@ -1,6 +1,8 @@
 @tool
 extends TextureButton
 
+class_name Card
+
 var ID: int = 201
 var Name: String = "阿阮"
 var PinyinName: String = "ARuan"

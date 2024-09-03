@@ -225,17 +225,19 @@ func player_choose_public_card(player_choosing_card, public_choosing_card):
 
 	var target_pos = card_manager.PLAYER_A_DEAL_CARD_POS
 	var target_rotation = card_manager.get_random_deal_card_rotation()
-	animation_manager.start_linear_movement_pos(player_choosing_card, target_pos, 1, animation_manager.EaseType.EASE_IN_OUT)
-	animation_manager.start_linear_movement_rotation(player_choosing_card, target_rotation, 1, animation_manager.EaseType.EASE_IN_OUT)
+	animation_manager.start_linear_movement_pos(player_choosing_card, target_pos, 1, animation_manager.EaseType.EASE_IN_OUT, Callable(self, "player_choose_card_anim_end"), [player_choosing_card])
+	animation_manager.start_linear_movement_rotation(player_choosing_card, target_rotation, 1, animation_manager.EaseType.EASE_IN_OUT, Callable(self, "player_choose_card_anim_end"), [player_choosing_card])
 
+	public_choosing_card.set_card_pivot_offset_to_center()
 	target_rotation = card_manager.get_random_deal_card_rotation()
-	animation_manager.start_linear_movement_pos(public_choosing_card, target_pos, 1, animation_manager.EaseType.EASE_IN_OUT)
-	animation_manager.start_linear_movement_rotation(public_choosing_card, target_rotation, 1, animation_manager.EaseType.EASE_IN_OUT)
+	animation_manager.start_linear_movement_pos(public_choosing_card, target_pos, 1, animation_manager.EaseType.EASE_IN_OUT, Callable(self, "player_choose_card_anim_end"), [public_choosing_card])
+	animation_manager.start_linear_movement_rotation(public_choosing_card, target_rotation, 1, animation_manager.EaseType.EASE_IN_OUT,  Callable(self, "player_choose_card_anim_end"), [public_choosing_card])
 
 	print("玩家 ", player.player_name, " 选择了手牌 ", player_choosing_card.ID, " 和公共区域的牌 ", public_choosing_card.ID)
 	change_round()
 	
-
+func player_choose_card_anim_end(card: Card):
+	print_debug("玩家选择卡牌动画结束", card.position, card.rotation)
 
 # 同步加载场景
 func load_scene(scene):
