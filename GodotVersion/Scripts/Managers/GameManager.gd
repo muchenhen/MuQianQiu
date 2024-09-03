@@ -60,6 +60,8 @@ func _ready():
 		player_b.initialize("PlayerB", Player.PlayerPos.B)
 		public_deal.bind_players(player_a, player_b)
 
+		public_deal.connect("player_choose_card", Callable(self, "player_choose_public_card"))
+
 		current_round = GameRound.WAITING
 	else:
 		return
@@ -127,10 +129,11 @@ func send_card_for_play(cards):
 		var rotation = card_manager.PUBLIC_CRADS_ROTATION[i]
 		var card = cards.pop_back()
 		# 公共卡池的手牌禁止点击
-		card.disable_click()
 		card.connect("card_clicked", Callable(self, "on_card_clicked"))
 		public_deal.set_one_hand_card(card, position, rotation)
 		cards_to_animate.append({"card": card, "position": position, "rotation":rotation })
+	
+	public_deal.disable_all_hand_card_click()
 	
 
 	# 开始第一张卡的动画
@@ -203,6 +206,23 @@ func change_to_b_round():
 	current_round = GameRound.PLAYER_B
 	player_a.set_player_state(Player.PlayerState.WAITING)
 	player_b.set_player_state(Player.PlayerState.SELF_ROUND_UNCHOOSING)
+
+# 玩家已经选择了一张手牌并且确认要选择了一张公共区域的牌
+func player_choose_public_card(player_choosing_card, public_choosing_card):
+	var player
+	if current_round == GameRound.PLAYER_A:
+		player = player_a
+	else:
+		player = player_b
+
+	player_choosing_card.disable_click()
+	player_choosing_card.set_card_unchooesd()
+	player_choosing_card.set_card_back()
+
+	public_choosing_card.set_card_back()
+	print("玩家 ", player.player_name, " 选择了手牌 ", player_choosing_card.ID, " 和公共区域的牌 ", public_choosing_card.ID)
+	change_round()
+	
 
 
 # 同步加载场景

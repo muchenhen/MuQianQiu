@@ -39,6 +39,10 @@ static func get_instance() -> CardManager:
 		instance = CardManager.new()
 	return instance
 
+func get_card_season(card_id:int) -> String:
+	var card_info = tableManager.get_row("Cards", card_id)
+	return card_info["Season"]
+
 func collect_public_deal_cards_pos(cards_pos:Array, cards_rotation:Array) -> void:
 	for i in range(cards_pos.size()):
 		var pos = cards_pos[i]
