@@ -70,12 +70,23 @@ func on_card_clicked(card: Node) -> void:
         current_choosing_card_id = card.ID
         player_choose_card.emit()
         emit_signal("player_choose_card", self)
+        return
     elif player_state == PlayerState.SELF_ROUND_CHOOSING:
         if current_choosing_card_id == card.ID:
             card.set_card_unchooesd()
             set_player_state(PlayerState.SELF_ROUND_UNCHOOSING)
             current_choosing_card_id = -1
             emit_signal("player_choose_card", self)
+        else:
+            set_all_hand_card_unchooesd()
+            card.set_card_chooesd()
+            current_choosing_card_id = card.ID
+            emit_signal("player_choose_card", self)
         return
     elif player_state == PlayerState.SELF_ROUND_CHOOSING_FINISHED:
         return
+
+func set_all_hand_card_unchooesd() -> void:
+    for i in hand_cards.keys():
+        var card = hand_cards[i]
+        card.set_card_unchooesd()

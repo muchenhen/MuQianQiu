@@ -42,6 +42,12 @@ func on_card_clicked(card):
 func on_player_choose_card(player):
 	set_all_hand_card_unchooesd()
 	print("Player choose card: ", player.player_name)
+	var player_current_choosing_card_id = player.current_choosing_card_id
+
+	if player_current_choosing_card_id == -1:
+		set_all_hand_card_unchooesd()
+		return
+		
 	var current_choosing_card = player.hand_cards[player.current_choosing_card_id]
 	var season = current_choosing_card.Season
 	set_aim_season_hand_card_chooesd(season)
