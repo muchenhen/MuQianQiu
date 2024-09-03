@@ -95,3 +95,6 @@ func disable_click() -> void:
 
 func enable_click() -> void:
 	is_enable_click = true
+
+func set_card_pivot_offset_to_center() -> void:
+	self.pivot_offset = Vector2(size.x/2, size.y/2)

@@ -95,6 +95,10 @@ func start_new_game():
 		current_scene.get_node("Cards").add_child(card)
 		card.set_card_back()
 
+	# 收集玩家A的牌堆位置
+	var player_a_deal_card_template = current_scene.get_node("Cards").get_node("PlayerADealCard")
+	card_manager.PLAYER_A_DEAL_CARD_POS = player_a_deal_card_template.position
+
 	# 收集公共牌区域的位置
 	var public_deal_cards_pos = []
 	var public_deal_cards_rotation = []
@@ -217,9 +221,17 @@ func player_choose_public_card(player_choosing_card, public_choosing_card):
 
 	player_choosing_card.disable_click()
 	player_choosing_card.set_card_unchooesd()
-	player_choosing_card.set_card_back()
+	player_choosing_card.set_card_pivot_offset_to_center()
 
-	public_choosing_card.set_card_back()
+	var target_pos = card_manager.PLAYER_A_DEAL_CARD_POS
+	var target_rotation = card_manager.get_random_deal_card_rotation()
+	animation_manager.start_linear_movement_pos(player_choosing_card, target_pos, 1, animation_manager.EaseType.EASE_IN_OUT)
+	animation_manager.start_linear_movement_rotation(player_choosing_card, target_rotation, 1, animation_manager.EaseType.EASE_IN_OUT)
+
+	target_rotation = card_manager.get_random_deal_card_rotation()
+	animation_manager.start_linear_movement_pos(public_choosing_card, target_pos, 1, animation_manager.EaseType.EASE_IN_OUT)
+	animation_manager.start_linear_movement_rotation(public_choosing_card, target_rotation, 1, animation_manager.EaseType.EASE_IN_OUT)
+
 	print("玩家 ", player.player_name, " 选择了手牌 ", player_choosing_card.ID, " 和公共区域的牌 ", public_choosing_card.ID)
 	change_round()
 	

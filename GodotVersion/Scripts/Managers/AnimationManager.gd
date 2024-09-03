@@ -56,7 +56,7 @@ func _update_animation(obj: Node, anim_type: String, delta: float):
 	match anim_type:
 		"linear_movement_pos":
 			var t = _apply_easing(raw_t, anim["ease_type"])
-			obj.global_position = anim["start_pos"].lerp(anim["target"], t)
+			obj.position = anim["start_pos"].lerp(anim["target"], t)
 
 		"linear_movement_rotation":
 			var t = _apply_easing(raw_t, anim["ease_type"])

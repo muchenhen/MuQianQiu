@@ -20,6 +20,10 @@ const PLAYER_B_CARD_AREA_SIZE: Vector2 = Vector2(1152, 256)
 const PLAYER_A_CARD_AREA_POS: Vector2 = Vector2(384, 768)
 const PLAYER_A_CARD_AREA_SIZE: Vector2 = Vector2(1152, 256)
 
+var PLAYER_A_DEAL_CARD_POS: Vector2
+var PLAYER_A_DEAL_CARD_ROTATION_MIN: float = -30
+var PLAYER_A_DEAL_CARD_ROTATION_MAX: float = 30
+
 # 公共牌堆的八张牌的位置
 var PUBLIC_CARDS_POS = []
 var PUBLIC_CRADS_ROTATION = []
@@ -113,3 +117,6 @@ func init_cards_position_tile(area_size:Vector2, area_pos:Vector2, card_count:in
 			card_pos_array.push_back(Vector2(rightmost_pos_x, area_pos.y))
 	
 	return card_pos_array
+
+func get_random_deal_card_rotation() -> float:
+	return randf_range(PLAYER_A_DEAL_CARD_ROTATION_MIN, PLAYER_A_DEAL_CARD_ROTATION_MAX)
