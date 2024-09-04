@@ -99,6 +99,12 @@ func start_new_game():
 	var player_a_deal_card_template = current_scene.get_node("Cards").get_node("PlayerADealCard")
 	card_manager.PLAYER_A_DEAL_CARD_POS = player_a_deal_card_template.position
 
+
+	# 收集玩家B的牌堆位置
+	var player_b_deal_card_template = current_scene.get_node("Cards").get_node("PlayerBDealCard")
+	card_manager.PLAYER_B_DEAL_CARD_POS = player_b_deal_card_template.position
+
+
 	# 收集公共牌区域的位置
 	var public_deal_cards_pos = []
 	var public_deal_cards_rotation = []
@@ -214,17 +220,21 @@ func change_to_b_round():
 # 玩家已经选择了一张手牌并且确认要选择了一张公共区域的牌
 func player_choose_public_card(player_choosing_card, public_choosing_card):
 	var player
+	var target_pos
+	var target_rotation = card_manager.get_random_deal_card_rotation()
 	if current_round == GameRound.PLAYER_A:
 		player = player_a
+		target_pos = card_manager.PLAYER_A_DEAL_CARD_POS
+
 	else:
 		player = player_b
+		target_pos = card_manager.PLAYER_B_DEAL_CARD_POS
+
 
 	player_choosing_card.disable_click()
 	player_choosing_card.set_card_unchooesd()
 	player_choosing_card.set_card_pivot_offset_to_center()
 
-	var target_pos = card_manager.PLAYER_A_DEAL_CARD_POS
-	var target_rotation = card_manager.get_random_deal_card_rotation()
 	animation_manager.start_linear_movement_pos(player_choosing_card, target_pos, 1, animation_manager.EaseType.EASE_IN_OUT, Callable(self, "player_choose_card_anim_end"), [player_choosing_card])
 	animation_manager.start_linear_movement_rotation(player_choosing_card, target_rotation, 1, animation_manager.EaseType.EASE_IN_OUT, Callable(self, "player_choose_card_anim_end"), [player_choosing_card])
 
