@@ -6,6 +6,8 @@ static var instance: CardManager = null
 
 const CARD = preload("res://Scripts/Objects/Card.tscn")
 
+var all_cards = []
+
 # 公共牌区域
 const PUBLIC_CARD_AREA_POS: Vector2 = Vector2(1400, 416)
 const PUBLIC_CARD_AREA_SIZE: Vector2 = Vector2(450, 256)
@@ -70,37 +72,48 @@ func collect_cardIDs_for_this_game(types:Array) -> void:
 func shuffle_cardIDs() -> void:
 	cardIDs.shuffle()
 
-func get_one_card() -> Node:
-	if cardIDs.size() == 0:
-		return null
-	var card_id = cardIDs.pop_front()
-	return create_one_card(card_id)
-
-func create_cards_for_this_game() -> Array:
-	var cards = []
+func create_cards_for_this_game(scene) -> void:
 	for card_id in cardIDs:
-		cards.append(create_one_card(card_id))
-	return cards
+		var card = create_one_card(card_id)
+		all_cards.append(card)
+		scene.get_node("Cards").add_child(card)
+	
+	PLAYER_A_DEAL_CARD_POS = scene.get_node("Cards").get_node("PlayerADealCard").position
+	PLAYER_B_DEAL_CARD_POS = scene.get_node("Cards").get_node("PlayerBDealCard").position
+
+	set_all_card_back()
+	init_cards_position_for_public()
 
 func create_one_card(card_id:int) -> Node:
 	var card = CARD.instantiate()
 	var card_info = tableManager.get_row("Cards", card_id)
 	card.initialize(card_id, card_info)
+	card.name = "Card_" + str(card_id)
+	return card
+
+func pop_one_card() -> Node:
+	if all_cards.size() == 0:
+		return null
+	var card = all_cards.pop_back()
 	return card
 
 # 初始化公共区域手牌的每一个位置
-func init_cards_position_to_public_area(cards):
-	var card_count = cards.size()
+func init_cards_position_for_public():
+	var card_count = all_cards.size()
 	if card_count == 0:
 		return
 
 	var pos_array = init_cards_position_tile(PUBLIC_CARD_AREA_SIZE, PUBLIC_CARD_AREA_POS, card_count)
 	# 从左到右放置卡片
 	for i in range(card_count):
-		var card = cards[i]
+		var card = all_cards[i]
 		card.position.x = pos_array[i].x
 		# 设置Y坐标（垂直居中）
 		card.position.y = PUBLIC_CARD_AREA_POS.y
+	
+
+
+
 
 func init_cards_position_tile(area_size:Vector2, area_pos:Vector2, card_count:int) -> Array:
 	# 最右的位置
@@ -125,3 +138,7 @@ func get_random_deal_card_rotation() -> float:
 	var random_angle = randf_range(PLAYER_DEAL_CARD_ROTATION_MIN, PLAYER_DEAL_CARD_ROTATION_MAX)
 	# 角度转弧度
 	return deg_to_rad(random_angle)
+
+func set_all_card_back() -> void:
+	for card in all_cards:
+		card.set_card_back()

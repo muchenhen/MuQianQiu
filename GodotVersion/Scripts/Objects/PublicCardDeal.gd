@@ -3,11 +3,13 @@ extends Node
 class_name PublicCardDeal
 
 var card_manager = CardManager.get_instance()
+var animation_manager = AnimationManager.get_instance()
 
 var player_a = null
 var player_b = null
 var player_current_choosing_card = null
 var current_player = null
+
 
 signal player_choose_card(player_choosing_card, public_choosing_card)
 
@@ -52,6 +54,7 @@ func on_card_clicked(card):
 		# Season相同，则视为玩家要取走这张牌
 		disable_all_hand_card_click()
 		set_all_hand_card_unchooesd()
+		set_aim_hand_card_empty(card)
 		player_choose_card.emit(player_current_choosing_card, card)
 
 func on_player_choose_card(player):
@@ -99,3 +102,28 @@ func get_hand_card_by_id(card_id) -> Node:
 			if card_info.card.ID == card_id:
 				return card_info.card
 	return null
+
+func supply_hand_card():
+	print("补充公共牌手牌")
+	# for i in hand_cards.keys():
+	# 	var card_info:PublicHandCardInfo = hand_cards[i]
+	# 	if card_info.isEmpty:
+	# 		print("补充公共牌手牌: ", i)
+	# 		var card = card_manager.get_one_card()
+	# 		card_info.card = card
+	# 		card_info.isEmpty = false
+	# 		print("补充公共牌手牌: ", card.ID)
+	# 		# 播放动画
+	# 		var taget_pos = card_info.position
+	# 		var target_rotation = card_info.rotation
+	# 		animation_manager.start_linear_movement_pos(card, taget_pos, 1, animation_manager.EaseType.EASE_IN_OUT)
+	# 		animation_manager.start_linear_movement_rotation(card, target_rotation, 1, animation_manager.EaseType.EASE_IN_OUT)
+	# 		return
+
+func set_aim_hand_card_empty(card) -> void:
+	for i in hand_cards.keys():
+		var card_info = hand_cards[i]
+		if card_info.card.ID == card.ID:
+			card_info.isEmpty = true
+			print("Set card empty: ", card_info.card.ID)
+			return

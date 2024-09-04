@@ -4,6 +4,8 @@ class_name AnimationManager
 
 var animated_objects = {}
 
+static var instance: AnimationManager = null
+
 enum EaseType {
 	LINEAR,
 	EASE_IN,
@@ -12,6 +14,11 @@ enum EaseType {
 	BOUNCE,
 	ELASTIC
 }
+
+static func get_instance() -> AnimationManager:
+	if instance == null:
+		instance = AnimationManager.new()
+	return instance
 
 func _process(delta):
 	for obj in animated_objects.keys():

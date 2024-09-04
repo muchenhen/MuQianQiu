@@ -7,7 +7,7 @@ var card_manager = CardManager.get_instance()
 
 var input_manager: InputManager
 
-var animation_manager: AnimationManager
+var animation_manager = AnimationManager.get_instance()
 
 var sc_start = preload("res://scenes/sc_start.tscn")
 var sc_main = preload("res://scenes/sc_main.tscn")
@@ -45,7 +45,6 @@ static var instance: GameManager = null
 func _ready():
 	if instance == null:
 		instance = self
-		animation_manager = AnimationManager.new()
 		add_child(animation_manager)
 
 		input_manager = InputManager.new()
@@ -86,19 +85,11 @@ func start_new_game():
 	
 	load_scene(sc_main)
 
-	var cards = card_manager.create_cards_for_this_game()
-	current_all_cards = cards
-	card_manager.init_cards_position_to_public_area(cards)
-	for i in range(cards.size()):
-		var card = cards[i]
-		card.name = "Card_" + str(card.ID)
-		current_scene.get_node("Cards").add_child(card)
-		card.set_card_back()
+	card_manager.create_cards_for_this_game(current_scene)
 
 	# 收集玩家A的牌堆位置
 	var player_a_deal_card_template = current_scene.get_node("Cards").get_node("PlayerADealCard")
 	card_manager.PLAYER_A_DEAL_CARD_POS = player_a_deal_card_template.position
-
 
 	# 收集玩家B的牌堆位置
 	var player_b_deal_card_template = current_scene.get_node("Cards").get_node("PlayerBDealCard")
@@ -118,7 +109,7 @@ func start_new_game():
 
 	# 进入发牌流程 持续一段时间 结束后才能让玩家操作
 	input_manager.block_input()
-	send_card_for_play(cards)
+	send_card_for_play(card_manager.all_cards)
 
 func send_card_for_play(cards):
 	cards_to_animate = []
@@ -193,8 +184,8 @@ func start_round():
 	print("开始新一轮")
 	
 	# 重置所有卡片的选中状态
-	for key in public_deal.hand_cards.keys():
-		public_deal.hand_cards[key].card.set_card_unchooesd()
+	#for key in public_deal.hand_cards.keys():
+		#public_deal.hand_cards[key].card.set_card_unchooesd()
 	
 	# 重置当前轮次
 	change_round()
@@ -219,6 +210,7 @@ func change_to_b_round():
 
 # 玩家已经选择了一张手牌并且确认要选择了一张公共区域的牌
 func player_choose_public_card(player_choosing_card, public_choosing_card):
+	input_manager.block_input()
 	var player
 	var target_pos
 	var target_rotation = card_manager.get_random_deal_card_rotation()
@@ -230,24 +222,35 @@ func player_choose_public_card(player_choosing_card, public_choosing_card):
 		player = player_b
 		target_pos = card_manager.PLAYER_B_DEAL_CARD_POS
 
+	print("玩家 ", player.player_name, " 选择了手牌 ", player_choosing_card.ID, " 和公共区域的牌 ", public_choosing_card.ID)
+
+
+
+	var anim_dutation = 1
 
 	player_choosing_card.disable_click()
 	player_choosing_card.set_card_unchooesd()
 	player_choosing_card.set_card_pivot_offset_to_center()
 
-	animation_manager.start_linear_movement_pos(player_choosing_card, target_pos, 1, animation_manager.EaseType.EASE_IN_OUT, Callable(self, "player_choose_card_anim_end"), [player_choosing_card])
-	animation_manager.start_linear_movement_rotation(player_choosing_card, target_rotation, 1, animation_manager.EaseType.EASE_IN_OUT, Callable(self, "player_choose_card_anim_end"), [player_choosing_card])
+	animation_manager.start_linear_movement_pos(player_choosing_card, target_pos, anim_dutation, animation_manager.EaseType.EASE_IN_OUT, Callable(self, "player_choose_card_anim_end"), [player_choosing_card])
+	animation_manager.start_linear_movement_rotation(player_choosing_card, target_rotation, anim_dutation, animation_manager.EaseType.EASE_IN_OUT, Callable(self, "player_choose_card_anim_end"), [player_choosing_card])
 
 	public_choosing_card.set_card_pivot_offset_to_center()
 	target_rotation = card_manager.get_random_deal_card_rotation()
-	animation_manager.start_linear_movement_pos(public_choosing_card, target_pos, 1, animation_manager.EaseType.EASE_IN_OUT, Callable(self, "player_choose_card_anim_end"), [public_choosing_card])
-	animation_manager.start_linear_movement_rotation(public_choosing_card, target_rotation, 1, animation_manager.EaseType.EASE_IN_OUT,  Callable(self, "player_choose_card_anim_end"), [public_choosing_card])
+	animation_manager.start_linear_movement_pos(public_choosing_card, target_pos, anim_dutation, animation_manager.EaseType.EASE_IN_OUT, Callable(self, "player_choose_card_anim_end"), [public_choosing_card])
+	animation_manager.start_linear_movement_rotation(public_choosing_card, target_rotation, anim_dutation, animation_manager.EaseType.EASE_IN_OUT,  Callable(self, "player_choose_card_anim_end"), [public_choosing_card])
 
-	print("玩家 ", player.player_name, " 选择了手牌 ", player_choosing_card.ID, " 和公共区域的牌 ", public_choosing_card.ID)
+	# 延时anim_dutation + 0.1秒后继续
+	animation_timer.start(anim_dutation + 0.1)
+	# 补充公共牌手牌
+	public_deal.supply_hand_card()
+
 	change_round()
+	input_manager.allow_input()
+
 	
 func player_choose_card_anim_end(card: Card):
-	print_debug("玩家选择卡牌动画结束", card.position, card.rotation)
+	print("玩家选择卡牌动画结束", card.position, card.rotation)
 
 # 同步加载场景
 func load_scene(scene):
