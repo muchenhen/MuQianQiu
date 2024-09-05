@@ -108,8 +108,41 @@ func start_new_game():
 	card_manager.collect_public_deal_cards_pos(public_deal_cards_pos, public_deal_cards_rotation)
 
 	# 进入发牌流程 持续一段时间 结束后才能让玩家操作
-	input_manager.block_input()
-	send_card_for_play(card_manager.all_cards)
+	var skip_anim = true
+	if not skip_anim:
+		input_manager.block_input()
+		send_card_for_play(card_manager.all_cards)
+	else:
+		send_card_for_play_without_anim(card_manager.all_cards)
+
+func send_card_for_play_without_anim(cards):
+	cards_to_animate = []
+	current_card_index = 0
+
+	for i in range(player_a.hand_cards_pos_array.size() + player_b.hand_cards_pos_array.size()):
+		# A和B玩家轮流发牌
+		var card = cards.pop_back()
+		card.update_card()
+		if i % 2 == 0:
+			player_a.set_one_hand_card(card)
+			card.position = player_a.hand_cards_pos_array.pop_front()
+		else:
+			player_b.set_one_hand_card(card)
+			card.position = player_b.hand_cards_pos_array.pop_front()
+
+	for i in range(card_manager.PUBLIC_CARDS_POS.size()):
+		var position = card_manager.PUBLIC_CARDS_POS[i]
+		var rotation = card_manager.PUBLIC_CRADS_ROTATION[i]
+		var card = cards.pop_back()
+		card.update_card()
+		# 公共卡池的手牌禁止点击
+		card.connect("card_clicked", Callable(self, "on_card_clicked"))
+		public_deal.set_one_hand_card(card, position, rotation)
+		card.position = position
+		card.rotation = rotation
+		
+	start_round()
+
 
 func send_card_for_play(cards):
 	cards_to_animate = []

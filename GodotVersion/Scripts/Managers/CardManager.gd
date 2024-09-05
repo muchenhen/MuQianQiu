@@ -110,9 +110,6 @@ func init_cards_position_for_public():
 		card.position.x = pos_array[i].x
 		# 设置Y坐标（垂直居中）
 		card.position.y = PUBLIC_CARD_AREA_POS.y
-	
-
-
 
 
 func init_cards_position_tile(area_size:Vector2, area_pos:Vector2, card_count:int) -> Array:
