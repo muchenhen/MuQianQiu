@@ -109,6 +109,7 @@ func supply_hand_card():
 		if card_info.isEmpty:
 			var card = card_manager.pop_one_card()
 			print("补充公共牌手牌: ", i, card.ID)
+			card.z_index = 8 - i
 			card_info.card = card
 			card_info.isEmpty = false
 			# 播放动画
