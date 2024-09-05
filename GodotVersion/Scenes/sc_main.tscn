@@ -56,7 +56,7 @@ metadata/_edit_lock_ = true
 
 [node name="PublicDealCard1" type="ColorRect" parent="Cards"]
 visible = false
-z_index = 8
+z_index = 7
 offset_left = 328.0
 offset_top = 416.0
 offset_right = 520.0
@@ -165,3 +165,21 @@ pivot_offset = Vector2(96, 128)
 metadata/_edit_lock_ = true
 
 [node name="UI" type="Node" parent="."]
+
+[node name="Text_AScore" type="Label" parent="UI"]
+offset_left = 64.0
+offset_top = 640.0
+offset_right = 256.0
+offset_bottom = 704.0
+theme_override_font_sizes/font_size = 26
+text = "玩家A分数"
+vertical_alignment = 1
+
+[node name="Text_BScore" type="Label" parent="UI"]
+offset_left = 64.0
+offset_top = 376.0
+offset_right = 256.0
+offset_bottom = 440.0
+theme_override_font_sizes/font_size = 26
+text = "玩家B分数"
+vertical_alignment = 1

@@ -1,5 +1,6 @@
 extends Node
 
+
 class_name GameManager
 
 var table_manager = TableManager.get_instance()
@@ -22,6 +23,9 @@ var public_deal = PublicCardDeal.new()
 var cards_to_animate = []
 var current_card_index = 0
 var animation_timer: Timer
+
+const PLAYER_A_SCORE_STR:String = "玩家A分数："
+const PLAYER_B_SCORE_STR:String = "玩家B分数："
 
 enum GameRound{
 	WAITING = 0,
@@ -258,21 +262,17 @@ func player_choose_public_card(player_choosing_card, public_choosing_card):
 
 	print("玩家 ", player.player_name, " 选择了手牌 ", player_choosing_card.ID, " 和公共区域的牌 ", public_choosing_card.ID)
 
-
-
 	var anim_dutation = 1
 
 	player_choosing_card.disable_click()
 	player_choosing_card.set_card_unchooesd()
 	player_choosing_card.set_card_pivot_offset_to_center()
 
-	animation_manager.start_linear_movement_pos(player_choosing_card, target_pos, anim_dutation, animation_manager.EaseType.EASE_IN_OUT, Callable(self, "player_choose_card_anim_end"), [player_choosing_card])
-	animation_manager.start_linear_movement_rotation(player_choosing_card, target_rotation, anim_dutation, animation_manager.EaseType.EASE_IN_OUT, Callable(self, "player_choose_card_anim_end"), [player_choosing_card])
+	animation_manager.start_linear_movement_combined(player_choosing_card, target_pos, target_rotation, anim_dutation, animation_manager.EaseType.EASE_IN_OUT, Callable(self, "player_choose_card_anim_end"), [player_choosing_card])
 
 	public_choosing_card.set_card_pivot_offset_to_center()
 	target_rotation = card_manager.get_random_deal_card_rotation()
-	animation_manager.start_linear_movement_pos(public_choosing_card, target_pos, anim_dutation, animation_manager.EaseType.EASE_IN_OUT, Callable(self, "player_choose_card_anim_end"), [public_choosing_card])
-	animation_manager.start_linear_movement_rotation(public_choosing_card, target_rotation, anim_dutation, animation_manager.EaseType.EASE_IN_OUT,  Callable(self, "player_choose_card_anim_end"), [public_choosing_card])
+	animation_manager.start_linear_movement_combined(public_choosing_card, target_pos, target_rotation, anim_dutation, animation_manager.EaseType.EASE_IN_OUT, Callable(self, "player_choose_card_anim_end"), [public_choosing_card])
 
 	# 延时anim_dutation + 0.1秒后继续
 	var temp_timer = Timer.new()
