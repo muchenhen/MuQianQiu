@@ -120,6 +120,7 @@ func supply_hand_card():
 # 补充公共手牌的动画结束回调
 func supply_hand_card_anim_end(card: Node):
 	card.update_card()
+	card.card_clicked.connect(Callable(self, "on_card_clicked"))
 	print("补充公共手牌动画结束: ", card.ID)
 
 func set_aim_hand_card_empty(card) -> void:

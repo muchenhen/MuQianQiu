@@ -168,8 +168,6 @@ func send_card_for_play(cards):
 		cards_to_animate.append({"card": card, "position": position, "rotation":rotation })
 	
 	public_deal.disable_all_hand_card_click()
-	
-
 	# 开始第一张卡的动画
 	animate_next_card()
 
@@ -202,7 +200,7 @@ func animate_next_card():
 			print("公共区域手牌 ", key, " ID: ", public_card.card.ID)
 		print("发牌完毕")
 		input_manager.allow_input()
-		start_round()
+		change_round()
 
 # 如果需要中止动画序列
 func stop_animation_sequence():
@@ -217,8 +215,8 @@ func start_round():
 	print("开始新一轮")
 	
 	# 重置所有卡片的选中状态
-	#for key in public_deal.hand_cards.keys():
-		#public_deal.hand_cards[key].card.set_card_unchooesd()
+	for key in public_deal.hand_cards.keys():
+		public_deal.hand_cards[key].card.set_card_unchooesd()
 	
 	# 重置当前轮次
 	change_round()
@@ -230,6 +228,7 @@ func change_round():
 		change_to_b_round()
 	else:
 		change_to_a_round()
+
 
 func change_to_a_round():
 	current_round = GameRound.PLAYER_A
@@ -274,7 +273,8 @@ func player_choose_public_card(player_choosing_card, public_choosing_card):
 	animation_manager.start_linear_movement_rotation(public_choosing_card, target_rotation, anim_dutation, animation_manager.EaseType.EASE_IN_OUT,  Callable(self, "player_choose_card_anim_end"), [public_choosing_card])
 
 	# 延时anim_dutation + 0.1秒后继续
-	animation_timer.start(anim_dutation + 0.1)
+	var temp_timer = Timer.new()
+	temp_timer.start(anim_dutation + 0.1)
 	# 补充公共牌手牌
 	public_deal.supply_hand_card()
 
@@ -283,7 +283,8 @@ func player_choose_public_card(player_choosing_card, public_choosing_card):
 
 	
 func player_choose_card_anim_end(card: Card):
-	print("玩家选择卡牌动画结束", card.position, card.rotation)
+	# print("玩家选择卡牌动画结束", card.position, card.rotation)
+	pass
 
 # 同步加载场景
 func load_scene(scene):
