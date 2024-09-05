@@ -104,22 +104,18 @@ func get_hand_card_by_id(card_id) -> Node:
 	return null
 
 func supply_hand_card():
-	print("补充公共牌手牌")
 	for i in hand_cards.keys():
 		var card_info:PublicHandCardInfo = hand_cards[i]
 		if card_info.isEmpty:
-			print("补充公共牌手牌: ", i)
 			var card = card_manager.pop_one_card()
+			print("补充公共牌手牌: ", i, card.ID)
 			card_info.card = card
 			card_info.isEmpty = false
-			print("补充公共牌手牌: ", card.ID)
 			card.update_card()
 			# 播放动画
 			var taget_pos = card_info.position
 			var target_rotation = card_info.rotation
-			print(taget_pos, target_rotation, card_info.card.position, card_info.card.rotation)
-			animation_manager.start_linear_movement_pos(card, taget_pos, 1, animation_manager.EaseType.EASE_IN_OUT)
-			animation_manager.start_linear_movement_rotation(card, target_rotation, 1, animation_manager.EaseType.EASE_IN_OUT)
+			animation_manager.start_linear_movement_combined(card, taget_pos, target_rotation, 1, animation_manager.EaseType.EASE_IN_OUT)
 			return
 
 func set_aim_hand_card_empty(card) -> void:

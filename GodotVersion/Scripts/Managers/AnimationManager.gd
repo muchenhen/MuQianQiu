@@ -26,6 +26,28 @@ func _process(delta):
 			if animated_objects[obj][anim_type]["active"]:
 				_update_animation(obj, anim_type, delta)
 
+func start_linear_movement_combined(
+	obj: Node, 
+	target_pos: Vector2, 
+	target_rotation: float, 
+	duration: float, 
+	ease_type: EaseType = EaseType.LINEAR, 
+	callback: Callable = Callable(), 
+	callback_args: Array = []
+):
+	_add_animation(obj, "linear_movement_combined", {
+		"start_pos": obj.global_position,
+		"target_pos": target_pos,
+		"start_rotation": obj.rotation,
+		"target_rotation": target_rotation,
+		"duration": duration,
+		"elapsed_time": 0,
+		"active": true,
+		"ease_type": ease_type,
+		"callback": callback,
+		"callback_args": callback_args
+	})
+
 func start_linear_movement_pos(obj: Node, target: Vector2, duration: float, ease_type: EaseType = EaseType.LINEAR, callback: Callable = Callable(), callback_args: Array = []):
 	_add_animation(obj, "linear_movement_pos", {
 		"start_pos": obj.global_position,
@@ -61,6 +83,11 @@ func _update_animation(obj: Node, anim_type: String, delta: float):
 	var raw_t = min(anim["elapsed_time"] / anim["duration"], 1.0)
 	
 	match anim_type:
+		"linear_movement_combined":
+			var t = _apply_easing(raw_t, anim["ease_type"])
+			obj.global_position = anim["start_pos"].lerp(anim["target_pos"], t)
+			obj.rotation = lerp_angle(anim["start_rotation"], anim["target_rotation"], t)
+			
 		"linear_movement_pos":
 			var t = _apply_easing(raw_t, anim["ease_type"])
 			obj.position = anim["start_pos"].lerp(anim["target"], t)
