@@ -239,12 +239,16 @@ func change_round():
 func change_to_a_round():
 	current_round = GameRound.PLAYER_A
 	player_b.set_player_state(Player.PlayerState.WAITING)
+	player_b.set_all_hand_card_cannot_click()
 	player_a.set_player_state(Player.PlayerState.SELF_ROUND_UNCHOOSING)
+	player_a.set_all_hand_card_can_click()
 
 func change_to_b_round():
 	current_round = GameRound.PLAYER_B
 	player_a.set_player_state(Player.PlayerState.WAITING)
+	player_a.set_all_hand_card_cannot_click()
 	player_b.set_player_state(Player.PlayerState.SELF_ROUND_UNCHOOSING)
+	player_b.set_all_hand_card_can_click()
 
 # 玩家已经选择了一张手牌并且确认要选择了一张公共区域的牌
 func player_choose_public_card(player_choosing_card, public_choosing_card):

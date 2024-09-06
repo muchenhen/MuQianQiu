@@ -64,6 +64,8 @@ func set_player_state(state: PlayerState) -> void:
     print("当前玩家 ", player_name, " 状态: ", player_state)
 
 func on_card_clicked(card: Node) -> void:
+    if player_state == PlayerState.WAITING:
+        return
     if player_state == PlayerState.SELF_ROUND_UNCHOOSING:
         card.set_card_chooesd()
         set_player_state(PlayerState.SELF_ROUND_CHOOSING)
@@ -90,3 +92,13 @@ func set_all_hand_card_unchooesd() -> void:
     for i in hand_cards.keys():
         var card = hand_cards[i]
         card.set_card_unchooesd()
+
+func set_all_hand_card_cannot_click() -> void:
+    for i in hand_cards.keys():
+        var card = hand_cards[i]
+        card.disable_click()
+
+func set_all_hand_card_can_click() -> void:
+    for i in hand_cards.keys():
+        var card = hand_cards[i]
+        card.enable_click()
