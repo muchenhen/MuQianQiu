@@ -29,7 +29,6 @@ var hand_cards = {}
 
 const PUBLIC_HAND_MAX = 8
 
-
 func initialize() -> void:
 	# 初始化公共区域手牌的每一个位置
 	pass
