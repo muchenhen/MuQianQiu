@@ -10,8 +10,8 @@ var input_manager: InputManager
 
 var animation_manager = AnimationManager.get_instance()
 
-var sc_start = preload("res://scenes/sc_start.tscn")
-var sc_main = preload("res://scenes/sc_main.tscn")
+var sc_start = preload("res://Scenes/sc_start.tscn")
+var sc_main = preload("res://Scenes/sc_main.tscn")
 var current_scene = null
 
 var current_all_cards
@@ -70,7 +70,7 @@ func _ready():
 		return
 	
 
-	table_manager.load_csv("res://Tables/Cards.csv")
+	table_manager.load_csv("res://Tables/Cards.txt")
 	
 	set_process_mode(Node.PROCESS_MODE_ALWAYS)
 	
