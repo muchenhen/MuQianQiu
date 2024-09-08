@@ -69,7 +69,8 @@ func on_player_choose_card(player):
 	player_current_choosing_card = player.hand_cards[player.current_choosing_card_id]
 	var season = player_current_choosing_card.Season
 	set_aim_season_hand_card_chooesd(season)
-	enable_all_hand_card_click()
+	disable_all_hand_card_click()
+	enable_aim_season_hand_card_click(season)
 
 func set_all_hand_card_unchooesd() -> void:
 	for i in hand_cards.keys():
@@ -130,3 +131,10 @@ func set_aim_hand_card_empty(card) -> void:
 			card_info.isEmpty = true
 			print("Set card empty: ", card_info.card.ID)
 			return
+
+func enable_aim_season_hand_card_click(season) -> void:
+	for i in hand_cards.keys():
+		var card_info = hand_cards[i]
+		if not card_info.isEmpty:
+			if card_info.card.Season == season:
+				card_info.card.enable_click()
