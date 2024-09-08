@@ -33,7 +33,10 @@ func init_all_stories_state() -> void:
 		var story_cards_id = story_info["CardsID"]
 		story_cards_id = story_cards_id.replace("(","")
 		story_cards_id = story_cards_id.replace(")","")
-		var story_cards_id_array = story_cards_id.split(",")
+		var story_cards_id_array_str = story_cards_id.split(",")
+		var story_cards_id_array = []
+		for card_id_str in story_cards_id_array_str:
+			story_cards_id_array.append(int(card_id_str))
 		var story_score = story_info["Score"]
 		var story_audio_id = story_info["AudioID"]
 		stories[story_id] = {
@@ -64,3 +67,27 @@ func get_relent_stories(card_id:int) -> Array:
 	for story_id in stories_id:
 		relent_stories.append(stories[story_id])
 	return relent_stories
+
+func check_story_finish_by_cards_id(cards_id:Array) -> Array:
+	# print("检查故事完成情况", cards_id)
+	var this_time_completed_stories = []
+	for story_id in stories:
+		var story = stories[story_id]
+		# print("准备检查故事 ", story["Name"])
+		if story["Finished"]:
+			# print(story["Name"], "故事已完成，跳过")
+			continue
+		var story_cards_id = story["CardsID"]
+		# print(story["Name"], "故事所需卡牌ID: ", story_cards_id)
+		var finished = true
+		for card_id in story_cards_id:
+			if cards_id.find(card_id) == -1:
+				finished = false
+				# print("玩家牌堆中没有卡牌 ", card_id, " 无法完成故事 ", story["Name"])
+				break
+		if finished:
+			story["Finished"] = true
+			print(story["Name"], "故事完成")
+			completed_stories.append(story)
+			this_time_completed_stories.append(story)
+	return this_time_completed_stories

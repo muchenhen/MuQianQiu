@@ -288,6 +288,9 @@ func player_choose_public_card(player_choosing_card, public_choosing_card):
 
 	# 更新玩家分数
 	player.add_score(player_choosing_card.Score + public_choosing_card.Score)
+	
+	player.send_card_to_deal(player_choosing_card)
+	player.send_card_to_deal(public_choosing_card)
 
 	# 延时anim_dutation + 0.1秒后继续
 	var temp_timer = Timer.new()
@@ -297,6 +300,12 @@ func player_choose_public_card(player_choosing_card, public_choosing_card):
 
 	change_round()
 	input_manager.allow_input()
+
+	# 等待一秒检查故事完成情况
+	temp_timer = Timer.new()
+	temp_timer.start(1)
+
+	player.check_finish_story()
 
 	
 func player_choose_card_anim_end(card: Card):
