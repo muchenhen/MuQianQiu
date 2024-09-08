@@ -63,7 +63,7 @@ func _ready():
 		player_b.initialize("PlayerB", Player.PlayerPos.B)
 		public_deal.bind_players(player_a, player_b)
 
-		public_deal.connect("player_choose_card", Callable(self, "player_choose_public_card"))
+		public_deal.connect("player_choose_public_card", Callable(self, "player_choose_public_card"))
 
 		current_round = GameRound.WAITING
 	else:
@@ -88,6 +88,10 @@ func start_new_game():
 	card_manager.shuffle_cardIDs()
 	
 	load_scene(sc_main)
+
+	var ui_node = current_scene.get_node("UI")
+	player_a.score_ui = ui_node.get_node("Text_AScore")
+	player_b.score_ui = ui_node.get_node("Text_BScore")
 
 	card_manager.create_cards_for_this_game(current_scene)
 
@@ -277,6 +281,9 @@ func player_choose_public_card(player_choosing_card, public_choosing_card):
 	public_choosing_card.set_card_pivot_offset_to_center()
 	target_rotation = card_manager.get_random_deal_card_rotation()
 	animation_manager.start_linear_movement_combined(public_choosing_card, target_pos, target_rotation, anim_dutation, animation_manager.EaseType.EASE_IN_OUT, Callable(self, "player_choose_card_anim_end"), [public_choosing_card])
+
+	# 更新玩家分数
+	player.add_score(player_choosing_card.Score + public_choosing_card.Score)
 
 	# 延时anim_dutation + 0.1秒后继续
 	var temp_timer = Timer.new()

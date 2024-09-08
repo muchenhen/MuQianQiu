@@ -12,6 +12,8 @@ var deal_cards = {}
 
 var player_score: int = 0
 
+var score_ui:Label = null
+
 var player_finish_stories = []
 
 var hand_cards_pos_array = []
@@ -102,3 +104,12 @@ func set_all_hand_card_can_click() -> void:
     for i in hand_cards.keys():
         var card = hand_cards[i]
         card.enable_click()
+
+func add_score(score: int) -> void:
+    player_score += score
+    print("玩家 ", player_name, " 得分: ", player_score)
+    if score_ui:
+        score_ui.text = "当前分数：" + str(player_score)
+
+func set_score_ui(ui: Node) -> void:
+    score_ui = ui

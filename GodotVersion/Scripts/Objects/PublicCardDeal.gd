@@ -11,7 +11,7 @@ var player_current_choosing_card = null
 var current_player = null
 
 
-signal player_choose_card(player_choosing_card, public_choosing_card)
+signal player_choose_public_card(player_choosing_card, public_choosing_card)
 
 class PublicHandCardInfo:
 	var card: Node
@@ -54,7 +54,7 @@ func on_card_clicked(card):
 		disable_all_hand_card_click()
 		set_all_hand_card_unchooesd()
 		set_aim_hand_card_empty(card)
-		player_choose_card.emit(player_current_choosing_card, card)
+		player_choose_public_card.emit(player_current_choosing_card, card)
 
 func on_player_choose_card(player):
 	set_all_hand_card_unchooesd()
