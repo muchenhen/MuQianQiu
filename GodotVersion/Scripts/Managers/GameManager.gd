@@ -71,6 +71,8 @@ func _ready():
 	
 
 	table_manager.load_csv("res://Tables/Cards.txt")
+
+	StoryManager.get_instance().init_all_stories_state()
 	
 	set_process_mode(Node.PROCESS_MODE_ALWAYS)
 	
@@ -92,6 +94,8 @@ func start_new_game():
 	var ui_node = current_scene.get_node("UI")
 	player_a.score_ui = ui_node.get_node("Text_AScore")
 	player_b.score_ui = ui_node.get_node("Text_BScore")
+	player_a.add_score(0)
+	player_b.add_score(0)
 
 	card_manager.create_cards_for_this_game(current_scene)
 
