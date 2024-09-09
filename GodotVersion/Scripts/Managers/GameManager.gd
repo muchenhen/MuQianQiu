@@ -295,22 +295,15 @@ func player_choose_public_card(player_choosing_card, public_choosing_card):
 	# 延时anim_dutation + 0.1秒后继续
 	var temp_timer = Timer.new()
 	temp_timer.start(anim_dutation + 0.1)
-	# 补充公共牌手牌
-	public_deal.supply_hand_card()
 
-	change_round()
-	input_manager.allow_input()
-
-	# 等待一秒检查故事完成情况
-	temp_timer = Timer.new()
-	temp_timer.start(1)
-
+	player.new_story_show_finished.connect(Callable(self, "show_new_finished_stories"))
 	player.check_finish_story()
 
-	
-func player_choose_card_anim_end(card: Card):
-	# print("玩家选择卡牌动画结束", card.position, card.rotation)
-	pass
+func show_new_finished_stories():
+	# 补充公共牌手牌
+	public_deal.supply_hand_card()
+	change_round()
+	input_manager.allow_input()
 
 # 同步加载场景
 func load_scene(scene):

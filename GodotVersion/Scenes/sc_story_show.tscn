@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://bsjufb64q25nc"]
+[gd_scene load_steps=3 format=3 uid="uid://bsjufb64q25nc"]
 
 [ext_resource type="Script" path="res://Scripts/Objects/HorizontalBox.gd" id="1_vs26n"]
+[ext_resource type="Script" path="res://Scripts/Objects/test_timer.gd" id="2_va6hi"]
 
 [node name="ScStoryShow" type="Node2D"]
 
@@ -10,3 +11,6 @@ offset_right = 1920.0
 offset_bottom = 704.0
 color = Color(0.0627451, 0.0627451, 0.0627451, 0.490196)
 script = ExtResource("1_vs26n")
+
+[node name="Node2D" type="Node2D" parent="."]
+script = ExtResource("2_va6hi")

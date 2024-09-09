@@ -20,7 +20,13 @@ var hand_cards_pos_array = []
 
 var current_choosing_card_id = -1
 
+var story_queue = []
+var story_timer: Timer
+
 signal player_choose_card(Player)
+
+# 新完成的故事展示完毕
+signal new_story_show_finished()
 
 enum PlayerState{
 	# 不在自己的回合中
@@ -124,6 +130,20 @@ func check_finish_story() -> void:
 		deal_cards_id.append(card_id)
 	var story_manager = StoryManager.get_instance()
 	var this_time_completed_stories = story_manager.check_story_finish_by_cards_id(deal_cards_id)
-	for story in this_time_completed_stories:
-		print("玩家 ", player_name, " 完成了故事 ", story["Name"], " 得分: ", story["Score"])
-		add_score(story["Score"])
+	show_new_finished_stories(this_time_completed_stories)
+	
+func show_new_finished_stories(this_time_completed_stories: Array):
+	story_queue = this_time_completed_stories.duplicate()
+	_show_next_story()
+
+func _show_next_story():
+	if not story_queue.is_empty():
+		var story = story_queue.pop_front()
+		show_one_new_finished_story(story)
+	else:
+		print("玩家 ", player_name, " 所有新完成的故事展示完毕")
+		new_story_show_finished.emit()
+
+func show_one_new_finished_story(story):
+	print("玩家 ", player_name, " 完成了故事 ", story["Name"])
+	_show_next_story()
