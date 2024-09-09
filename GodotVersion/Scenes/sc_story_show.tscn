@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://bsjufb64q25nc"]
+
+[ext_resource type="Script" path="res://Scripts/Objects/HorizontalBox.gd" id="1_vs26n"]
+
+[node name="ScStoryShow" type="Node2D"]
+
+[node name="CardBox" type="ColorRect" parent="."]
+offset_top = 376.0
+offset_right = 1920.0
+offset_bottom = 704.0
+color = Color(0.0627451, 0.0627451, 0.0627451, 0.490196)
+script = ExtResource("1_vs26n")
