@@ -146,4 +146,4 @@ func _show_next_story():
 
 func show_one_new_finished_story(story):
 	print("玩家 ", player_name, " 完成了故事 ", story["Name"])
-	_show_next_story()
+	_show_next_story() 
