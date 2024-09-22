@@ -12,5 +12,15 @@ offset_bottom = 704.0
 color = Color(0.0627451, 0.0627451, 0.0627451, 0.490196)
 script = ExtResource("1_vs26n")
 
+[node name="EditorLayoutButton" type="Button" parent="CardBox"]
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -120.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = 40.0
+text = "Update Layout"
+
 [node name="Node2D" type="Node2D" parent="."]
 script = ExtResource("2_va6hi")

@@ -124,6 +124,7 @@ func send_card_to_deal(card: Node) -> void:
 	deal_cards[card.ID] = card
 	card.set_card_unchooesd()
 
+# 一个玩家的回合结束，检查故事完成情况
 func check_finish_story() -> void:
 	var deal_cards_id = []
 	for card_id in deal_cards.keys():
@@ -146,4 +147,6 @@ func _show_next_story():
 
 func show_one_new_finished_story(story):
 	print("玩家 ", player_name, " 完成了故事 ", story["Name"])
+	# 给对应玩家增加当前故事的分数
+	add_score(story["Score"])
 	_show_next_story() 
