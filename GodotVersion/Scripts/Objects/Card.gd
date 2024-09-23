@@ -54,8 +54,7 @@ func _on_card_clicked() -> void:
 	
 	change_card_chooesd()
 	# 发送信号
-	card_clicked.emit()
-	emit_signal("card_clicked", self)
+	card_clicked.emit(self)
 
 func update_card() -> void:
 	_load_image()

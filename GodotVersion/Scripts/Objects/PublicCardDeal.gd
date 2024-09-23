@@ -120,13 +120,16 @@ func supply_hand_card():
 			return
 
 # 补充公共手牌的动画结束回调
-func supply_hand_card_anim_end(card: Node):
+func supply_hand_card_anim_end(card: Card):
 	# 重排所有手牌的ZIndex
 	for i in hand_cards.keys():
 		var card_info = hand_cards[i]
 		card_info.card.z_index = 8 - i
 		card_info.card.z_as_relative = false
 		card_info.card.disable_click()
+		card_info.card.global_position = card_info.position
+		card_info.card.position = card_info.position
+		card_info.card.rotation = card_info.rotation
 	card.update_card()
 	card.card_clicked.connect(Callable(self, "on_card_clicked"))
 	print("补充公共手牌动画结束: ", card.ID)

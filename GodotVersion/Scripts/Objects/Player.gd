@@ -78,8 +78,7 @@ func on_card_clicked(card: Node) -> void:
 		card.set_card_chooesd()
 		set_player_state(PlayerState.SELF_ROUND_CHOOSING)
 		current_choosing_card_id = card.ID
-		player_choose_card.emit()
-		emit_signal("player_choose_card", self)
+		player_choose_card.emit(self)
 		return
 	elif player_state == PlayerState.SELF_ROUND_CHOOSING:
 		if current_choosing_card_id == card.ID:
