@@ -1,5 +1,6 @@
 extends Node
 
+# 公共卡池
 class_name PublicCardDeal
 
 var card_manager = CardManager.get_instance()
@@ -40,7 +41,7 @@ func bind_players(p_a, p_b) -> void:
 	player_b.connect("player_choose_card", Callable(self, "on_player_choose_card"))
 
 func set_one_hand_card(card, position, rotation) -> void:
-	hand_cards[hand_cards.size()+1] = PublicHandCardInfo.new( card, position, rotation, false)
+	hand_cards[hand_cards.size() + 1] = PublicHandCardInfo.new(card, position, rotation, false)
 	card.connect("card_clicked", Callable(self, "on_card_clicked"))
 
 func on_card_clicked(card):
@@ -105,11 +106,11 @@ func get_hand_card_by_id(card_id) -> Node:
 
 func supply_hand_card():
 	for i in hand_cards.keys():
-		var card_info:PublicHandCardInfo = hand_cards[i]
+		var card_info: PublicHandCardInfo = hand_cards[i]
 		if card_info.isEmpty:
 			var card = card_manager.pop_one_card()
-			print("补充公共牌手牌: ", i, card.ID)
 			card.z_index = 8 - i
+			print("补充公共牌手牌: ", i, " ", card.ID)
 			card_info.card = card
 			card_info.isEmpty = false
 			# 播放动画
@@ -120,6 +121,12 @@ func supply_hand_card():
 
 # 补充公共手牌的动画结束回调
 func supply_hand_card_anim_end(card: Node):
+	# 重排所有手牌的ZIndex
+	for i in hand_cards.keys():
+		var card_info = hand_cards[i]
+		card_info.card.z_index = 8 - i
+		card_info.card.z_as_relative = false
+		card_info.card.disable_click()
 	card.update_card()
 	card.card_clicked.connect(Callable(self, "on_card_clicked"))
 	print("补充公共手牌动画结束: ", card.ID)

@@ -32,6 +32,5 @@ grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(1.355, 1.355)
 pivot_offset = Vector2(96, 128)
-mouse_filter = 2
 texture = ExtResource("3_mp0un")
 expand_mode = 1

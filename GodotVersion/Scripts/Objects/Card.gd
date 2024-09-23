@@ -45,12 +45,13 @@ func initialize(card_id, card_info) -> void:
 	update_card()
 
 func _on_card_clicked() -> void:
-	if not is_enable_click:
-		return
 	# 打印的时候去掉换行符
 	var debug_describe = Describe.replace("\n", "")
 	# 打印卡牌所有信息
-	print("Card clicked: ", Name, " ID: ", ID, " Type: ", Type, " Score: ", Score, " Season: ", Season, " Describe: ", debug_describe, " BaseID: ", BaseID, " Special: ", Special)
+	print("Card clicked: ", Name, " ID: ", ID, " Type: ", Type, " Score: ", Score, " Season: ", Season, " Describe: ", debug_describe, " BaseID: ", BaseID, " Special: ", Special, " IsEnableClick: ", is_enable_click)
+	if not is_enable_click:
+		return
+	
 	change_card_chooesd()
 	# 发送信号
 	card_clicked.emit()
