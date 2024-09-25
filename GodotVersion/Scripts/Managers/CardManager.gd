@@ -139,3 +139,4 @@ func get_random_deal_card_rotation() -> float:
 func set_all_card_back() -> void:
 	for card in all_cards:
 		card.set_card_back()
+		card.disable_click()

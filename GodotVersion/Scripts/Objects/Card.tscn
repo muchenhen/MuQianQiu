@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://dwxj7konvmmje" path="res://Textures/Cards/Tex_CardGlow.PNG" id="3_mp0un"]
 
 [node name="Card" type="TextureButton"]
+z_as_relative = false
 custom_minimum_size = Vector2(192, 256)
 offset_right = 192.0
 offset_bottom = 256.0

@@ -30,6 +30,7 @@ func _ready() -> void:
 	Image_ChooesdBG = get_node("Image_ChooesdBG")
 	# 绑定点击事件
 	connect("pressed", Callable(self, "_on_card_clicked"))
+	connect("mouse_entered", Callable(self, "on_card_hovered"))
 	update_card()
 
 func initialize(card_id, card_info) -> void:
@@ -100,3 +101,6 @@ func enable_click() -> void:
 
 func set_card_pivot_offset_to_center() -> void:
 	self.pivot_offset = Vector2(size.x/2, size.y/2)
+
+func on_card_hovered() -> void:
+	print("Card hovered: ", Name, " ID: ", ID)

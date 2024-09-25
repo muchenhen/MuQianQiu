@@ -107,7 +107,6 @@ func start_new_game():
 	var player_b_deal_card_template = current_scene.get_node("Cards").get_node("PlayerBDealCard")
 	card_manager.PLAYER_B_DEAL_CARD_POS = player_b_deal_card_template.position
 
-
 	# 收集公共牌区域的位置
 	var public_deal_cards_pos = []
 	var public_deal_cards_rotation = []
@@ -294,7 +293,7 @@ func player_choose_public_card(player_choosing_card, public_choosing_card):
 
 	# 延时anim_dutation + 0.1秒后继续
 	var temp_timer = Timer.new()
-	get_tree().root.add_child(temp_timer)
+	get_tree().root.add_child(temp_timer )
 	temp_timer.start(anim_dutation + 0.1)
 
 	player.new_story_show_finished.connect(Callable(self, "show_new_finished_stories"))
