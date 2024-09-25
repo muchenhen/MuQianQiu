@@ -25,6 +25,12 @@ const BACK_TEXTURE_PATH: String = "res://Textures/Cards/Tex_Back.png"
 
 var back_texture: Texture = null
 
+var input_priority: int = 0 : set = set_input_priority
+
+func set_input_priority(value: int) -> void:
+	input_priority = value
+	set_process_priority(input_priority)  # 更新处理优先级
+
 func _ready() -> void:
 	back_texture = load(BACK_TEXTURE_PATH)
 	Image_ChooesdBG = get_node("Image_ChooesdBG")
@@ -32,6 +38,7 @@ func _ready() -> void:
 	connect("pressed", Callable(self, "_on_card_clicked"))
 	connect("mouse_entered", Callable(self, "on_card_hovered"))
 	update_card()
+	set_process_priority(input_priority)  # 设置处理优先级
 
 func initialize(card_id, card_info) -> void:
 	ID = card_id
@@ -103,4 +110,41 @@ func set_card_pivot_offset_to_center() -> void:
 	self.pivot_offset = Vector2(size.x/2, size.y/2)
 
 func on_card_hovered() -> void:
-	print("Card hovered: ", Name, " ID: ", ID)
+	print("Card hovered: ", Name, " ID: ", ID, " Z-index ", z_index, " input_priority: ", input_priority)
+
+func reconnect_on_card_hovered() -> void:
+	disconnect("mouse_entered", Callable(self, "on_card_hovered"))
+	connect("mouse_entered", Callable(self, "on_card_hovered"))
+
+# 在 Card.gd 中
+
+# func raise_card() -> void:
+# 	var parent = get_parent()
+# 	if parent:
+# 		var current_index = get_draw_index()
+# 		var max_index = parent.get_child_count() - 1
+# 		if current_index < max_index:
+# 			set_draw_index(max_index)
+
+# func lower_card() -> void:
+# 	if get_draw_index() > 0:
+# 		set_draw_index(0)
+
+# func adjust_draw_order(new_index: int = -1) -> void:
+# 	var parent = get_parent()
+# 	if parent:
+# 		var max_index = parent.get_child_count() - 1
+# 		if new_index == -1 or new_index > max_index:
+# 			set_draw_index(max_index)
+# 		else:
+# 			set_draw_index(new_index)
+
+func move_to_top() -> void:
+	var parent = get_parent()
+	if parent:
+		parent.move_child(self, -1)  # -1 moves to the last position
+
+func move_to_bottom() -> void:
+	var parent = get_parent()
+	if parent:
+		parent.move_child(self, 0)  # 0 moves to the first position

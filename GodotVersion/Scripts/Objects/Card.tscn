@@ -11,6 +11,7 @@ offset_right = 192.0
 offset_bottom = 256.0
 size_flags_horizontal = 6
 size_flags_vertical = 6
+action_mode = 0
 texture_normal = ExtResource("1_jlb4m")
 ignore_texture_size = true
 stretch_mode = 0

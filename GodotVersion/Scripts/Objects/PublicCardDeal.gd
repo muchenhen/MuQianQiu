@@ -11,6 +11,8 @@ var player_b = null
 var player_current_choosing_card = null
 var current_player = null
 
+var skip_supply_anim:bool = true
+
 
 signal player_choose_public_card(player_choosing_card, public_choosing_card)
 
@@ -109,14 +111,25 @@ func supply_hand_card():
 		var card_info: PublicHandCardInfo = hand_cards[i]
 		if card_info.isEmpty:
 			var card = card_manager.pop_one_card()
-			card.z_index = 8 - i
+			card.move_to_top()
+			card.z_index = 8 - i + 1
+			card.set_input_priority(card.z_index)
 			print("补充公共牌手牌: ", i, " ", card.ID)
 			card_info.card = card
 			card_info.isEmpty = false
-			# 播放动画
-			var taget_pos = card_info.position
-			var target_rotation = card_info.rotation
-			animation_manager.start_linear_movement_combined(card, taget_pos, target_rotation, 1, animation_manager.EaseType.EASE_IN_OUT, Callable(self, "supply_hand_card_anim_end"), [card])
+
+			if skip_supply_anim:
+				card_info.card.global_position = card_info.position
+				card_info.card.position = card_info.position
+				card_info.card.rotation = card_info.rotation
+				card_info.card.disable_click()
+				card.update_card()
+				card.card_clicked.connect(Callable(self, "on_card_clicked"))
+			else:
+				# 播放动画
+				var taget_pos = card_info.position
+				var target_rotation = card_info.rotation
+				animation_manager.start_linear_movement_combined(card, taget_pos, target_rotation, 1, animation_manager.EaseType.EASE_IN_OUT, Callable(self, "supply_hand_card_anim_end"), [card])
 			return
 
 # 补充公共手牌的动画结束回调
@@ -124,8 +137,7 @@ func supply_hand_card_anim_end(card: Card):
 	# 重排所有手牌的ZIndex
 	for i in hand_cards.keys():
 		var card_info = hand_cards[i]
-		card_info.card.z_index = 8 - i
-		card_info.card.z_as_relative = false
+		card_info.card.z_index = 8 - i + 1
 		card_info.card.disable_click()
 		card_info.card.global_position = card_info.position
 		card_info.card.position = card_info.position

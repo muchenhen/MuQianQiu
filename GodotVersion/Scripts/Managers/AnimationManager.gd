@@ -113,23 +113,44 @@ func _update_animation(obj: Node, anim_type: String, delta: float):
 			obj.rotate(anim["speed"] * delta)
 
 		"spread_out_movement":
-			# 使用缓动函数来创建加速效果
-			var eased_t = ease(raw_t, 2.5) # 调整缓动指数以获得所需的加速效果
+			var eased_t = ease(raw_t, 2.5)
 			var current_radius = anim["radius"] * eased_t
-			var current_angle = anim["start_angle"] + eased_t * PI * 0.25 # 添加一个小的旋转，范围是1/4圈
+			var current_angle = anim["start_angle"] + eased_t * PI * 0.25
 			obj.global_position = anim["center"] + Vector2(cos(current_angle), sin(current_angle)) * current_radius
-			obj.rotation = current_angle + PI / 2 # 使卡片始终垂直于半径
+			obj.rotation = current_angle + PI / 2
 	
 	if raw_t >= 1.0:
 		_end_animation(obj, anim_type)
 
 func _end_animation(obj: Node, anim_type: String):
 	var anim = animated_objects[obj][anim_type]
+	
+	# 在动画结束时强制设置最终位置
+	match anim_type:
+		"linear_movement_combined":
+			obj.position = anim["target_pos"]
+			obj.rotation = anim["target_rotation"]
+		"linear_movement_pos":
+			obj.position = anim["target"]
+		"linear_movement_rotation":
+			obj.rotation = anim["target"]
+		"parabolic_movement":
+			obj.global_position = anim["target"]
+		"circular_movement":
+			var final_angle = anim["start_angle"] + 2 * PI
+			obj.global_position = anim["center"] + Vector2(cos(final_angle), sin(final_angle)) * anim["radius"]
+		"movement_with_scale":
+			obj.global_position = anim["target"]
+			obj.scale = anim["target_scale"]
+		"spread_out_movement":
+			var final_angle = anim["start_angle"] + PI * 0.25
+			obj.global_position = anim["center"] + Vector2(cos(final_angle), sin(final_angle)) * anim["radius"]
+			obj.rotation = final_angle + PI / 2
+	
 	anim["active"] = false
 	if anim["callback"].is_valid():
 		anim["callback"].callv(anim["callback_args"])
 	
-	# 如果对象没有其他活跃的动画，从字典中移除
 	if not _has_active_animations(obj):
 		animated_objects.erase(obj)
 

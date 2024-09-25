@@ -145,7 +145,8 @@ func send_card_for_play_without_anim(cards):
 		var position = card_manager.PUBLIC_CARDS_POS[i]
 		var rotation = card_manager.PUBLIC_CRADS_ROTATION[i]
 		var card = cards.pop_back()
-		card.z_index = 8 - i - 1
+		card.z_index = 8 - i
+		card.set_input_priority(card.z_index)
 		card.update_card()
 		# 公共卡池的手牌禁止点击
 		card.connect("card_clicked", Callable(self, "on_card_clicked"))
@@ -174,7 +175,8 @@ func send_card_for_play(cards):
 		var position = card_manager.PUBLIC_CARDS_POS[i]
 		var rotation = card_manager.PUBLIC_CRADS_ROTATION[i]
 		var card = cards.pop_back()
-		card.z_index = 8 - i - 1
+		card.z_index = 8 - i
+		card.set_input_priority(card.z_index)
 		# 公共卡池的手牌禁止点击
 		card.connect("card_clicked", Callable(self, "on_card_clicked"))
 		public_deal.set_one_hand_card(card, position, rotation)
