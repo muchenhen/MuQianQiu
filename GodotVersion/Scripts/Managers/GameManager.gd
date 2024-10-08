@@ -12,6 +12,8 @@ var animation_manager = AnimationManager.get_instance()
 
 var sc_start = preload("res://Scenes/sc_start.tscn")
 var sc_main = preload("res://Scenes/sc_main.tscn")
+var sc_story_show = preload("res://Scenes/sc_story_show.tscn")
+
 var current_scene = null
 
 var current_all_cards
@@ -26,6 +28,8 @@ var animation_timer: Timer
 
 const PLAYER_A_SCORE_STR:String = "玩家A分数："
 const PLAYER_B_SCORE_STR:String = "玩家B分数："
+
+var sc_story_show_instance = null
 
 enum GameRound{
 	WAITING = 0,
@@ -48,6 +52,9 @@ static var instance: GameManager = null
 
 func _ready():
 	if instance == null:
+		# 准备故事展示界面
+		sc_story_show_instance = sc_story_show.instantiate()
+
 		instance = self
 		add_child(animation_manager)
 
@@ -346,3 +353,8 @@ func print_scene_tree(node, indent=""):
 func load_start_scene():
 	print("加载开始场景")
 	load_scene(sc_start)
+
+func get_sc_story_show_instance():
+	if sc_story_show_instance == null:
+		sc_story_show_instance = sc_story_show.instantiate()
+	return sc_story_show_instance

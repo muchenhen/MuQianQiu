@@ -148,4 +148,22 @@ func show_one_new_finished_story(story):
 	print("玩家 ", player_name, " 完成了故事 ", story["Name"])
 	# 给对应玩家增加当前故事的分数
 	add_score(story["Score"])
-	_show_next_story() 
+	# 使用sc_story_show展示当前故事的卡牌
+	
+	var sc = GameManager.instance.get_sc_story_show_instance()
+	sc.z_index = 999
+	# 将sc添加到最上层
+	var tree = GameManager.instance.get_tree()
+	var root = tree.get_root()
+	root.add_child(sc)
+	# 获取当前故事的所有id
+	var card_ids = story["CardsID"]
+	# 创建新的卡牌，添加到sc中
+	for card_id in card_ids:
+		var card = card_manager.create_one_card(card_id)
+		card.z_index = 1000
+		sc.add_card(card)
+	sc.layout_children()
+
+	# 停留一秒后，继续展示下一个故事
+	# todo

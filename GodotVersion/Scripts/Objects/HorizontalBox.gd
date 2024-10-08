@@ -5,12 +5,6 @@ class_name HorizontalBox
 @export var item_padding: float = 10.0
 @export var auto_layout: bool = true
 
-func _enter_tree():
-	if Engine.is_editor_hint():
-		# 确保我们只添加一次按钮
-		if not has_node("EditorLayoutButton"):
-			add_layout_button()
-
 func add_layout_button():
 	var button = Button.new()
 	button.name = "EditorLayoutButton"
