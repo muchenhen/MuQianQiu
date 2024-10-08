@@ -116,29 +116,6 @@ func reconnect_on_card_hovered() -> void:
 	disconnect("mouse_entered", Callable(self, "on_card_hovered"))
 	connect("mouse_entered", Callable(self, "on_card_hovered"))
 
-# 在 Card.gd 中
-
-# func raise_card() -> void:
-# 	var parent = get_parent()
-# 	if parent:
-# 		var current_index = get_draw_index()
-# 		var max_index = parent.get_child_count() - 1
-# 		if current_index < max_index:
-# 			set_draw_index(max_index)
-
-# func lower_card() -> void:
-# 	if get_draw_index() > 0:
-# 		set_draw_index(0)
-
-# func adjust_draw_order(new_index: int = -1) -> void:
-# 	var parent = get_parent()
-# 	if parent:
-# 		var max_index = parent.get_child_count() - 1
-# 		if new_index == -1 or new_index > max_index:
-# 			set_draw_index(max_index)
-# 		else:
-# 			set_draw_index(new_index)
-
 func move_to_top() -> void:
 	var parent = get_parent()
 	if parent:

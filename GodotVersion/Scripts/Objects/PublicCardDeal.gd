@@ -11,7 +11,7 @@ var player_b = null
 var player_current_choosing_card = null
 var current_player = null
 
-var skip_supply_anim:bool = true
+var skip_supply_anim:bool = false
 
 
 signal player_choose_public_card(player_choosing_card, public_choosing_card)
