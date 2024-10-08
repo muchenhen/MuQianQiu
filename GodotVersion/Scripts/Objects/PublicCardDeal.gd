@@ -134,14 +134,18 @@ func supply_hand_card():
 
 # 补充公共手牌的动画结束回调
 func supply_hand_card_anim_end(card: Card):
-	# 重排所有手牌的ZIndex
-	for i in hand_cards.keys():
+	# 重排所有手牌的ZIndex godot实际上是通过树节点的顺讯来决定点击的优先级的
+	# 倒序遍历 进行move_to_top操作
+	var hand_card_count = hand_cards.size()
+	for i in range(hand_card_count, 0, -1):
 		var card_info = hand_cards[i]
 		card_info.card.z_index = 8 - i + 1
 		card_info.card.disable_click()
+		card_info.card.move_to_top()
 		card_info.card.global_position = card_info.position
 		card_info.card.position = card_info.position
 		card_info.card.rotation = card_info.rotation
+		
 	card.update_card()
 	card.card_clicked.connect(Callable(self, "on_card_clicked"))
 	print("补充公共手牌动画结束: ", card.ID)
