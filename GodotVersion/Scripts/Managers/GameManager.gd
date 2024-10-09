@@ -318,7 +318,6 @@ func show_new_finished_stories():
 
 # 同步加载场景
 func load_scene(scene):
-	
 	var new_scene = scene.instantiate()
 	
 	if current_scene != null:

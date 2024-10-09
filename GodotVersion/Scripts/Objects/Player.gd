@@ -26,6 +26,7 @@ var story_timer: Timer
 var current_sc_story_show: Node = null
 
 signal player_choose_card(Player)
+signal player_choose_change_card(Player)
 
 # 新完成的故事展示完毕
 signal new_story_show_finished()
@@ -39,6 +40,8 @@ enum PlayerState{
 	SELF_ROUND_CHOOSING = 2,
 	# 自己的回合中，选了手牌并选了公共区域的卡片
 	SELF_ROUND_CHOOSING_FINISHED = 3,
+	# 自己的回合中，手上没有和公共区域相同季节的卡片，需要换牌
+	SELF_ROUND_CHANGE_CARD = 4
 }
 
 var player_state
@@ -87,13 +90,15 @@ func on_card_clicked(card: Node) -> void:
 			card.set_card_unchooesd()
 			set_player_state(PlayerState.SELF_ROUND_UNCHOOSING)
 			current_choosing_card_id = -1
-			emit_signal("player_choose_card", self)
+			player_choose_card.emit(self)
 		else:
 			set_all_hand_card_unchooesd()
 			card.set_card_chooesd()
 			current_choosing_card_id = card.ID
-			emit_signal("player_choose_card", self)
+			player_choose_card.emit(self)
 		return
+	elif player_state == PlayerState.SELF_ROUND_CHANGE_CARD:
+		player_choose_change_card.emit(self)
 	elif player_state == PlayerState.SELF_ROUND_CHOOSING_FINISHED:
 		return
 
@@ -120,6 +125,16 @@ func add_score(score: int) -> void:
 
 func set_score_ui(ui: Node) -> void:
 	score_ui = ui
+
+# 检查当前手牌是不是已经没有和公共牌库相同的季节了
+# 如果没有了 需要进入换牌状态 SELF_ROUND_CHANGE_CARD
+func check_hand_card_season() -> void:
+	var season = deal_cards[0].Season
+	for i in hand_cards.keys():
+		var card = hand_cards[i]
+		if card.Season == season:
+			return
+	set_player_state(PlayerState.SELF_ROUND_CHANGE_CARD)
 
 func send_card_to_deal(card: Node) -> void:
 	deal_cards[card.ID] = card
