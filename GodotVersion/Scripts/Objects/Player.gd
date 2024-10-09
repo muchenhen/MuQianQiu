@@ -23,6 +23,8 @@ var current_choosing_card_id = -1
 var story_queue = []
 var story_timer: Timer
 
+var current_sc_story_show: Node = null
+
 signal player_choose_card(Player)
 
 # 新完成的故事展示完毕
@@ -150,33 +152,33 @@ func show_one_new_finished_story(story):
 	add_score(story["Score"])
 	# 使用sc_story_show展示当前故事的卡牌
 	
-	var sc = GameManager.instance.get_sc_story_show_instance()
-	sc.modulate.a = 0
-	sc.visible = true
-	sc.z_index = 999
+	current_sc_story_show = GameManager.instance.create_one_sc_story_show()
+	current_sc_story_show.modulate.a = 0
+	current_sc_story_show.visible = true
+	current_sc_story_show.z_index = 999
 	# 将sc添加到最上层
 	var tree = GameManager.instance.get_tree()
 	var root = tree.get_root()
-	root.add_child(sc)
+	root.add_child(current_sc_story_show)
 	# 获取当前故事的所有id
 	var card_ids = story["CardsID"]
 	# 创建新的卡牌，添加到sc中
 	for card_id in card_ids:
 		var card = card_manager.create_one_card(card_id)
 		card.z_index = 1000
-		sc.add_card(card)
-	sc.layout_children()
-	AnimationManager.get_instance().start_linear_alpha(sc, 1, 0.5, AnimationManager.EaseType.LINEAR, Callable(self, "show_one_new_finished_story_anim_in_end"))
+		current_sc_story_show.add_card(card)
+	current_sc_story_show.layout_children()
+	AnimationManager.get_instance().start_linear_alpha(current_sc_story_show, 1, 0.5, AnimationManager.EaseType.LINEAR, Callable(self, "show_one_new_finished_story_anim_in_end"))
 
 func show_one_new_finished_story_anim_in_end():
 	# 0.5秒后开始消失动画
 	await GameManager.instance.get_tree().create_timer(0.5).timeout
-	AnimationManager.get_instance().start_linear_alpha(GameManager.instance.get_sc_story_show_instance(), 0, 0.5, AnimationManager.EaseType.LINEAR, Callable(self, "show_one_new_finished_story_anim_out_end"))
+	AnimationManager.get_instance().start_linear_alpha(current_sc_story_show, 0, 0.5, AnimationManager.EaseType.LINEAR, Callable(self, "show_one_new_finished_story_anim_out_end"))
 	
 func show_one_new_finished_story_anim_out_end():
-	var sc = GameManager.instance.get_sc_story_show_instance()
-	sc.modulate.a = 0
-	sc.clear_all_cards()
-	sc.visible = false
+	# 销毁current_sc_story_show
+	var tree = GameManager.instance.get_tree()
+	var root = tree.get_root()
+	root.remove_child(current_sc_story_show)
 	# 故事展示完毕，继续展示下一个故事
 	_show_next_story()

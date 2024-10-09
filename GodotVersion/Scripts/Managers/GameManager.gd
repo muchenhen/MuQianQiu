@@ -345,7 +345,5 @@ func load_start_scene():
 	print("加载开始场景")
 	load_scene(sc_start)
 
-func get_sc_story_show_instance():
-	if sc_story_show_instance == null:
-		sc_story_show_instance = sc_story_show.instantiate()
-	return sc_story_show_instance
+func create_one_sc_story_show():
+	return sc_story_show.instantiate()
