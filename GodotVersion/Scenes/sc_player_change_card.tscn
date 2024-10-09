@@ -1,0 +1,29 @@
+[gd_scene load_steps=2 format=3 uid="uid://bm38hiid552yv"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_tlkrg"]
+font_size = 57
+
+[node name="ScPlayerChangeCard" type="Node2D"]
+
+[node name="CardBox" type="ColorRect" parent="."]
+offset_top = 376.0
+offset_right = 1920.0
+offset_bottom = 704.0
+color = Color(0.0627451, 0.0627451, 0.0627451, 0.490196)
+
+[node name="Label" type="Label" parent="CardBox"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -450.0
+offset_top = -100.0
+offset_right = 450.0
+offset_bottom = 100.0
+text = "手中没有可以使用的卡牌
+请选择一张卡牌来交换一张新卡牌"
+label_settings = SubResource("LabelSettings_tlkrg")
+horizontal_alignment = 1
+vertical_alignment = 1

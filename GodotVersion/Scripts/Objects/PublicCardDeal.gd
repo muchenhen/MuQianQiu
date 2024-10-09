@@ -13,6 +13,8 @@ var current_player = null
 
 var skip_supply_anim:bool = false
 
+var debug_player_change_card:bool = true
+
 
 signal player_choose_public_card(player_choosing_card, public_choosing_card)
 
@@ -35,6 +37,15 @@ const PUBLIC_HAND_MAX = 8
 func initialize() -> void:
 	# 初始化公共区域手牌的每一个位置
 	pass
+
+# tick
+func set_all_card_one_season():
+	for i in hand_cards.keys():
+		var card_info = hand_cards[i]
+		if not card_info.isEmpty:
+			if debug_player_change_card:
+				var new_card_info = TableManager.get_instance().get_row("Cards", 201)
+				card_info.card.update_card_info(201, new_card_info)
 
 func bind_players(p_a, p_b) -> void:
 	player_a = p_a
@@ -164,3 +175,13 @@ func enable_aim_season_hand_card_click(season) -> void:
 		if not card_info.isEmpty:
 			if card_info.card.Season == season:
 				card_info.card.enable_click()
+
+# 获取当前公共区域可选的8张牌的季节，季节不重复
+func get_choosable_seasons() -> Array:
+	var seasons = []
+	for i in hand_cards.keys():
+		var card_info = hand_cards[i]
+		if not card_info.isEmpty:
+			if seasons.find(card_info.card.Season) == -1:
+				seasons.append(card_info.card.Season)
+	return seasons

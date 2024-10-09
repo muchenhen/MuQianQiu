@@ -52,6 +52,18 @@ func initialize(card_id, card_info) -> void:
 	Special = card_info["Special"]
 	update_card()
 
+func update_card_info(card_id, card_info) -> void:
+	ID = card_id
+	Name = card_info["Name"]
+	PinyinName = card_info["PinyinName"]
+	Type = str(int(str(ID)[0]))
+	Score = card_info["Score"]
+	Season = card_info["Season"]
+	Describe = card_info["Describe"]
+	BaseID = card_info["BaseID"]
+	Special = card_info["Special"]
+	update_card()
+
 func _on_card_clicked() -> void:
 	# 打印的时候去掉换行符
 	var debug_describe = Describe.replace("\n", "")
