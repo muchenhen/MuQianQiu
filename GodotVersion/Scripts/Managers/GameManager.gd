@@ -318,31 +318,21 @@ func show_new_finished_stories():
 
 # 同步加载场景
 func load_scene(scene):
-	print("开始加载新场景")
 	
-	# 实例化新场景
 	var new_scene = scene.instantiate()
-	print("新场景已实例化: ", new_scene.name)
 	
-	# 如果存在旧场景，先移除它
 	if current_scene != null:
-		print("正在移除旧场景: ", current_scene.name)
 		current_scene.queue_free()
 	
 	# 将新场景添加到场景树
 	get_tree().root.add_child(new_scene)
-	print("新场景已添加到场景树")
 	
 	# 将新场景设置为当前场景
 	get_tree().current_scene = new_scene
-	print("新场景已设置为当前场景")
 	
 	# 更新当前场景引用
 	current_scene = new_scene
-	
-	# 打印整个场景树
-	print("当前场景树:")
-	# print_scene_tree(get_tree().root)
+
 
 # 打印场景树的辅助函数
 func print_scene_tree(node, indent=""):
