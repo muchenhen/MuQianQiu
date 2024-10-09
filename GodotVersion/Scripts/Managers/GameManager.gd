@@ -305,6 +305,7 @@ func player_choose_public_card(player_choosing_card, public_choosing_card):
 	get_tree().root.add_child(temp_timer )
 	temp_timer.start(anim_dutation + 0.1)
 
+	
 	player.new_story_show_finished.connect(Callable(self, "show_new_finished_stories"))
 	# 检查是否完成了故事
 	player.check_finish_story()

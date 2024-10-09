@@ -5,19 +5,6 @@ class_name HorizontalBox
 @export var item_padding: float = 10.0
 @export var auto_layout: bool = true
 
-func add_layout_button():
-	var button = Button.new()
-	button.name = "EditorLayoutButton"
-	button.text = "Update Layout"
-	button.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
-	button.offset_left = -120
-	button.offset_top = 10
-	button.offset_right = -10
-	button.offset_bottom = 40
-	button.connect("pressed", Callable(self, "layout_items"))
-	add_child(button)
-	button.set_owner(get_tree().edited_scene_root)
-
 func _ready():
 	if not Engine.is_editor_hint():
 		layout_items()
@@ -35,7 +22,7 @@ func layout_items():
 	# 计算所有项目的总宽度
 	var total_width = 0
 	for item in items:
-		if item is Control and item != $EditorLayoutButton:
+		if item is Control:
 			total_width += item.size.x
 	
 	# 添加间距到总宽度
@@ -46,7 +33,7 @@ func layout_items():
 	
 	# 布局项目
 	for item in items:
-		if item is Control and item != $EditorLayoutButton:
+		if item is Control:
 			# 设置 x 位置
 			item.set_position(Vector2(start_x, (size.y - item.size.y) / 2))
 			
@@ -57,7 +44,7 @@ func _get_configuration_warnings() -> PackedStringArray:
 	var warnings = PackedStringArray()
 	var valid_children = false
 	for child in get_children():
-		if child is Control and child != $EditorLayoutButton:
+		if child is Control:
 			valid_children = true
 			break
 	if not valid_children:

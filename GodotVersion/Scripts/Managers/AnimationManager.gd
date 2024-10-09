@@ -72,6 +72,29 @@ func start_linear_movement_rotation(obj: Node, target: float, duration: float, e
 		"callback_args": callback_args
 	})
 
+
+# 启动给定对象的线性 alpha 动画。
+#
+# 此函数将对象的 modulate 属性的 alpha 值从当前值动画到目标值，持续时间为指定的秒数。
+#
+# @param obj 要应用 alpha 动画的节点。
+# @param target_alpha 要动画到的目标 alpha 值。
+# @param duration 动画的持续时间（秒）。
+# @param ease_type 要应用于动画的缓动类型。默认为 EaseType.LINEAR。
+# @param callback 动画完成时要调用的可选 Callable。默认为空 Callable。
+# @param callback_args 传递给回调的可选参数数组。默认为空数组。
+func start_linear_alpha(obj: Node, target_alpha: float, duration: float, ease_type: EaseType = EaseType.LINEAR, callback: Callable = Callable(), callback_args: Array = []):
+	_add_animation(obj, "linear_alpha", {
+		"start_alpha": obj.modulate.a,
+		"target_alpha": target_alpha,
+		"duration": duration,
+		"elapsed_time": 0,
+		"active": true,
+		"ease_type": ease_type,
+		"callback": callback,
+		"callback_args": callback_args
+	})
+
 func _add_animation(obj: Node, anim_type: String, anim_data: Dictionary):
 	if not animated_objects.has(obj):
 		animated_objects[obj] = {}
@@ -118,6 +141,9 @@ func _update_animation(obj: Node, anim_type: String, delta: float):
 			var current_angle = anim["start_angle"] + eased_t * PI * 0.25
 			obj.global_position = anim["center"] + Vector2(cos(current_angle), sin(current_angle)) * current_radius
 			obj.rotation = current_angle + PI / 2
+
+		"linear_alpha":
+			obj.modulate.a = lerp(anim["start_alpha"], anim["target_alpha"], _apply_easing(raw_t, anim["ease_type"]))
 	
 	if raw_t >= 1.0:
 		_end_animation(obj, anim_type)

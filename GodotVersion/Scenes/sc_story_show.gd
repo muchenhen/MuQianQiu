@@ -11,3 +11,8 @@ func add_card(card:Node) -> void:
 
 func layout_children() -> void:
 	card_box.layout_items()
+
+func clear_all_cards() -> void:
+	# 销毁card_box中的所有子节点
+	for child in card_box.get_children():
+		child.queue_free()

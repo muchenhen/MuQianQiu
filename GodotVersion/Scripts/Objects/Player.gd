@@ -151,6 +151,8 @@ func show_one_new_finished_story(story):
 	# 使用sc_story_show展示当前故事的卡牌
 	
 	var sc = GameManager.instance.get_sc_story_show_instance()
+	sc.modulate.a = 0
+	sc.visible = true
 	sc.z_index = 999
 	# 将sc添加到最上层
 	var tree = GameManager.instance.get_tree()
@@ -164,6 +166,17 @@ func show_one_new_finished_story(story):
 		card.z_index = 1000
 		sc.add_card(card)
 	sc.layout_children()
+	AnimationManager.get_instance().start_linear_alpha(sc, 1, 0.5, AnimationManager.EaseType.LINEAR, Callable(self, "show_one_new_finished_story_anim_in_end"))
 
-	# 停留一秒后，继续展示下一个故事
-	# todo
+func show_one_new_finished_story_anim_in_end():
+	# 0.5秒后开始消失动画
+	await GameManager.instance.get_tree().create_timer(0.5).timeout
+	AnimationManager.get_instance().start_linear_alpha(GameManager.instance.get_sc_story_show_instance(), 0, 0.5, AnimationManager.EaseType.LINEAR, Callable(self, "show_one_new_finished_story_anim_out_end"))
+	
+func show_one_new_finished_story_anim_out_end():
+	var sc = GameManager.instance.get_sc_story_show_instance()
+	sc.modulate.a = 0
+	sc.clear_all_cards()
+	sc.visible = false
+	# 故事展示完毕，继续展示下一个故事
+	_show_next_story()
