@@ -258,6 +258,8 @@ func change_to_a_round():
 	player_b.set_all_hand_card_cannot_click()
 	player_a.set_player_state(Player.PlayerState.SELF_ROUND_UNCHOOSING)
 	player_a.set_all_hand_card_can_click()
+	public_deal.set_all_card_one_season()
+	player_a.check_hand_card_season()
 
 func change_to_b_round():
 	current_round = GameRound.PLAYER_B
@@ -265,6 +267,8 @@ func change_to_b_round():
 	player_a.set_all_hand_card_cannot_click()
 	player_b.set_player_state(Player.PlayerState.SELF_ROUND_UNCHOOSING)
 	player_b.set_all_hand_card_can_click()
+	public_deal.set_all_card_one_season()
+	player_b.check_hand_card_season()
 
 # 玩家已经选择了一张手牌并且确认要选择了一张公共区域的牌
 func player_choose_public_card(player_choosing_card, public_choosing_card):
@@ -299,6 +303,8 @@ func player_choose_public_card(player_choosing_card, public_choosing_card):
 	
 	player.send_card_to_deal(player_choosing_card)
 	player.send_card_to_deal(public_choosing_card)
+
+	player.remove_hand_card(player_choosing_card)
 
 	# 延时anim_dutation + 0.1秒后继续
 	var temp_timer = Timer.new()
@@ -346,3 +352,6 @@ func load_start_scene():
 
 func create_one_sc_story_show():
 	return sc_story_show.instantiate()
+
+func get_public_card_deal():
+	return public_deal

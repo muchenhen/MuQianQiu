@@ -2,6 +2,8 @@ extends Node
 
 class_name Player
 
+var sc_player_change_card = preload("res://Scenes/sc_player_change_card.tscn")
+
 var card_manager = CardManager.get_instance()
 
 var player_name: String = "Player"
@@ -126,15 +128,30 @@ func add_score(score: int) -> void:
 func set_score_ui(ui: Node) -> void:
 	score_ui = ui
 
+func remove_hand_card(card:Card) -> void:
+	hand_cards.erase(card.ID)
+
 # 检查当前手牌是不是已经没有和公共牌库相同的季节了
 # 如果没有了 需要进入换牌状态 SELF_ROUND_CHANGE_CARD
 func check_hand_card_season() -> void:
-	var season = deal_cards[0].Season
+	var seasons = GameManager.instance.get_public_card_deal().get_choosable_seasons()
+	print("当前公共区域可用季节： ", seasons)
+	var has_season = false
 	for i in hand_cards.keys():
 		var card = hand_cards[i]
-		if card.Season == season:
-			return
-	set_player_state(PlayerState.SELF_ROUND_CHANGE_CARD)
+		print("玩家 ", player_name, " 手牌中的卡牌： ", card.Name, " 季节： ", card.Season)
+		if seasons.find(card.Season) != -1:
+			has_season = true
+			break
+	if not has_season:
+		print("玩家 ", player_name, " 手牌中没有和公共区域相同季节的卡牌，需要换牌")
+		# 创建sc并展示
+		var sc = sc_player_change_card.instantiate()
+		sc.z_index = 999
+		var tree = GameManager.instance.get_tree()
+		var root = tree.get_root()
+		root.add_child(sc)
+		set_player_state(PlayerState.SELF_ROUND_CHANGE_CARD)
 
 func send_card_to_deal(card: Node) -> void:
 	deal_cards[card.ID] = card
