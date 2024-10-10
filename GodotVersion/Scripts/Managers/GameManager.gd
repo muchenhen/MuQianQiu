@@ -69,6 +69,7 @@ func _ready():
 		player_a.initialize("PlayerA", Player.PlayerPos.A)
 		player_b.initialize("PlayerB", Player.PlayerPos.B)
 		public_deal.bind_players(player_a, player_b)
+		card_manager.bind_players(player_a, player_b)
 
 		public_deal.connect("player_choose_public_card", Callable(self, "player_choose_public_card"))
 

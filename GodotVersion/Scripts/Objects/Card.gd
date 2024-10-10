@@ -137,3 +137,6 @@ func move_to_bottom() -> void:
 	var parent = get_parent()
 	if parent:
 		parent.move_child(self, 0)  # 0 moves to the first position
+
+func get_season() -> String:
+	return Season
