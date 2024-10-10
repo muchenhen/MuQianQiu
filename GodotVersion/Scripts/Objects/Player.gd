@@ -43,7 +43,7 @@ enum PlayerState{
 	# 自己的回合中，选了手牌并选了公共区域的卡片
 	SELF_ROUND_CHOOSING_FINISHED = 3,
 	# 自己的回合中，手上没有和公共区域相同季节的卡片，需要换牌
-	SELF_ROUND_CHANGE_CARD = 4
+	SELF_ROUND_CHANGE_CARD = 4,
 }
 
 var player_state
@@ -100,6 +100,7 @@ func on_card_clicked(card: Node) -> void:
 			player_choose_card.emit(self)
 		return
 	elif player_state == PlayerState.SELF_ROUND_CHANGE_CARD:
+		current_choosing_card_id = card.ID
 		player_choose_change_card.emit(self)
 	elif player_state == PlayerState.SELF_ROUND_CHOOSING_FINISHED:
 		return

@@ -4,6 +4,9 @@ class_name CardManager
 
 static var instance: CardManager = null
 
+var player_a = null
+var player_b = null
+
 const CARD = preload("res://Scripts/Objects/Card.tscn")
 
 var all_cards = []
@@ -97,6 +100,9 @@ func pop_one_card() -> Node:
 	var card = all_cards.pop_back()
 	return card
 
+func re_shuffle_all_cards() -> void:
+	all_cards.shuffle()
+
 # 初始化公共区域手牌的每一个位置
 func init_cards_position_for_public():
 	var card_count = all_cards.size()
@@ -140,3 +146,29 @@ func set_all_card_back() -> void:
 	for card in all_cards:
 		card.set_card_back()
 		card.disable_click()
+
+func bind_players(p_a, p_b) -> void:
+	player_a = p_a
+	player_b = p_b
+	player_a.connect("player_choose_change_card", Callable(self, "on_player_choose_change_card"))
+	player_b.connect("player_choose_change_card", Callable(self, "on_player_choose_change_card"))
+
+# 此时玩家手上已经没可以和公共区域匹配的牌了，需要从没有放到公共区域的牌中随机选择一张，和玩家的current_choosing_card_id的对应Card进行交换
+# 交换包括位置和所属权，并且更新显示
+func on_player_choose_change_card(player) -> void:
+	var current_player_choose_card_id = player.current_choosing_card_id
+	var current_player_choose_card = player.hand_cards[current_player_choose_card_id]
+
+	# 重新洗牌 然后oop_one_card, 然后检查季节和current_player_choose_card的季节是否相同，相同的话重复这个过程，直到找到不同的季节的牌
+	var new_card = pop_one_card()
+	while new_card.get_season() == current_player_choose_card.get_season():
+		all_cards.insert(0, new_card)
+		re_shuffle_all_cards()
+		new_card = pop_one_card()
+
+	# 标记两张卡的位置
+	var current_card_pos = current_player_choose_card.position
+	var new_card_pos = new_card.position
+	# 动画位移交换两张卡的位置
+	AnimationManager.get_instance().start_linear_movement_pos(current_player_choose_card, new_card_pos, 0.5)
+	AnimationManager.get_instance().start_linear_movement_pos(new_card, current_card_pos, 0.5)
