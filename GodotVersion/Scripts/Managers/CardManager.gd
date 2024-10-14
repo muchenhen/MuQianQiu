@@ -157,10 +157,10 @@ func bind_players(p_a, p_b) -> void:
 # 交换包括位置和所属权，并且更新显示
 func on_player_choose_change_card(player) -> void:
 	var current_player_choose_card_id = player.current_choosing_card_id
-	var current_player_choose_card = player.hand_cards[current_player_choose_card_id]
+	var current_player_choose_card:Card = player.hand_cards[current_player_choose_card_id]
 
 	# 重新洗牌 然后oop_one_card, 然后检查季节和current_player_choose_card的季节是否相同，相同的话重复这个过程，直到找到不同的季节的牌
-	var new_card = pop_one_card()
+	var new_card:Card = pop_one_card()
 	while new_card.get_season() == current_player_choose_card.get_season():
 		all_cards.insert(0, new_card)
 		re_shuffle_all_cards()
@@ -170,5 +170,13 @@ func on_player_choose_change_card(player) -> void:
 	var current_card_pos = current_player_choose_card.position
 	var new_card_pos = new_card.position
 	# 动画位移交换两张卡的位置
-	AnimationManager.get_instance().start_linear_movement_pos(current_player_choose_card, new_card_pos, 0.5)
-	AnimationManager.get_instance().start_linear_movement_pos(new_card, current_card_pos, 0.5)
+	AnimationManager.get_instance().start_linear_movement_pos(current_player_choose_card, new_card_pos, 0.5, AnimationManager.EaseType.EASE_IN_OUT)
+	AnimationManager.get_instance().start_linear_movement_pos(new_card, current_card_pos, 0.5, AnimationManager.EaseType.EASE_IN_OUT)
+
+	# 等动画结束
+	await GameManager.instance.get_tree().create_timer(0.5).timeout
+	new_card.update_card()
+	new_card.set_card_unchooesd()
+	current_player_choose_card.set_card_back()
+	current_player_choose_card.disable_click()
+	current_player_choose_card.set_card_unchooesd()
