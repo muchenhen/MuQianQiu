@@ -240,6 +240,9 @@ func start_round():
 	# 重置所有卡片的选中状态
 	for key in public_deal.hand_cards.keys():
 		public_deal.hand_cards[key].card.set_card_unchooesd()
+
+	player_a.update_self_card_z_index()
+	player_b.update_self_card_z_index()
 	
 	# 重置当前轮次
 	change_round()
