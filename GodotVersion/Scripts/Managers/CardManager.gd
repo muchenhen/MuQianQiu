@@ -100,6 +100,9 @@ func pop_one_card() -> Node:
 	var card = all_cards.pop_back()
 	return card
 
+func push_one_card(card:Node) -> void:
+	all_cards.append(card)
+
 func re_shuffle_all_cards() -> void:
 	all_cards.shuffle()
 
@@ -157,14 +160,21 @@ func bind_players(p_a, p_b) -> void:
 # 交换包括位置和所属权，并且更新显示
 func on_player_choose_change_card(player) -> void:
 	var current_player_choose_card_id = player.current_choosing_card_id
+	# 这是玩家现在手上选择的去交换的牌
 	var current_player_choose_card:Card = player.hand_cards[current_player_choose_card_id]
 
-	# 重新洗牌 然后oop_one_card, 然后检查季节和current_player_choose_card的季节是否相同，相同的话重复这个过程，直到找到不同的季节的牌
-	var new_card:Card = pop_one_card()
-	while new_card.get_season() == current_player_choose_card.get_season():
-		all_cards.insert(0, new_card)
+	var current_public_card_seasons = GameManager.instance.get_public_card_deal().get_choosable_seasons()
+
+	# 重新洗牌 然后pop_one_card, 然后检查这张卡的season是否存在于current_public_card_seasons中，如果存在则继续，否则重新洗牌
+	var new_card:Card = pop_one_card() # 这是从牌库获取的新牌
+	while new_card.get_season() not in current_public_card_seasons:
+		push_one_card(new_card)
 		re_shuffle_all_cards()
 		new_card = pop_one_card()
+
+	# 标记两张卡的z
+	var current_card_z = current_player_choose_card.z_index
+	var new_card_z = new_card.z_index
 
 	# 标记两张卡的位置
 	var current_card_pos = current_player_choose_card.position
@@ -175,8 +185,22 @@ func on_player_choose_change_card(player) -> void:
 
 	# 等动画结束
 	await GameManager.instance.get_tree().create_timer(0.5).timeout
+
+	# 交换两张卡的z
+	current_player_choose_card.z_index = new_card_z
+	new_card.z_index = current_card_z
+
 	new_card.update_card()
 	new_card.set_card_unchooesd()
 	current_player_choose_card.set_card_back()
 	current_player_choose_card.disable_click()
 	current_player_choose_card.set_card_unchooesd()
+	# 改变卡片归属权
+	player.set_one_hand_card(new_card)
+	push_one_card(current_player_choose_card)
+	re_shuffle_all_cards()
+	var has_season = player.check_hand_card_season()
+	if has_season:
+		player.set_player_state(Player.PlayerState.SELF_ROUND_UNCHOOSING)
+		player.update_self_card_z_index()
+	
