@@ -1,6 +1,6 @@
 extends Node
-
 class_name CardManager
+
 
 static var instance: CardManager = null
 
@@ -158,10 +158,10 @@ func bind_players(p_a, p_b) -> void:
 
 # 此时玩家手上已经没可以和公共区域匹配的牌了，需要从没有放到公共区域的牌中随机选择一张，和玩家的current_choosing_card_id的对应Card进行交换
 # 交换包括位置和所属权，并且更新显示
-func on_player_choose_change_card(player) -> void:
+func on_player_choose_change_card(player:Player) -> void:
 	var current_player_choose_card_id = player.current_choosing_card_id
 	# 这是玩家现在手上选择的去交换的牌
-	var current_player_choose_card:Card = player.hand_cards[current_player_choose_card_id]
+	var current_player_choose_card:Card = player.get_player_hand_card_by_id(current_player_choose_card_id)
 
 	var current_public_card_seasons = GameManager.instance.get_public_card_deal().get_choosable_seasons()
 
@@ -196,11 +196,12 @@ func on_player_choose_change_card(player) -> void:
 	current_player_choose_card.disable_click()
 	current_player_choose_card.set_card_unchooesd()
 	# 改变卡片归属权
-	player.set_one_hand_card(new_card)
-	push_one_card(current_player_choose_card)
-	re_shuffle_all_cards()
-	var has_season = player.check_hand_card_season()
-	if has_season:
-		player.set_player_state(Player.PlayerState.SELF_ROUND_UNCHOOSING)
-		player.update_self_card_z_index()
+	# TODO:
+	# player.set_one_hand_card(new_card)
+	# push_one_card(current_player_choose_card)
+	# re_shuffle_all_cards()
+	# var has_season = player.check_hand_card_season()
+	# if has_season:
+	# 	player.set_player_state(Player.PlayerState.SELF_ROUND_UNCHOOSING)
+	# 	player.update_self_card_z_index()
 	

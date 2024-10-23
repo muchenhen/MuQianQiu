@@ -6,10 +6,10 @@ class_name PublicCardDeal
 var card_manager = CardManager.get_instance()
 var animation_manager = AnimationManager.get_instance()
 
-var player_a = null
-var player_b = null
-var player_current_choosing_card = null
-var current_player = null
+var player_a:Player = null
+var player_b:Player = null
+var player_current_choosing_card:Card = null
+var current_player:Player = null
 
 var skip_supply_anim:bool = false
 
@@ -70,7 +70,7 @@ func on_card_clicked(card):
 		set_aim_hand_card_empty(card)
 		player_choose_public_card.emit(player_current_choosing_card, card)
 
-func on_player_choose_card(player):
+func on_player_choose_card(player:Player):
 	set_all_hand_card_unchooesd()
 	current_player = player
 	print("Player choose card: ", player.player_name)
@@ -80,7 +80,7 @@ func on_player_choose_card(player):
 		disable_all_hand_card_click()
 		return
 
-	player_current_choosing_card = player.hand_cards[player.current_choosing_card_id]
+	player_current_choosing_card = player.get_player_hand_card_by_id(player.current_choosing_card_id)
 	var season = player_current_choosing_card.Season
 	set_aim_season_hand_card_chooesd(season)
 	disable_all_hand_card_click()
