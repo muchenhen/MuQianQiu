@@ -2,6 +2,12 @@ extends Node
 
 class_name Player
 
+class PlayerHandCard:
+	var card: Card = null
+	var pos: Vector2
+	var zindex: int = 0
+	var isEmpty: bool = true
+
 var sc_player_change_card = preload("res://Scenes/sc_player_change_card.tscn")
 
 static var sc_player_change_card_instance = null
@@ -10,7 +16,18 @@ var card_manager = CardManager.get_instance()
 
 var player_name: String = "Player"
 
-var hand_cards = {}
+var hand_cards_new = {
+	0: PlayerHandCard.new(),
+	1: PlayerHandCard.new(),
+	2: PlayerHandCard.new(),
+	3: PlayerHandCard.new(),
+	4: PlayerHandCard.new(),
+	5: PlayerHandCard.new(),
+	6: PlayerHandCard.new(),
+	7: PlayerHandCard.new(),
+	8: PlayerHandCard.new(),
+	9: PlayerHandCard.new(),
+}
 
 var deal_cards = {}
 
@@ -22,7 +39,7 @@ var player_finish_stories = []
 
 var hand_cards_pos_array = []
 
-var current_choosing_card_id = -1
+var current_choosing_card_id:int = -1
 
 var story_queue = []
 var story_timer: Timer
@@ -58,6 +75,7 @@ enum PlayerPos{
 func initialize(p_name, player_pos) -> void:
 	player_name = p_name
 	if player_pos == PlayerPos.A:
+		# 初始化位置信息
 		hand_cards_pos_array = card_manager.init_cards_position_tile(
 										card_manager.PLAYER_A_CARD_AREA_SIZE,
 										card_manager.PLAYER_A_CARD_AREA_POS,
@@ -68,13 +86,33 @@ func initialize(p_name, player_pos) -> void:
 										card_manager.PLAYER_B_CARD_AREA_POS,
 										10)
 
+	for i in range(10):
+		hand_cards_new[i] = PlayerHandCard.new()
+		hand_cards_new[i].pos = hand_cards_pos_array[i]
+		hand_cards_new[i].zindex = 10 - i
+		hand_cards_new[i].isEmpty = true
 
-func set_hand_cards(cards: Array) -> void:
-	hand_cards = cards
-
-func set_one_hand_card(card: Node) -> void:
-	hand_cards[card.ID] = card
+func set_player_hand_card_with_index(card: Card, index: int) -> void:
+	if index < 0 or index > 9:
+		print("设置玩家手牌时，index超出范围")
+		return
+	hand_cards_new[index].card = card
+	hand_cards_new[index].isEmpty = false
+	hand_cards_new[index].card.position = hand_cards_new[index].pos
+	hand_cards_new[index].card.z_index = hand_cards_new[index].zindex
 	card.connect("card_clicked", Callable(self, "on_card_clicked"))
+
+func get_player_first_enpty_hand_card_index() -> int:
+	for i in hand_cards_new.keys():
+		if hand_cards_new[i].isEmpty:
+			return i
+	return -1
+
+func get_player_hand_card_by_id(card_id: int) -> Card:
+	for i in hand_cards_new.keys():
+		if not hand_cards_new[i].isEmpty and hand_cards_new[i].card.ID == card_id:
+			return hand_cards_new[i].card
+	return null
 
 func set_player_state(state: PlayerState) -> void:
 	player_state = state
@@ -108,19 +146,19 @@ func on_card_clicked(card: Node) -> void:
 		return
 
 func set_all_hand_card_unchooesd() -> void:
-	for i in hand_cards.keys():
-		var card = hand_cards[i]
-		card.set_card_unchooesd()
+	for i in hand_cards_new.keys():
+		if not hand_cards_new[i].isEmpty:
+			hand_cards_new[i].card.set_card_unchooesd()
 
 func set_all_hand_card_cannot_click() -> void:
-	for i in hand_cards.keys():
-		var card = hand_cards[i]
-		card.disable_click()
+	for i in hand_cards_new.keys():
+		if not hand_cards_new[i].isEmpty:
+			hand_cards_new[i].card.disable_click()
 
 func set_all_hand_card_can_click() -> void:
-	for i in hand_cards.keys():
-		var card = hand_cards[i]
-		card.enable_click()
+	for i in hand_cards_new.keys():
+		if not hand_cards_new[i].isEmpty:
+			hand_cards_new[i].card.enable_click()
 
 func add_score(score: int) -> void:
 	player_score += score
@@ -132,7 +170,11 @@ func set_score_ui(ui: Node) -> void:
 	score_ui = ui
 
 func remove_hand_card(card:Card) -> void:
-	hand_cards.erase(card.ID)
+	for i in hand_cards_new.keys():
+		if not hand_cards_new[i].isEmpty and hand_cards_new[i].card.ID == card.ID:
+			hand_cards_new[i].isEmpty = true
+			hand_cards_new[i].card = null
+			break
 
 # 检查当前手牌是不是已经没有和公共牌库相同的季节了
 # 如果没有了 需要进入换牌状态 SELF_ROUND_CHANGE_CARD
@@ -140,12 +182,15 @@ func check_hand_card_season() -> bool:
 	var seasons = GameManager.instance.get_public_card_deal().get_choosable_seasons()
 	print("当前公共区域可用季节： ", seasons)
 	var has_season = false
-	for i in hand_cards.keys():
-		var card = hand_cards[i]
-		print("玩家 ", player_name, " 手牌中的卡牌： ", card.Name, " 季节： ", card.Season)
-		if seasons.find(card.Season) != -1:
-			has_season = true
-			break
+
+	for i in hand_cards_new.keys():
+		if not hand_cards_new[i].isEmpty:
+			var card = hand_cards_new[i].card
+			print("玩家 ", player_name, " 手牌中的卡牌： ", card.Name, " 季节： ", card.Season)
+			if seasons.find(card.Season) != -1:
+				has_season = true
+				break
+
 	if not has_season:
 		print("玩家 ", player_name, " 手牌中没有和公共区域相同季节的卡牌，需要换牌")
 		# 创建sc并展示
@@ -225,16 +270,11 @@ func show_one_new_finished_story_anim_out_end():
 	_show_next_story()
 
 func update_self_card_z_index() -> void:
-	var index = 9
-	for card in hand_cards.values():
-		card.z_index = index
-		index -= 1
+	for i in hand_cards_new.keys():
+		if not hand_cards_new[i].isEmpty:
+			hand_cards_new[i].card.z_index = hand_cards_new[i].zindex
 
-	# 倒序遍历 进行move_to_top操作
-	var hand_card_count = hand_cards.size()
-	var hand_card_keys = hand_cards.keys()
-	for i in range(hand_card_count, 0, -1):
-		var key = hand_card_keys[i - 1]
-		var card = hand_cards[key]
-		card.move_to_top()
+	for i in range(9, 0, -1):
+		if not hand_cards_new[i].isEmpty:
+			hand_cards_new[i].card.move_to_top()
 		

@@ -143,10 +143,12 @@ func send_card_for_play_without_anim(cards):
 		var card = cards.pop_back()
 		card.update_card()
 		if i % 2 == 0:
-			player_a.set_one_hand_card(card)
+			var index:int = player_a.get_player_first_enpty_hand_card_index()
+			player_a.set_player_hand_card_with_index(card, index)
 			card.position = player_a.hand_cards_pos_array.pop_front()
 		else:
-			player_b.set_one_hand_card(card)
+			var index:int = player_b.get_player_first_enpty_hand_card_index()
+			player_b.set_player_hand_card_with_index(card, index)
 			card.position = player_b.hand_cards_pos_array.pop_front()
 
 	for i in range(card_manager.PUBLIC_CARDS_POS.size()):
@@ -174,10 +176,12 @@ func send_card_for_play(cards):
 		var card = cards.pop_back()
 		if i % 2 == 0:
 			cards_to_animate.append({"card": card, "position": player_a.hand_cards_pos_array.pop_front()})
-			player_a.set_one_hand_card(card)
+			var index:int = player_a.get_player_first_enpty_hand_card_index()
+			player_a.set_player_hand_card_with_index(card, index)
 		else:
 			cards_to_animate.append({"card": card, "position": player_b.hand_cards_pos_array.pop_front()})
-			player_b.set_one_hand_card(card)
+			var index:int = player_b.get_player_first_enpty_hand_card_index()
+			player_b.set_player_hand_card_with_index(card, index)
 
 	for i in range(card_manager.PUBLIC_CARDS_POS.size()):
 		var position = card_manager.PUBLIC_CARDS_POS[i]
@@ -214,8 +218,6 @@ func animate_next_card():
 	else:
 		# 所有卡片动画播放完毕
 		print("All cards animated")
-		print("玩家A手牌: ", player_a.hand_cards.keys())
-		print("玩家B手牌: ", player_b.hand_cards.keys())
 		for key in public_deal.hand_cards.keys():
 			var public_card = public_deal.hand_cards[key]
 			if public_card.isEmpty:
