@@ -8,7 +8,7 @@ var stories = {}
 var card_to_story_map = {}
 var completed_stories = []
 
-var DEBUG_SKIP_STORTY = true
+var DEBUG_SKIP_STORTY = false
 
 
 func _init():
@@ -95,3 +95,12 @@ func check_story_finish_by_cards_id(cards_id:Array) -> Array:
 			completed_stories.append(story)
 			this_time_completed_stories.append(story)
 	return this_time_completed_stories
+
+# 清理所有状态 准备下一轮游戏
+func clear():
+	stories.clear()
+	card_to_story_map.clear()
+	completed_stories.clear()
+	DEBUG_SKIP_STORTY = true
+	instance = null
+	queue_free()

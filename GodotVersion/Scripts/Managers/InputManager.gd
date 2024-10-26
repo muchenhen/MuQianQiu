@@ -33,6 +33,9 @@ func block_input() -> void:
 		is_input_blocked = true
 		print("Input blocked")
 		input_state_changed.emit(true)
+		var parent = get_parent()
+		if parent:
+			parent.move_child(self, -1)
 
 func allow_input() -> void:
 	if is_input_blocked:
@@ -40,6 +43,9 @@ func allow_input() -> void:
 		is_input_blocked = false
 		print("Input allowed")
 		input_state_changed.emit(false)
+		var parent = get_parent()
+		if parent:
+			parent.move_child(self, 0)
 
 func toggle_input() -> void:
 	if is_input_blocked:

@@ -185,3 +185,19 @@ func get_choosable_seasons() -> Array:
 			if seasons.find(card_info.card.Season) == -1:
 				seasons.append(card_info.card.Season)
 	return seasons
+
+# 清理所有状态 准备下一轮
+func clear():
+	for i in hand_cards.keys():
+		var card_info = hand_cards[i]
+		if not card_info.isEmpty:
+			card_info.card.queue_free()
+	hand_cards.clear()
+	player_a.disconnect("player_choose_card", Callable(self, "on_player_choose_card"))
+	player_b.disconnect("player_choose_card", Callable(self, "on_player_choose_card"))
+	player_a = null
+	player_b = null
+	player_current_choosing_card = null
+	current_player = null
+	skip_supply_anim = false
+	debug_player_change_card = false

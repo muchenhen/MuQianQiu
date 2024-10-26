@@ -408,4 +408,17 @@ func get_public_card_deal():
 	return public_deal
 
 func back_to_main():
-	load_start_scene()
+	pass
+	# 关闭result界面
+	
+	# load_start_scene()
+	# StoryManager.get_instance().clear()
+	# card_manager.clear()
+	# player_a.clear()
+	# player_b.clear()
+	# current_round = GameRound.WAITING
+	# current_round_index = 0
+	# is_open_first = false
+	# is_open_second = false
+	# is_open_third = false
+	
