@@ -225,4 +225,12 @@ func on_player_choose_change_card(player:Player) -> void:
 		player.update_self_card_z_index()
 		new_card_to_player.enable_click()
 
-	
+func clear():
+	for card in all_cards:
+		card.queue_free()
+	all_cards.clear()
+	player_a.disconnect("player_choose_change_card", Callable(self, "on_player_choose_change_card"))
+	player_b.disconnect("player_choose_change_card", Callable(self, "on_player_choose_change_card"))
+	player_a = null
+	player_b = null
+	cardIDs.clear()
