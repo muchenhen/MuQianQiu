@@ -199,7 +199,7 @@ func check_hand_card_season() -> bool:
 		root.add_child(sc_player_change_card_instance)
 		set_player_state(PlayerState.SELF_ROUND_CHANGE_CARD)
 	else:
-		if sc_player_change_card_instance:
+		if sc_player_change_card_instance and is_instance_valid(sc_player_change_card_instance):
 			sc_player_change_card_instance.queue_free()
 
 	return has_season
