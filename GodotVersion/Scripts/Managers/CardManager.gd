@@ -210,7 +210,7 @@ func on_player_choose_change_card(player:Player) -> void:
 	# 将新的卡放到玩家手上
 	player.assign_player_hand_card_to_slot(new_card_to_player, new_card_slot_index)
 
-	var has_season = player.check_hand_card_season()
+	var has_season:bool = player.check_hand_card_season()
 	if has_season:
 		player.set_player_state(Player.PlayerState.SELF_ROUND_UNCHOOSING)
 		player.update_self_card_z_index()
