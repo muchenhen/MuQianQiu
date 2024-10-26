@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://c5t8obmolwg82"]
 
-[ext_resource type="PackedScene" uid="uid://bu1fxhnplucwx" path="res://UI/ui_start.tscn" id="1_84du1"]
+[ext_resource type="PackedScene" uid="uid://bu1fxhnplucwx" path="res://UI/Start/ui_start.tscn" id="1_84du1"]
 
 [node name="ScStart" type="Node2D"]
 
