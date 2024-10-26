@@ -84,14 +84,14 @@ func collect_cardIDs_for_this_game(types:Array) -> void:
 func shuffle_cardIDs() -> void:
 	cardIDs.shuffle()
 
-func create_cards_for_this_game(scene) -> void:
+func create_cards_for_this_game(cards_node:Node) -> void:
 	for card_id in cardIDs:
 		var card = create_one_card(card_id)
 		all_cards.append(card)
-		scene.get_node("Cards").add_child(card)
+		cards_node.add_child(card)
 	
-	PLAYER_A_DEAL_CARD_POS = scene.get_node("Cards").get_node("PlayerADealCard").position
-	PLAYER_B_DEAL_CARD_POS = scene.get_node("Cards").get_node("PlayerBDealCard").position
+	PLAYER_A_DEAL_CARD_POS = cards_node.get_node("PlayerADealCard").position
+	PLAYER_B_DEAL_CARD_POS = cards_node.get_node("PlayerBDealCard").position
 
 	set_all_card_back()
 	init_cards_position_for_public()

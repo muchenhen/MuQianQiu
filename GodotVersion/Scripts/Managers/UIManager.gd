@@ -19,8 +19,8 @@ func _init():
 	if instance != null:
 		push_error("UIManager already exists. Use UIManager.get_instance() instead.")
 
-func _ready():
-	root = get_tree().get_root()
+func set_ui_tree_root(node: Node) -> void:
+	root = node
 
 func get_ui_tree_root() -> Node:
 	return root
@@ -36,7 +36,7 @@ func get_ui_instance(key: String) -> Node:
 		else:
 			var ui_instance = load(path).instantiate()
 			ui_element_single_instance[path] = ui_instance
-			return instance
+			return ui_instance
 	else:
 		push_error("UIManager: No such UI element: " + key)
 		return null
@@ -44,4 +44,5 @@ func get_ui_instance(key: String) -> Node:
 func open_ui(key: String) -> void:
 	var ui_instance = get_ui_instance(key)
 	if ui_instance:
+		print("UIManager: Open UI: ", key)
 		root.add_child(ui_instance)
