@@ -13,7 +13,7 @@ var current_player:Player = null
 
 var skip_supply_anim:bool = false
 
-var debug_player_change_card:bool = true
+var debug_player_change_card:bool = false
 
 
 signal player_choose_public_card(player_choosing_card, public_choosing_card)
