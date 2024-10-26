@@ -67,10 +67,10 @@ func get_checked_count():
 
 func _ready():
 	if instance == null:
+		instance = self
+
 		# 准备故事展示界面
 		sc_story_show_instance = sc_story_show.instantiate()
-
-		instance = self
 		add_child(animation_manager)
 
 		input_manager = InputManager.new()
@@ -81,6 +81,7 @@ func _ready():
 		animation_timer.connect("timeout", Callable(self, "animate_next_card"))
 		add_child(animation_timer)
 
+		# 初始化玩家
 		player_a.initialize("PlayerA", Player.PlayerPos.A)
 		player_b.initialize("PlayerB", Player.PlayerPos.B)
 		public_deal.bind_players(player_a, player_b)
@@ -100,18 +101,23 @@ func _ready():
 	set_process_mode(Node.PROCESS_MODE_ALWAYS)
 	
 	# 确保在准备就绪后立即加载开始场景
-	call_deferred("load_start_scene")
-	# input_manager.block_input()
-	
+	call_deferred("load_start_scene")	
 
 # 开始新游戏
 func start_new_game():
 	print("开始新游戏")
 	
-	card_manager.collect_cardIDs_for_this_game([2,3])
+	var choosed_versions = []
+	if is_open_first:
+		choosed_versions.push_back(1)
+	if is_open_second:
+		choosed_versions.push_back(2)
+	if is_open_third:
+		choosed_versions.push_back(3)
+
+	card_manager.prepare_cards_for_this_game(choosed_versions)
 	print("本局游戏卡牌 ID: ", card_manager.cardIDs)
-	card_manager.shuffle_cardIDs()
-	
+
 	load_scene(sc_main)
 
 	var ui_node = current_scene.get_node("UI")
@@ -148,6 +154,8 @@ func start_new_game():
 		send_card_for_play(card_manager.all_cards)
 	else:
 		send_card_for_play_without_anim(card_manager.all_cards)
+
+
 
 func send_card_for_play_without_anim(cards):
 	cards_to_animate = []
