@@ -235,7 +235,7 @@ func show_one_new_finished_story(story):
 	add_score(story["Score"])
 	# 使用sc_story_show展示当前故事的卡牌
 	
-	current_sc_story_show = UIManager.get_instance().get_ui_instance("sc_story_show")
+	current_sc_story_show = UIManager.get_instance().get_ui_instance("UI_StoryShow")
 	current_sc_story_show.modulate.a = 0
 	current_sc_story_show.visible = true
 	current_sc_story_show.z_index = 999
