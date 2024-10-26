@@ -11,6 +11,7 @@ extends Control
 @onready var checkbox_3 = $CheckBox_3
 
 func _ready() -> void:
+	print("UI_Start ready")
 	start_button.connect("pressed", Callable(self, "_on_start_button_pressed"))
 	checkbox_1.connect("toggled", Callable(self, "_on_checkbox_1_toggled"))
 	checkbox_2.connect("toggled", Callable(self, "_on_checkbox_2_toggled"))

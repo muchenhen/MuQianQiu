@@ -5,6 +5,8 @@ class_name GameManager
 static var instance: GameManager = null
 
 ############################################
+var ui_manager = UIManager.get_instance()
+
 var table_manager = TableManager.get_instance()
 var card_manager = CardManager.get_instance()
 var input_manager: InputManager
@@ -20,19 +22,11 @@ var player_b = Player.new()
 const PLAYER_A_SCORE_STR:String = "玩家A分数："
 const PLAYER_B_SCORE_STR:String = "玩家B分数："
 
-var ui_start = preload("res://UI/UI_Start.tscn")
-var ui_main = preload("res://UI/UI_Main.tscn")
-var ui_story_show = preload("res://UI/UI_StoryShow.tscn")
-var ui_result = preload("res://UI/UI_Result.tscn")
-
-var current_scene = null
 var current_all_cards
 
 var cards_to_animate = []
 var current_card_index = 0
 var animation_timer: Timer
-
-var sc_story_show_instance = null
 
 var current_round = GameRound.WAITING
 
@@ -72,9 +66,13 @@ func get_checked_count():
 func _ready():
 	if instance == null:
 		instance = self
+		ui_manager.set_ui_tree_root(instance)
+		ui_manager.register_ui_element("UI_Main", "res://UI/UI_Main.tscn")
+		ui_manager.register_ui_element("UI_PlayerChangeCard", "res://UI/UI_PlayerChangeCard.tscn")
+		ui_manager.register_ui_element("UI_Result", "res://UI/UI_Result.tscn")
+		ui_manager.register_ui_element("UI_Start", "res://UI/UI_Start.tscn")
+		ui_manager.register_ui_element("UI_StoryShow", "res://UI/UI_StoryShow.tscn")
 
-		# 准备故事展示界面
-		sc_story_show_instance = ui_story_show.instantiate()
 		add_child(animation_manager)
 
 		input_manager = InputManager.new()
@@ -94,18 +92,11 @@ func _ready():
 		public_deal.connect("player_choose_public_card", Callable(self, "player_choose_public_card"))
 
 		current_round = GameRound.WAITING
-	else:
-		return
 	
+		table_manager.load_csv("res://Tables/Cards.txt")
+		StoryManager.get_instance().init_all_stories_state()
 
-	table_manager.load_csv("res://Tables/Cards.txt")
-
-	StoryManager.get_instance().init_all_stories_state()
-	
-	set_process_mode(Node.PROCESS_MODE_ALWAYS)
-	
-	# 确保在准备就绪后立即加载开始场景
-	call_deferred("load_start_scene")	
+		ui_manager.open_ui("UI_Start")
 
 # 开始新游戏
 func start_new_game():
@@ -122,22 +113,23 @@ func start_new_game():
 	card_manager.prepare_cards_for_this_game(choosed_versions)
 	print("本局游戏卡牌 ID: ", card_manager.cardIDs)
 
-	load_scene(ui_main)
+	ui_manager.open_ui("UI_Main")
 
-	var ui_node = current_scene.get_node("UI")
-	player_a.score_ui = ui_node.get_node("Text_AScore")
-	player_b.score_ui = ui_node.get_node("Text_BScore")
+	var ui_main = ui_manager.get_ui_instance("UI_Main")
+	player_a.score_ui = ui_main.get_node("UI/Text_AScore")
+	player_b.score_ui = ui_main.get_node("UI/Text_BScore")
 	player_a.add_score(0)
 	player_b.add_score(0)
 
-	card_manager.create_cards_for_this_game(current_scene)
+	var cards_node = ui_main.get_node("Cards")
+	card_manager.create_cards_for_this_game(cards_node)
 
 	# 收集玩家A的牌堆位置
-	var player_a_deal_card_template = current_scene.get_node("Cards").get_node("PlayerADealCard")
+	var player_a_deal_card_template = cards_node.get_node("PlayerADealCard")
 	card_manager.PLAYER_A_DEAL_CARD_POS = player_a_deal_card_template.position
 
 	# 收集玩家B的牌堆位置
-	var player_b_deal_card_template = current_scene.get_node("Cards").get_node("PlayerBDealCard")
+	var player_b_deal_card_template = cards_node.get_node("PlayerBDealCard")
 	card_manager.PLAYER_B_DEAL_CARD_POS = player_b_deal_card_template.position
 
 	# 收集公共牌区域的位置
@@ -145,7 +137,7 @@ func start_new_game():
 	var public_deal_cards_rotation = []
 	for i in range(1, 9):
 		var node_name = "PublicDealCard" + str(i)
-		var card = current_scene.get_node("Cards").get_node(node_name)
+		var card = cards_node.get_node(node_name)
 		public_deal_cards_pos.push_back(card.position)
 		public_deal_cards_rotation.push_back(card.rotation)
 
@@ -283,7 +275,7 @@ func change_round():
 	print("当前回合: ", current_round_index)
 	if current_round_index > MAX_ROUND:
 		print("游戏结束")
-		var ui_result_instance = ui_result.instantiate()
+		var ui_result_instance = ui_manager.get_ui_instance("UI_Result")
 		# ui_result_instance.set_result(player_a.get_score(), player_b.get_score())
 		# 将结果界面添加到场景树 添加到最高层级
 		ui_result_instance.z_index = 2999
@@ -372,24 +364,6 @@ func show_new_finished_stories():
 	change_round()
 	input_manager.allow_input()
 
-
-# 同步加载场景
-func load_scene(scene):
-	var new_scene = scene.instantiate()
-	
-	if current_scene != null:
-		current_scene.queue_free()
-	
-	# 将新场景添加到场景树
-	get_tree().root.add_child(new_scene)
-	
-	# 将新场景设置为当前场景
-	get_tree().current_scene = new_scene
-	
-	# 更新当前场景引用
-	current_scene = new_scene
-
-
 # 打印场景树的辅助函数
 func print_scene_tree(node, indent=""):
 	print(indent + node.name)
@@ -399,10 +373,7 @@ func print_scene_tree(node, indent=""):
 # 加载开始场景
 func load_start_scene():
 	print("加载开始场景")
-	load_scene(ui_start)
-
-func create_one_sc_story_show():
-	return ui_story_show.instantiate()
+	ui_manager.open_ui("UI_Start")
 
 func get_public_card_deal():
 	return public_deal
