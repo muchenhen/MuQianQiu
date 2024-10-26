@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://bu1fxhnplucwx"]
+[gd_scene load_steps=2 format=3 uid="uid://dri8ugxo2s8kr"]
 
-[ext_resource type="Script" path="res://UI/Start/ui_start.gd" id="1_vjwx8"]
+[ext_resource type="Script" path="res://Scripts/UI/UI_Start.gd" id="1_lqrpw"]
 
 [node name="UiStart" type="Control"]
 layout_mode = 3
@@ -9,7 +9,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_vjwx8")
+script = ExtResource("1_lqrpw")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 0
