@@ -20,10 +20,10 @@ var player_b = Player.new()
 const PLAYER_A_SCORE_STR:String = "玩家A分数："
 const PLAYER_B_SCORE_STR:String = "玩家B分数："
 
-var sc_start = preload("res://Scenes/sc_start.tscn")
-var sc_main = preload("res://Scenes/sc_main.tscn")
-var sc_story_show = preload("res://Scenes/sc_story_show.tscn")
-var ui_result = preload("res://UI/Result/UI_Result.tscn")
+var ui_start = preload("res://UI/UI_Start.tscn")
+var ui_main = preload("res://UI/UI_Main.tscn")
+var ui_story_show = preload("res://UI/UI_StoryShow.tscn")
+var ui_result = preload("res://UI/UI_Result.tscn")
 
 var current_scene = null
 var current_all_cards
@@ -74,7 +74,7 @@ func _ready():
 		instance = self
 
 		# 准备故事展示界面
-		sc_story_show_instance = sc_story_show.instantiate()
+		sc_story_show_instance = ui_story_show.instantiate()
 		add_child(animation_manager)
 
 		input_manager = InputManager.new()
@@ -122,7 +122,7 @@ func start_new_game():
 	card_manager.prepare_cards_for_this_game(choosed_versions)
 	print("本局游戏卡牌 ID: ", card_manager.cardIDs)
 
-	load_scene(sc_main)
+	load_scene(ui_main)
 
 	var ui_node = current_scene.get_node("UI")
 	player_a.score_ui = ui_node.get_node("Text_AScore")
@@ -399,10 +399,10 @@ func print_scene_tree(node, indent=""):
 # 加载开始场景
 func load_start_scene():
 	print("加载开始场景")
-	load_scene(sc_start)
+	load_scene(ui_start)
 
 func create_one_sc_story_show():
-	return sc_story_show.instantiate()
+	return ui_story_show.instantiate()
 
 func get_public_card_deal():
 	return public_deal

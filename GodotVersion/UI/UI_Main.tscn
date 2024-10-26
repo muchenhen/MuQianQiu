@@ -1,10 +1,10 @@
 [gd_scene load_steps=3 format=3 uid="uid://8p14juupi406"]
 
-[ext_resource type="Script" path="res://main.gd" id="1_lc1tl"]
-[ext_resource type="PackedScene" uid="uid://b6vosary0xtcn" path="res://Scripts/Objects/Card.tscn" id="2_qd0u6"]
+[ext_resource type="Script" path="res://main.gd" id="1_tl0ct"]
+[ext_resource type="PackedScene" uid="uid://b6vosary0xtcn" path="res://Scripts/Objects/Card.tscn" id="2_immq1"]
 
 [node name="Main" type="Node2D"]
-script = ExtResource("1_lc1tl")
+script = ExtResource("1_tl0ct")
 metadata/_edit_horizontal_guides_ = [360.0, 720.0]
 metadata/_edit_vertical_guides_ = [320.0, 1600.0]
 
@@ -150,7 +150,7 @@ offset_right = 320.0
 offset_bottom = 360.0
 metadata/_edit_lock_ = true
 
-[node name="PlayerADealCard" parent="Cards" instance=ExtResource("2_qd0u6")]
+[node name="PlayerADealCard" parent="Cards" instance=ExtResource("2_immq1")]
 visible = false
 offset_left = 64.0
 offset_top = 768.0
@@ -160,7 +160,7 @@ rotation = 0.301942
 pivot_offset = Vector2(96, 128)
 metadata/_edit_lock_ = true
 
-[node name="PlayerBDealCard" parent="Cards" instance=ExtResource("2_qd0u6")]
+[node name="PlayerBDealCard" parent="Cards" instance=ExtResource("2_immq1")]
 visible = false
 offset_left = 64.0
 offset_top = 48.0

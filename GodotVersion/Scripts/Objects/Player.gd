@@ -4,7 +4,7 @@ class_name Player
 
 const MAX_HAND_CARD_NUM = 10
 
-var sc_player_change_card = preload("res://Scenes/sc_player_change_card.tscn")
+var sc_player_change_card = preload("res://UI/UI_PlayerChangeCard.tscn")
 
 static var sc_player_change_card_instance = null
 

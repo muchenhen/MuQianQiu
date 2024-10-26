@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://cuvpyy7657c7x"]
-
-[ext_resource type="Script" path="res://Scripts/Managers/GameManager.gd" id="1_wxjws"]
-
-[node name="ScGameManager" type="Node2D"]
-script = ExtResource("1_wxjws")
