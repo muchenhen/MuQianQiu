@@ -1,0 +1,87 @@
+[gd_scene load_steps=3 format=3 uid="uid://cm21poqyu1fq6"]
+
+[ext_resource type="Script" path="res://UI/Result/UI_Result.gd" id="1_eng37"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kqa2a"]
+bg_color = Color(0.227451, 0.184314, 0.223529, 1)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(1, 1, 1, 1)
+
+[node name="UiResult" type="Node2D"]
+script = ExtResource("1_eng37")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_right = 1920.0
+offset_bottom = 1080.0
+color = Color(0.0470588, 0.0470588, 0.0470588, 0.631373)
+metadata/_edit_lock_ = true
+
+[node name="Label" type="Label" parent="."]
+offset_left = 720.0
+offset_top = 320.0
+offset_right = 1080.0
+offset_bottom = 403.0
+theme_override_font_sizes/font_size = 60
+text = "你的分数是："
+
+[node name="Result" type="Label" parent="."]
+offset_left = 744.0
+offset_top = 472.0
+offset_right = 1224.0
+offset_bottom = 637.0
+theme_override_font_sizes/font_size = 120
+text = "你赢了！"
+
+[node name="Label2" type="Label" parent="."]
+offset_left = 744.0
+offset_top = 208.0
+offset_right = 1104.0
+offset_bottom = 291.0
+theme_override_font_sizes/font_size = 50
+text = "对手的分数是："
+
+[node name="Player_A_Score" type="Label" parent="."]
+offset_left = 1080.0
+offset_top = 296.0
+offset_right = 1217.0
+offset_bottom = 406.0
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 0, 0.556863)
+theme_override_constants/outline_size = 10
+theme_override_constants/shadow_outline_size = 5
+theme_override_font_sizes/font_size = 80
+text = "999"
+
+[node name="Player_B_Score" type="Label" parent="."]
+offset_left = 1112.0
+offset_top = 192.0
+offset_right = 1249.0
+offset_bottom = 302.0
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 0, 0.556863)
+theme_override_constants/outline_size = 10
+theme_override_constants/shadow_outline_size = 5
+theme_override_font_sizes/font_size = 60
+text = "99"
+
+[node name="Button_BackToMain" type="Button" parent="."]
+offset_left = 416.0
+offset_top = 680.0
+offset_right = 716.0
+offset_bottom = 830.0
+theme_override_font_sizes/font_size = 56
+theme_override_styles/focus = SubResource("StyleBoxFlat_kqa2a")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxFlat_kqa2a")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_kqa2a")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxFlat_kqa2a")
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_kqa2a")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxFlat_kqa2a")
+theme_override_styles/hover = SubResource("StyleBoxFlat_kqa2a")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxFlat_kqa2a")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_kqa2a")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxFlat_kqa2a")
+theme_override_styles/normal = SubResource("StyleBoxFlat_kqa2a")
+text = "回到主菜单"

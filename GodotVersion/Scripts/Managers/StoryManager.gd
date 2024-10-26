@@ -8,6 +8,8 @@ var stories = {}
 var card_to_story_map = {}
 var completed_stories = []
 
+var DEBUG_SKIP_STORTY = true
+
 
 func _init():
 	if instance != null:
@@ -69,6 +71,8 @@ func get_relent_stories(card_id:int) -> Array:
 	return relent_stories
 
 func check_story_finish_by_cards_id(cards_id:Array) -> Array:
+	if DEBUG_SKIP_STORTY:
+		return []
 	# print("检查故事完成情况", cards_id)
 	var this_time_completed_stories = []
 	for story_id in stories:
