@@ -144,12 +144,14 @@ func send_card_for_play_without_anim(cards):
 		card.update_card()
 		if i % 2 == 0:
 			var index:int = player_a.get_player_first_enpty_hand_card_index()
-			player_a.set_player_hand_card_with_index(card, index)
+			player_a.assign_player_hand_card_to_slot(card, index)
 			card.position = player_a.hand_cards_pos_array.pop_front()
+			card.set_player_owner(player_a)
 		else:
 			var index:int = player_b.get_player_first_enpty_hand_card_index()
-			player_b.set_player_hand_card_with_index(card, index)
+			player_b.assign_player_hand_card_to_slot(card, index)
 			card.position = player_b.hand_cards_pos_array.pop_front()
+			card.set_player_owner(player_b)
 
 	for i in range(card_manager.PUBLIC_CARDS_POS.size()):
 		var position = card_manager.PUBLIC_CARDS_POS[i]
@@ -177,11 +179,11 @@ func send_card_for_play(cards):
 		if i % 2 == 0:
 			cards_to_animate.append({"card": card, "position": player_a.hand_cards_pos_array.pop_front()})
 			var index:int = player_a.get_player_first_enpty_hand_card_index()
-			player_a.set_player_hand_card_with_index(card, index)
+			player_a.assign_player_hand_card_to_slot(card, index)
 		else:
 			cards_to_animate.append({"card": card, "position": player_b.hand_cards_pos_array.pop_front()})
 			var index:int = player_b.get_player_first_enpty_hand_card_index()
-			player_b.set_player_hand_card_with_index(card, index)
+			player_b.assign_player_hand_card_to_slot(card, index)
 
 	for i in range(card_manager.PUBLIC_CARDS_POS.size()):
 		var position = card_manager.PUBLIC_CARDS_POS[i]

@@ -12,6 +12,7 @@ var Season: String = "春"
 var Describe: String = "楚梦沉醉朝复暮，\n清歌远上巫山低。"
 var BaseID: int = 201
 var Special: bool = false
+var player_owner: Player = null
 
 signal card_clicked(card)
 
@@ -70,9 +71,13 @@ func _on_card_clicked() -> void:
 	# 打印卡牌所有信息
 	print("Card clicked: ", Name, " ID: ", ID, " Type: ", Type, " Score: ", Score, " Season: ", Season, " Describe: ", debug_describe, " BaseID: ", BaseID, " Special: ", Special, " IsEnableClick: ", is_enable_click)
 	if not is_enable_click:
+		print_debug("Card is not enable to click.")
 		return
-	
-	change_card_chooesd()
+
+	if player_owner:
+		if player_owner.player_state != Player.PlayerState.SELF_ROUND_CHANGE_CARD:
+			change_card_chooesd()
+
 	# 发送信号
 	card_clicked.emit(self)
 
@@ -140,3 +145,6 @@ func move_to_bottom() -> void:
 
 func get_season() -> String:
 	return Season
+
+func set_player_owner(player: Player) -> void:
+	player_owner = player

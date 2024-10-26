@@ -2,12 +2,6 @@ extends Node
 
 class_name Player
 
-class PlayerHandCard:
-	var card: Card = null
-	var pos: Vector2
-	var zindex: int = 0
-	var isEmpty: bool = true
-
 var sc_player_change_card = preload("res://Scenes/sc_player_change_card.tscn")
 
 static var sc_player_change_card_instance = null
@@ -90,27 +84,28 @@ func initialize(p_name, player_pos) -> void:
 		hand_cards_new[i] = PlayerHandCard.new()
 		hand_cards_new[i].pos = hand_cards_pos_array[i]
 		hand_cards_new[i].zindex = 10 - i
-		hand_cards_new[i].isEmpty = true
+		hand_cards_new[i].is_empty = true
 
-func set_player_hand_card_with_index(card: Card, index: int) -> void:
-	if index < 0 or index > 9:
-		print("设置玩家手牌时，index超出范围")
+func assign_player_hand_card_to_slot(card: Card, slot_index: int) -> void:
+	if slot_index < 0 or slot_index > 9:
+		print("设置玩家手牌时，slot_index超出范围")
 		return
-	hand_cards_new[index].card = card
-	hand_cards_new[index].isEmpty = false
-	hand_cards_new[index].card.position = hand_cards_new[index].pos
-	hand_cards_new[index].card.z_index = hand_cards_new[index].zindex
+	hand_cards_new[slot_index].card = card
+	hand_cards_new[slot_index].slot_index = slot_index
+	hand_cards_new[slot_index].is_empty = false
+	hand_cards_new[slot_index].card.position = hand_cards_new[slot_index].pos
+	hand_cards_new[slot_index].card.z_index = hand_cards_new[slot_index].zindex
 	card.connect("card_clicked", Callable(self, "on_card_clicked"))
 
 func get_player_first_enpty_hand_card_index() -> int:
 	for i in hand_cards_new.keys():
-		if hand_cards_new[i].isEmpty:
+		if hand_cards_new[i].is_empty:
 			return i
 	return -1
 
 func get_player_hand_card_by_id(card_id: int) -> Card:
 	for i in hand_cards_new.keys():
-		if not hand_cards_new[i].isEmpty and hand_cards_new[i].card.ID == card_id:
+		if not hand_cards_new[i].is_empty and hand_cards_new[i].card.ID == card_id:
 			return hand_cards_new[i].card
 	return null
 
@@ -147,17 +142,17 @@ func on_card_clicked(card: Node) -> void:
 
 func set_all_hand_card_unchooesd() -> void:
 	for i in hand_cards_new.keys():
-		if not hand_cards_new[i].isEmpty:
+		if not hand_cards_new[i].is_empty:
 			hand_cards_new[i].card.set_card_unchooesd()
 
 func set_all_hand_card_cannot_click() -> void:
 	for i in hand_cards_new.keys():
-		if not hand_cards_new[i].isEmpty:
+		if not hand_cards_new[i].is_empty:
 			hand_cards_new[i].card.disable_click()
 
 func set_all_hand_card_can_click() -> void:
 	for i in hand_cards_new.keys():
-		if not hand_cards_new[i].isEmpty:
+		if not hand_cards_new[i].is_empty:
 			hand_cards_new[i].card.enable_click()
 
 func add_score(score: int) -> void:
@@ -171,8 +166,8 @@ func set_score_ui(ui: Node) -> void:
 
 func remove_hand_card(card:Card) -> void:
 	for i in hand_cards_new.keys():
-		if not hand_cards_new[i].isEmpty and hand_cards_new[i].card.ID == card.ID:
-			hand_cards_new[i].isEmpty = true
+		if not hand_cards_new[i].is_empty and hand_cards_new[i].card.ID == card.ID:
+			hand_cards_new[i].is_empty = true
 			hand_cards_new[i].card = null
 			break
 
@@ -184,7 +179,7 @@ func check_hand_card_season() -> bool:
 	var has_season = false
 
 	for i in hand_cards_new.keys():
-		if not hand_cards_new[i].isEmpty:
+		if not hand_cards_new[i].is_empty:
 			var card = hand_cards_new[i].card
 			print("玩家 ", player_name, " 手牌中的卡牌： ", card.Name, " 季节： ", card.Season)
 			if seasons.find(card.Season) != -1:
@@ -271,10 +266,21 @@ func show_one_new_finished_story_anim_out_end():
 
 func update_self_card_z_index() -> void:
 	for i in hand_cards_new.keys():
-		if not hand_cards_new[i].isEmpty:
+		if not hand_cards_new[i].is_empty:
 			hand_cards_new[i].card.z_index = hand_cards_new[i].zindex
 
 	for i in range(9, 0, -1):
-		if not hand_cards_new[i].isEmpty:
+		if not hand_cards_new[i].is_empty:
 			hand_cards_new[i].card.move_to_top()
 		
+func get_current_choosing_card() -> Card:
+	for i in hand_cards_new.keys():
+		if not hand_cards_new[i].is_empty and hand_cards_new[i].card.ID == current_choosing_card_id:
+			return hand_cards_new[i].card
+	return null
+
+func get_current_choosing_player_hand_card() -> PlayerHandCard:
+	for i in hand_cards_new.keys():
+		if not hand_cards_new[i].is_empty and hand_cards_new[i].card.ID == current_choosing_card_id:
+			return hand_cards_new[i]
+	return null
