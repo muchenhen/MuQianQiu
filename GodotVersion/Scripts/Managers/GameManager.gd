@@ -1,35 +1,41 @@
 extends Node
 
-
 class_name GameManager
 
+static var instance: GameManager = null
+
+############################################
 var table_manager = TableManager.get_instance()
 var card_manager = CardManager.get_instance()
-
 var input_manager: InputManager
-
 var animation_manager = AnimationManager.get_instance()
+
+var is_open_first:bool = false
+var is_open_second:bool = false
+var is_open_third:bool = false
+
+var public_deal = PublicCardDeal.new()
+var player_a = Player.new()
+var player_b = Player.new()
+const PLAYER_A_SCORE_STR:String = "玩家A分数："
+const PLAYER_B_SCORE_STR:String = "玩家B分数："
 
 var sc_start = preload("res://Scenes/sc_start.tscn")
 var sc_main = preload("res://Scenes/sc_main.tscn")
 var sc_story_show = preload("res://Scenes/sc_story_show.tscn")
 
 var current_scene = null
-
 var current_all_cards
-
-var player_a = Player.new()
-var player_b = Player.new()
-var public_deal = PublicCardDeal.new()
 
 var cards_to_animate = []
 var current_card_index = 0
 var animation_timer: Timer
 
-const PLAYER_A_SCORE_STR:String = "玩家A分数："
-const PLAYER_B_SCORE_STR:String = "玩家B分数："
-
 var sc_story_show_instance = null
+
+var current_round = GameRound.WAITING
+
+############################################
 
 enum GameRound{
 	WAITING = 0,
@@ -37,7 +43,6 @@ enum GameRound{
 	PLAYER_B = 2
 }
 
-var current_round = GameRound.WAITING
 
 enum PlayerChooseState{
 	# 未选中任何卡片，此时可以选择手牌
@@ -48,7 +53,17 @@ enum PlayerChooseState{
 	CHOOSE_PUBLIC = 2
 }
 
-static var instance: GameManager = null
+############################################
+
+func get_checked_count():
+	var count = 0
+	if is_open_first:
+		count += 1
+	if is_open_second:
+		count += 1
+	if is_open_third:
+		count += 1
+	return count
 
 func _ready():
 	if instance == null:
