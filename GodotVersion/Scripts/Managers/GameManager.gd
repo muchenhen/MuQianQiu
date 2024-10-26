@@ -23,6 +23,7 @@ const PLAYER_B_SCORE_STR:String = "玩家B分数："
 var sc_start = preload("res://Scenes/sc_start.tscn")
 var sc_main = preload("res://Scenes/sc_main.tscn")
 var sc_story_show = preload("res://Scenes/sc_story_show.tscn")
+var ui_result = preload("res://UI/Result/UI_Result.tscn")
 
 var current_scene = null
 var current_all_cards
@@ -34,6 +35,9 @@ var animation_timer: Timer
 var sc_story_show_instance = null
 
 var current_round = GameRound.WAITING
+
+const MAX_ROUND = 2
+var current_round_index:int = 0
 
 ############################################
 
@@ -263,7 +267,7 @@ func send_card_anim_end(card):
 
 func start_round():
 	print("开始新一轮")
-	
+
 	# 重置所有卡片的选中状态
 	for key in public_deal.hand_cards.keys():
 		public_deal.hand_cards[key].card.set_card_unchooesd()
@@ -275,6 +279,21 @@ func start_round():
 	change_round()
 
 func change_round():
+	current_round_index += 1
+	print("当前回合: ", current_round_index)
+	if current_round_index > MAX_ROUND:
+		print("游戏结束")
+		var ui_result_instance = ui_result.instantiate()
+		# ui_result_instance.set_result(player_a.get_score(), player_b.get_score())
+		# 将结果界面添加到场景树 添加到最高层级
+		ui_result_instance.z_index = 2999
+		get_tree().root.add_child(ui_result_instance)
+		ui_result_instance.set_result(player_a.get_score(), player_b.get_score())
+		return
+
+	# 补充公共牌手牌
+	public_deal.supply_hand_card()
+
 	if current_round == GameRound.WAITING:
 		change_to_a_round()
 	elif current_round == GameRound.PLAYER_A:
@@ -290,7 +309,8 @@ func change_to_a_round():
 	player_a.set_player_state(Player.PlayerState.SELF_ROUND_UNCHOOSING)
 	player_a.set_all_hand_card_can_click()
 	public_deal.set_all_card_one_season()
-	player_a.check_hand_card_season()
+	if player_a.has_hand_card():
+		player_a.check_hand_card_season()
 
 func change_to_b_round():
 	current_round = GameRound.PLAYER_B
@@ -299,7 +319,8 @@ func change_to_b_round():
 	player_b.set_player_state(Player.PlayerState.SELF_ROUND_UNCHOOSING)
 	player_b.set_all_hand_card_can_click()
 	public_deal.set_all_card_one_season()
-	player_b.check_hand_card_season()
+	if player_b.has_hand_card():
+		player_b.check_hand_card_season()
 
 # 玩家已经选择了一张手牌并且确认要选择了一张公共区域的牌
 func player_choose_public_card(player_choosing_card, public_choosing_card):
@@ -341,17 +362,16 @@ func player_choose_public_card(player_choosing_card, public_choosing_card):
 	var temp_timer = Timer.new()
 	get_tree().root.add_child(temp_timer )
 	temp_timer.start(anim_dutation + 0.1)
-
 	
 	player.new_story_show_finished.connect(Callable(self, "show_new_finished_stories"))
-	# 检查是否完成了故事
+
 	player.check_finish_story()
 
+
 func show_new_finished_stories():
-	# 补充公共牌手牌
-	public_deal.supply_hand_card()
 	change_round()
 	input_manager.allow_input()
+
 
 # 同步加载场景
 func load_scene(scene):
@@ -386,3 +406,6 @@ func create_one_sc_story_show():
 
 func get_public_card_deal():
 	return public_deal
+
+func back_to_main():
+	load_start_scene()

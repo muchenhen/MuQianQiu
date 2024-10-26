@@ -288,3 +288,14 @@ func get_current_choosing_player_hand_card() -> PlayerHandCard:
 		if not hand_cards[i].is_empty and hand_cards[i].card.ID == current_choosing_card_id:
 			return hand_cards[i]
 	return null
+
+# 当前玩家是否还有手牌
+func has_hand_card() -> bool:
+	for i in hand_cards.keys():
+		if not hand_cards[i].is_empty:
+			return true
+	return false
+
+# 获取玩家分数
+func get_score() -> int:
+	return player_score

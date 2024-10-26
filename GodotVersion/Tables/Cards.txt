@@ -37,7 +37,7 @@ ID,Name,PinyinName,Score,Season,Describe,Special,BaseID,SpecialName,SkillsID
 岁首辞君别无恙。",false,118,,
 119,桃花谷,TaoHuaGu,2,春,"花开花落蜂蝶舞，
 日出日落泉叮咚。",false,119,,
-120,幽都,YouDou,2,冬,"娲皇故里聚先贤，
+120,幽都,YouDu,2,冬,"娲皇故里聚先贤，
 风雨如晦葬龙渊。",false,120,,
 121,红叶湖,HongYeHu,2,夏,"野睛露染狐呜咿，
 红塘落叶榕嘘摇。",false,121,,
