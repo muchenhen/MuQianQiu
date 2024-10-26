@@ -1,0 +1,55 @@
+[gd_scene load_steps=2 format=3 uid="uid://bu1fxhnplucwx"]
+
+[ext_resource type="Script" path="res://UI/Start/ui_start.gd" id="1_vjwx8"]
+
+[node name="UiStart" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_vjwx8")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+color = Color(0.580392, 0.686275, 0.482353, 1)
+
+[node name="StartButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 680.0
+offset_top = 584.0
+offset_right = 1264.0
+offset_bottom = 752.0
+theme_override_font_sizes/font_size = 56
+text = "开始游戏"
+
+[node name="CheckBox_1" type="CheckBox" parent="."]
+layout_mode = 0
+offset_left = 688.0
+offset_top = 208.0
+offset_right = 1066.0
+offset_bottom = 285.0
+theme_override_font_sizes/font_size = 50
+text = "琴心剑魄今何在
+"
+
+[node name="CheckBox_2" type="CheckBox" parent="."]
+layout_mode = 0
+offset_left = 896.0
+offset_top = 320.0
+offset_right = 1274.0
+offset_bottom = 397.0
+theme_override_font_sizes/font_size = 50
+text = "永夜初晗凝碧天"
+
+[node name="CheckBox_3" type="CheckBox" parent="."]
+layout_mode = 0
+offset_left = 680.0
+offset_top = 416.0
+offset_right = 1058.0
+offset_bottom = 493.0
+theme_override_font_sizes/font_size = 50
+text = "梦付千秋星垂野"
