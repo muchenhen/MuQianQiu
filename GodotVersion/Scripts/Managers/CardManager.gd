@@ -61,6 +61,15 @@ func collect_public_deal_cards_pos(cards_pos:Array, cards_rotation:Array) -> voi
 		PUBLIC_CARDS_POS.append(pos)
 		PUBLIC_CRADS_ROTATION.append(cards_rotation[i])
 
+# 为当前游戏会话准备卡牌。
+# 此函数根据提供的类型收集并洗牌卡牌ID。
+#
+# @param types 包含在游戏中的卡牌类型数组。
+# @return void
+func prepare_cards_for_this_game(types:Array) -> void:
+	collect_cardIDs_for_this_game(types)
+	shuffle_cardIDs()
+
 func collect_cardIDs_for_this_game(types:Array) -> void:
 	var cards = tableManager.get_table("Cards")
 	for card_id in cards.keys():

@@ -1,7 +1,5 @@
 extends Control
 
-class_name UI_Start
-
 # 开始游戏 按钮
 @onready var start_button = $StartButton
 
