@@ -165,6 +165,15 @@ func bind_players(p_a, p_b) -> void:
 	player_a.connect("player_choose_change_card", Callable(self, "on_player_choose_change_card"))
 	player_b.connect("player_choose_change_card", Callable(self, "on_player_choose_change_card"))
 
+# 获取牌库中所有牌的季节，季节不重复
+func get_storage_seasons() -> Array:
+	var seasons = []
+	for i in all_cards.keys():
+		var card = all_cards[i]
+		if seasons.find(card.Season) == -1:
+			seasons.append(card.Season)
+	return seasons
+
 # 此时玩家手上已经没可以和公共区域匹配的牌了，需要从没有放到公共区域的牌中随机选择一张，和玩家的current_choosing_card_id的对应Card进行交换
 # 交换包括位置和所属权，并且更新显示
 func on_player_choose_change_card(player:Player) -> void:
@@ -176,54 +185,57 @@ func on_player_choose_change_card(player:Player) -> void:
 	# 当前公共区域可以选择的seasons
 	var current_public_card_seasons = GameManager.instance.get_public_card_deal().get_choosable_seasons()
 
-	# 重新洗牌 然后pop_one_card, 然后检查这张卡的season是否存在于current_public_card_seasons中，如果存在则继续，否则重新洗牌
-	var new_card_to_player:Card = pop_one_card() # 这是从牌库获取的新牌
-	while new_card_to_player.get_season() not in current_public_card_seasons:
-		push_one_card(new_card_to_player)
+	# 确认牌库中是否还存在和公共区域的season匹配的牌
+	var storage_seasons = get_storage_seasons()
+	var has_season_in_storage = false
+	for season in storage_seasons:
+		if current_public_card_seasons.find(season) != -1:
+			has_season_in_storage = true
+			break
+	
+	# 至少还有一张牌的season和公共区域的season匹配，可以尝试交换
+	if has_season_in_storage:
+		# 重新洗牌 然后pop_one_card, 然后检查这张卡的season是否存在于current_public_card_seasons中，如果存在则继续，否则重新洗牌
+		var new_card_to_player:Card = pop_one_card() # 这是从牌库获取的新牌
+		while new_card_to_player.get_season() not in current_public_card_seasons:
+			push_one_card(new_card_to_player)
+			re_shuffle_all_cards()
+			new_card_to_player = pop_one_card()
+		# 标记两张卡的z
+		var current_card_z = current_card_in_player.z_index
+		var new_card_z = new_card_to_player.z_index
+		# 标记两张卡的位置
+		var current_card_pos = current_card_in_player.position
+		var new_card_pos = new_card_to_player.position
+		# 标记玩家当前要被换走的卡的slot_index
+		var new_card_slot_index = current_choosing_player_hand_card.slot_index
+		# 动画位移交换两张卡的位置
+		AnimationManager.get_instance().start_linear_movement_pos(current_card_in_player, new_card_pos, 0.5, AnimationManager.EaseType.EASE_IN_OUT)
+		AnimationManager.get_instance().start_linear_movement_pos(new_card_to_player, current_card_pos, 0.5, AnimationManager.EaseType.EASE_IN_OUT)
+		# 等动画结束
+		await GameManager.instance.get_tree().create_timer(0.5).timeout
+		# 交换两张卡的z
+		current_card_in_player.z_index = new_card_z
+		new_card_to_player.z_index = current_card_z
+
+		new_card_to_player.update_card()
+		new_card_to_player.set_card_unchooesd()
+		current_card_in_player.set_card_back()
+		current_card_in_player.disable_click()
+		current_card_in_player.set_card_unchooesd()
+
+		# 将玩家的交还的卡放到公共区域
+		push_one_card(current_card_in_player)
 		re_shuffle_all_cards()
-		new_card_to_player = pop_one_card()
+		# 将新的卡放到玩家手上
+		player.assign_player_hand_card_to_slot(new_card_to_player, new_card_slot_index)
 
-	# 标记两张卡的z
-	var current_card_z = current_card_in_player.z_index
-	var new_card_z = new_card_to_player.z_index
+		var has_season:bool = player.check_hand_card_season()
+		if has_season:
+			player.set_player_state(Player.PlayerState.SELF_ROUND_UNCHOOSING)
+			player.update_self_card_z_index()
+			new_card_to_player.enable_click()
 
-	# 标记两张卡的位置
-	var current_card_pos = current_card_in_player.position
-	var new_card_pos = new_card_to_player.position
-
-	# 标记玩家当前要被换走的卡的slot_index
-	var new_card_slot_index = current_choosing_player_hand_card.slot_index
-
-
-	# 动画位移交换两张卡的位置
-	AnimationManager.get_instance().start_linear_movement_pos(current_card_in_player, new_card_pos, 0.5, AnimationManager.EaseType.EASE_IN_OUT)
-	AnimationManager.get_instance().start_linear_movement_pos(new_card_to_player, current_card_pos, 0.5, AnimationManager.EaseType.EASE_IN_OUT)
-
-	# 等动画结束
-	await GameManager.instance.get_tree().create_timer(0.5).timeout
-
-	# 交换两张卡的z
-	current_card_in_player.z_index = new_card_z
-	new_card_to_player.z_index = current_card_z
-
-	new_card_to_player.update_card()
-	new_card_to_player.set_card_unchooesd()
-	current_card_in_player.set_card_back()
-	current_card_in_player.disable_click()
-	current_card_in_player.set_card_unchooesd()
-
-	# 将玩家的交还的卡放到公共区域
-	push_one_card(current_card_in_player)
-	re_shuffle_all_cards()
-
-	# 将新的卡放到玩家手上
-	player.assign_player_hand_card_to_slot(new_card_to_player, new_card_slot_index)
-
-	var has_season:bool = player.check_hand_card_season()
-	if has_season:
-		player.set_player_state(Player.PlayerState.SELF_ROUND_UNCHOOSING)
-		player.update_self_card_z_index()
-		new_card_to_player.enable_click()
 
 func clear():
 	for card in all_cards:
