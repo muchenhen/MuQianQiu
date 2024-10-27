@@ -384,8 +384,8 @@ func back_to_main():
 	
 	story_manager.clear()
 	card_manager.clear()
-	# player_a.clear()
-	# player_b.clear()
+	player_a.clear()
+	player_b.clear()
 	# current_round = GameRound.WAITING
 	# current_round_index = 0
 	# is_open_first = false
