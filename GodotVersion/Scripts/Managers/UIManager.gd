@@ -28,21 +28,29 @@ func get_ui_tree_root() -> Node:
 func register_ui_element(key: String, element_path: String) -> void:
 	ui_elements_path[key] = element_path
 
+func ensure_get_ui_instance(key: String) -> Node:
+	var ui_instance  = get_ui_instance(key)
+	if not ui_instance:
+		ui_instance = create_ui_instance(key)
+	return ui_instance
+
 func get_ui_instance(key: String) -> Node:
-	if key in ui_elements_path:
-		var path = ui_elements_path[key]
-		if path in ui_element_single_instance:
-			return ui_element_single_instance[path]
-		else:
-			var ui_instance = load(path).instantiate()
-			ui_element_single_instance[path] = ui_instance
-			return ui_instance
+	if key in ui_element_single_instance:
+		return ui_element_single_instance[key]
 	else:
-		push_error("UIManager: No such UI element: " + key)
+		return null
+
+func create_ui_instance(key: String) -> Node:
+	if key in ui_elements_path:
+		var ui_instance = load(ui_elements_path[key]).instantiate()
+		ui_element_single_instance[key] = ui_instance
+		return ui_instance
+	else:
+		push_error("UIManager: UI element not found: ", key)
 		return null
 
 func open_ui(key: String) -> void:
-	var ui_instance = get_ui_instance(key)
+	var ui_instance = ensure_get_ui_instance(key)
 	if ui_instance:
 		print("UIManager: Open UI: ", key)
 		root.add_child(ui_instance)
@@ -64,5 +72,6 @@ func destroy_ui(key: String) -> void:
 		print("UIManager: Destroy UI: ", key)
 		ui_instance.queue_free()
 		# 从缓存中移除
-		if ui_instance in ui_element_single_instance.values():
+		if key in ui_element_single_instance.values():
 			ui_element_single_instance.erase(ui_instance)
+			ui_element_single_instance.erase(key)

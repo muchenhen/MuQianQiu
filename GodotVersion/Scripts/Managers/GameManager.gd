@@ -116,9 +116,9 @@ func start_new_game():
 
 	ui_manager.open_ui("UI_Main")
 
-	var ui_main = ui_manager.get_ui_instance("UI_Main")
-	player_a.score_ui = ui_main.get_node("UI/Text_AScore")
-	player_b.score_ui = ui_main.get_node("UI/Text_BScore")
+	var ui_main = ui_manager.ensure_get_ui_instance("UI_Main")
+	player_a.set_score_ui(ui_main.get_node("UI/Text_AScore"))
+	player_b.set_score_ui(ui_main.get_node("UI/Text_BScore"))
 	player_a.add_score(0)
 	player_b.add_score(0)
 
@@ -276,7 +276,7 @@ func change_round():
 	print("当前回合: ", current_round_index)
 	if current_round_index > MAX_ROUND:
 		print("游戏结束")
-		var ui_result_instance = ui_manager.get_ui_instance("UI_Result")
+		var ui_result_instance = ui_manager.ensure_get_ui_instance("UI_Result")
 		# ui_result_instance.set_result(player_a.get_score(), player_b.get_score())
 		# 将结果界面添加到场景树 添加到最高层级
 		ui_result_instance.z_index = 2999

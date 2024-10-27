@@ -4,10 +4,6 @@ class_name Player
 
 const MAX_HAND_CARD_NUM = 10
 
-var sc_player_change_card = preload("res://UI/UI_PlayerChangeCard.tscn")
-
-static var sc_player_change_card_instance = null
-
 var card_manager = CardManager.get_instance()
 
 var player_name: String = "Player"
@@ -191,16 +187,10 @@ func check_hand_card_season() -> bool:
 	if not has_season:
 		print("玩家 ", player_name, " 手牌中没有和公共区域相同季节的卡牌，需要换牌")
 		# 创建sc并展示
-		if not sc_player_change_card_instance:
-			sc_player_change_card_instance = sc_player_change_card.instantiate()
-		sc_player_change_card_instance.z_index = 999
-		var tree = GameManager.instance.get_tree()
-		var root = tree.get_root()
-		root.add_child(sc_player_change_card_instance)
+		UIManager.get_instance().open_ui(("UI_PlayerChangeCard"))
 		set_player_state(PlayerState.SELF_ROUND_CHANGE_CARD)
 	else:
-		if sc_player_change_card_instance and is_instance_valid(sc_player_change_card_instance):
-			sc_player_change_card_instance.queue_free()
+		UIManager.get_instance().destroy_ui("UI_PlayerChangeCard")
 
 	return has_season
 
@@ -235,7 +225,7 @@ func show_one_new_finished_story(story):
 	add_score(story["Score"])
 	# 使用sc_story_show展示当前故事的卡牌
 	
-	current_sc_story_show = UIManager.get_instance().get_ui_instance("UI_StoryShow")
+	current_sc_story_show = UIManager.get_instance().ensure_get_ui_instance("UI_StoryShow")
 	current_sc_story_show.modulate.a = 0
 	current_sc_story_show.visible = true
 	current_sc_story_show.z_index = 999
@@ -299,3 +289,7 @@ func has_hand_card() -> bool:
 # 获取玩家分数
 func get_score() -> int:
 	return player_score
+
+func clear():
+	score_ui.text = "当前分数：0"
+	player_score = 0
