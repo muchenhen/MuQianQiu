@@ -104,7 +104,7 @@ func _ready():
 func start_new_game():
 	print("开始新游戏")
 	ui_manager.destroy_ui("UI_Start")
-	
+
 	var choosed_versions = []
 	if is_open_first:
 		choosed_versions.push_back(1)
@@ -375,12 +375,15 @@ func get_public_card_deal():
 	return public_deal
 
 func back_to_main():
-	ui_manager.destroy_ui("UI_Result")
-	
 	story_manager.clear()
 	card_manager.clear()
 	player_a.clear()
 	player_b.clear()
+	
+	ui_manager.destroy_ui("UI_Result")
+	ui_manager.destroy_ui("UI_Main")
+	
+
 	current_round_index = 0
 
 	ui_manager.open_ui("UI_Start")
