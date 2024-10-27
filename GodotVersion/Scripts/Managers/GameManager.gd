@@ -30,7 +30,7 @@ var animation_timer: Timer
 
 var current_round = GameRound.WAITING
 
-const MAX_ROUND = 20
+const MAX_ROUND = 2
 var current_round_index:int = 0
 
 ############################################
@@ -379,8 +379,7 @@ func get_public_card_deal():
 	return public_deal
 
 func back_to_main():
-	pass
-	# 关闭result界面
+	ui_manager.close_ui("UI_Result")
 	
 	# load_start_scene()
 	# StoryManager.get_instance().clear()
