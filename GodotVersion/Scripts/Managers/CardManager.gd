@@ -40,7 +40,7 @@ var cardIDs = []
 
 func _init():
 	if instance == null:
-		push_error("CardManager already exists. Use CardManager.get_instance() instead.")
+		print("CardManager already exists. Use CardManager.get_instance() instead.")
 
 static func get_instance() -> CardManager:
 	if instance == null:
@@ -241,6 +241,7 @@ func destroy_all_scene_cards() -> void:
 
 func clear():
 	destroy_all_scene_cards()
+	all_storage_cards.clear()
 	cardIDs.clear()
 	player_a.disconnect("player_choose_change_card", Callable(self, "on_player_choose_change_card"))
 	player_b.disconnect("player_choose_change_card", Callable(self, "on_player_choose_change_card"))

@@ -1,10 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://8p14juupi406"]
+[gd_scene load_steps=2 format=3 uid="uid://8p14juupi406"]
 
-[ext_resource type="Script" path="res://main.gd" id="1_tl0ct"]
 [ext_resource type="PackedScene" uid="uid://b6vosary0xtcn" path="res://Scripts/Objects/Card.tscn" id="2_immq1"]
 
 [node name="Main" type="Node2D"]
-script = ExtResource("1_tl0ct")
 metadata/_edit_horizontal_guides_ = [360.0, 720.0]
 metadata/_edit_vertical_guides_ = [320.0, 1600.0]
 
