@@ -72,6 +72,6 @@ func destroy_ui(key: String) -> void:
 		print("UIManager: Destroy UI: ", key)
 		ui_instance.queue_free()
 		# 从缓存中移除
-		if key in ui_element_single_instance.values():
+		if key in ui_element_single_instance:
 			ui_element_single_instance.erase(ui_instance)
 			ui_element_single_instance.erase(key)

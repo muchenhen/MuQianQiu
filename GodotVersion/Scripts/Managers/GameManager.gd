@@ -93,6 +93,7 @@ func _ready():
 		public_deal.connect("player_choose_public_card", Callable(self, "player_choose_public_card"))
 
 		current_round = GameRound.WAITING
+		current_round_index = 0
 	
 		table_manager.load_csv("res://Tables/Cards.txt")
 		StoryManager.get_instance().init_all_stories_state()
@@ -102,6 +103,7 @@ func _ready():
 # 开始新游戏
 func start_new_game():
 	print("开始新游戏")
+	ui_manager.destroy_ui("UI_Start")
 	
 	var choosed_versions = []
 	if is_open_first:
@@ -276,11 +278,9 @@ func change_round():
 	print("当前回合: ", current_round_index)
 	if current_round_index > MAX_ROUND:
 		print("游戏结束")
-		var ui_result_instance = ui_manager.ensure_get_ui_instance("UI_Result")
-		# ui_result_instance.set_result(player_a.get_score(), player_b.get_score())
-		# 将结果界面添加到场景树 添加到最高层级
+		ui_manager.open_ui("UI_Result")
+		var ui_result_instance = ui_manager.get_ui_instance("UI_Result")
 		ui_result_instance.z_index = 2999
-		get_tree().root.add_child(ui_result_instance)
 		ui_result_instance.set_result(player_a.get_score(), player_b.get_score())
 		return
 
@@ -371,24 +371,16 @@ func print_scene_tree(node, indent=""):
 	for child in node.get_children():
 		print_scene_tree(child, indent + "  ")
 
-# 加载开始场景
-func load_start_scene():
-	print("加载开始场景")
-	ui_manager.open_ui("UI_Start")
-
 func get_public_card_deal():
 	return public_deal
 
 func back_to_main():
-	ui_manager.close_ui("UI_Result")
+	ui_manager.destroy_ui("UI_Result")
 	
 	story_manager.clear()
 	card_manager.clear()
 	player_a.clear()
 	player_b.clear()
-	# current_round = GameRound.WAITING
-	# current_round_index = 0
-	# is_open_first = false
-	# is_open_second = false
-	# is_open_third = false
-	
+	current_round_index = 0
+
+	ui_manager.open_ui("UI_Start")
