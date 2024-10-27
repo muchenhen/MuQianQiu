@@ -4,42 +4,38 @@ class_name CardManager
 
 static var instance: CardManager = null
 
-var player_a = null
-var player_b = null
+var tableManager = TableManager.get_instance()
 
 const CARD = preload("res://Scripts/Objects/Card.tscn")
-
-var all_cards = []
 
 # 公共牌区域
 const PUBLIC_CARD_AREA_POS: Vector2 = Vector2(1400, 416)
 const PUBLIC_CARD_AREA_SIZE: Vector2 = Vector2(450, 256)
 const CARD_WIDTH: int = 192
 const CARD_HEIGHT: int = 256
-
-var PLAYER_DEAL_CARD_ROTATION_MIN: float = -30
-var PLAYER_DEAL_CARD_ROTATION_MAX: float = 30
-
-# 玩家B区域
-const PLAYER_B_CARD_AREA_POS: Vector2 = Vector2(384, 64)
-const PLAYER_B_CARD_AREA_SIZE: Vector2 = Vector2(1152, 256)
-
+# 玩家牌堆随机旋转角度
+const PLAYER_DEAL_CARD_ROTATION_MIN: float = -30
+const PLAYER_DEAL_CARD_ROTATION_MAX: float = 30
+# 玩家牌堆位置
+var PLAYER_A_DEAL_CARD_POS: Vector2
 var PLAYER_B_DEAL_CARD_POS: Vector2
-
 # 玩家A区域
 const PLAYER_A_CARD_AREA_POS: Vector2 = Vector2(384, 768)
 const PLAYER_A_CARD_AREA_SIZE: Vector2 = Vector2(1152, 256)
-
-var PLAYER_A_DEAL_CARD_POS: Vector2
-
+# 玩家B区域
+const PLAYER_B_CARD_AREA_POS: Vector2 = Vector2(384, 64)
+const PLAYER_B_CARD_AREA_SIZE: Vector2 = Vector2(1152, 256)
 # 公共牌堆的八张牌的位置
 var PUBLIC_CARDS_POS = []
 var PUBLIC_CRADS_ROTATION = []
 
+var player_a = null
+var player_b = null
 
-
-var tableManager = TableManager.get_instance()
-
+# 所有卡牌
+var all_scene_cards = []
+# 所有公共牌库中的卡牌
+var all_storage_cards = []
 var cardIDs = []
 
 func _init():
@@ -87,7 +83,8 @@ func shuffle_cardIDs() -> void:
 func create_cards_for_this_game(cards_node:Node) -> void:
 	for card_id in cardIDs:
 		var card = create_one_card(card_id)
-		all_cards.append(card)
+		all_storage_cards.append(card)
+		all_scene_cards.append(card)
 		cards_node.add_child(card)
 	
 	PLAYER_A_DEAL_CARD_POS = cards_node.get_node("PlayerADealCard").position
@@ -104,27 +101,27 @@ func create_one_card(card_id:int) -> Node:
 	return card
 
 func pop_one_card() -> Node:
-	if all_cards.size() == 0:
+	if all_storage_cards.size() == 0:
 		return null
-	var card = all_cards.pop_back()
+	var card = all_storage_cards.pop_back()
 	return card
 
 func push_one_card(card:Card) -> void:
-	all_cards.append(card)
+	all_storage_cards.append(card)
 
 func re_shuffle_all_cards() -> void:
-	all_cards.shuffle()
+	all_storage_cards.shuffle()
 
 # 初始化公共区域手牌的每一个位置
 func init_cards_position_for_public():
-	var card_count = all_cards.size()
+	var card_count = all_storage_cards.size()
 	if card_count == 0:
 		return
 
 	var pos_array = init_cards_position_tile(PUBLIC_CARD_AREA_SIZE, PUBLIC_CARD_AREA_POS, card_count)
 	# 从左到右放置卡片
 	for i in range(card_count):
-		var card = all_cards[i]
+		var card = all_storage_cards[i]
 		card.position.x = pos_array[i].x
 		# 设置Y坐标（垂直居中）
 		card.position.y = PUBLIC_CARD_AREA_POS.y
@@ -155,7 +152,7 @@ func get_random_deal_card_rotation() -> float:
 	return deg_to_rad(random_angle)
 
 func set_all_card_back() -> void:
-	for card in all_cards:
+	for card in all_storage_cards:
 		card.set_card_back()
 		card.disable_click()
 
@@ -168,8 +165,8 @@ func bind_players(p_a, p_b) -> void:
 # 获取牌库中所有牌的季节，季节不重复
 func get_storage_seasons() -> Array:
 	var seasons = []
-	for i in all_cards.keys():
-		var card = all_cards[i]
+	for i in all_storage_cards.keys():
+		var card = all_storage_cards[i]
 		if seasons.find(card.Season) == -1:
 			seasons.append(card.Season)
 	return seasons
@@ -237,12 +234,15 @@ func on_player_choose_change_card(player:Player) -> void:
 			new_card_to_player.enable_click()
 
 
-func clear():
-	for card in all_cards:
+func destroy_all_scene_cards() -> void:
+	for card in all_scene_cards:
 		card.queue_free()
-	all_cards.clear()
+	all_scene_cards.clear()
+
+func clear():
+	destroy_all_scene_cards()
+	cardIDs.clear()
 	player_a.disconnect("player_choose_change_card", Callable(self, "on_player_choose_change_card"))
 	player_b.disconnect("player_choose_change_card", Callable(self, "on_player_choose_change_card"))
 	player_a = null
 	player_b = null
-	cardIDs.clear()

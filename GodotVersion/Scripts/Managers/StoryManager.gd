@@ -10,7 +10,6 @@ var completed_stories = []
 
 var DEBUG_SKIP_STORTY = false
 
-
 func _init():
 	if instance != null:
 		push_error("StoryManager already exists. Use StoryManager.get_instance() instead.")
@@ -51,8 +50,8 @@ func init_all_stories_state() -> void:
 			"Finished": false
 		}
 	create_card_to_story_map()
-	print()
 
+# 创建卡牌ID到故事ID的映射
 func create_card_to_story_map():
 	for story_id in stories:
 		var story = stories[story_id]
@@ -61,6 +60,7 @@ func create_card_to_story_map():
 				card_to_story_map[card_id] = []
 			card_to_story_map[card_id].append(story_id)
 
+# 获取与卡牌ID相关的故事
 func get_relent_stories(card_id:int) -> Array:
 	if card_id not in card_to_story_map:
 		return []
@@ -70,6 +70,7 @@ func get_relent_stories(card_id:int) -> Array:
 		relent_stories.append(stories[story_id])
 	return relent_stories
 
+# 检查玩家是否完成了某个故事
 func check_story_finish_by_cards_id(cards_id:Array) -> Array:
 	if DEBUG_SKIP_STORTY:
 		return []
@@ -101,6 +102,5 @@ func clear():
 	stories.clear()
 	card_to_story_map.clear()
 	completed_stories.clear()
-	DEBUG_SKIP_STORTY = true
 	instance = null
 	queue_free()

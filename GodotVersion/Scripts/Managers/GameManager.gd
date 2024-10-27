@@ -9,6 +9,7 @@ var ui_manager = UIManager.get_instance()
 
 var table_manager = TableManager.get_instance()
 var card_manager = CardManager.get_instance()
+var story_manager = StoryManager.get_instance()
 var input_manager: InputManager
 var animation_manager = AnimationManager.get_instance()
 
@@ -147,9 +148,9 @@ func start_new_game():
 	var skip_anim = true
 	if not skip_anim:
 		input_manager.block_input()
-		send_card_for_play(card_manager.all_cards)
+		send_card_for_play(card_manager.all_storage_cards)
 	else:
-		send_card_for_play_without_anim(card_manager.all_cards)
+		send_card_for_play_without_anim(card_manager.all_storage_cards)
 
 
 
@@ -381,9 +382,8 @@ func get_public_card_deal():
 func back_to_main():
 	ui_manager.close_ui("UI_Result")
 	
-	# load_start_scene()
-	# StoryManager.get_instance().clear()
-	# card_manager.clear()
+	story_manager.clear()
+	card_manager.clear()
 	# player_a.clear()
 	# player_b.clear()
 	# current_round = GameRound.WAITING
