@@ -31,7 +31,7 @@ var animation_timer: Timer
 
 var current_round = GameRound.WAITING
 
-const MAX_ROUND = 2
+const MAX_ROUND = 20
 var current_round_index:int = 0
 
 ############################################
