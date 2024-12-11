@@ -1,6 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://dri8ugxo2s8kr"]
+[gd_scene load_steps=3 format=3 uid="uid://dri8ugxo2s8kr"]
 
 [ext_resource type="Script" path="res://Scripts/UI/UI_Start.gd" id="1_lqrpw"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_oeamm"]
+font_size = 26
+font_color = Color(0, 0, 0, 1)
 
 [node name="UiStart" type="Control"]
 layout_mode = 3
@@ -26,30 +30,80 @@ offset_bottom = 752.0
 theme_override_font_sizes/font_size = 56
 text = "开始游戏"
 
+[node name="ColorRect2" type="ColorRect" parent="."]
+layout_mode = 0
+offset_left = 640.0
+offset_top = 48.0
+offset_right = 1296.0
+offset_bottom = 368.0
+color = Color(0.439216, 0.980392, 1, 1)
+
 [node name="CheckBox_1" type="CheckBox" parent="."]
 layout_mode = 0
-offset_left = 688.0
-offset_top = 208.0
-offset_right = 1066.0
-offset_bottom = 285.0
+offset_left = 896.265
+offset_top = 80.0
+offset_right = 1274.27
+offset_bottom = 157.0
+rotation = 0.00344713
+theme_override_colors/font_disabled_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 50
 text = "琴心剑魄今何在
 "
 
 [node name="CheckBox_2" type="CheckBox" parent="."]
 layout_mode = 0
-offset_left = 896.0
-offset_top = 320.0
-offset_right = 1274.0
-offset_bottom = 397.0
+offset_left = 896.265
+offset_top = 160.0
+offset_right = 1274.27
+offset_bottom = 237.0
+theme_override_colors/font_disabled_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 50
 text = "永夜初晗凝碧天"
 
 [node name="CheckBox_3" type="CheckBox" parent="."]
 layout_mode = 0
-offset_left = 680.0
-offset_top = 416.0
-offset_right = 1058.0
-offset_bottom = 493.0
+offset_left = 896.265
+offset_top = 237.0
+offset_right = 1274.27
+offset_bottom = 314.0
+theme_override_colors/font_disabled_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 50
 text = "梦付千秋星垂野"
+
+[node name="Label_ChooseCardStore" type="Label" parent="."]
+layout_mode = 0
+offset_left = 672.0
+offset_top = 144.0
+offset_right = 828.0
+offset_bottom = 272.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "选择游戏内容"
+label_settings = SubResource("LabelSettings_oeamm")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ColorRect3" type="ColorRect" parent="."]
+layout_mode = 0
+offset_left = 856.0
+offset_top = 48.0
+offset_right = 880.0
+offset_bottom = 368.0
+color = Color(0.35, 0.1365, 0.1365, 1)
