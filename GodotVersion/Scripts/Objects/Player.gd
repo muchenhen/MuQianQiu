@@ -253,6 +253,7 @@ func show_one_new_finished_story_anim_out_end():
 	var tree = GameManager.instance.get_tree()
 	var root = tree.get_root()
 	root.remove_child(current_sc_story_show)
+	UIManager.get_instance().destroy_ui("UI_StoryShow")
 	# 故事展示完毕，继续展示下一个故事
 	_show_next_story()
 
