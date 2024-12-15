@@ -38,6 +38,9 @@ var story_timer: Timer
 
 var current_sc_story_show: Node = null
 
+# ai agent
+var bind_ai_agent: AIAgent = null
+
 signal player_choose_card(Player)
 signal player_choose_change_card(Player)
 
@@ -93,7 +96,14 @@ func assign_player_hand_card_to_slot(card: Card, slot_index: int) -> void:
 	hand_cards[slot_index].is_empty = false
 	hand_cards[slot_index].card.position = hand_cards[slot_index].pos
 	hand_cards[slot_index].card.z_index = hand_cards[slot_index].zindex
+
 	card.connect("card_clicked", Callable(self, "on_card_clicked"))
+	# AI玩家卡牌不可点击
+	if self.is_ai_player():
+		print("AI玩家：", player_name, slot_index,"张卡牌不可点击")
+		hand_cards[slot_index].card.disable_click()
+	else:
+		hand_cards[slot_index].card.enable_click()
 
 func get_player_first_enpty_hand_card_index() -> int:
 	for i in hand_cards.keys():
@@ -294,3 +304,14 @@ func get_score() -> int:
 func clear():
 	score_ui.text = "当前分数：0"
 	player_score = 0
+
+
+func bind_ai_enable() -> void:
+	bind_ai_agent = AIAgent.new()
+	bind_ai_agent.bind_player(self)
+
+func is_ai_player() -> bool:
+	return bind_ai_agent != null
+
+func start_ai_round() -> void:
+	bind_ai_agent.start_ai_turn()

@@ -84,7 +84,10 @@ func on_player_choose_card(player:Player):
 	var season = player_current_choosing_card.Season
 	set_aim_season_hand_card_chooesd(season)
 	disable_all_hand_card_click()
-	enable_aim_season_hand_card_click(season)
+
+	# AI玩家，禁止点击
+	if not player.is_ai_player():		
+		enable_aim_season_hand_card_click(season)
 
 func set_all_hand_card_unchooesd() -> void:
 	for i in hand_cards.keys():
