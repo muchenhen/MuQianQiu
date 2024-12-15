@@ -87,6 +87,9 @@ func _ready():
 		# 初始化玩家
 		player_a.initialize("PlayerA", Player.PlayerPos.A)
 		player_b.initialize("PlayerB", Player.PlayerPos.B)
+		# 开启AI
+		player_b.bind_ai_enable()
+
 		public_deal.bind_players(player_a, player_b)
 		card_manager.bind_players(player_a, player_b)
 
@@ -147,7 +150,7 @@ func start_new_game():
 	card_manager.collect_public_deal_cards_pos(public_deal_cards_pos, public_deal_cards_rotation)
 
 	# 进入发牌流程 持续一段时间 结束后才能让玩家操作
-	var skip_anim = true
+	var skip_anim = false
 	if not skip_anim:
 		input_manager.block_input()
 		send_card_for_play(card_manager.all_storage_cards)
@@ -300,8 +303,15 @@ func change_to_a_round():
 	player_b.set_player_state(Player.PlayerState.WAITING)
 	player_b.set_all_hand_card_cannot_click()
 	player_a.set_player_state(Player.PlayerState.SELF_ROUND_UNCHOOSING)
-	player_a.set_all_hand_card_can_click()
+	# 调试单个季节
 	public_deal.set_all_card_one_season()
+
+	# AI玩家开始自己的回合
+	if player_a.is_ai_player():
+		player_a.start_ai_round()
+		return
+
+	player_a.set_all_hand_card_can_click()
 	if player_a.has_hand_card():
 		player_a.check_hand_card_season()
 
@@ -310,8 +320,15 @@ func change_to_b_round():
 	player_a.set_player_state(Player.PlayerState.WAITING)
 	player_a.set_all_hand_card_cannot_click()
 	player_b.set_player_state(Player.PlayerState.SELF_ROUND_UNCHOOSING)
-	player_b.set_all_hand_card_can_click()
+	# 调试单个季节
 	public_deal.set_all_card_one_season()
+
+	# AI玩家开始自己的回合
+	if player_b.is_ai_player():
+		player_b.start_ai_round()
+		return
+
+	player_b.set_all_hand_card_can_click()
 	if player_b.has_hand_card():
 		player_b.check_hand_card_season()
 
