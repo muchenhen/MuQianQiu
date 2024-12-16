@@ -106,7 +106,7 @@ func enter_simple_choose_hand_card_state() -> bool:
 # 选择公共区域的牌
 func enter_simple_choose_public_card_state() -> bool:
 	# 选择公共区域的牌
-	if current_player.player_state != Player.PlayerState.SELF_ROUND_CHOOSING_FINISHED:
+	if current_player.player_state != Player.PlayerState.SELF_ROUND_CHOOSING:
 		push_error("AIAgent: Player state error.", current_player.player_state)
 
 	var player_current_choosing_card = current_player.get_player_hand_card_by_id(current_player.current_choosing_card_id)
@@ -114,7 +114,7 @@ func enter_simple_choose_public_card_state() -> bool:
 	var public_card_deal = GameManager.instance.get_public_card_deal()
 	for i in public_card_deal.hand_cards.keys():
 		var card_info = public_card_deal.hand_cards[i]
-		if not card_info.is_empty:
+		if not card_info.isEmpty:
 			var public_card = card_info.card
 			if player_current_choosing_card.Season == public_card.Season:
 				# 选择这张卡牌
