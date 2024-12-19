@@ -94,6 +94,7 @@ func _ready():
 		card_manager.bind_players(player_a, player_b)
 
 		public_deal.connect("player_choose_public_card", Callable(self, "player_choose_public_card"))
+		public_deal.connect("common_suply_public_card", Callable(self, "on_suply_public_card"))
 
 		current_round = GameRound.WAITING
 		current_round_index = 0
@@ -276,6 +277,15 @@ func start_round():
 	# 重置当前轮次
 	change_round()
 
+func on_suply_public_card(type):
+	if type == "supply_end":
+		if current_round == GameRound.WAITING:
+			change_to_a_round()
+		elif current_round == GameRound.PLAYER_A:
+			change_to_b_round()
+		else:
+			change_to_a_round()
+
 func change_round():
 	current_round_index += 1
 	print("当前回合: ", current_round_index)
@@ -289,13 +299,6 @@ func change_round():
 
 	# 补充公共牌手牌
 	public_deal.supply_hand_card()
-
-	if current_round == GameRound.WAITING:
-		change_to_a_round()
-	elif current_round == GameRound.PLAYER_A:
-		change_to_b_round()
-	else:
-		change_to_a_round()
 
 
 func change_to_a_round():
@@ -369,9 +372,11 @@ func player_choose_public_card(player_choosing_card, public_choosing_card):
 	player.remove_hand_card(player_choosing_card)
 
 	# 延时anim_dutation + 0.1秒后继续
+	# fix bug: 延时未生效
 	var temp_timer = Timer.new()
 	get_tree().root.add_child(temp_timer )
 	temp_timer.start(anim_dutation + 0.1)
+	await temp_timer.timeout
 	
 	player.new_story_show_finished.connect(Callable(self, "show_new_finished_stories"))
 
