@@ -43,6 +43,7 @@ var bind_ai_agent: AIAgent = null
 
 signal player_choose_card(Player)
 signal player_choose_change_card(Player)
+signal player_state_changed(Player, PlayerState)
 
 # 新完成的故事展示完毕
 signal new_story_show_finished()
@@ -117,9 +118,13 @@ func get_player_hand_card_by_id(card_id: int) -> Card:
 			return hand_cards[i].card
 	return null
 
-func set_player_state(state: PlayerState) -> void:
+func set_player_state(state: PlayerState, bemit_state: bool = false) -> void:
 	player_state = state
 	print("当前玩家 ", player_name, " 状态: ", player_state)
+	# 发送信号
+	if bemit_state:
+		player_state_changed.emit(self, player_state)
+
 
 func on_card_clicked(card: Node) -> void:
 	if player_state == PlayerState.WAITING:
@@ -198,7 +203,7 @@ func check_hand_card_season() -> bool:
 		print("玩家 ", player_name, " 手牌中没有和公共区域相同季节的卡牌，需要换牌")
 		# 创建sc并展示
 		UIManager.get_instance().open_ui(("UI_PlayerChangeCard"))
-		set_player_state(PlayerState.SELF_ROUND_CHANGE_CARD)
+		set_player_state(PlayerState.SELF_ROUND_CHANGE_CARD, true)
 	else:
 		UIManager.get_instance().destroy_ui("UI_PlayerChangeCard")
 
@@ -296,6 +301,15 @@ func has_hand_card() -> bool:
 		if not hand_cards[i].is_empty:
 			return true
 	return false
+
+# 获取当前玩家的手牌下标
+func get_available_hand_cards() -> Array:
+	var card_indexes = []
+	for i in hand_cards.keys():
+		if not hand_cards[i].is_empty:
+			card_indexes.append(i)
+		
+	return card_indexes
 
 # 获取玩家分数
 func get_score() -> int:

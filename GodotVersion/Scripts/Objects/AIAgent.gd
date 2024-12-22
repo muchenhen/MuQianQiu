@@ -24,6 +24,7 @@ func set_level(level: int) -> void:
 
 func bind_player(player: Player) -> void:
 	current_player = player
+	current_player.connect("player_state_changed", Callable(self, "on_player_state_changed"))
 
 func common_operation() -> bool:
 	if current_player.has_hand_card():
@@ -51,7 +52,39 @@ func start_ai_turn() -> void:
 		AILevel.HARD:
 			select_hard_ai()
 
+
+func on_player_state_changed(player: Player, state: Player.PlayerState) -> void:
+	if state == Player.PlayerState.SELF_ROUND_CHANGE_CARD:
+		enter_change_card_state(player)
+	elif state == Player.PlayerState.SELF_ROUND_UNCHOOSING:
+		start_ai_turn()
+
+
+func enter_change_card_state(player: Player) -> void:
+	if self.current_player != player:
+		push_error("AIAgent: Player not binded.")
+		return
 	
+	# 检查玩家回合状态
+	if current_player.player_state!= Player.PlayerState.SELF_ROUND_CHANGE_CARD:
+		push_error("AIAgent: Player state error.", current_player.player_state)
+		return
+	
+	# 玩家选择了手牌, 等待一段时间, 然后选择公共区域的牌
+	await GameManager.instance.get_tree().create_timer(1).timeout
+
+	# 进入选卡状态：随机从手牌中选一张卡
+	var available_card_indexes = current_player.get_available_hand_cards()
+	var card_num = available_card_indexes.size()
+	var random_index = randi() % card_num
+	# 选择这张卡牌
+	var hand_card = current_player.hand_cards[available_card_indexes[random_index]].card
+	hand_card.print_card_info()
+	# 设置卡牌为选中状态
+	hand_card.change_card_chooesd()
+	# 发送选中信号
+	hand_card.card_clicked.emit(hand_card)
+
 ############################################################################################################
 # 简单AI: 
 # 从手牌堆从前往后顺序选择一张手牌，判断当前卡牌是否和公共牌堆有相同季节的卡牌，如果有则选择这张卡牌。

@@ -128,6 +128,9 @@ func start_new_game():
 	player_a.add_score(0)
 	player_b.add_score(0)
 
+	player_a.new_story_show_finished.connect(Callable(self, "show_new_finished_stories"))
+	player_b.new_story_show_finished.connect(Callable(self, "show_new_finished_stories"))
+
 	var cards_node = ui_main.get_node("Cards")
 	card_manager.create_cards_for_this_game(cards_node)
 
@@ -377,8 +380,6 @@ func player_choose_public_card(player_choosing_card, public_choosing_card):
 	get_tree().root.add_child(temp_timer )
 	temp_timer.start(anim_dutation + 0.1)
 	await temp_timer.timeout
-	
-	player.new_story_show_finished.connect(Callable(self, "show_new_finished_stories"))
 
 	player.check_finish_story()
 

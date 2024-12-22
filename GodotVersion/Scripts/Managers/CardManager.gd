@@ -165,8 +165,7 @@ func bind_players(p_a, p_b) -> void:
 # 获取牌库中所有牌的季节，季节不重复
 func get_storage_seasons() -> Array:
 	var seasons = []
-	for i in all_storage_cards.keys():
-		var card = all_storage_cards[i]
+	for card in all_storage_cards:
 		if seasons.find(card.Season) == -1:
 			seasons.append(card.Season)
 	return seasons
@@ -228,10 +227,17 @@ func on_player_choose_change_card(player:Player) -> void:
 		player.assign_player_hand_card_to_slot(new_card_to_player, new_card_slot_index)
 
 		var has_season:bool = player.check_hand_card_season()
-		if has_season:
-			player.set_player_state(Player.PlayerState.SELF_ROUND_UNCHOOSING)
-			player.update_self_card_z_index()
-			new_card_to_player.enable_click()
+		if not has_season:
+			push_error("Player has no hand card to choose.")
+			return
+
+		player.set_player_state(Player.PlayerState.SELF_ROUND_UNCHOOSING, true)
+
+		player.update_self_card_z_index()
+		if player.is_ai_player():
+			return
+
+		new_card_to_player.enable_click()
 
 
 func destroy_all_scene_cards() -> void:
