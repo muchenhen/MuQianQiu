@@ -222,6 +222,8 @@ func on_player_choose_change_card(player:Player) -> void:
 
 		# 将玩家的交还的卡放到公共区域
 		push_one_card(current_card_in_player)
+		player.recover_hand_card_free(current_card_in_player)
+
 		re_shuffle_all_cards()
 		# 将新的卡放到玩家手上
 		player.assign_player_hand_card_to_slot(new_card_to_player, new_card_slot_index)

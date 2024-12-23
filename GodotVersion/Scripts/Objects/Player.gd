@@ -106,6 +106,13 @@ func assign_player_hand_card_to_slot(card: Card, slot_index: int) -> void:
 	else:
 		hand_cards[slot_index].card.enable_click()
 
+# 恢复卡牌为牌堆中的卡牌
+func recover_hand_card_free(card: Card) -> void:
+	# 移除身上的事件
+	if card.is_connected("card_clicked", Callable(self, "on_card_clicked")):
+		card.disconnect("card_clicked", Callable(self, "on_card_clicked"))
+	# 其他TODO
+
 func get_player_first_enpty_hand_card_index() -> int:
 	for i in hand_cards.keys():
 		if hand_cards[i].is_empty:

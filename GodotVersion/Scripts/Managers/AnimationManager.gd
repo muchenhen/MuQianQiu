@@ -6,6 +6,9 @@ var animated_objects = {}
 
 static var instance: AnimationManager = null
 
+# 动画速度全局缩放因子，用于控制动画速度
+var anim_speed_scale = 2.0
+
 enum EaseType {
 	LINEAR,
 	EASE_IN,
@@ -30,7 +33,7 @@ func start_linear_movement_combined(
 	obj: Node, 
 	target_pos: Vector2, 
 	target_rotation: float, 
-	duration: float, 
+	duration: float = 1.0, 
 	ease_type: EaseType = EaseType.LINEAR, 
 	callback: Callable = Callable(), 
 	callback_args: Array = []
@@ -40,7 +43,7 @@ func start_linear_movement_combined(
 		"target_pos": target_pos,
 		"start_rotation": obj.rotation,
 		"target_rotation": target_rotation,
-		"duration": duration,
+		"duration": duration / anim_speed_scale,
 		"elapsed_time": 0,
 		"active": true,
 		"ease_type": ease_type,
@@ -48,11 +51,11 @@ func start_linear_movement_combined(
 		"callback_args": callback_args
 	})
 
-func start_linear_movement_pos(obj: Node, target: Vector2, duration: float, ease_type: EaseType = EaseType.LINEAR, callback: Callable = Callable(), callback_args: Array = []):
+func start_linear_movement_pos(obj: Node, target: Vector2, duration: float = 0.5, ease_type: EaseType = EaseType.LINEAR, callback: Callable = Callable(), callback_args: Array = []):
 	_add_animation(obj, "linear_movement_pos", {
 		"start_pos": obj.global_position,
 		"target": target,
-		"duration": duration,
+		"duration": duration / anim_speed_scale,
 		"elapsed_time": 0,
 		"active": true,
 		"ease_type": ease_type,
@@ -60,11 +63,11 @@ func start_linear_movement_pos(obj: Node, target: Vector2, duration: float, ease
 		"callback_args": callback_args
 	})
 
-func start_linear_movement_rotation(obj: Node, target: float, duration: float, ease_type: EaseType = EaseType.LINEAR, callback: Callable = Callable(), callback_args: Array = []):
+func start_linear_movement_rotation(obj: Node, target: float, duration: float = 0.5, ease_type: EaseType = EaseType.LINEAR, callback: Callable = Callable(), callback_args: Array = []):
 	_add_animation(obj, "linear_movement_rotation", {
 		"start_rotation": obj.rotation,
 		"target": target,
-		"duration": duration,
+		"duration": duration / anim_speed_scale,
 		"elapsed_time": 0,
 		"active": true,
 		"ease_type": ease_type,
@@ -83,11 +86,11 @@ func start_linear_movement_rotation(obj: Node, target: float, duration: float, e
 # @param ease_type 要应用于动画的缓动类型。默认为 EaseType.LINEAR。
 # @param callback 动画完成时要调用的可选 Callable。默认为空 Callable。
 # @param callback_args 传递给回调的可选参数数组。默认为空数组。
-func start_linear_alpha(obj: Node, target_alpha: float, duration: float, ease_type: EaseType = EaseType.LINEAR, callback: Callable = Callable(), callback_args: Array = []):
+func start_linear_alpha(obj: Node, target_alpha: float, duration: float = 0.5, ease_type: EaseType = EaseType.LINEAR, callback: Callable = Callable(), callback_args: Array = []):
 	_add_animation(obj, "linear_alpha", {
 		"start_alpha": obj.modulate.a,
 		"target_alpha": target_alpha,
-		"duration": duration,
+		"duration": duration / anim_speed_scale,
 		"elapsed_time": 0,
 		"active": true,
 		"ease_type": ease_type,

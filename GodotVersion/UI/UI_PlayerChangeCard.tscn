@@ -6,6 +6,7 @@ font_size = 57
 [node name="ScPlayerChangeCard" type="Node2D"]
 
 [node name="CardBox" type="ColorRect" parent="."]
+z_index = 999
 offset_top = 376.0
 offset_right = 1920.0
 offset_bottom = 704.0
