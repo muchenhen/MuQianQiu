@@ -28,6 +28,8 @@ var back_texture: Texture = null
 
 var input_priority: int = 0 : set = set_input_priority
 
+var card_skill_slot: CardSkill = null
+
 func set_input_priority(value: int) -> void:
 	input_priority = value
 	set_process_priority(input_priority)  # 更新处理优先级
