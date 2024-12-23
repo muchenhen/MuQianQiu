@@ -17,6 +17,7 @@ var debug_player_change_card:bool = false
 
 
 signal player_choose_public_card(player_choosing_card, public_choosing_card)
+signal common_suply_public_card(type)
 
 class PublicHandCardInfo:
 	var card: Node
@@ -84,7 +85,10 @@ func on_player_choose_card(player:Player):
 	var season = player_current_choosing_card.Season
 	set_aim_season_hand_card_chooesd(season)
 	disable_all_hand_card_click()
-	enable_aim_season_hand_card_click(season)
+
+	# AI玩家，禁止点击
+	if not player.is_ai_player():		
+		enable_aim_season_hand_card_click(season)
 
 func set_all_hand_card_unchooesd() -> void:
 	for i in hand_cards.keys():
@@ -136,12 +140,15 @@ func supply_hand_card():
 				card_info.card.disable_click()
 				card.update_card()
 				card.card_clicked.connect(Callable(self, "on_card_clicked"))
+				common_suply_public_card.emit("supply_end")
 			else:
 				# 播放动画
 				var taget_pos = card_info.position
 				var target_rotation = card_info.rotation
 				animation_manager.start_linear_movement_combined(card, taget_pos, target_rotation, 1, animation_manager.EaseType.EASE_IN_OUT, Callable(self, "supply_hand_card_anim_end"), [card])
 			return
+
+	common_suply_public_card.emit("supply_end")
 
 # 补充公共手牌的动画结束回调
 func supply_hand_card_anim_end(card: Card):
@@ -160,6 +167,9 @@ func supply_hand_card_anim_end(card: Card):
 	card.update_card()
 	card.card_clicked.connect(Callable(self, "on_card_clicked"))
 	print("补充公共手牌动画结束: ", card.ID)
+
+	# 动画结束后，发送公共区域补充牌的信号
+	common_suply_public_card.emit("supply_end")
 
 func set_aim_hand_card_empty(card) -> void:
 	for i in hand_cards.keys():

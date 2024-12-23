@@ -87,10 +87,14 @@ func _ready():
 		# 初始化玩家
 		player_a.initialize("PlayerA", Player.PlayerPos.A)
 		player_b.initialize("PlayerB", Player.PlayerPos.B)
+		# 开启AI
+		player_b.bind_ai_enable()
+
 		public_deal.bind_players(player_a, player_b)
 		card_manager.bind_players(player_a, player_b)
 
 		public_deal.connect("player_choose_public_card", Callable(self, "player_choose_public_card"))
+		public_deal.connect("common_suply_public_card", Callable(self, "on_suply_public_card"))
 
 		current_round = GameRound.WAITING
 		current_round_index = 0
@@ -124,6 +128,9 @@ func start_new_game():
 	player_a.add_score(0)
 	player_b.add_score(0)
 
+	player_a.new_story_show_finished.connect(Callable(self, "show_new_finished_stories"))
+	player_b.new_story_show_finished.connect(Callable(self, "show_new_finished_stories"))
+
 	var cards_node = ui_main.get_node("Cards")
 	card_manager.create_cards_for_this_game(cards_node)
 
@@ -147,7 +154,7 @@ func start_new_game():
 	card_manager.collect_public_deal_cards_pos(public_deal_cards_pos, public_deal_cards_rotation)
 
 	# 进入发牌流程 持续一段时间 结束后才能让玩家操作
-	var skip_anim = true
+	var skip_anim = false
 	if not skip_anim:
 		input_manager.block_input()
 		send_card_for_play(card_manager.all_storage_cards)
@@ -273,6 +280,15 @@ func start_round():
 	# 重置当前轮次
 	change_round()
 
+func on_suply_public_card(type):
+	if type == "supply_end":
+		if current_round == GameRound.WAITING:
+			change_to_a_round()
+		elif current_round == GameRound.PLAYER_A:
+			change_to_b_round()
+		else:
+			change_to_a_round()
+
 func change_round():
 	current_round_index += 1
 	print("当前回合: ", current_round_index)
@@ -287,21 +303,21 @@ func change_round():
 	# 补充公共牌手牌
 	public_deal.supply_hand_card()
 
-	if current_round == GameRound.WAITING:
-		change_to_a_round()
-	elif current_round == GameRound.PLAYER_A:
-		change_to_b_round()
-	else:
-		change_to_a_round()
-
 
 func change_to_a_round():
 	current_round = GameRound.PLAYER_A
 	player_b.set_player_state(Player.PlayerState.WAITING)
 	player_b.set_all_hand_card_cannot_click()
 	player_a.set_player_state(Player.PlayerState.SELF_ROUND_UNCHOOSING)
-	player_a.set_all_hand_card_can_click()
+	# 调试单个季节
 	public_deal.set_all_card_one_season()
+
+	# AI玩家开始自己的回合
+	if player_a.is_ai_player():
+		player_a.start_ai_round()
+		return
+
+	player_a.set_all_hand_card_can_click()
 	if player_a.has_hand_card():
 		player_a.check_hand_card_season()
 
@@ -310,8 +326,15 @@ func change_to_b_round():
 	player_a.set_player_state(Player.PlayerState.WAITING)
 	player_a.set_all_hand_card_cannot_click()
 	player_b.set_player_state(Player.PlayerState.SELF_ROUND_UNCHOOSING)
-	player_b.set_all_hand_card_can_click()
+	# 调试单个季节
 	public_deal.set_all_card_one_season()
+
+	# AI玩家开始自己的回合
+	if player_b.is_ai_player():
+		player_b.start_ai_round()
+		return
+
+	player_b.set_all_hand_card_can_click()
 	if player_b.has_hand_card():
 		player_b.check_hand_card_season()
 
@@ -352,11 +375,11 @@ func player_choose_public_card(player_choosing_card, public_choosing_card):
 	player.remove_hand_card(player_choosing_card)
 
 	# 延时anim_dutation + 0.1秒后继续
+	# fix bug: 延时未生效
 	var temp_timer = Timer.new()
 	get_tree().root.add_child(temp_timer )
 	temp_timer.start(anim_dutation + 0.1)
-	
-	player.new_story_show_finished.connect(Callable(self, "show_new_finished_stories"))
+	await temp_timer.timeout
 
 	player.check_finish_story()
 

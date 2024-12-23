@@ -38,8 +38,12 @@ var story_timer: Timer
 
 var current_sc_story_show: Node = null
 
+# ai agent
+var bind_ai_agent: AIAgent = null
+
 signal player_choose_card(Player)
 signal player_choose_change_card(Player)
+signal player_state_changed(Player, PlayerState)
 
 # 新完成的故事展示完毕
 signal new_story_show_finished()
@@ -93,7 +97,14 @@ func assign_player_hand_card_to_slot(card: Card, slot_index: int) -> void:
 	hand_cards[slot_index].is_empty = false
 	hand_cards[slot_index].card.position = hand_cards[slot_index].pos
 	hand_cards[slot_index].card.z_index = hand_cards[slot_index].zindex
+
 	card.connect("card_clicked", Callable(self, "on_card_clicked"))
+	# AI玩家卡牌不可点击
+	if self.is_ai_player():
+		print("AI玩家：", player_name, slot_index,"张卡牌不可点击")
+		hand_cards[slot_index].card.disable_click()
+	else:
+		hand_cards[slot_index].card.enable_click()
 
 func get_player_first_enpty_hand_card_index() -> int:
 	for i in hand_cards.keys():
@@ -107,9 +118,13 @@ func get_player_hand_card_by_id(card_id: int) -> Card:
 			return hand_cards[i].card
 	return null
 
-func set_player_state(state: PlayerState) -> void:
+func set_player_state(state: PlayerState, bemit_state: bool = false) -> void:
 	player_state = state
 	print("当前玩家 ", player_name, " 状态: ", player_state)
+	# 发送信号
+	if bemit_state:
+		player_state_changed.emit(self, player_state)
+
 
 func on_card_clicked(card: Node) -> void:
 	if player_state == PlayerState.WAITING:
@@ -188,7 +203,7 @@ func check_hand_card_season() -> bool:
 		print("玩家 ", player_name, " 手牌中没有和公共区域相同季节的卡牌，需要换牌")
 		# 创建sc并展示
 		UIManager.get_instance().open_ui(("UI_PlayerChangeCard"))
-		set_player_state(PlayerState.SELF_ROUND_CHANGE_CARD)
+		set_player_state(PlayerState.SELF_ROUND_CHANGE_CARD, true)
 	else:
 		UIManager.get_instance().destroy_ui("UI_PlayerChangeCard")
 
@@ -287,6 +302,15 @@ func has_hand_card() -> bool:
 			return true
 	return false
 
+# 获取当前玩家的手牌下标
+func get_available_hand_cards() -> Array:
+	var card_indexes = []
+	for i in hand_cards.keys():
+		if not hand_cards[i].is_empty:
+			card_indexes.append(i)
+		
+	return card_indexes
+
 # 获取玩家分数
 func get_score() -> int:
 	return player_score
@@ -294,3 +318,14 @@ func get_score() -> int:
 func clear():
 	score_ui.text = "当前分数：0"
 	player_score = 0
+
+
+func bind_ai_enable() -> void:
+	bind_ai_agent = AIAgent.new()
+	bind_ai_agent.bind_player(self)
+
+func is_ai_player() -> bool:
+	return bind_ai_agent != null
+
+func start_ai_round() -> void:
+	bind_ai_agent.start_ai_turn()

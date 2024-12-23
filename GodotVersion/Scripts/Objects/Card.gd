@@ -65,11 +65,14 @@ func update_card_info(card_id, card_info) -> void:
 	Special = card_info["Special"]
 	update_card()
 
-func _on_card_clicked() -> void:
+func print_card_info() -> void:
 	# 打印的时候去掉换行符
 	var debug_describe = Describe.replace("\n", "")
 	# 打印卡牌所有信息
 	print("Card clicked: ", Name, " ID: ", ID, " Type: ", Type, " Score: ", Score, " Season: ", Season, " Describe: ", debug_describe, " BaseID: ", BaseID, " Special: ", Special, " IsEnableClick: ", is_enable_click)
+
+func _on_card_clicked() -> void:
+	print_card_info()
 	if not is_enable_click:
 		print_debug("Card is not enable to click.")
 		return
