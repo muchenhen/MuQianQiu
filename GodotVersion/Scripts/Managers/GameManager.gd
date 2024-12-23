@@ -12,6 +12,7 @@ var card_manager = CardManager.get_instance()
 var story_manager = StoryManager.get_instance()
 var input_manager: InputManager
 var animation_manager = AnimationManager.get_instance()
+var audio_manger = AudioManager.get_instance()
 
 var is_open_first:bool = false
 var is_open_second:bool = false
@@ -84,6 +85,8 @@ func _ready():
 		animation_timer.connect("timeout", Callable(self, "animate_next_card"))
 		add_child(animation_timer)
 
+		add_child(audio_manger)
+
 		# 初始化玩家
 		player_a.initialize("PlayerA", Player.PlayerPos.A)
 		player_b.initialize("PlayerB", Player.PlayerPos.B)
@@ -107,6 +110,7 @@ func _ready():
 # 开始新游戏
 func start_new_game():
 	print("开始新游戏")
+	AudioManager.get_instance().play_bgm("千秋")
 	ui_manager.destroy_ui("UI_Start")
 
 	var choosed_versions = []
