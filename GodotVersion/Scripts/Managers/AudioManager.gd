@@ -6,13 +6,13 @@ class_name AudioManager
 # 单例模式
 static var instance: AudioManager = null
 
-static var audio_folder:String = "res://Audios/"
-static var audio_bgm_folder:String = "res://Audios/BGM/"
+static var audio_folder: String = "res://Audios/"
+static var audio_bgm_folder: String = "res://Audios/BGM/"
 
 # 音频播放器节点
 var bgm_player: AudioStreamPlayer = null
 var sfx_players: Array[AudioStreamPlayer] = []
-const MAX_SFX_PLAYERS := 8  # 最大同时播放的音效数量
+const MAX_SFX_PLAYERS := 8 # 最大同时播放的音效数量
 
 # 音量控制
 var bgm_volume: float = 1.0
@@ -30,7 +30,7 @@ func _init() -> void:
 	bgm_player.name = "BGMPlayer"
 	add_child(bgm_player)
 	# 初始化SFX播放器池
-	sfx_players.clear()  # 确保数组为空
+	sfx_players.clear() # 确保数组为空
 	for i in MAX_SFX_PLAYERS:
 		var player := AudioStreamPlayer.new()
 		sfx_players.append(player)
@@ -117,6 +117,7 @@ func play_story_sfx(story_id: String) -> void:
 func play_sfx(stream: AudioStream, volume: float = 1.0) -> void:
 	var player := _get_available_sfx_player()
 	if player == null:
+		push_error("没有可用的音效播放器")
 		return
 	
 	player.stream = stream
