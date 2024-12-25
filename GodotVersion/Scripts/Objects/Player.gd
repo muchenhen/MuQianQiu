@@ -264,6 +264,9 @@ func show_one_new_finished_story(story):
 		current_sc_story_show.add_card(card)
 	current_sc_story_show.layout_children()
 	AnimationManager.get_instance().start_linear_alpha(current_sc_story_show, 1, 0.5, AnimationManager.EaseType.LINEAR, Callable(self, "show_one_new_finished_story_anim_in_end"))
+	# 播放故事对应的音频
+	var audio_id = story["AudioID"]
+	AudioManager.get_instance().play_story_sfx(audio_id)
 
 func show_one_new_finished_story_anim_in_end():
 	# 0.5秒后开始消失动画
