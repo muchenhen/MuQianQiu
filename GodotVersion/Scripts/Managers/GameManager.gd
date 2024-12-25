@@ -75,7 +75,7 @@ func _ready():
 		ui_manager.register_ui_element("UI_Start", "res://UI/UI_Start.tscn")
 		ui_manager.register_ui_element("UI_StoryShow", "res://UI/UI_StoryShow.tscn")
 
-		add_child(animation_manager)
+		add_child(animation_manager, true)
 
 		input_manager = InputManager.new()
 		add_child(input_manager)
