@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://dri8ugxo2s8kr"]
+[gd_scene load_steps=8 format=3 uid="uid://dri8ugxo2s8kr"]
 
 [ext_resource type="Script" path="res://Scripts/UI/UI_Start.gd" id="1_lqrpw"]
 [ext_resource type="Texture2D" uid="uid://bm2itb8y3330b" path="res://Textures/MainBG.png" id="2_hd5da"]
 [ext_resource type="Texture2D" uid="uid://ef74d6323j7n" path="res://Textures/gujian1_logo.png" id="3_3i3ag"]
+[ext_resource type="Script" path="res://Scripts/Objects/CheckButton.gd" id="4_26oo8"]
 [ext_resource type="Texture2D" uid="uid://c1aaiwfgjfm6u" path="res://Textures/gujian2_logo.png" id="4_elyav"]
 [ext_resource type="Texture2D" uid="uid://cpoyon0je0and" path="res://Textures/gujian3_logo.png" id="5_aesdl"]
 
@@ -112,17 +113,29 @@ offset_right = 880.0
 offset_bottom = 368.0
 color = Color(0.35, 0.1365, 0.1365, 1)
 
-[node name="Gujian1Logo" type="Sprite2D" parent="."]
-position = Vector2(484, 83.25)
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("3_3i3ag")
-
 [node name="Gujian2Logo" type="Sprite2D" parent="."]
-position = Vector2(476, 195.25)
+position = Vector2(256, 576)
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("4_elyav")
 
 [node name="Gujian3Logo" type="Sprite2D" parent="."]
-position = Vector2(484, 315.25)
+position = Vector2(256, 800)
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("5_aesdl")
+
+[node name="TextureButton" type="TextureButton" parent="."]
+self_modulate = Color(0.3, 0.3, 0.3, 0.5)
+layout_mode = 0
+offset_left = 56.0
+offset_top = 232.0
+offset_right = 695.0
+offset_bottom = 469.0
+scale = Vector2(0.5, 0.5)
+texture_normal = ExtResource("3_3i3ag")
+texture_pressed = ExtResource("3_3i3ag")
+texture_hover = ExtResource("3_3i3ag")
+texture_disabled = ExtResource("3_3i3ag")
+texture_focused = ExtResource("3_3i3ag")
+script = ExtResource("4_26oo8")
+button_texture = ExtResource("3_3i3ag")
+button_scale = Vector2(0.5, 0.5)
