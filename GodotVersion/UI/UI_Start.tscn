@@ -37,68 +37,18 @@ metadata/_edit_lock_ = true
 
 [node name="ColorRect2" type="ColorRect" parent="."]
 layout_mode = 0
-offset_left = 640.0
-offset_top = 48.0
-offset_right = 1296.0
-offset_bottom = 368.0
+offset_left = 576.0
+offset_top = 64.0
+offset_right = 1344.0
+offset_bottom = 512.0
 color = Color(0.227451, 0.196078, 0.14902, 1)
-
-[node name="CheckBox_1" type="CheckBox" parent="."]
-layout_mode = 0
-offset_left = 896.265
-offset_top = 80.0
-offset_right = 1274.27
-offset_bottom = 157.0
-rotation = 0.00344713
-theme_override_colors/font_disabled_color = Color(0, 0, 0, 1)
-theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
-theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 50
-text = "琴心剑魄今何在
-"
-
-[node name="CheckBox_2" type="CheckBox" parent="."]
-layout_mode = 0
-offset_left = 896.265
-offset_top = 160.0
-offset_right = 1274.27
-offset_bottom = 237.0
-theme_override_colors/font_disabled_color = Color(0, 0, 0, 1)
-theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
-theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 50
-text = "永夜初晗凝碧天"
-
-[node name="CheckBox_3" type="CheckBox" parent="."]
-layout_mode = 0
-offset_left = 896.265
-offset_top = 237.0
-offset_right = 1274.27
-offset_bottom = 314.0
-theme_override_colors/font_disabled_color = Color(0, 0, 0, 1)
-theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
-theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 50
-text = "梦付千秋星垂野"
 
 [node name="Label_ChooseCardStore" type="Label" parent="."]
 layout_mode = 0
-offset_left = 672.0
-offset_top = 144.0
-offset_right = 828.0
-offset_bottom = 272.0
+offset_left = 632.0
+offset_top = 224.0
+offset_right = 788.0
+offset_bottom = 352.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "选择游戏内容"
 label_settings = SubResource("LabelSettings_oeamm")
@@ -107,29 +57,19 @@ vertical_alignment = 1
 
 [node name="ColorRect3" type="ColorRect" parent="."]
 layout_mode = 0
-offset_left = 856.0
-offset_top = 48.0
-offset_right = 880.0
-offset_bottom = 368.0
+offset_left = 832.0
+offset_top = 64.0
+offset_right = 864.0
+offset_bottom = 512.0
 color = Color(0.35, 0.1365, 0.1365, 1)
 
-[node name="Gujian2Logo" type="Sprite2D" parent="."]
-position = Vector2(256, 576)
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("4_elyav")
-
-[node name="Gujian3Logo" type="Sprite2D" parent="."]
-position = Vector2(256, 800)
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("5_aesdl")
-
-[node name="TextureButton" type="TextureButton" parent="."]
-self_modulate = Color(0.3, 0.3, 0.3, 0.5)
+[node name="Gujian1" type="TextureButton" parent="."]
+self_modulate = Color(0.5, 0.5, 0.5, 1)
 layout_mode = 0
-offset_left = 56.0
-offset_top = 232.0
-offset_right = 695.0
-offset_bottom = 469.0
+offset_left = 928.0
+offset_top = 64.0
+offset_right = 1616.0
+offset_bottom = 341.0
 scale = Vector2(0.5, 0.5)
 texture_normal = ExtResource("3_3i3ag")
 texture_pressed = ExtResource("3_3i3ag")
@@ -139,3 +79,40 @@ texture_focused = ExtResource("3_3i3ag")
 script = ExtResource("4_26oo8")
 button_texture = ExtResource("3_3i3ag")
 button_scale = Vector2(0.5, 0.5)
+unchecked_color = Color(0.5, 0.5, 0.5, 1)
+
+[node name="Gujian2" type="TextureButton" parent="."]
+self_modulate = Color(0.5, 0.5, 0.5, 1)
+layout_mode = 0
+offset_left = 928.0
+offset_top = 216.0
+offset_right = 1616.0
+offset_bottom = 493.0
+scale = Vector2(0.5, 0.5)
+texture_normal = ExtResource("4_elyav")
+texture_pressed = ExtResource("4_elyav")
+texture_hover = ExtResource("4_elyav")
+texture_disabled = ExtResource("4_elyav")
+texture_focused = ExtResource("4_elyav")
+script = ExtResource("4_26oo8")
+button_texture = ExtResource("4_elyav")
+button_scale = Vector2(0.5, 0.5)
+unchecked_color = Color(0.5, 0.5, 0.5, 1)
+
+[node name="Gujian3" type="TextureButton" parent="."]
+self_modulate = Color(0.5, 0.5, 0.5, 1)
+layout_mode = 0
+offset_left = 928.0
+offset_top = 368.0
+offset_right = 1616.0
+offset_bottom = 645.0
+scale = Vector2(0.5, 0.5)
+texture_normal = ExtResource("5_aesdl")
+texture_pressed = ExtResource("5_aesdl")
+texture_hover = ExtResource("5_aesdl")
+texture_disabled = ExtResource("5_aesdl")
+texture_focused = ExtResource("5_aesdl")
+script = ExtResource("4_26oo8")
+button_texture = ExtResource("5_aesdl")
+button_scale = Vector2(0.5, 0.5)
+unchecked_color = Color(0.5, 0.5, 0.5, 1)

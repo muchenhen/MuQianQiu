@@ -3,7 +3,7 @@ extends TextureButton
 
 signal state_changed(is_checked: bool)
 
-enum State {UNINIT, CHECKED, UNCHECKED}
+enum State {CHECKED, UNCHECKED}
 
 var _button_texture: Texture2D = null
 
@@ -26,10 +26,9 @@ var _button_scale: Vector2 = Vector2.ONE
 		return _button_scale
 			
 @export var checked_color: Color = Color.WHITE
-@export var unchecked_color: Color = Color(0.5, 0.5, 0.5, 1.0)
-@export var uninit_color: Color = Color(0.3, 0.3, 0.3, 0.5)
+@export var unchecked_color: Color = Color(0.6, 0.6, 0.6, 1.0)
 
-var current_state: State = State.UNINIT
+var current_state: State = State.UNCHECKED
 
 func _update_textures():
 	if _button_texture:
@@ -48,15 +47,13 @@ func _enter_tree():
 func _ready():
 	scale = button_scale
 	if _button_texture:
-		self_modulate = uninit_color
+		self_modulate = unchecked_color
 	if not Engine.is_editor_hint():
 		pressed.connect(_on_pressed)
 	
 
 func _on_pressed():
 	match current_state:
-		State.UNINIT:
-			set_state(State.CHECKED)
 		State.CHECKED:
 			set_state(State.UNCHECKED)
 			state_changed.emit(false)
@@ -67,8 +64,6 @@ func _on_pressed():
 func set_state(new_state: State):
 	current_state = new_state
 	match current_state:
-		State.UNINIT:
-			self_modulate = uninit_color
 		State.CHECKED:
 			self_modulate = checked_color
 		State.UNCHECKED:
