@@ -1,21 +1,16 @@
-[gd_scene load_steps=2 format=3 uid="uid://8p14juupi406"]
+[gd_scene load_steps=3 format=3 uid="uid://8p14juupi406"]
 
+[ext_resource type="Texture2D" uid="uid://bm2itb8y3330b" path="res://Textures/MainBG.png" id="1_71xrv"]
 [ext_resource type="PackedScene" uid="uid://b6vosary0xtcn" path="res://Scripts/Objects/Card.tscn" id="2_immq1"]
 
 [node name="Main" type="Node2D"]
 metadata/_edit_horizontal_guides_ = [360.0, 720.0]
 metadata/_edit_vertical_guides_ = [320.0, 1600.0]
 
-[node name="BGColor" type="ColorRect" parent="."]
-custom_minimum_size = Vector2(1920, 1080)
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_right = 1920.0
-offset_bottom = 1080.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.745098, 0.647059, 0.32549, 1)
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(960, 540)
+scale = Vector2(1.02, 1.02)
+texture = ExtResource("1_71xrv")
 metadata/_edit_lock_ = true
 
 [node name="Camera2D" type="Camera2D" parent="."]
