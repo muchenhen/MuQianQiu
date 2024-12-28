@@ -40,6 +40,7 @@ func _init() -> void:
 	bgm_volume = 1.0
 	sfx_volume = 1.0
 
+	
 
 # 获取单例实例
 static func get_instance() -> AudioManager:
@@ -51,66 +52,31 @@ static func get_instance() -> AudioManager:
 # 播放背景音乐
 # - bgm_file_name: 背景音乐文件名
 # - volume: 音量 (默认值为1.0)
-func play_bgm(bgm_file_name: String, volume: float = 1.0) -> void:
-	var bgm_audio_file = audio_bgm_folder + bgm_file_name + ".ogg"
+func play_bgm(bgm_name: String, volume: float = 1.0) -> void:
+	var bgm_path:String = audio_bgm_folder + bgm_name + ".wav"
 	
-	# 验证文件是否存在
-	if not FileAccess.file_exists(bgm_audio_file):
-		push_error("BGM文件不存在: " + bgm_audio_file)
+	print("BGM路径:", bgm_path)
+	var audio = load(bgm_path)
+	if not audio:
+		push_error("BGM不存在: " + bgm_name)
 		return
-		
-	# 添加错误处理
-	var stream = load(bgm_audio_file)
-	if stream == null:
-		push_error("无法加载BGM文件: " + bgm_audio_file)
-		return
-		
-	# 类型检查
-	if not (stream is AudioStream):
-		push_error("加载的文件不是音频文件: " + bgm_audio_file)
-		return
-		
-	bgm_player.stream = stream
-
-	# 调试音量设置
-	print("当前BGM音量设置:")
-	print("- 输入音量:", volume)
-	print("- bgm_volume:", bgm_volume)
-	print("- 最终音量(db):", linear_to_db(volume * bgm_volume))
 	
-	# 确保音量不为静音
-	if volume * bgm_volume <= 0:
-		push_warning("BGM音量为0或负值")
-	
-	# 设置音量并播放
+	bgm_player.stream = audio
 	bgm_player.volume_db = linear_to_db(volume * bgm_volume)
-	
-	# 确保没有静音
 	bgm_player.stream_paused = false
-	
-	# 验证AudioBus设置
-	if AudioServer.is_bus_mute(AudioServer.get_bus_index("Master")):
-		push_warning("主音频总线已静音")
-	
 	bgm_player.play()
-	
-	# 播放状态验证
+
 	print("BGM播放状态:", bgm_player.playing)
 	print("当前播放位置:", bgm_player.get_playback_position())
 
 
-func print_current_bgm_state():
-	print("当前正在播放的BGM:", bgm_player.stream)
-	print("- 播放状态:", bgm_player.playing)
-	print("当前BGM音量设置:")
-	print("- bgm_volume:", bgm_volume)
-
-
 # 播放故事音效
 func play_story_sfx(story_id: String) -> void:
-	var story_audio_file = audio_folder + story_id + ".wav"
-	var stream := load(story_audio_file) as AudioStream
-	play_sfx(stream)
+	var audio = load(audio_folder + story_id + ".wav")
+	if not audio:
+		push_error("音效不存在: " + story_id)
+		return
+	play_sfx(audio)
 
 
 # 播放音效

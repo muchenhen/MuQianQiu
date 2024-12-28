@@ -110,7 +110,7 @@ func _ready():
 # 开始新游戏
 func start_new_game():
 	print("开始新游戏")
-	AudioManager.get_instance().play_bgm("千秋")
+	AudioManager.get_instance().play_bgm("QianQiu")
 	ui_manager.destroy_ui("UI_Start")
 
 	var choosed_versions = []

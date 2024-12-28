@@ -9,6 +9,17 @@ func _ready():
 	if not Engine.is_editor_hint():
 		layout_items()
 
+
+func _process(_delta: float) -> void:
+	# 只在编辑器中运行
+	if not Engine.is_editor_hint():
+		return
+		
+	# 这里是编辑器中的tick逻辑
+	if auto_layout:
+		layout_items()
+
+
 func layout_items():
 	if not auto_layout and Engine.is_editor_hint():
 		return

@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://bsjufb64q25nc"]
+[gd_scene load_steps=4 format=3 uid="uid://bsjufb64q25nc"]
 
 [ext_resource type="Script" path="res://Scripts/UI/UI_StoryShow.gd" id="1_yhrfm"]
 [ext_resource type="Script" path="res://Scripts/Objects/HorizontalBox.gd" id="2_3hl4a"]
+[ext_resource type="PackedScene" uid="uid://b6vosary0xtcn" path="res://Scripts/Objects/Card.tscn" id="3_dbdpt"]
 
 [node name="ScStoryShow" type="Node2D"]
 script = ExtResource("1_yhrfm")
@@ -12,3 +13,10 @@ offset_right = 1920.0
 offset_bottom = 704.0
 color = Color(0.0627451, 0.0627451, 0.0627451, 0.490196)
 script = ExtResource("2_3hl4a")
+
+[node name="Card" parent="CardBox" instance=ExtResource("3_dbdpt")]
+layout_mode = 0
+offset_left = 864.0
+offset_top = 36.0
+offset_right = 1056.0
+offset_bottom = 292.0
