@@ -244,6 +244,7 @@ func show_one_new_finished_story(story):
 	current_sc_story_show.modulate.a = 0
 	current_sc_story_show.visible = true
 	current_sc_story_show.z_index = 999
+	current_sc_story_show.clear_all_cards()
 	# 将sc添加到最上层
 	var tree = GameManager.instance.get_tree()
 	var root = tree.get_root()
