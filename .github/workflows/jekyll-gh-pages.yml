@@ -3,8 +3,11 @@ name: Deploy Jekyll with GitHub Pages dependencies preinstalled
 
 on:
   # Runs on pushes targeting the default branch
+  # 当指定文件夹有变更时触发
   push:
-    branches: ["main"]
+    paths:
+      - 'GodotVersion/Packages/web/**'
+    branches: [ "main" ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
