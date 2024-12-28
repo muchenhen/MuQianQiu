@@ -1,14 +1,17 @@
-[gd_scene load_steps=8 format=3 uid="uid://dri8ugxo2s8kr"]
+[gd_scene load_steps=9 format=3 uid="uid://dri8ugxo2s8kr"]
 
 [ext_resource type="Script" path="res://Scripts/UI/UI_Start.gd" id="1_lqrpw"]
 [ext_resource type="Texture2D" uid="uid://bm2itb8y3330b" path="res://Textures/MainBG.png" id="2_hd5da"]
 [ext_resource type="Texture2D" uid="uid://ef74d6323j7n" path="res://Textures/gujian1_logo.png" id="3_3i3ag"]
+[ext_resource type="FontFile" uid="uid://cgqf6jr2l5srf" path="res://Font/SourceHanSerifSC-Regular-simplified.otf" id="3_s0uod"]
 [ext_resource type="Script" path="res://Scripts/Objects/CheckButton.gd" id="4_26oo8"]
 [ext_resource type="Texture2D" uid="uid://c1aaiwfgjfm6u" path="res://Textures/gujian2_logo.png" id="4_elyav"]
 [ext_resource type="Texture2D" uid="uid://cpoyon0je0and" path="res://Textures/gujian3_logo.png" id="5_aesdl"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_oeamm"]
+font = ExtResource("3_s0uod")
 font_size = 26
+outline_size = 2
 
 [node name="UiStart" type="Control"]
 layout_mode = 3
@@ -31,9 +34,11 @@ offset_left = 680.0
 offset_top = 584.0
 offset_right = 1264.0
 offset_bottom = 752.0
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 2
+theme_override_fonts/font = ExtResource("3_s0uod")
 theme_override_font_sizes/font_size = 56
 text = "开始游戏"
-metadata/_edit_lock_ = true
 
 [node name="ColorRect2" type="ColorRect" parent="."]
 layout_mode = 0

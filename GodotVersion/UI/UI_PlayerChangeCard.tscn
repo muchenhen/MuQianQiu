@@ -1,7 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://bm38hiid552yv"]
+[gd_scene load_steps=3 format=3 uid="uid://bm38hiid552yv"]
+
+[ext_resource type="FontFile" uid="uid://cgqf6jr2l5srf" path="res://Font/SourceHanSerifSC-Regular-simplified.otf" id="1_eahsl"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_tlkrg"]
+font = ExtResource("1_eahsl")
 font_size = 57
+outline_size = 5
 
 [node name="ScPlayerChangeCard" type="Node2D"]
 

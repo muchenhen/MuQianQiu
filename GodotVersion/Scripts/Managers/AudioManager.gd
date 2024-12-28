@@ -53,7 +53,7 @@ static func get_instance() -> AudioManager:
 # - bgm_file_name: 背景音乐文件名
 # - volume: 音量 (默认值为1.0)
 func play_bgm(bgm_name: String, volume: float = 1.0) -> void:
-	var bgm_path:String = audio_bgm_folder + bgm_name + ".wav"
+	var bgm_path:String = audio_bgm_folder + bgm_name + ".mp3"
 	
 	print("BGM路径:", bgm_path)
 	var audio = load(bgm_path)
@@ -72,7 +72,7 @@ func play_bgm(bgm_name: String, volume: float = 1.0) -> void:
 
 # 播放故事音效
 func play_story_sfx(story_id: String) -> void:
-	var audio = load(audio_folder + story_id + ".wav")
+	var audio = load(audio_folder + story_id + ".mp3")
 	if not audio:
 		push_error("音效不存在: " + story_id)
 		return
