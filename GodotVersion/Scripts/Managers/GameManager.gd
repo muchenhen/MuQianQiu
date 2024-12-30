@@ -239,6 +239,7 @@ func animate_next_card():
 		var card = card_data["card"]
 		var position = card_data["position"]
 
+		print("发牌动画 ", card.ID, " 位置 ", card.global_position, "目标： ", card.position)
 		animation_manager.start_linear_movement_pos(card, position, 0.6, animation_manager.EaseType.EASE_IN_OUT, Callable(self, "send_card_anim_end"), [card])
 		
 		if "rotation" in card_data:

@@ -95,7 +95,7 @@ func assign_player_hand_card_to_slot(card: Card, slot_index: int) -> void:
 	hand_cards[slot_index].card = card
 	hand_cards[slot_index].slot_index = slot_index
 	hand_cards[slot_index].is_empty = false
-	hand_cards[slot_index].card.position = hand_cards[slot_index].pos
+	# hand_cards[slot_index].card.position = hand_cards[slot_index].pos
 	hand_cards[slot_index].card.z_index = hand_cards[slot_index].zindex
 
 	card.connect("card_clicked", Callable(self, "on_card_clicked"))
