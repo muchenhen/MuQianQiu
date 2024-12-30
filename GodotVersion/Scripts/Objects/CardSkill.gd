@@ -4,15 +4,15 @@ class_name CardSkill
 
 var card_skill_id: int = 0
 
-enum SKILL_TYPE{
-    NORMAL,
-    SPECIAL,
-    PASSIVE
-}
-
-enum SKILL_EFFECT{
-    NORMAL,
-    SPECIAL
+enum SKILL_TYPE {
+    DISABLE_SKILL,# 禁用技能
+    GUARANTEE_APPEAR, # 保证出现
+    INCREASE_APPEAR, # 增加出现概率
+    ADD_SCORE, # 增加分数
+    COPY_SKILL, # 复制技能
+    EXCHANGE_CARD, # 交换卡牌
+    OPEN_OPPONENT_HAND, # 翻开对手的手牌
+    EXCHANGE_DISABLE_SKILL, # 交换后禁用技能
 }
 
 func _init(skill_id: int):
@@ -37,22 +37,34 @@ func get_skill_effect() -> String:
     return "技能效果"
 
 
-# 技能触发
-func trigger_skill() -> void:
+# 触发技能：禁用技能
+func trigger_DISABLE_SKILL() -> void:
     pass
 
-# 技能效果A
-func trigger_skill_effect_A() -> void:
+# 触发技能：保证出现
+func trigger_GUARANTEE_APPEAR() -> void:
     pass
 
-func trigger_skill_effect_B() -> void:
+# 触发技能：增加出现概率
+func trigger_INCREASE_APPEAR() -> void:
     pass
 
-func trigger_skill_effect_C() -> void:
+# 触发技能：增加分数
+func trigger_ADD_SCORE() -> void:
     pass
 
-func trigger_skill_effect_D() -> void:
+# 触发技能：复制技能
+func trigger_COPY_SKILL() -> void:
     pass
 
-func trigger_skill_effect_E() -> void:
+# 触发技能：交换卡牌
+func trigger_EXCHANGE_CARD() -> void:
+    pass
+
+# 触发技能：翻开对手的手牌
+func trigger_OPEN_OPPONENT_HAND() -> void:
+    pass
+
+# 触发技能：交换后禁用技能
+func trigger_EXCHANGE_DISABLE_SKILL() -> void:
     pass

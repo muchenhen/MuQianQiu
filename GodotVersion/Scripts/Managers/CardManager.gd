@@ -38,6 +38,8 @@ var all_scene_cards = []
 var all_storage_cards = []
 var cardIDs = []
 
+var skill_card_map = {}
+
 func _init():
 	if instance == null:
 		print("CardManager already exists. Use CardManager.get_instance() instead.")
@@ -79,6 +81,26 @@ func collect_cardIDs_for_this_game(types:Array) -> void:
 
 func shuffle_cardIDs() -> void:
 	cardIDs.shuffle()
+
+# 创建技能牌的映射
+func create_skill_card_map():
+	skill_card_map = {}
+	var skills = tableManager.get_table("Skills")
+	for skill_id in skills.keys():
+		var skill_info = skills[skill_id]
+		var card_id = skill_info["CardID"]
+		skill_card_map[card_id] = skill_info
+
+	for card_id in cardIDs:
+		var card_info = tableManager.get_row("Cards", card_id)
+		if card_info["Special"]:
+			skill_card_map[card_id] = card_info
+	return skill_card_map
+
+# 检查卡牌是否是技能牌目标
+func check_card_is_skill(card_id:int) -> bool:
+	return skill_card_map.has(card_id)
+
 
 func create_cards_for_this_game(cards_node:Node) -> void:
 	for card_id in cardIDs:

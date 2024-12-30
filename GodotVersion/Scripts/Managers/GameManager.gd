@@ -68,12 +68,7 @@ func get_checked_count():
 func _ready():
 	if instance == null:
 		instance = self
-		ui_manager.set_ui_tree_root(instance)
-		ui_manager.register_ui_element("UI_Main", "res://UI/UI_Main.tscn")
-		ui_manager.register_ui_element("UI_PlayerChangeCard", "res://UI/UI_PlayerChangeCard.tscn")
-		ui_manager.register_ui_element("UI_Result", "res://UI/UI_Result.tscn")
-		ui_manager.register_ui_element("UI_Start", "res://UI/UI_Start.tscn")
-		ui_manager.register_ui_element("UI_StoryShow", "res://UI/UI_StoryShow.tscn")
+		ui_manager.set_ui_tree_root(instance)		
 
 		add_child(animation_manager, true)
 
@@ -102,7 +97,7 @@ func _ready():
 		current_round = GameRound.WAITING
 		current_round_index = 0
 	
-		table_manager.load_csv("res://Tables/Cards.txt")
+		table_manager.initialize(["res://Tables/Cards.txt", "res://Tables/Skills.txt"])
 		StoryManager.get_instance().init_all_stories_state()
 
 		ui_manager.open_ui("UI_Start")

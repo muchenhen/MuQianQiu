@@ -1,0 +1,303 @@
+[gd_scene load_steps=3 format=3 uid="uid://n2iwg6fbw53k"]
+
+[ext_resource type="Texture2D" uid="uid://cqpew3c7pd2co" path="res://Textures/Cards/1/Tex_AnLu.png" id="1_0txwg"]
+[ext_resource type="Script" path="res://Scripts/UI/UI_SelectInitSkillCard.gd" id="1_8rmrp"]
+
+[node name="UiSelectInitSkillCard" type="Node2D"]
+script = ExtResource("1_8rmrp")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = 138.0
+offset_right = 1920.0
+offset_bottom = 938.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0.0784314, 0.0627451, 1)
+metadata/_edit_lock_ = true
+
+[node name="ScrollContainer" type="ScrollContainer" parent="ColorRect"]
+offset_left = 100.0
+offset_top = 20.0
+offset_right = 1840.0
+offset_bottom = 780.0
+metadata/_edit_lock_ = true
+
+[node name="CardTableView" type="VBoxContainer" parent="ColorRect/ScrollContainer"]
+clip_contents = true
+custom_minimum_size = Vector2(1800, 1200)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+metadata/_edit_lock_ = true
+
+[node name="MarginContainer" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="TextureButton" type="TextureButton" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer/HBoxContainer/MarginContainer"]
+layout_mode = 2
+texture_normal = ExtResource("1_0txwg")
+
+[node name="MarginContainer2" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="TextureButton" type="TextureButton" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer/HBoxContainer/MarginContainer2"]
+layout_mode = 2
+texture_normal = ExtResource("1_0txwg")
+
+[node name="MarginContainer3" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="TextureButton" type="TextureButton" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer/HBoxContainer/MarginContainer3"]
+layout_mode = 2
+texture_normal = ExtResource("1_0txwg")
+
+[node name="MarginContainer4" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="TextureButton" type="TextureButton" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer/HBoxContainer/MarginContainer4"]
+layout_mode = 2
+texture_normal = ExtResource("1_0txwg")
+
+[node name="MarginContainer5" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="TextureButton" type="TextureButton" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer/HBoxContainer/MarginContainer5"]
+layout_mode = 2
+texture_normal = ExtResource("1_0txwg")
+
+[node name="MarginContainer6" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="TextureButton" type="TextureButton" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer/HBoxContainer/MarginContainer6"]
+layout_mode = 2
+texture_normal = ExtResource("1_0txwg")
+
+[node name="MarginContainer2" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer2"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer2/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="TextureButton" type="TextureButton" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer2/HBoxContainer/MarginContainer"]
+layout_mode = 2
+texture_normal = ExtResource("1_0txwg")
+
+[node name="MarginContainer2" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer2/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="TextureButton" type="TextureButton" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer2/HBoxContainer/MarginContainer2"]
+layout_mode = 2
+texture_normal = ExtResource("1_0txwg")
+
+[node name="MarginContainer3" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer2/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="TextureButton" type="TextureButton" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer2/HBoxContainer/MarginContainer3"]
+layout_mode = 2
+texture_normal = ExtResource("1_0txwg")
+
+[node name="MarginContainer4" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer2/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="TextureButton" type="TextureButton" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer2/HBoxContainer/MarginContainer4"]
+layout_mode = 2
+texture_normal = ExtResource("1_0txwg")
+
+[node name="MarginContainer5" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer2/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="TextureButton" type="TextureButton" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer2/HBoxContainer/MarginContainer5"]
+layout_mode = 2
+texture_normal = ExtResource("1_0txwg")
+
+[node name="MarginContainer6" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer2/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="TextureButton" type="TextureButton" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer2/HBoxContainer/MarginContainer6"]
+layout_mode = 2
+texture_normal = ExtResource("1_0txwg")
+
+[node name="MarginContainer3" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer3"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer3/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="TextureButton" type="TextureButton" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer3/HBoxContainer/MarginContainer"]
+layout_mode = 2
+texture_normal = ExtResource("1_0txwg")
+
+[node name="MarginContainer2" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer3/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="TextureButton" type="TextureButton" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer3/HBoxContainer/MarginContainer2"]
+layout_mode = 2
+texture_normal = ExtResource("1_0txwg")
+
+[node name="MarginContainer3" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer3/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="TextureButton" type="TextureButton" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer3/HBoxContainer/MarginContainer3"]
+layout_mode = 2
+texture_normal = ExtResource("1_0txwg")
+
+[node name="MarginContainer4" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer3/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="TextureButton" type="TextureButton" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer3/HBoxContainer/MarginContainer4"]
+layout_mode = 2
+texture_normal = ExtResource("1_0txwg")
+
+[node name="MarginContainer5" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer3/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="TextureButton" type="TextureButton" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer3/HBoxContainer/MarginContainer5"]
+layout_mode = 2
+texture_normal = ExtResource("1_0txwg")
+
+[node name="MarginContainer6" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer3/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="TextureButton" type="TextureButton" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer3/HBoxContainer/MarginContainer6"]
+layout_mode = 2
+texture_normal = ExtResource("1_0txwg")
+
+[node name="MarginContainer4" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer4"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer4/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="TextureButton" type="TextureButton" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer4/HBoxContainer/MarginContainer"]
+layout_mode = 2
+texture_normal = ExtResource("1_0txwg")
+
+[node name="MarginContainer2" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer4/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="TextureButton" type="TextureButton" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer4/HBoxContainer/MarginContainer2"]
+layout_mode = 2
+texture_normal = ExtResource("1_0txwg")
+
+[node name="MarginContainer3" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer4/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="TextureButton" type="TextureButton" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer4/HBoxContainer/MarginContainer3"]
+layout_mode = 2
+texture_normal = ExtResource("1_0txwg")
+
+[node name="MarginContainer4" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer4/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="TextureButton" type="TextureButton" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer4/HBoxContainer/MarginContainer4"]
+layout_mode = 2
+texture_normal = ExtResource("1_0txwg")
+
+[node name="MarginContainer5" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer4/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="TextureButton" type="TextureButton" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer4/HBoxContainer/MarginContainer5"]
+layout_mode = 2
+texture_normal = ExtResource("1_0txwg")
+
+[node name="MarginContainer6" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer4/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="TextureButton" type="TextureButton" parent="ColorRect/ScrollContainer/CardTableView/MarginContainer4/HBoxContainer/MarginContainer6"]
+layout_mode = 2
+texture_normal = ExtResource("1_0txwg")
+
+[node name="Label_Title" type="Label" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 691.0
+offset_top = 29.0
+offset_right = 991.0
+offset_bottom = 112.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 60
+text = "选择技能卡"

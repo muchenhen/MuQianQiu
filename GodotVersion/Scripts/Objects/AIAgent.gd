@@ -15,10 +15,6 @@ enum AILevel{
 	HARD = 3,
 }
 
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	pass # Replace with function body.
-
 func set_level(level: int) -> void:
 	ai_level = level
 
