@@ -1,21 +1,27 @@
-[gd_scene load_steps=2 format=3 uid="uid://8p14juupi406"]
+[gd_scene load_steps=6 format=3 uid="uid://8p14juupi406"]
 
+[ext_resource type="Texture2D" uid="uid://bm2itb8y3330b" path="res://Textures/MainBG.png" id="1_71xrv"]
 [ext_resource type="PackedScene" uid="uid://b6vosary0xtcn" path="res://Scripts/Objects/Card.tscn" id="2_immq1"]
+[ext_resource type="FontFile" uid="uid://cgqf6jr2l5srf" path="res://Font/SourceHanSerifSC-Regular-simplified.otf" id="3_hglhl"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_32bnx"]
+font = ExtResource("3_hglhl")
+font_size = 30
+outline_size = 2
+
+[sub_resource type="LabelSettings" id="LabelSettings_twdph"]
+font = ExtResource("3_hglhl")
+font_size = 30
+outline_size = 2
 
 [node name="Main" type="Node2D"]
 metadata/_edit_horizontal_guides_ = [360.0, 720.0]
 metadata/_edit_vertical_guides_ = [320.0, 1600.0]
 
-[node name="BGColor" type="ColorRect" parent="."]
-custom_minimum_size = Vector2(1920, 1080)
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_right = 1920.0
-offset_bottom = 1080.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.745098, 0.647059, 0.32549, 1)
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(960, 540)
+scale = Vector2(1.02, 1.02)
+texture = ExtResource("1_71xrv")
 metadata/_edit_lock_ = true
 
 [node name="Camera2D" type="Camera2D" parent="."]
@@ -176,6 +182,7 @@ offset_right = 256.0
 offset_bottom = 704.0
 theme_override_font_sizes/font_size = 26
 text = "玩家A分数"
+label_settings = SubResource("LabelSettings_32bnx")
 vertical_alignment = 1
 
 [node name="Text_BScore" type="Label" parent="UI"]
@@ -185,4 +192,5 @@ offset_right = 256.0
 offset_bottom = 440.0
 theme_override_font_sizes/font_size = 26
 text = "玩家B分数"
+label_settings = SubResource("LabelSettings_twdph")
 vertical_alignment = 1

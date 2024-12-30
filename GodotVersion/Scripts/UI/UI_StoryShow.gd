@@ -1,9 +1,12 @@
 extends Node2D
 
+class_name UI_StoryShow
+
 var card_box:HorizontalBox = null
 
 func _ready() -> void:
 	card_box = get_node("CardBox")
+	clear_all_cards()
 	# 初始化手牌
 
 func add_card(card:Node) -> void:
@@ -18,4 +21,6 @@ func clear_all_cards() -> void:
 		return
 	# 销毁card_box中的所有子节点
 	for child in card_box.get_children():
+		card_box.remove_child(child)
 		child.queue_free()
+		

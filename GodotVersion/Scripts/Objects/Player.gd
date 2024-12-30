@@ -95,7 +95,7 @@ func assign_player_hand_card_to_slot(card: Card, slot_index: int) -> void:
 	hand_cards[slot_index].card = card
 	hand_cards[slot_index].slot_index = slot_index
 	hand_cards[slot_index].is_empty = false
-	hand_cards[slot_index].card.position = hand_cards[slot_index].pos
+	# hand_cards[slot_index].card.position = hand_cards[slot_index].pos
 	hand_cards[slot_index].card.z_index = hand_cards[slot_index].zindex
 
 	card.connect("card_clicked", Callable(self, "on_card_clicked"))
@@ -251,6 +251,7 @@ func show_one_new_finished_story(story):
 	current_sc_story_show.modulate.a = 0
 	current_sc_story_show.visible = true
 	current_sc_story_show.z_index = 999
+	current_sc_story_show.clear_all_cards()
 	# 将sc添加到最上层
 	var tree = GameManager.instance.get_tree()
 	var root = tree.get_root()
