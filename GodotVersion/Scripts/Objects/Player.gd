@@ -270,8 +270,8 @@ func show_one_new_finished_story(story):
 	AudioManager.get_instance().play_story_sfx(audio_id)
 
 func show_one_new_finished_story_anim_in_end():
-	# 0.5秒后开始消失动画
-	await GameManager.instance.get_tree().create_timer(0.5).timeout
+	# 1秒后开始消失动画
+	await GameManager.instance.get_tree().create_timer(1).timeout
 	AnimationManager.get_instance().start_linear_alpha(current_sc_story_show, 0, 0.5, AnimationManager.EaseType.LINEAR, Callable(self, "show_one_new_finished_story_anim_out_end"))
 	
 func show_one_new_finished_story_anim_out_end():

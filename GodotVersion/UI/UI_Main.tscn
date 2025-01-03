@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://8p14juupi406"]
+[gd_scene load_steps=7 format=3 uid="uid://8p14juupi406"]
 
 [ext_resource type="Texture2D" uid="uid://bm2itb8y3330b" path="res://Textures/MainBG.png" id="1_71xrv"]
 [ext_resource type="PackedScene" uid="uid://b6vosary0xtcn" path="res://Scripts/Objects/Card.tscn" id="2_immq1"]
 [ext_resource type="FontFile" uid="uid://cgqf6jr2l5srf" path="res://Font/SourceHanSerifSC-Regular-simplified.otf" id="3_hglhl"]
+[ext_resource type="PackedScene" uid="uid://cjtoi3cho7pbo" path="res://UI/UI_BackgroundBlur.tscn" id="4_o4txw"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_32bnx"]
 font = ExtResource("3_hglhl")
@@ -194,3 +195,6 @@ theme_override_font_sizes/font_size = 26
 text = "玩家B分数"
 label_settings = SubResource("LabelSettings_twdph")
 vertical_alignment = 1
+
+[node name="BGBlur" parent="UI" instance=ExtResource("4_o4txw")]
+visible = false

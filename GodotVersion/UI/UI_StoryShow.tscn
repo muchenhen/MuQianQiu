@@ -5,13 +5,14 @@
 [ext_resource type="PackedScene" uid="uid://b6vosary0xtcn" path="res://Scripts/Objects/Card.tscn" id="3_dbdpt"]
 
 [node name="ScStoryShow" type="Node2D"]
+modulate = Color(1, 1, 1, 0)
 script = ExtResource("1_yhrfm")
 
 [node name="CardBox" type="ColorRect" parent="."]
 offset_top = 376.0
 offset_right = 1920.0
 offset_bottom = 704.0
-color = Color(0.0627451, 0.0627451, 0.0627451, 0.490196)
+color = Color(0.0627451, 0.0627451, 0.0627451, 0.329412)
 script = ExtResource("2_3hl4a")
 
 [node name="Card" parent="CardBox" instance=ExtResource("3_dbdpt")]

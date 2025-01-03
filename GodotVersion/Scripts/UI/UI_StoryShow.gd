@@ -7,7 +7,6 @@ var card_box:HorizontalBox = null
 func _ready() -> void:
 	card_box = get_node("CardBox")
 	clear_all_cards()
-	# 初始化手牌
 
 func add_card(card:Node) -> void:
 	card_box.add_child(card)
