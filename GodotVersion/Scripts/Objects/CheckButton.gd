@@ -41,15 +41,14 @@ func _update_textures():
 
 func _enter_tree():
 	_update_textures()
-	if not Engine.is_editor_hint():
-		pressed.connect(_on_pressed)
 
 func _ready():
 	scale = button_scale
 	if _button_texture:
 		self_modulate = unchecked_color
 	if not Engine.is_editor_hint():
-		pressed.connect(_on_pressed)
+		if not pressed.is_connected(_on_pressed):
+			pressed.connect(_on_pressed)
 	
 
 func _on_pressed():
