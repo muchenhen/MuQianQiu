@@ -2,6 +2,7 @@ from fontTools.ttLib import TTFont
 from fontTools.subset import Subsetter
 import os
 import re
+
 characters = set()
 
 
@@ -29,6 +30,8 @@ def simplify_font(source_font_path, output_font_path, text):
 
 # 从指定文件夹下遍历所有.txt .gd .tscn文件用UTF-8格式读取，包括子文件夹，然后收集所有字符，不重复，包括字母和数字
 def collect_characters(folder:str):
+    global characters  # 声明使用全局变量
+    
     for root, dirs, files in os.walk(folder):
         for file in files:
             if file.endswith(".txt") or file.endswith(".gd") or file.endswith(".tscn"):
@@ -36,8 +39,19 @@ def collect_characters(folder:str):
                     content = f.read()
                     for char in content:
                         characters.add(char)
-                        
-    return "".join(characters)
+
+    # 检查一下是否包含了大小写字母和阿拉伯数字
+    for i in range(26):
+        characters.add(chr(65 + i))
+        characters.add(chr(97 + i))
+    for i in range(10):
+        characters.add(chr(48 + i))
+
+    # 对字符进行排序 数字 字母 汉字
+    char_list = list(characters)
+    char_list.sort(key=lambda x: (ord(x) < 128, x))
+    
+    return "".join(char_list)
 
 
 if __name__ == "__main__":
