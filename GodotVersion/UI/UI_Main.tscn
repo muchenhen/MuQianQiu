@@ -145,6 +145,7 @@ rotation = -0.0715585
 color = Color(1, 0, 0.983333, 1)
 
 [node name="PlayerADeal" type="Button" parent="Cards"]
+visible = false
 self_modulate = Color(1, 1, 1, 0)
 z_index = 999
 offset_top = 720.0
@@ -152,6 +153,7 @@ offset_right = 312.0
 offset_bottom = 1080.0
 
 [node name="PlayerBDeal" type="Button" parent="Cards"]
+visible = false
 self_modulate = Color(1, 1, 1, 0)
 z_index = 999
 offset_right = 312.0
@@ -181,6 +183,13 @@ offset_right = 256.0
 offset_bottom = 304.0
 pivot_offset = Vector2(96, 128)
 metadata/_edit_lock_ = true
+
+[node name="SkillCardZone" type="ColorRect" parent="Cards"]
+offset_left = 1642.0
+offset_top = 773.0
+offset_right = 1871.0
+offset_bottom = 1029.0
+color = Color(0.986965, 0.679503, 0.140191, 1)
 
 [node name="UI" type="Node" parent="."]
 

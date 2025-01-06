@@ -38,6 +38,7 @@ var all_scene_cards = []
 var all_storage_cards = []
 var cardIDs = []
 
+var skill_cardIDs = []
 var skill_card_map = {}
 
 func _init():
@@ -78,6 +79,17 @@ func collect_cardIDs_for_this_game(types:Array) -> void:
 		if types.find(type) != -1:
 			if not card_info["Special"]:
 				cardIDs.append(card_id)
+
+func collect_skill_cardIDs_for_this_game(types:Array) -> void:
+	var cards = tableManager.get_table("Skills")
+	for card_id in cards.keys():
+		if card_id == 0:
+			continue
+		var card_info = cards[card_id]
+		var type = int(str(card_id)[0])
+		if types.find(type) != -1:
+			if not card_info["Special"]:
+				skill_cardIDs.append(card_id)
 
 func shuffle_cardIDs() -> void:
 	cardIDs.shuffle()
