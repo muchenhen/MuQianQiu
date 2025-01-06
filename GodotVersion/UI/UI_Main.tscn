@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://8p14juupi406"]
+[gd_scene load_steps=8 format=3 uid="uid://8p14juupi406"]
 
 [ext_resource type="Texture2D" uid="uid://bm2itb8y3330b" path="res://Textures/MainBG.png" id="1_71xrv"]
+[ext_resource type="Script" path="res://Scripts/UI/UI_Main.gd" id="1_nmgd6"]
 [ext_resource type="PackedScene" uid="uid://b6vosary0xtcn" path="res://Scripts/Objects/Card.tscn" id="2_immq1"]
 [ext_resource type="FontFile" uid="uid://cgqf6jr2l5srf" path="res://Font/SourceHanSerifSC-Regular-simplified.otf" id="3_hglhl"]
 [ext_resource type="PackedScene" uid="uid://cjtoi3cho7pbo" path="res://UI/UI_BackgroundBlur.tscn" id="4_o4txw"]
@@ -16,6 +17,7 @@ font_size = 30
 outline_size = 2
 
 [node name="Main" type="Node2D"]
+script = ExtResource("1_nmgd6")
 metadata/_edit_horizontal_guides_ = [360.0, 720.0]
 metadata/_edit_vertical_guides_ = [320.0, 1600.0]
 
@@ -142,12 +144,18 @@ offset_bottom = 712.0
 rotation = -0.0715585
 color = Color(1, 0, 0.983333, 1)
 
-[node name="ColorRect" type="ColorRect" parent="Cards"]
-visible = false
+[node name="PlayerADeal" type="Button" parent="Cards"]
+self_modulate = Color(1, 1, 1, 0)
+z_index = 999
 offset_top = 720.0
-offset_right = 320.0
+offset_right = 312.0
 offset_bottom = 1080.0
-metadata/_edit_lock_ = true
+
+[node name="PlayerBDeal" type="Button" parent="Cards"]
+self_modulate = Color(1, 1, 1, 0)
+z_index = 999
+offset_right = 312.0
+offset_bottom = 360.0
 
 [node name="ColorRect2" type="ColorRect" parent="Cards"]
 visible = false
