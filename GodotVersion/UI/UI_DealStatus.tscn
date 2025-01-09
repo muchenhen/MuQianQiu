@@ -21,43 +21,179 @@ metadata/_edit_lock_ = true
 [node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 0
 offset_left = 384.0
-offset_top = 128.0
+offset_top = 170.0
 offset_right = 1568.0
-offset_bottom = 960.0
+offset_bottom = 870.0
 script = ExtResource("2_l01s4")
+cell_padding = Vector2(3, 3)
 auto_scale = true
-min_scale = null
 
-[node name="Card" parent="ColorRect" instance=ExtResource("3_wsan5")]
+[node name="Card1" parent="ColorRect" instance=ExtResource("3_wsan5")]
 layout_mode = 0
+offset_left = 262.094
+offset_right = 454.094
+scale = Vector2(0.674805, 0.674805)
+button_mask = 0
 
 [node name="Card2" parent="ColorRect" instance=ExtResource("3_wsan5")]
 layout_mode = 0
-offset_left = 312.0
-offset_top = 48.0
-offset_right = 504.0
-offset_bottom = 304.0
+offset_left = 394.656
+offset_right = 586.656
+scale = Vector2(0.674805, 0.674805)
+button_mask = 0
 
 [node name="Card3" parent="ColorRect" instance=ExtResource("3_wsan5")]
-offset_left = 312.0
-offset_top = 48.0
-offset_right = 504.0
-offset_bottom = 304.0
+layout_mode = 0
+offset_left = 527.219
+offset_right = 719.219
+scale = Vector2(0.674805, 0.674805)
+button_mask = 0
 
 [node name="Card4" parent="ColorRect" instance=ExtResource("3_wsan5")]
-offset_left = 312.0
-offset_top = 48.0
-offset_right = 504.0
-offset_bottom = 304.0
+layout_mode = 0
+offset_left = 659.781
+offset_right = 851.781
+scale = Vector2(0.674805, 0.674805)
+button_mask = 0
 
 [node name="Card5" parent="ColorRect" instance=ExtResource("3_wsan5")]
-offset_left = 312.0
-offset_top = 48.0
-offset_right = 504.0
-offset_bottom = 304.0
+layout_mode = 0
+offset_left = 792.344
+offset_right = 984.344
+scale = Vector2(0.674805, 0.674805)
+button_mask = 0
 
 [node name="Card6" parent="ColorRect" instance=ExtResource("3_wsan5")]
-offset_left = 312.0
-offset_top = 48.0
-offset_right = 504.0
-offset_bottom = 304.0
+layout_mode = 0
+offset_left = 262.094
+offset_top = 175.75
+offset_right = 454.094
+offset_bottom = 431.75
+scale = Vector2(0.674805, 0.674805)
+button_mask = 0
+
+[node name="Card7" parent="ColorRect" instance=ExtResource("3_wsan5")]
+layout_mode = 0
+offset_left = 394.656
+offset_top = 175.75
+offset_right = 586.656
+offset_bottom = 431.75
+scale = Vector2(0.674805, 0.674805)
+button_mask = 0
+
+[node name="Card8" parent="ColorRect" instance=ExtResource("3_wsan5")]
+layout_mode = 0
+offset_left = 527.219
+offset_top = 175.75
+offset_right = 719.219
+offset_bottom = 431.75
+scale = Vector2(0.674805, 0.674805)
+button_mask = 0
+
+[node name="Card9" parent="ColorRect" instance=ExtResource("3_wsan5")]
+layout_mode = 0
+offset_left = 659.781
+offset_top = 175.75
+offset_right = 851.781
+offset_bottom = 431.75
+scale = Vector2(0.674805, 0.674805)
+button_mask = 0
+
+[node name="Card10" parent="ColorRect" instance=ExtResource("3_wsan5")]
+layout_mode = 0
+offset_left = 792.344
+offset_top = 175.75
+offset_right = 984.344
+offset_bottom = 431.75
+scale = Vector2(0.674805, 0.674805)
+button_mask = 0
+
+[node name="Card11" parent="ColorRect" instance=ExtResource("3_wsan5")]
+layout_mode = 0
+offset_left = 262.094
+offset_top = 351.5
+offset_right = 454.094
+offset_bottom = 607.5
+scale = Vector2(0.674805, 0.674805)
+button_mask = 0
+
+[node name="Card12" parent="ColorRect" instance=ExtResource("3_wsan5")]
+layout_mode = 0
+offset_left = 394.656
+offset_top = 351.5
+offset_right = 586.656
+offset_bottom = 607.5
+scale = Vector2(0.674805, 0.674805)
+button_mask = 0
+
+[node name="Card13" parent="ColorRect" instance=ExtResource("3_wsan5")]
+layout_mode = 0
+offset_left = 527.219
+offset_top = 351.5
+offset_right = 719.219
+offset_bottom = 607.5
+scale = Vector2(0.674805, 0.674805)
+button_mask = 0
+
+[node name="Card14" parent="ColorRect" instance=ExtResource("3_wsan5")]
+layout_mode = 0
+offset_left = 659.781
+offset_top = 351.5
+offset_right = 851.781
+offset_bottom = 607.5
+scale = Vector2(0.674805, 0.674805)
+button_mask = 0
+
+[node name="Card15" parent="ColorRect" instance=ExtResource("3_wsan5")]
+layout_mode = 0
+offset_left = 792.344
+offset_top = 351.5
+offset_right = 984.344
+offset_bottom = 607.5
+scale = Vector2(0.674805, 0.674805)
+button_mask = 0
+
+[node name="Card16" parent="ColorRect" instance=ExtResource("3_wsan5")]
+layout_mode = 0
+offset_left = 262.094
+offset_top = 527.25
+offset_right = 454.094
+offset_bottom = 783.25
+scale = Vector2(0.674805, 0.674805)
+button_mask = 0
+
+[node name="Card17" parent="ColorRect" instance=ExtResource("3_wsan5")]
+layout_mode = 0
+offset_left = 394.656
+offset_top = 527.25
+offset_right = 586.656
+offset_bottom = 783.25
+scale = Vector2(0.674805, 0.674805)
+button_mask = 0
+
+[node name="Card18" parent="ColorRect" instance=ExtResource("3_wsan5")]
+layout_mode = 0
+offset_left = 527.219
+offset_top = 527.25
+offset_right = 719.219
+offset_bottom = 783.25
+scale = Vector2(0.674805, 0.674805)
+button_mask = 0
+
+[node name="Card19" parent="ColorRect" instance=ExtResource("3_wsan5")]
+layout_mode = 0
+offset_left = 659.781
+offset_top = 527.25
+offset_right = 851.781
+offset_bottom = 783.25
+scale = Vector2(0.674805, 0.674805)
+button_mask = 0
+
+[node name="Card20" parent="ColorRect" instance=ExtResource("3_wsan5")]
+layout_mode = 0
+offset_left = 792.344
+offset_top = 527.25
+offset_right = 984.344
+offset_bottom = 783.25
+scale = Vector2(0.674805, 0.674805)
+button_mask = 0
