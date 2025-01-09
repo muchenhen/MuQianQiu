@@ -25,6 +25,14 @@ func set_ui_tree_root(node: Node) -> void:
 func get_ui_tree_root() -> Node:
 	return root
 
+func regiester_ui_elements() -> void:
+	register_ui_element("UI_Main", "res://UI/UI_Main.tscn")
+	register_ui_element("UI_PlayerChangeCard", "res://UI/UI_PlayerChangeCard.tscn")
+	register_ui_element("UI_Result", "res://UI/UI_Result.tscn")
+	register_ui_element("UI_Start", "res://UI/UI_Start.tscn")
+	register_ui_element("UI_StoryShow", "res://UI/UI_StoryShow.tscn")
+	register_ui_element("UI_DealStatus", "res://UI/UI_DealStatus.tscn")
+
 func register_ui_element(key: String, element_path: String) -> void:
 	ui_elements_path[key] = element_path
 
@@ -54,6 +62,12 @@ func open_ui(key: String) -> void:
 	if ui_instance:
 		print("UIManager: Open UI: ", key)
 		root.add_child(ui_instance)
+
+func open_ui_instance(ui_instance: Node) -> void:
+	root.add_child(ui_instance)
+
+func move_ui_instance_to_top(ui_instance: Node) -> void:
+	ui_instance.z_index = 999
 
 # 关闭显示但是不销毁
 func close_ui(key: String) -> void:

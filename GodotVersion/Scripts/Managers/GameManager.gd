@@ -69,12 +69,8 @@ func _ready():
 	if instance == null:
 		instance = self
 		ui_manager.set_ui_tree_root(instance)
-		ui_manager.register_ui_element("UI_Main", "res://UI/UI_Main.tscn")
-		ui_manager.register_ui_element("UI_PlayerChangeCard", "res://UI/UI_PlayerChangeCard.tscn")
-		ui_manager.register_ui_element("UI_Result", "res://UI/UI_Result.tscn")
-		ui_manager.register_ui_element("UI_Start", "res://UI/UI_Start.tscn")
-		ui_manager.register_ui_element("UI_StoryShow", "res://UI/UI_StoryShow.tscn")
-
+		ui_manager.regiester_ui_elements()
+		
 		add_child(animation_manager, true)
 
 		input_manager = InputManager.new()

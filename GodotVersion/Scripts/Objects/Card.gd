@@ -65,6 +65,10 @@ func update_card_info(card_id, card_info) -> void:
 	Special = card_info["Special"]
 	update_card()
 
+func update_card_info_by_id(card_id: int) -> void:
+	var card_info = TableManager.get_instance().get_row("Cards", card_id)
+	update_card_info(card_id, card_info)
+
 func print_card_info() -> void:
 	# 打印的时候去掉换行符
 	var debug_describe = Describe.replace("\n", "")
