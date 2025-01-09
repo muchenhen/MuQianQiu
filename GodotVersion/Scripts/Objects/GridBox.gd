@@ -34,23 +34,29 @@ func layout_items():
             cell_size.x = max(cell_size.x, item.size.x)
             cell_size.y = max(cell_size.y, item.size.y)
     
-    # 计算总的网格尺寸
+    # 计算总的网格尺寸 (使用原始cell_size)
     var grid_width = cell_size.x * columns + cell_padding.x * (columns - 1)
     var grid_height = cell_size.y * rows + cell_padding.y * (rows - 1)
     
-    # 如果启用自动缩放，计算缩放比例
+    # 如果启用自动缩放，只缩放元素尺寸，保持间距不变
     var scale_factor = 1.0
     if auto_scale and (grid_width > size.x or grid_height > size.y):
-        var scale_x = size.x / grid_width
-        var scale_y = size.y / grid_height
-        scale_factor = min(scale_x, scale_y)
-        scale_factor = max(scale_factor, min_scale) # 限制最小缩放
+        # 计算可用空间（减去所有padding后的空间）
+        var available_width = size.x - (cell_padding.x * (columns - 1))
+        var available_height = size.y - (cell_padding.y * (rows - 1))
         
-        # 更新单元格尺寸和间距
+        # 计算单个元素需要的缩放比例
+        var scale_x = available_width / (cell_size.x * columns)
+        var scale_y = available_height / (cell_size.y * rows)
+        scale_factor = min(scale_x, scale_y)
+        scale_factor = max(scale_factor, min_scale)
+        
+        # 只缩放元素尺寸，不缩放间距
         cell_size *= scale_factor
-        cell_padding *= scale_factor
-        grid_width *= scale_factor
-        grid_height *= scale_factor
+        
+        # 使用原始padding重新计算网格尺寸
+        grid_width = cell_size.x * columns + cell_padding.x * (columns - 1)
+        grid_height = cell_size.y * rows + cell_padding.y * (rows - 1)
     
     # 计算起始位置 (网格居中)
     var start_pos = Vector2(
