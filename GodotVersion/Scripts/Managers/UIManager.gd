@@ -57,11 +57,15 @@ func create_ui_instance(key: String) -> Node:
 		push_error("UIManager: UI element not found: ", key)
 		return null
 
-func open_ui(key: String) -> void:
+func open_ui(key: String) -> Node:
 	var ui_instance = ensure_get_ui_instance(key)
 	if ui_instance:
 		print("UIManager: Open UI: ", key)
 		root.add_child(ui_instance)
+		return ui_instance
+	else:
+		push_error("UIManager: Open UI failed: ", key)
+		return null
 
 func open_ui_instance(ui_instance: Node) -> void:
 	root.add_child(ui_instance)

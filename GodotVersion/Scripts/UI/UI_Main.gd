@@ -15,12 +15,9 @@ func _ready() -> void:
 
 func _on_player_a_deal_clcik():
 	print("玩家A牌堆点击")
-	var deal_status: UI_DealStatus = UIManager.get_instance().ensure_get_ui_instance("UI_DealStatus")
-	ui_manager.open_ui_instance(deal_status)
+	var deal_status:UI_DealStatus = ui_manager.open_ui("UI_DealStatus")
 	ui_manager.move_ui_instance_to_top(deal_status)
 	deal_status.set_card_info_by_index_with_id(0, 301)
-
-	
 
 func _on_player_b_deal_clcik():
 	print("玩家B牌堆点击")

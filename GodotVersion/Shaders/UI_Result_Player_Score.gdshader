@@ -9,7 +9,7 @@ uniform float alpha_threshold : hint_range(0.0, 1.0) = 0.1;
 
 void fragment() {
     vec4 current_color = texture(TEXTURE, UV);
-    
+
     // 计算发光
     float alpha = 0.0;
     for(float x = -glow_size; x <= glow_size; x++) {
@@ -19,11 +19,11 @@ void fragment() {
         }
     }
     alpha = alpha / ((glow_size * 2.0 + 1.0) * (glow_size * 2.0 + 1.0));
-    
+
     // 混合原始颜色和发光颜色
     vec4 glow = vec4(glow_color.rgb, alpha * glow_strength);
     vec4 final_color = mix(glow, current_color, current_color.a);
-    
+
     // 应用 alpha 阈值
     COLOR = final_color;
     if (COLOR.a < alpha_threshold) {
