@@ -37,13 +37,23 @@ func _ready() -> void:
 		card.disable_click()
 	# 绑定返回按钮点击事件
 	button_back.connect("pressed", Callable(self, "_on_button_back_click"))
-	
+
+
 func set_card_info_by_index_with_id(index: int, card_id: int) -> void:
 	if index < 0 or index >= cards.size():
 		return
 	var card = cards[index]
 	card.update_card_info_by_id(card_id)
 	card.show()
+
+func update_deal_status_by_player(player: Player) -> void:
+	var deal_cards:Dictionary = player.deal_cards
+	var index = 0
+	for i in range(deal_cards.size()):
+		var card_id = deal_cards.keys()[i]
+		set_card_info_by_index_with_id(index, card_id)
+		index += 1
+
 
 func _on_button_back_click():
 	ui_manager.destroy_ui("UI_DealStatus")
