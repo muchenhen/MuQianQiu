@@ -21,7 +21,8 @@ var hand_cards = {
 	9: PlayerHandCard.new(),
 }
 
-var deal_cards = {}
+# map - card_id -> card
+var deal_cards:Dictionary = {}
 
 var player_score: int = 0
 
@@ -216,9 +217,10 @@ func check_hand_card_season() -> bool:
 
 	return has_season
 
-func send_card_to_deal(card: Node) -> void:
+func send_card_to_deal(card: Card) -> void:
 	deal_cards[card.ID] = card
 	card.set_card_unchooesd()
+	card.disable_click()
 
 # 一个玩家的回合结束，检查故事完成情况
 func check_finish_story() -> void:

@@ -1,8 +1,14 @@
-[gd_scene load_steps=4 format=3 uid="uid://f6almg3y652y"]
+[gd_scene load_steps=7 format=3 uid="uid://f6almg3y652y"]
 
+[ext_resource type="Script" path="res://Scripts/UI/UI_DealStatus.gd" id="1_d8eqb"]
 [ext_resource type="Texture2D" uid="uid://bm2itb8y3330b" path="res://Textures/MainBG.png" id="1_ntum8"]
 [ext_resource type="Script" path="res://Scripts/Objects/GridBox.gd" id="2_l01s4"]
 [ext_resource type="PackedScene" uid="uid://b6vosary0xtcn" path="res://Scripts/Objects/Card.tscn" id="3_wsan5"]
+[ext_resource type="FontFile" uid="uid://cgqf6jr2l5srf" path="res://Font/SourceHanSerifSC-Regular-simplified.otf" id="5_5qn0e"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_8gbii"]
+font = ExtResource("5_5qn0e")
+font_size = 46
 
 [node name="UiDealStatus" type="Control"]
 layout_mode = 3
@@ -11,6 +17,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_d8eqb")
+metadata/_edit_lock_ = true
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(960, 540)
@@ -18,46 +26,257 @@ scale = Vector2(1.02, 1.02)
 texture = ExtResource("1_ntum8")
 metadata/_edit_lock_ = true
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="CurrentDeal" type="ColorRect" parent="."]
+self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
 offset_left = 384.0
-offset_top = 128.0
+offset_top = 196.0
 offset_right = 1568.0
-offset_bottom = 960.0
+offset_bottom = 896.0
 script = ExtResource("2_l01s4")
+rows = 3
+columns = 7
+cell_padding = Vector2(3, 3)
 auto_scale = true
-min_scale = null
 
-[node name="Card" parent="ColorRect" instance=ExtResource("3_wsan5")]
+[node name="Card1" parent="CurrentDeal" instance=ExtResource("3_wsan5")]
+z_as_relative = true
 layout_mode = 0
+offset_left = -4.57764e-05
+offset_top = 13.8571
+offset_bottom = 269.857
+scale = Vector2(0.86756, 0.86756)
+button_mask = 0
 
-[node name="Card2" parent="ColorRect" instance=ExtResource("3_wsan5")]
+[node name="Card2" parent="CurrentDeal" instance=ExtResource("3_wsan5")]
+z_as_relative = true
 layout_mode = 0
-offset_left = 312.0
-offset_top = 48.0
-offset_right = 504.0
-offset_bottom = 304.0
+offset_left = 169.571
+offset_top = 13.8571
+offset_right = 361.571
+offset_bottom = 269.857
+scale = Vector2(0.86756, 0.86756)
+button_mask = 0
 
-[node name="Card3" parent="ColorRect" instance=ExtResource("3_wsan5")]
-offset_left = 312.0
-offset_top = 48.0
-offset_right = 504.0
-offset_bottom = 304.0
+[node name="Card3" parent="CurrentDeal" instance=ExtResource("3_wsan5")]
+z_as_relative = true
+layout_mode = 0
+offset_left = 339.143
+offset_top = 13.8571
+offset_right = 531.143
+offset_bottom = 269.857
+scale = Vector2(0.86756, 0.86756)
+button_mask = 0
 
-[node name="Card4" parent="ColorRect" instance=ExtResource("3_wsan5")]
-offset_left = 312.0
-offset_top = 48.0
-offset_right = 504.0
-offset_bottom = 304.0
+[node name="Card4" parent="CurrentDeal" instance=ExtResource("3_wsan5")]
+z_as_relative = true
+layout_mode = 0
+offset_left = 508.714
+offset_top = 13.8571
+offset_right = 700.714
+offset_bottom = 269.857
+scale = Vector2(0.86756, 0.86756)
+button_mask = 0
 
-[node name="Card5" parent="ColorRect" instance=ExtResource("3_wsan5")]
-offset_left = 312.0
-offset_top = 48.0
-offset_right = 504.0
-offset_bottom = 304.0
+[node name="Card5" parent="CurrentDeal" instance=ExtResource("3_wsan5")]
+z_as_relative = true
+layout_mode = 0
+offset_left = 678.286
+offset_top = 13.8571
+offset_right = 870.286
+offset_bottom = 269.857
+scale = Vector2(0.86756, 0.86756)
+button_mask = 0
 
-[node name="Card6" parent="ColorRect" instance=ExtResource("3_wsan5")]
-offset_left = 312.0
-offset_top = 48.0
-offset_right = 504.0
-offset_bottom = 304.0
+[node name="Card6" parent="CurrentDeal" instance=ExtResource("3_wsan5")]
+z_as_relative = true
+layout_mode = 0
+offset_left = 847.857
+offset_top = 13.8571
+offset_right = 1039.86
+offset_bottom = 269.857
+scale = Vector2(0.86756, 0.86756)
+button_mask = 0
+
+[node name="Card7" parent="CurrentDeal" instance=ExtResource("3_wsan5")]
+z_as_relative = true
+layout_mode = 0
+offset_left = 1017.43
+offset_top = 13.8571
+offset_right = 1209.43
+offset_bottom = 269.857
+scale = Vector2(0.86756, 0.86756)
+button_mask = 0
+
+[node name="Card8" parent="CurrentDeal" instance=ExtResource("3_wsan5")]
+z_as_relative = true
+layout_mode = 0
+offset_left = -4.57764e-05
+offset_top = 238.952
+offset_bottom = 494.952
+scale = Vector2(0.86756, 0.86756)
+button_mask = 0
+
+[node name="Card9" parent="CurrentDeal" instance=ExtResource("3_wsan5")]
+z_as_relative = true
+layout_mode = 0
+offset_left = 169.571
+offset_top = 238.952
+offset_right = 361.571
+offset_bottom = 494.952
+scale = Vector2(0.86756, 0.86756)
+button_mask = 0
+
+[node name="Card10" parent="CurrentDeal" instance=ExtResource("3_wsan5")]
+z_as_relative = true
+layout_mode = 0
+offset_left = 339.143
+offset_top = 238.952
+offset_right = 531.143
+offset_bottom = 494.952
+scale = Vector2(0.86756, 0.86756)
+button_mask = 0
+
+[node name="Card11" parent="CurrentDeal" instance=ExtResource("3_wsan5")]
+z_as_relative = true
+layout_mode = 0
+offset_left = 508.714
+offset_top = 238.952
+offset_right = 700.714
+offset_bottom = 494.952
+scale = Vector2(0.86756, 0.86756)
+button_mask = 0
+
+[node name="Card12" parent="CurrentDeal" instance=ExtResource("3_wsan5")]
+z_as_relative = true
+layout_mode = 0
+offset_left = 678.286
+offset_top = 238.952
+offset_right = 870.286
+offset_bottom = 494.952
+scale = Vector2(0.86756, 0.86756)
+button_mask = 0
+
+[node name="Card13" parent="CurrentDeal" instance=ExtResource("3_wsan5")]
+z_as_relative = true
+layout_mode = 0
+offset_left = 847.857
+offset_top = 238.952
+offset_right = 1039.86
+offset_bottom = 494.952
+scale = Vector2(0.86756, 0.86756)
+button_mask = 0
+
+[node name="Card14" parent="CurrentDeal" instance=ExtResource("3_wsan5")]
+z_as_relative = true
+layout_mode = 0
+offset_left = 1017.43
+offset_top = 238.952
+offset_right = 1209.43
+offset_bottom = 494.952
+scale = Vector2(0.86756, 0.86756)
+button_mask = 0
+
+[node name="Card15" parent="CurrentDeal" instance=ExtResource("3_wsan5")]
+z_as_relative = true
+layout_mode = 0
+offset_left = -4.57764e-05
+offset_top = 464.048
+offset_bottom = 720.048
+scale = Vector2(0.86756, 0.86756)
+button_mask = 0
+
+[node name="Card16" parent="CurrentDeal" instance=ExtResource("3_wsan5")]
+z_as_relative = true
+layout_mode = 0
+offset_left = 169.571
+offset_top = 464.048
+offset_right = 361.571
+offset_bottom = 720.048
+scale = Vector2(0.86756, 0.86756)
+button_mask = 0
+
+[node name="Card17" parent="CurrentDeal" instance=ExtResource("3_wsan5")]
+z_as_relative = true
+layout_mode = 0
+offset_left = 339.143
+offset_top = 464.048
+offset_right = 531.143
+offset_bottom = 720.048
+scale = Vector2(0.86756, 0.86756)
+button_mask = 0
+
+[node name="Card18" parent="CurrentDeal" instance=ExtResource("3_wsan5")]
+z_as_relative = true
+layout_mode = 0
+offset_left = 508.714
+offset_top = 464.048
+offset_right = 700.714
+offset_bottom = 720.048
+scale = Vector2(0.86756, 0.86756)
+button_mask = 0
+
+[node name="Card19" parent="CurrentDeal" instance=ExtResource("3_wsan5")]
+z_as_relative = true
+layout_mode = 0
+offset_left = 678.286
+offset_top = 464.048
+offset_right = 870.286
+offset_bottom = 720.048
+scale = Vector2(0.86756, 0.86756)
+button_mask = 0
+
+[node name="Card20" parent="CurrentDeal" instance=ExtResource("3_wsan5")]
+layout_mode = 0
+offset_left = 847.857
+offset_top = 464.048
+offset_right = 1039.86
+offset_bottom = 720.048
+scale = Vector2(0.86756, 0.86756)
+button_mask = 0
+
+[node name="ButtonCurrentDeal" type="Button" parent="."]
+layout_mode = 0
+offset_left = 448.0
+offset_top = 64.0
+offset_right = 704.0
+offset_bottom = 128.0
+theme_override_fonts/font = ExtResource("5_5qn0e")
+theme_override_font_sizes/font_size = 24
+text = "我方卡牌"
+
+[node name="ButtonCompleteStory" type="Button" parent="."]
+offset_left = 832.0
+offset_top = 64.0
+offset_right = 1088.0
+offset_bottom = 128.0
+theme_override_fonts/font = ExtResource("5_5qn0e")
+theme_override_font_sizes/font_size = 24
+text = "完成故事"
+
+[node name="ButtonNoCompleteStory" type="Button" parent="."]
+offset_left = 1216.0
+offset_top = 64.0
+offset_right = 1472.0
+offset_bottom = 128.0
+theme_override_fonts/font = ExtResource("5_5qn0e")
+theme_override_font_sizes/font_size = 24
+text = "未完故事"
+
+[node name="ButtonBack" type="Button" parent="."]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 448.0
+offset_right = 320.0
+offset_bottom = 640.0
+
+[node name="Label" type="Label" parent="ButtonBack"]
+layout_mode = 0
+offset_right = 280.0
+offset_bottom = 192.0
+text = "点击此处
+返回牌局"
+label_settings = SubResource("LabelSettings_8gbii")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2

@@ -68,8 +68,9 @@ func get_checked_count():
 func _ready():
 	if instance == null:
 		instance = self
-		ui_manager.set_ui_tree_root(instance)		
-
+		ui_manager.set_ui_tree_root(instance)
+		ui_manager.regiester_ui_elements()
+		
 		add_child(animation_manager, true)
 
 		input_manager = InputManager.new()
