@@ -21,7 +21,6 @@ func _init():
 
 func set_ui_tree_root(node: Node) -> void:
 	root = node
-	register_all_ui()
 
 func get_ui_tree_root() -> Node:
 	return root
@@ -33,6 +32,7 @@ func regiester_ui_elements() -> void:
 	register_ui_element("UI_Start", "res://UI/UI_Start.tscn")
 	register_ui_element("UI_StoryShow", "res://UI/UI_StoryShow.tscn")
 	register_ui_element("UI_DealStatus", "res://UI/UI_DealStatus.tscn")
+	register_ui_element("UI_SelectInitSkillCard", "res://UI/UI_SelectInitSkillCard.tscn")
 
 func register_ui_element(key: String, element_path: String) -> void:
 	ui_elements_path[key] = element_path
