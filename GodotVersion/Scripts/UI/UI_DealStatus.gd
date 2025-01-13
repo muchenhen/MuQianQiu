@@ -32,6 +32,9 @@ class_name UI_DealStatus
 @onready var button_finished_story = $ButtonFinishedStory
 
 var ui_manager:UIManager = UIManager.get_instance()
+var story_manager:StoryManager = StoryManager.get_instance()
+
+var current_player:Player = null
 
 var cards = []
 
@@ -58,13 +61,37 @@ func set_card_info_by_index_with_id(index: int, card_id: int) -> void:
 	card.update_card_info_by_id(card_id)
 	card.show()
 
+
 func update_deal_status_by_player(player: Player) -> void:
+	current_player = player
 	var deal_cards:Dictionary = player.deal_cards
 	var index = 0
 	for i in range(deal_cards.size()):
 		var card_id = deal_cards.keys()[i]
 		set_card_info_by_index_with_id(index, card_id)
 		index += 1
+	
+	update_finished_story_by_player(player)
+
+	# var card_ids = deal_cards.keys()
+	# # 通过已经属于玩家的卡牌，检索所有包含这些卡牌的故事
+	# var story_ids = story_manager.get_relent_stories_by_cards_id(card_ids)
+	# for story_id in story_ids:
+	# 	# 创建一个UI_DealStoryStatus实例
+	# 	var deal_story_status:UI_DealStoryStatus = ui_manager.create_ui_instance_for_multi("UI_DealStoryStatus")
+	# 	# 将deal_story_status添加到finished_story
+	# 	finished_story.add_child(deal_story_status)
+	# 	deal_story_status.update_story_status_by_id(story_id)
+	
+func update_finished_story_by_player(player: Player) -> void:
+	var finished_stories = player.finished_stories
+	for story in finished_stories:
+		var story_id = story["ID"]
+		# 创建一个UI_DealStoryStatus实例
+		var deal_story_status:UI_DealStoryStatus = ui_manager.create_ui_instance_for_multi("UI_DealStoryStatus")
+		# 将deal_story_status添加到finished_story
+		finished_story.add_child(deal_story_status)
+		deal_story_status.update_story_status_by_id(story_id)
 
 
 func _on_button_current_deal_click():

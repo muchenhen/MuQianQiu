@@ -1,5 +1,7 @@
 extends Node
 
+class_name UI_DealStoryStatus
+
 @onready var card1: Card = $ColorRect/Card1
 @onready var card2: Card = $ColorRect/Card2
 @onready var card3: Card = $ColorRect/Card3

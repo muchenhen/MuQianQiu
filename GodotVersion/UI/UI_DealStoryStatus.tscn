@@ -13,7 +13,7 @@ outline_size = 1
 [node name="UiDealStoryStatus" type="Control"]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 1664.0
+offset_right = 2027.0
 offset_bottom = 320.0
 scale = Vector2(0.6, 0.6)
 script = ExtResource("1_wqydv")
@@ -39,42 +39,49 @@ offset_right = 221.0
 offset_bottom = 288.0
 
 [node name="Card2" parent="ColorRect" instance=ExtResource("2_8o0b7")]
+layout_mode = 0
 offset_left = 231.0
 offset_top = 32.0
 offset_right = 423.0
 offset_bottom = 288.0
 
 [node name="Card3" parent="ColorRect" instance=ExtResource("2_8o0b7")]
+layout_mode = 0
 offset_left = 433.0
 offset_top = 32.0
 offset_right = 625.0
 offset_bottom = 288.0
 
 [node name="Card4" parent="ColorRect" instance=ExtResource("2_8o0b7")]
+layout_mode = 0
 offset_left = 635.0
 offset_top = 32.0
 offset_right = 827.0
 offset_bottom = 288.0
 
 [node name="Card5" parent="ColorRect" instance=ExtResource("2_8o0b7")]
+layout_mode = 0
 offset_left = 837.0
 offset_top = 32.0
 offset_right = 1029.0
 offset_bottom = 288.0
 
 [node name="Card6" parent="ColorRect" instance=ExtResource("2_8o0b7")]
+layout_mode = 0
 offset_left = 1039.0
 offset_top = 32.0
 offset_right = 1231.0
 offset_bottom = 288.0
 
 [node name="Card7" parent="ColorRect" instance=ExtResource("2_8o0b7")]
+layout_mode = 0
 offset_left = 1241.0
 offset_top = 32.0
 offset_right = 1433.0
 offset_bottom = 288.0
 
 [node name="Card8" parent="ColorRect" instance=ExtResource("2_8o0b7")]
+layout_mode = 0
 offset_left = 1443.0
 offset_top = 32.0
 offset_right = 1635.0

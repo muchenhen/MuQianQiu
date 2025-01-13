@@ -1,11 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://f6almg3y652y"]
+[gd_scene load_steps=7 format=3 uid="uid://f6almg3y652y"]
 
 [ext_resource type="Script" path="res://Scripts/UI/UI_DealStatus.gd" id="1_d8eqb"]
 [ext_resource type="Texture2D" uid="uid://bm2itb8y3330b" path="res://Textures/MainBG.png" id="1_ntum8"]
 [ext_resource type="Script" path="res://Scripts/Objects/GridBox.gd" id="2_l01s4"]
 [ext_resource type="PackedScene" uid="uid://b6vosary0xtcn" path="res://Scripts/Objects/Card.tscn" id="3_wsan5"]
 [ext_resource type="FontFile" uid="uid://cgqf6jr2l5srf" path="res://Font/SourceHanSerifSC-Regular-simplified.otf" id="5_5qn0e"]
-[ext_resource type="PackedScene" uid="uid://d23b3fpdcql8q" path="res://UI/UI_DealStoryStatus.tscn" id="5_nqp7q"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_8gbii"]
 font = ExtResource("5_5qn0e")
@@ -238,12 +237,6 @@ scale = Vector2(0.867546, 0.867546)
 button_mask = 0
 
 [node name="FinishedStory" type="Node2D" parent="."]
-
-[node name="UiDealStoryStatus" parent="FinishedStory" instance=ExtResource("5_nqp7q")]
-offset_left = 368.0
-offset_top = 200.0
-offset_right = 2032.0
-offset_bottom = 520.0
 
 [node name="ButtonCurrentDeal" type="Button" parent="."]
 layout_mode = 0
