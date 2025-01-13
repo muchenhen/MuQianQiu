@@ -23,20 +23,32 @@ class_name UI_DealStatus
 @onready var card19: Card = $CurrentDeal/Card19
 @onready var card20: Card = $CurrentDeal/Card20
 
+@onready var finished_story = $FinishedStory
+
+@onready var current_deal = $CurrentDeal
+
 @onready var button_back = $ButtonBack
+@onready var button_current_deal = $ButtonCurrentDeal
+@onready var button_finished_story = $ButtonFinishedStory
 
 var ui_manager:UIManager = UIManager.get_instance()
 
 var cards = []
 
 func _ready() -> void:
+	# 绑定返回按钮点击事件
+	button_back.connect("pressed", Callable(self, "_on_button_back_click"))
+	button_current_deal.connect("pressed", Callable(self, "_on_button_current_deal_click"))
+	button_finished_story.connect("pressed", Callable(self, "_on_button_finished_story_click"))
+
 	cards = [card1, card2, card3, card4, card5, card6, card7, card8, card9, card10, card11, card12, card13, card14, card15, card16, card17, card18, card19, card20]
 	# 设置所有cards不可见 并且禁止点击
 	for card in cards:
 		card.hide()
 		card.disable_click()
-	# 绑定返回按钮点击事件
-	button_back.connect("pressed", Callable(self, "_on_button_back_click"))
+
+	current_deal.show()
+	finished_story.hide()
 
 
 func set_card_info_by_index_with_id(index: int, card_id: int) -> void:
@@ -53,6 +65,15 @@ func update_deal_status_by_player(player: Player) -> void:
 		var card_id = deal_cards.keys()[i]
 		set_card_info_by_index_with_id(index, card_id)
 		index += 1
+
+
+func _on_button_current_deal_click():
+	current_deal.show()
+	finished_story.hide()
+
+func _on_button_finished_story_click():
+	current_deal.hide()
+	finished_story.show()
 
 
 func _on_button_back_click():
