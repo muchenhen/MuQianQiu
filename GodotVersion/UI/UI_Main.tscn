@@ -144,19 +144,6 @@ offset_bottom = 712.0
 rotation = -0.0715585
 color = Color(1, 0, 0.983333, 1)
 
-[node name="PlayerADeal" type="Button" parent="Cards"]
-self_modulate = Color(1, 1, 1, 0)
-z_index = 999
-offset_top = 720.0
-offset_right = 312.0
-offset_bottom = 1080.0
-
-[node name="PlayerBDeal" type="Button" parent="Cards"]
-self_modulate = Color(1, 1, 1, 0)
-z_index = 999
-offset_right = 312.0
-offset_bottom = 360.0
-
 [node name="ColorRect2" type="ColorRect" parent="Cards"]
 visible = false
 offset_right = 320.0
@@ -206,3 +193,16 @@ vertical_alignment = 1
 
 [node name="BGBlur" parent="UI" instance=ExtResource("4_o4txw")]
 visible = false
+
+[node name="PlayerADeal" type="Button" parent="."]
+self_modulate = Color(1, 1, 1, 0)
+z_index = 999
+offset_top = 720.0
+offset_right = 312.0
+offset_bottom = 1080.0
+
+[node name="PlayerBDeal" type="Button" parent="."]
+self_modulate = Color(1, 1, 1, 0)
+z_index = 999
+offset_right = 312.0
+offset_bottom = 360.0
