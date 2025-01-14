@@ -30,11 +30,14 @@ class_name UI_DealStatus
 @onready var button_back = $ButtonBack
 @onready var button_current_deal = $ButtonCurrentDeal
 @onready var button_finished_story = $ButtonFinishedStory
+@onready var button_no_complete_story = $ButtonNoCompleteStory
 
 var ui_manager:UIManager = UIManager.get_instance()
 var story_manager:StoryManager = StoryManager.get_instance()
 
 var current_player:Player = null
+
+var test_index = 0;
 
 var cards = []
 
@@ -43,6 +46,7 @@ func _ready() -> void:
 	button_back.connect("pressed", Callable(self, "_on_button_back_click"))
 	button_current_deal.connect("pressed", Callable(self, "_on_button_current_deal_click"))
 	button_finished_story.connect("pressed", Callable(self, "_on_button_finished_story_click"))
+	button_no_complete_story.connect("pressed", Callable(self, "_on_button_no_complete_story_click"))
 
 	cards = [card1, card2, card3, card4, card5, card6, card7, card8, card9, card10, card11, card12, card13, card14, card15, card16, card17, card18, card19, card20]
 	# 设置所有cards不可见 并且禁止点击
@@ -90,6 +94,7 @@ func update_finished_story_by_player(player: Player) -> void:
 		# 创建一个UI_DealStoryStatus实例
 		var deal_story_status:UI_DealStoryStatus = ui_manager.create_ui_instance_for_multi("UI_DealStoryStatus")
 		# 将deal_story_status添加到finished_story
+		deal_story_status.name = story["Name"]
 		finished_story.add_child(deal_story_status)
 		deal_story_status.update_story_status_by_id(story_id)
 
@@ -101,6 +106,23 @@ func _on_button_current_deal_click():
 func _on_button_finished_story_click():
 	current_deal.hide()
 	finished_story.show()
+
+func _on_button_no_complete_story_click():
+	# 现在是测试用
+	# 从story_manager中获取一个story
+	var storys = story_manager.stories
+	var story_id = storys.keys()[test_index]
+	test_index += 1
+	if test_index >= storys.size():
+		test_index = 0
+	# 创建一个UI_DealStoryStatus实例
+	var deal_story_status:UI_DealStoryStatus = ui_manager.create_ui_instance_for_multi("UI_DealStoryStatus")
+	# 将deal_story_status添加到finished_story
+	finished_story.add_child(deal_story_status)
+	deal_story_status.name = storys[story_id]["Name"]
+	deal_story_status.update_story_status_by_id(story_id)
+	finished_story.layout_items()
+
 
 
 func _on_button_back_click():
