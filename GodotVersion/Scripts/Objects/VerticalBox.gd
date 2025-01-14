@@ -2,6 +2,13 @@
 extends ColorRect
 class_name VerticalBox
 
+enum LayoutMode {
+	CENTER, # 居中布局模式
+	STACK # 堆叠布局模式
+}
+
+
+@export var custom_layout_mode: LayoutMode = LayoutMode.CENTER
 @export var item_padding: float = 10.0
 @export var auto_layout: bool = true
 
@@ -28,26 +35,34 @@ func layout_items():
 	if item_count == 0:
 		return
 	
-	# 计算所有项目的总高度
+	# 计算所有项目的总高度，考虑scale
 	var total_height = 0
 	for item in items:
 		if item is Control:
-			total_height += item.size.y
+			total_height += item.size.y * item.scale.y
 	
 	# 添加间距到总高度
-	total_height += item_padding * (item_count - 1)
+	if item_count > 1:
+		total_height += item_padding * (item_count - 1)
 	
-	# 计算起始 y 位置 (居中)
-	var start_y = (size.y - total_height) / 2
+	# 根据不同模式计算起始位置
+	var start_y = 0.0
+	if custom_layout_mode == LayoutMode.CENTER:
+		start_y = (size.y - total_height) / 2
+	elif custom_layout_mode == LayoutMode.STACK:
+		start_y = 0
 	
 	# 布局项目
 	for item in items:
 		if item is Control:
-			# 设置位置，水平居中，垂直依次排列
-			item.set_position(Vector2((size.x - item.size.x) / 2, start_y))
-			
-			# 更新下一个项目的起始 y 位置
-			start_y += item.size.y + item_padding
+			match custom_layout_mode:
+				LayoutMode.CENTER:
+					item.set_position(Vector2(0, start_y))
+					start_y += item.size.y * item.scale.y + item_padding
+				LayoutMode.STACK:
+					item.set_position(Vector2(0, start_y))
+					start_y += item.size.y * item.scale.y + item_padding
+
 
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings = PackedStringArray()
