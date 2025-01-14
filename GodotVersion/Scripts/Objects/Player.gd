@@ -28,7 +28,7 @@ var player_score: int = 0
 
 var score_ui:Label = null
 
-var player_finish_stories = []
+var finished_stories = []
 
 var hand_cards_pos_array = []
 
@@ -231,10 +231,12 @@ func check_finish_story() -> void:
 	var this_time_completed_stories = story_manager.check_story_finish_by_cards_id(deal_cards_id)
 	show_new_finished_stories(this_time_completed_stories)
 	
+# 展示新完成的故事
 func show_new_finished_stories(this_time_completed_stories: Array):
 	story_queue = this_time_completed_stories.duplicate()
 	_show_next_story()
 
+# 展示下一个新完成的故事
 func _show_next_story():
 	if not story_queue.is_empty():
 		var story = story_queue.pop_front()
@@ -243,8 +245,11 @@ func _show_next_story():
 		print("玩家 ", player_name, " 所有新完成的故事展示完毕")
 		new_story_show_finished.emit()
 
+# 展示一个新完成的故事
 func show_one_new_finished_story(story):
 	print("玩家 ", player_name, " 完成了故事 ", story["Name"])
+	# 将故事添加到玩家的完成故事列表中
+	finished_stories.append(story)
 	# 给对应玩家增加当前故事的分数
 	add_score(story["Score"])
 	# 使用sc_story_show展示当前故事的卡牌

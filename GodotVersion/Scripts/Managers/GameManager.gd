@@ -55,6 +55,8 @@ enum PlayerChooseState{
 
 ############################################
 
+## 获取当前选中的版本数量
+## 返回：选中版本的总数
 func get_checked_count():
 	var count = 0
 	if is_open_first:
@@ -65,6 +67,9 @@ func get_checked_count():
 		count += 1
 	return count
 
+## 初始化游戏管理器
+## 设置单例实例，初始化各个管理器，注册UI元素
+## 创建计时器和音频管理器，初始化玩家对象
 func _ready():
 	if instance == null:
 		instance = self
@@ -103,10 +108,12 @@ func _ready():
 
 		ui_manager.open_ui("UI_Start")
 
-# 开始新游戏
+## 开始新游戏
+## 播放背景音乐，初始化UI，准备卡牌
+## 设置玩家分数UI，创建卡牌实例并收集各个位置信息
 func start_new_game():
 	print("开始新游戏")
-	AudioManager.get_instance().play_bgm("QianQiu")
+	# AudioManager.get_instance().play_bgm("QianQiu")
 	ui_manager.destroy_ui("UI_Start")
 
 	var choosed_versions = []
@@ -163,6 +170,10 @@ func start_new_game():
 
 
 
+## 不带动画效果的发牌
+## 参数：
+## - cards: 要发放的卡牌数组
+## 直接设置卡牌位置，跳过动画效果
 func send_card_for_play_without_anim(cards):
 	cards_to_animate = []
 	current_card_index = 0
@@ -197,7 +208,10 @@ func send_card_for_play_without_anim(cards):
 		
 	start_round()
 
-
+## 带动画效果的发牌
+## 参数：
+## - cards: 要发放的卡牌数组
+## 设置动画序列，逐张发牌
 func send_card_for_play(cards):
 	cards_to_animate = []
 	current_card_index = 0
@@ -229,6 +243,8 @@ func send_card_for_play(cards):
 	# 开始第一张卡的动画
 	animate_next_card()
 
+## 执行下一张卡牌的动画
+## 处理卡牌移动和旋转动画，设置下一张卡牌的动画定时器
 func animate_next_card():
 	if current_card_index < cards_to_animate.size():
 		var card_data = cards_to_animate[current_card_index]
@@ -258,15 +274,20 @@ func animate_next_card():
 		input_manager.allow_input()
 		change_round()
 
-# 如果需要中止动画序列
+## 停止动画序列
+## 立即终止所有待执行的卡牌动画
 func stop_animation_sequence():
 	animation_timer.stop()
 	current_card_index = cards_to_animate.size()  # 这将阻止进一步的动画
 
-#  单个发牌动画结束后的回调
+## 单张卡牌动画结束的回调函数
+## 参数：
+## - card: 完成动画的卡牌
 func send_card_anim_end(card):
 	card.update_card()
 
+## 开始新的回合
+## 重置卡牌状态，更新Z轴索引，切换回合
 func start_round():
 	print("开始新一轮")
 
@@ -280,6 +301,10 @@ func start_round():
 	# 重置当前轮次
 	change_round()
 
+## 处理公共卡牌补充事件
+## 参数：
+## - type: 补充类型
+## 根据当前回合状态切换到下一个玩家的回合
 func on_suply_public_card(type):
 	if type == "supply_end":
 		if current_round == GameRound.WAITING:
@@ -289,6 +314,8 @@ func on_suply_public_card(type):
 		else:
 			change_to_a_round()
 
+## 切换回合
+## 更新回合计数，检查游戏是否结束，补充公共卡牌
 func change_round():
 	current_round_index += 1
 	print("当前回合: ", current_round_index)
@@ -303,7 +330,8 @@ func change_round():
 	# 补充公共牌手牌
 	public_deal.supply_hand_card()
 
-
+## 切换到玩家A的回合
+## 设置玩家状态，更新卡牌可点击状态，处理AI玩家
 func change_to_a_round():
 	current_round = GameRound.PLAYER_A
 	player_b.set_player_state(Player.PlayerState.WAITING)
@@ -321,6 +349,8 @@ func change_to_a_round():
 	if player_a.has_hand_card():
 		player_a.check_hand_card_season()
 
+## 切换到玩家B的回合
+## 设置玩家状态，更新卡牌可点击状态，处理AI玩家
 func change_to_b_round():
 	current_round = GameRound.PLAYER_B
 	player_a.set_player_state(Player.PlayerState.WAITING)
@@ -338,7 +368,11 @@ func change_to_b_round():
 	if player_b.has_hand_card():
 		player_b.check_hand_card_season()
 
-# 玩家已经选择了一张手牌并且确认要选择了一张公共区域的牌
+## 处理玩家选择公共卡牌的事件
+## 参数：
+## - player_choosing_card: 玩家选择的手牌
+## - public_choosing_card: 选择的公共卡牌
+## 执行卡牌移动动画，更新玩家分数
 func player_choose_public_card(player_choosing_card, public_choosing_card):
 	input_manager.block_input()
 	var player
@@ -383,20 +417,28 @@ func player_choose_public_card(player_choosing_card, public_choosing_card):
 
 	player.check_finish_story()
 
-
+## 显示新完成的故事
+## 切换回合并允许输入
 func show_new_finished_stories():
 	change_round()
 	input_manager.allow_input()
 
-# 打印场景树的辅助函数
+## 打印场景树结构的辅助函数
+## 参数：
+## - node: 要打印的节点
+## - indent: 缩进字符串
 func print_scene_tree(node, indent=""):
 	print(indent + node.name)
 	for child in node.get_children():
 		print_scene_tree(child, indent + "  ")
 
+## 获取公共卡牌管理对象
+## 返回：PublicCardDeal实例
 func get_public_card_deal():
 	return public_deal
 
+## 返回到主菜单
+## 清理游戏状态，销毁UI，重置回合计数
 func back_to_main():
 	story_manager.clear()
 	card_manager.clear()
