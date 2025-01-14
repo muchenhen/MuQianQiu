@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://f6almg3y652y"]
+[gd_scene load_steps=9 format=3 uid="uid://f6almg3y652y"]
 
 [ext_resource type="Script" path="res://Scripts/UI/UI_DealStatus.gd" id="1_d8eqb"]
 [ext_resource type="Texture2D" uid="uid://bm2itb8y3330b" path="res://Textures/MainBG.png" id="1_ntum8"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://b6vosary0xtcn" path="res://Scripts/Objects/Card.tscn" id="3_wsan5"]
 [ext_resource type="Script" path="res://Scripts/Objects/VerticalBox.gd" id="5_1i5vq"]
 [ext_resource type="FontFile" uid="uid://cgqf6jr2l5srf" path="res://Font/SourceHanSerifSC-Regular-simplified.otf" id="5_5qn0e"]
+[ext_resource type="PackedScene" uid="uid://d23b3fpdcql8q" path="res://UI/UI_DealStoryStatus.tscn" id="7_4tnjh"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_8gbii"]
 font = ExtResource("5_5qn0e")
@@ -239,11 +240,29 @@ button_mask = 0
 
 [node name="FinishedStory" type="ColorRect" parent="."]
 layout_mode = 0
-offset_left = 384.0
+offset_left = 352.0
 offset_top = 192.0
-offset_right = 1568.0
+offset_right = 1600.0
 offset_bottom = 984.0
+color = Color(0, 0, 0, 0)
 script = ExtResource("5_1i5vq")
+custom_layout_mode = 1
+item_padding = 20.0
+
+[node name="UiDealStoryStatus" parent="FinishedStory" instance=ExtResource("7_4tnjh")]
+offset_top = 0.0
+offset_bottom = 320.0
+scale = Vector2(0.607031, 0.607031)
+
+[node name="UiDealStoryStatus2" parent="FinishedStory" instance=ExtResource("7_4tnjh")]
+offset_top = 214.25
+offset_bottom = 534.25
+scale = Vector2(0.607031, 0.607031)
+
+[node name="UiDealStoryStatus3" parent="FinishedStory" instance=ExtResource("7_4tnjh")]
+offset_top = 428.5
+offset_bottom = 748.5
+scale = Vector2(0.607031, 0.607031)
 
 [node name="ButtonCurrentDeal" type="Button" parent="."]
 layout_mode = 0
