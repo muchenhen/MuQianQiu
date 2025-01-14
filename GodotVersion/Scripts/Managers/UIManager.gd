@@ -91,6 +91,7 @@ func open_ui_instance(ui_instance: Node) -> void:
 	root.add_child(ui_instance)
 
 func move_ui_instance_to_top(ui_instance: Node) -> void:
+	ui_instance.z_as_relative = true
 	ui_instance.z_index = 999
 
 # 关闭显示但是不销毁

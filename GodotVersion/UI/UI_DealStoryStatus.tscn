@@ -24,63 +24,71 @@ offset_right = 2027.0
 offset_bottom = 320.0
 color = Color(0.168627, 0.168627, 0.168627, 1)
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="HorBox" type="ColorRect" parent="."]
 layout_mode = 0
 offset_right = 1664.0
 offset_bottom = 320.0
 color = Color(0.0823529, 0.0823529, 0.0823529, 0.6)
 script = ExtResource("1_ydu2q")
 
-[node name="Card1" parent="ColorRect" instance=ExtResource("2_8o0b7")]
+[node name="Card1" parent="HorBox" instance=ExtResource("2_8o0b7")]
+z_as_relative = true
 layout_mode = 0
 offset_left = 29.0
 offset_top = 32.0
 offset_right = 221.0
 offset_bottom = 288.0
 
-[node name="Card2" parent="ColorRect" instance=ExtResource("2_8o0b7")]
+[node name="Card2" parent="HorBox" instance=ExtResource("2_8o0b7")]
+z_as_relative = true
 layout_mode = 0
 offset_left = 231.0
 offset_top = 32.0
 offset_right = 423.0
 offset_bottom = 288.0
 
-[node name="Card3" parent="ColorRect" instance=ExtResource("2_8o0b7")]
+[node name="Card3" parent="HorBox" instance=ExtResource("2_8o0b7")]
+z_as_relative = true
 layout_mode = 0
 offset_left = 433.0
 offset_top = 32.0
 offset_right = 625.0
 offset_bottom = 288.0
 
-[node name="Card4" parent="ColorRect" instance=ExtResource("2_8o0b7")]
+[node name="Card4" parent="HorBox" instance=ExtResource("2_8o0b7")]
+z_as_relative = true
 layout_mode = 0
 offset_left = 635.0
 offset_top = 32.0
 offset_right = 827.0
 offset_bottom = 288.0
 
-[node name="Card5" parent="ColorRect" instance=ExtResource("2_8o0b7")]
+[node name="Card5" parent="HorBox" instance=ExtResource("2_8o0b7")]
+z_as_relative = true
 layout_mode = 0
 offset_left = 837.0
 offset_top = 32.0
 offset_right = 1029.0
 offset_bottom = 288.0
 
-[node name="Card6" parent="ColorRect" instance=ExtResource("2_8o0b7")]
+[node name="Card6" parent="HorBox" instance=ExtResource("2_8o0b7")]
+z_as_relative = true
 layout_mode = 0
 offset_left = 1039.0
 offset_top = 32.0
 offset_right = 1231.0
 offset_bottom = 288.0
 
-[node name="Card7" parent="ColorRect" instance=ExtResource("2_8o0b7")]
+[node name="Card7" parent="HorBox" instance=ExtResource("2_8o0b7")]
+z_as_relative = true
 layout_mode = 0
 offset_left = 1241.0
 offset_top = 32.0
 offset_right = 1433.0
 offset_bottom = 288.0
 
-[node name="Card8" parent="ColorRect" instance=ExtResource("2_8o0b7")]
+[node name="Card8" parent="HorBox" instance=ExtResource("2_8o0b7")]
+z_as_relative = true
 layout_mode = 0
 offset_left = 1443.0
 offset_top = 32.0
