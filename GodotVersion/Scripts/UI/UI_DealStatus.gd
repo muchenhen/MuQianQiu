@@ -23,7 +23,8 @@ class_name UI_DealStatus
 @onready var card19: Card = $CurrentDeal/Card19
 @onready var card20: Card = $CurrentDeal/Card20
 
-@onready var finished_story = $FinishedStory
+@onready var finished_stroy_scroll = $FinishedStoryScroll
+@onready var finished_story_vb = $FinishedStoryScroll/FinishedStoryVB
 
 @onready var current_deal = $CurrentDeal
 
@@ -55,7 +56,7 @@ func _ready() -> void:
 		card.disable_click()
 
 	current_deal.show()
-	finished_story.hide()
+	finished_stroy_scroll.hide()
 
 
 func set_card_info_by_index_with_id(index: int, card_id: int) -> void:
@@ -83,8 +84,8 @@ func update_deal_status_by_player(player: Player) -> void:
 	# for story_id in story_ids:
 	# 	# 创建一个UI_DealStoryStatus实例
 	# 	var deal_story_status:UI_DealStoryStatus = ui_manager.create_ui_instance_for_multi("UI_DealStoryStatus")
-	# 	# 将deal_story_status添加到finished_story
-	# 	finished_story.add_child(deal_story_status)
+	# 	# 将deal_story_status添加到finished_story_vb
+	# 	finished_story_vb.add_child(deal_story_status)
 	# 	deal_story_status.update_story_status_by_id(story_id)
 	
 func update_finished_story_by_player(player: Player) -> void:
@@ -93,19 +94,19 @@ func update_finished_story_by_player(player: Player) -> void:
 		var story_id = story["ID"]
 		# 创建一个UI_DealStoryStatus实例
 		var deal_story_status:UI_DealStoryStatus = ui_manager.create_ui_instance_for_multi("UI_DealStoryStatus")
-		# 将deal_story_status添加到finished_story
+		# 将deal_story_status添加到finished_story_vb
 		deal_story_status.name = story["Name"]
-		finished_story.add_child(deal_story_status)
+		finished_story_vb.add_child(deal_story_status)
 		deal_story_status.update_story_status_by_id(story_id)
 
 
 func _on_button_current_deal_click():
 	current_deal.show()
-	finished_story.hide()
+	finished_stroy_scroll.hide()
 
 func _on_button_finished_story_click():
 	current_deal.hide()
-	finished_story.show()
+	finished_stroy_scroll.show()
 
 func _on_button_no_complete_story_click():
 	# 现在是测试用
@@ -117,11 +118,10 @@ func _on_button_no_complete_story_click():
 		test_index = 0
 	# 创建一个UI_DealStoryStatus实例
 	var deal_story_status:UI_DealStoryStatus = ui_manager.create_ui_instance_for_multi("UI_DealStoryStatus")
-	# 将deal_story_status添加到finished_story
-	finished_story.add_child(deal_story_status)
+	# 将deal_story_status添加到finished_story_vb
+	finished_story_vb.add_child(deal_story_status)
 	deal_story_status.name = storys[story_id]["Name"]
 	deal_story_status.update_story_status_by_id(story_id)
-	finished_story.layout_items()
 
 
 
