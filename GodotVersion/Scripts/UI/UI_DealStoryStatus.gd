@@ -43,3 +43,12 @@ func update_story_status_by_id(story_id: int) -> void:
 		card.update_card_info_by_id(card_id)
 		index += 1		
 	
+
+# 传入一组卡牌ID，检查所有可见的卡牌，ID存在于传入的卡牌ID数组中的卡牌，设置彩色，否则设置灰色
+func set_card_color_by_ids(cards_id:Array) -> void:
+	for card in cards:
+		if card.is_visible():
+			if cards_id.find(card.ID) != -1:
+				card.set_card_gray(false)
+			else:
+				card.set_card_gray(true)

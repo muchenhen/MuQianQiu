@@ -17,14 +17,14 @@ func _on_ScrollContainer_gui_input(event):
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			dragging = event.pressed
-			print("Drag State: ", dragging)
+			#print("Drag State: ", dragging)
 				
 	elif event is InputEventMouseMotion and dragging:
 		# 直接使用relative获取鼠标移动的相对量
 		var relative_motion = event.relative
-		print("Relative Motion: ", relative_motion)
+		#print("Relative Motion: ", relative_motion)
 		
 		# 更新垂直和水平滚动
 		scroll_vertical -= relative_motion.y
 		scroll_horizontal -= relative_motion.x
-		print("New Scroll Position - V: ", scroll_vertical, " H: ", scroll_horizontal)
+		#print("New Scroll Position - V: ", scroll_vertical, " H: ", scroll_horizontal)

@@ -71,7 +71,7 @@ func get_relent_stories(card_id:int) -> Array:
 	return relent_stories
 
 # 通过卡牌ID数组，获取与这些卡牌相关的故事，返回去重后的故事ID数组
-func get_relent_stories_by_cards_id(cards_id:Array) -> Array:
+func get_relent_stories_id_by_cards_id(cards_id:Array) -> Array:
 	var stories_id = []
 	for card_id in cards_id:
 		var card_relent_stories = get_relent_stories(card_id)
@@ -79,6 +79,16 @@ func get_relent_stories_by_cards_id(cards_id:Array) -> Array:
 			if stories_id.find(story["ID"]) == -1:
 				stories_id.append(story["ID"])
 	return stories_id
+
+# 通过卡牌ID数组，获取与这些卡牌相关的故事，返回去重后的故事结构所组成的数组
+func get_relent_stories_by_cards_id(cards_id:Array) -> Array:
+	var relent_stories = []
+	for card_id in cards_id:
+		var card_relent_stories = get_relent_stories(card_id)
+		for story in card_relent_stories:
+			if relent_stories.find(story) == -1:
+				relent_stories.append(story)
+	return relent_stories
 
 # 检查玩家是否完成了某个故事
 func check_story_finish_by_cards_id(cards_id:Array) -> Array:

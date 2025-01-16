@@ -155,3 +155,12 @@ func get_season() -> String:
 
 func set_player_owner(player: Player) -> void:
 	player_owner = player
+
+
+# 设置卡面实例是否灰色
+func set_card_gray(is_gray: bool) -> void:
+	var gray_shader = load("res://Shaders/gray.gdshader")
+	var card_material = ShaderMaterial.new()
+	card_material.shader = gray_shader
+	card_material.set_shader_parameter("is_gray", is_gray)
+	self.material = card_material

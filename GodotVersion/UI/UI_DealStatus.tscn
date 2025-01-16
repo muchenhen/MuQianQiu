@@ -252,6 +252,21 @@ custom_minimum_size = Vector2(1240, 700)
 layout_mode = 2
 mouse_filter = 2
 
+[node name="UnFinishedStoryScroll" type="ScrollContainer" parent="."]
+layout_mode = 0
+offset_left = 344.0
+offset_top = 176.0
+offset_right = 1592.0
+offset_bottom = 872.0
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
+script = ExtResource("8_8pbiy")
+
+[node name="UnFinishedStoryVB" type="VBoxContainer" parent="UnFinishedStoryScroll"]
+custom_minimum_size = Vector2(1240, 700)
+layout_mode = 2
+mouse_filter = 2
+
 [node name="ButtonCurrentDeal" type="Button" parent="."]
 layout_mode = 0
 offset_left = 464.0
