@@ -2,18 +2,19 @@ extends Node
 
 class_name UI_DealStoryStatus
 
-@onready var card1: Card = $HorBox/Card1
-@onready var card2: Card = $HorBox/Card2
-@onready var card3: Card = $HorBox/Card3
-@onready var card4: Card = $HorBox/Card4
-@onready var card5: Card = $HorBox/Card5
-@onready var card6: Card = $HorBox/Card6
-@onready var card7: Card = $HorBox/Card7
-@onready var card8: Card = $HorBox/Card8
+@onready var hor_box = $Node2D/HorBox
 
-@onready var hor_box = $HorBox
+@onready var card1: Card = $Node2D/HorBox/Card1
+@onready var card2: Card = $Node2D/HorBox/Card2
+@onready var card3: Card = $Node2D/HorBox/Card3
+@onready var card4: Card = $Node2D/HorBox/Card4
+@onready var card5: Card = $Node2D/HorBox/Card5
+@onready var card6: Card = $Node2D/HorBox/Card6
+@onready var card7: Card = $Node2D/HorBox/Card7
+@onready var card8: Card = $Node2D/HorBox/Card8
 
-@onready var story_name = $Text_StoryName
+
+@onready var story_name = $Node2D/Text_StoryName
 
 
 var cards:Array[Card] = []
@@ -42,3 +43,12 @@ func update_story_status_by_id(story_id: int) -> void:
 		card.update_card_info_by_id(card_id)
 		index += 1		
 	
+
+# 传入一组卡牌ID，检查所有可见的卡牌，ID存在于传入的卡牌ID数组中的卡牌，设置彩色，否则设置灰色
+func set_card_color_by_ids(cards_id:Array) -> void:
+	for card in cards:
+		if card.is_visible():
+			if cards_id.find(card.ID) != -1:
+				card.set_card_gray(false)
+			else:
+				card.set_card_gray(true)

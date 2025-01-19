@@ -23,7 +23,10 @@ class_name UI_DealStatus
 @onready var card19: Card = $CurrentDeal/Card19
 @onready var card20: Card = $CurrentDeal/Card20
 
-@onready var finished_story = $FinishedStory
+@onready var finished_stroy_scroll = $FinishedStoryScroll
+@onready var finished_story_vb = $FinishedStoryScroll/FinishedStoryVB
+@onready var unfinished_story_scroll = $UnFinishedStoryScroll
+@onready var unfinished_story_vb = $UnFinishedStoryScroll/UnFinishedStoryVB
 
 @onready var current_deal = $CurrentDeal
 
@@ -55,7 +58,8 @@ func _ready() -> void:
 		card.disable_click()
 
 	current_deal.show()
-	finished_story.hide()
+	finished_stroy_scroll.hide()
+	unfinished_story_scroll.hide()
 
 
 func set_card_info_by_index_with_id(index: int, card_id: int) -> void:
@@ -67,6 +71,12 @@ func set_card_info_by_index_with_id(index: int, card_id: int) -> void:
 
 
 func update_deal_status_by_player(player: Player) -> void:
+	update_current_deal_status_by_player(player)
+	update_finished_story_by_player(player)
+	update_unfinished_story_by_player(player)
+
+
+func update_current_deal_status_by_player(player: Player) -> void:
 	current_player = player
 	var deal_cards:Dictionary = player.deal_cards
 	var index = 0
@@ -74,55 +84,66 @@ func update_deal_status_by_player(player: Player) -> void:
 		var card_id = deal_cards.keys()[i]
 		set_card_info_by_index_with_id(index, card_id)
 		index += 1
-	
-	update_finished_story_by_player(player)
 
-	# var card_ids = deal_cards.keys()
-	# # 通过已经属于玩家的卡牌，检索所有包含这些卡牌的故事
-	# var story_ids = story_manager.get_relent_stories_by_cards_id(card_ids)
-	# for story_id in story_ids:
-	# 	# 创建一个UI_DealStoryStatus实例
-	# 	var deal_story_status:UI_DealStoryStatus = ui_manager.create_ui_instance_for_multi("UI_DealStoryStatus")
-	# 	# 将deal_story_status添加到finished_story
-	# 	finished_story.add_child(deal_story_status)
-	# 	deal_story_status.update_story_status_by_id(story_id)
-	
+
+## 根据玩家已完成的故事内容更新UI显示
+## 为每个已完成的故事创建并添加一个UI_DealStoryStatus实例到垂直容器中
+## [param] player: 需要更新UI的玩家实例
 func update_finished_story_by_player(player: Player) -> void:
 	var finished_stories = player.finished_stories
 	for story in finished_stories:
 		var story_id = story["ID"]
 		# 创建一个UI_DealStoryStatus实例
 		var deal_story_status:UI_DealStoryStatus = ui_manager.create_ui_instance_for_multi("UI_DealStoryStatus")
-		# 将deal_story_status添加到finished_story
+		# 将deal_story_status添加到finished_story_vb
 		deal_story_status.name = story["Name"]
-		finished_story.add_child(deal_story_status)
+		finished_story_vb.add_child(deal_story_status)
 		deal_story_status.update_story_status_by_id(story_id)
 
 
+func update_unfinished_story_by_player(player: Player) -> void:
+	# 获取玩家所有手牌的ID
+	var deal_cards_id:Array
+	current_player = player
+	var deal_cards:Dictionary = player.deal_cards
+	for i in range(deal_cards.size()):
+		var card_id = deal_cards.keys()[i]
+		deal_cards_id.append(card_id)
+	# 获取所有和这些手牌相关的故事ID
+	var stories_id:Array = story_manager.get_relent_stories_id_by_cards_id(deal_cards_id)
+	# 从所有故事中去掉已完成的故事
+	var finished_stories = player.finished_stories
+	for story in finished_stories:
+		stories_id.erase(story["ID"])
+	# 创建UI_DealStoryStatus实例
+	for story_id in stories_id:
+		var deal_story_status:UI_DealStoryStatus = ui_manager.create_ui_instance_for_multi("UI_DealStoryStatus")
+		deal_story_status.name = story_manager.stories[story_id]["Name"]
+		unfinished_story_vb.add_child(deal_story_status)
+		deal_story_status.update_story_status_by_id(story_id)
+		# 玩家没有的卡牌设置为灰色
+		deal_story_status.set_card_color_by_ids(deal_cards_id)
+
+
+# 显示当前玩家手牌，隐藏已完成故事和未完成故事
 func _on_button_current_deal_click():
 	current_deal.show()
-	finished_story.hide()
+	finished_stroy_scroll.hide()
+	unfinished_story_scroll.hide()
 
+
+# 显示已完成故事，隐藏当前玩家手牌和未完成故事
 func _on_button_finished_story_click():
 	current_deal.hide()
-	finished_story.show()
+	finished_stroy_scroll.show()
+	unfinished_story_scroll.hide()
 
+
+# 显示未完成故事，隐藏当前玩家手牌和已完成故事
 func _on_button_no_complete_story_click():
-	# 现在是测试用
-	# 从story_manager中获取一个story
-	var storys = story_manager.stories
-	var story_id = storys.keys()[test_index]
-	test_index += 1
-	if test_index >= storys.size():
-		test_index = 0
-	# 创建一个UI_DealStoryStatus实例
-	var deal_story_status:UI_DealStoryStatus = ui_manager.create_ui_instance_for_multi("UI_DealStoryStatus")
-	# 将deal_story_status添加到finished_story
-	finished_story.add_child(deal_story_status)
-	deal_story_status.name = storys[story_id]["Name"]
-	deal_story_status.update_story_status_by_id(story_id)
-	finished_story.layout_items()
-
+	current_deal.hide()
+	finished_stroy_scroll.hide()
+	unfinished_story_scroll.show()
 
 
 func _on_button_back_click():
