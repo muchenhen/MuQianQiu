@@ -152,7 +152,6 @@ metadata/_edit_lock_ = true
 
 [node name="PlayerADealCard" parent="Cards" instance=ExtResource("2_immq1")]
 visible = false
-material = null
 offset_left = 64.0
 offset_top = 768.0
 offset_right = 256.0
@@ -163,7 +162,6 @@ metadata/_edit_lock_ = true
 
 [node name="PlayerBDealCard" parent="Cards" instance=ExtResource("2_immq1")]
 visible = false
-material = null
 offset_left = 64.0
 offset_top = 48.0
 offset_right = 256.0

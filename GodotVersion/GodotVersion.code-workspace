@@ -2,12 +2,9 @@
 	"folders": [
 		{
 			"path": "."
-		},
-		{
-			"path": "../CSV"
 		}
 	],
 	"settings": {
-		"godotTools.editorPath.godot4": "k:\\Godot_Projects\\godot-4.3-stable\\bin\\godot.windows.editor.x86_64.console.exe"
+		"godotTools.editorPath.godot4": "e:\\GitHub\\godot\\bin\\godot.windows.editor.x86_64.exe"
 	}
 }
