@@ -88,6 +88,15 @@ func open_ui(key: String) -> Node:
 		push_error("UIManager: Open UI failed: ", key)
 		return null
 
+func open_ui_to_top(key: String) -> Node:
+	var ui_instance = open_ui(key)
+	if ui_instance:
+		move_ui_instance_to_top(ui_instance)
+		return ui_instance
+	else:
+		push_error("UIManager: Open UI to top failed: ", key)
+		return null
+
 func open_ui_instance(ui_instance: Node) -> void:
 	root.add_child(ui_instance)
 

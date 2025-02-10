@@ -210,7 +210,7 @@ func check_hand_card_season() -> bool:
 	if not has_season:
 		print("玩家 ", player_name, " 手牌中没有和公共区域相同季节的卡牌，需要换牌")
 		# 创建sc并展示
-		UIManager.get_instance().open_ui(("UI_PlayerChangeCard"))
+		UIManager.get_instance().open_ui_to_top(("UI_PlayerChangeCard"))
 		set_player_state(PlayerState.SELF_ROUND_CHANGE_CARD, true)
 	else:
 		UIManager.get_instance().destroy_ui("UI_PlayerChangeCard")
@@ -270,6 +270,8 @@ func show_one_new_finished_story(story):
 		var card = card_manager.create_one_card(card_id)
 		card.z_index = 1000
 		current_sc_story_show.add_card(card)
+	# 设置故事名
+	current_sc_story_show.set_story_name(story["Name"])
 	current_sc_story_show.layout_children()
 	AnimationManager.get_instance().start_linear_alpha(current_sc_story_show, 1, 0.5, AnimationManager.EaseType.LINEAR, Callable(self, "show_one_new_finished_story_anim_in_end"))
 	# 播放故事对应的音频
