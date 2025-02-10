@@ -203,7 +203,7 @@ func check_hand_card_season() -> bool:
 	if not has_season:
 		print("玩家 ", player_name, " 手牌中没有和公共区域相同季节的卡牌，需要换牌")
 		# 创建sc并展示
-		UIManager.get_instance().open_ui(("UI_PlayerChangeCard"))
+		UIManager.get_instance().open_ui_to_top(("UI_PlayerChangeCard"))
 		set_player_state(PlayerState.SELF_ROUND_CHANGE_CARD, true)
 	else:
 		UIManager.get_instance().destroy_ui("UI_PlayerChangeCard")
