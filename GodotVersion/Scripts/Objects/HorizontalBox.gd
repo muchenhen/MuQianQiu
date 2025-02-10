@@ -4,6 +4,7 @@ class_name HorizontalBox
 
 @export var item_padding: float = 10.0
 @export var auto_layout: bool = true
+@export var y_offset: float = 0.0
 
 func _ready():
 	if not Engine.is_editor_hint():
@@ -45,8 +46,9 @@ func layout_items():
 	# 布局项目
 	for item in items:
 		if item is Control:
-			# 设置 x 位置
-			item.set_position(Vector2(start_x, (size.y - item.size.y) / 2))
+			# 设置位置，加入y_offset偏移量
+			var center_y = (size.y - item.size.y) / 2
+			item.set_position(Vector2(start_x, center_y - y_offset))
 			
 			# 更新下一个项目的起始 x 位置
 			start_x += item.size.x + item_padding

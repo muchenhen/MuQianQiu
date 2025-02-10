@@ -37,6 +37,7 @@ offset_bottom = 320.0
 mouse_filter = 2
 color = Color(0.0823529, 0.0823529, 0.0823529, 0.6)
 script = ExtResource("1_ydu2q")
+y_offset = null
 metadata/_edit_lock_ = true
 
 [node name="Card1" parent="Node2D/HorBox" instance=ExtResource("2_8o0b7")]

@@ -263,6 +263,8 @@ func show_one_new_finished_story(story):
 		var card = card_manager.create_one_card(card_id)
 		card.z_index = 1000
 		current_sc_story_show.add_card(card)
+	# 设置故事名
+	current_sc_story_show.set_story_name(story["Name"])
 	current_sc_story_show.layout_children()
 	AnimationManager.get_instance().start_linear_alpha(current_sc_story_show, 1, 0.5, AnimationManager.EaseType.LINEAR, Callable(self, "show_one_new_finished_story_anim_in_end"))
 	# 播放故事对应的音频
