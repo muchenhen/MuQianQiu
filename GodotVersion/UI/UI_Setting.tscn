@@ -1,12 +1,15 @@
-[gd_scene load_steps=5 format=3 uid="uid://b14k51fcb7viv"]
+[gd_scene load_steps=7 format=3 uid="uid://b14k51fcb7viv"]
 
 [ext_resource type="FontFile" uid="uid://cgqf6jr2l5srf" path="res://Font/SourceHanSerifSC-Regular-simplified.otf" id="1_3fsjs"]
 [ext_resource type="Texture2D" uid="uid://bely5ls113ufd" path="res://Textures/UI/T_CheckButtonOpen.png" id="2_7t23r"]
+[ext_resource type="Texture2D" uid="uid://bxw72oyrel8gp" path="res://Textures/UI/T_Grabber.png" id="2_tlabx"]
 [ext_resource type="Texture2D" uid="uid://b7640jbi5oo0c" path="res://Textures/UI/T_CheckButtonOff.png" id="3_wmle3"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_r1hnt"]
 font = ExtResource("1_3fsjs")
 font_size = 46
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_85yt1"]
 
 [node name="UiSetting" type="Control"]
 layout_mode = 3
@@ -36,6 +39,7 @@ vertical_alignment = 1
 autowrap_mode = 2
 
 [node name="Label2" type="Label" parent="ColorRect"]
+layout_mode = 0
 offset_left = 192.0
 offset_top = 192.0
 offset_right = 448.0
@@ -47,6 +51,7 @@ vertical_alignment = 1
 autowrap_mode = 2
 
 [node name="Label3" type="Label" parent="ColorRect"]
+layout_mode = 0
 offset_left = 192.0
 offset_top = 320.0
 offset_right = 448.0
@@ -63,14 +68,20 @@ offset_left = 512.0
 offset_top = 192.0
 offset_right = 1152.0
 offset_bottom = 320.0
+theme_override_icons/grabber = ExtResource("2_tlabx")
+theme_override_icons/grabber_highlight = ExtResource("2_tlabx")
+theme_override_icons/grabber_disabled = ExtResource("2_tlabx")
+theme_override_icons/tick = ExtResource("2_tlabx")
 value = 50.0
 ticks_on_borders = true
 
 [node name="CheckButton" type="CheckButton" parent="."]
 layout_mode = 0
-offset_left = 512.0
-offset_top = 320.0
-offset_right = 832.0
-offset_bottom = 448.0
+offset_left = 768.0
+offset_top = 352.0
+offset_right = 1195.0
+offset_bottom = 565.0
+scale = Vector2(0.3, 0.3)
+theme_override_styles/focus = SubResource("StyleBoxEmpty_85yt1")
 theme_override_icons/checked = ExtResource("2_7t23r")
 theme_override_icons/unchecked = ExtResource("3_wmle3")
