@@ -96,6 +96,7 @@ func set_bgm_volume(volume: float) -> void:
 	bgm_volume = clampf(volume, 0.0, 1.0)
 	if bgm_player.playing:
 		bgm_player.volume_db = linear_to_db(bgm_volume)
+		print_debug("BGM音量:", bgm_volume)
 
 
 # 设置音效音量

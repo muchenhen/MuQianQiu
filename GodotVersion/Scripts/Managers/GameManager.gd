@@ -113,7 +113,6 @@ func _ready():
 ## 设置玩家分数UI，创建卡牌实例并收集各个位置信息
 func start_new_game():
 	print("开始新游戏")
-	AudioManager.get_instance().play_bgm("QianQiu")
 	ui_manager.destroy_ui("UI_Start")
 
 	var choosed_versions = []

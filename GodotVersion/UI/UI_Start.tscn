@@ -145,7 +145,7 @@ button_texture = ExtResource("5_aesdl")
 button_scale = Vector2(0.5, 0.5)
 unchecked_color = Color(0.5, 0.5, 0.5, 1)
 
-[node name="Button" type="Button" parent="."]
+[node name="SettingButton" type="Button" parent="."]
 layout_mode = 0
 offset_left = 788.0
 offset_top = 545.0

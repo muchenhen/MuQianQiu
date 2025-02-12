@@ -10,12 +10,17 @@ extends Control
 # 古三 Checkbox
 @onready var checkbox_3 = $Gujian3
 
+@onready var button_setting:Button = $SettingButton
+
 func _ready() -> void:
 	print("UI_Start ready")
 	start_button.connect("pressed", Callable(self, "_on_start_button_pressed"))
 	checkbox_1.connect("state_changed", Callable(self, "_on_checkbox_1_toggled"))
 	checkbox_2.connect("state_changed", Callable(self, "_on_checkbox_2_toggled"))
 	checkbox_3.connect("state_changed", Callable(self, "_on_checkbox_3_toggled"))
+	button_setting.connect("pressed", Callable(self, "_on_setting_button_pressed"))
+	AudioManager.get_instance().play_bgm("QianQiu")
+
 
 func _on_start_button_pressed():
 	print("Start button pressed")
@@ -40,3 +45,9 @@ func _on_checkbox_2_toggled(is_checked:bool):
 func _on_checkbox_3_toggled(is_checked:bool):
 	GameManager.instance.is_open_third = is_checked
 	print("Checkbox 3 toggled: ", is_checked)
+
+
+func _on_setting_button_pressed():
+	print("Setting button pressed")
+	var ui_setting = UIManager.instance.open_ui("UI_Setting")
+	ui_setting.show()
