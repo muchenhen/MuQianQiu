@@ -17,6 +17,7 @@ const MAX_SFX_PLAYERS := 8 # 最大同时播放的音效数量
 # 音量控制
 var bgm_volume: float = 1.0
 var sfx_volume: float = 1.0
+var bgm_enabled: bool = true # BGM开关状态，默认为开启
 
 func _init() -> void:
 	# 单例检查
@@ -49,6 +50,19 @@ static func get_instance() -> AudioManager:
 	return instance
 
 
+# 设置BGM开关状态
+func set_bgm_enabled(enabled: bool) -> void:
+	bgm_enabled = enabled
+	if bgm_player.playing:
+		bgm_player.stream_paused = !bgm_enabled
+	print_debug("BGM开关状态:", bgm_enabled)
+
+
+# 获取BGM开关状态
+func get_bgm_enabled() -> bool:
+	return bgm_enabled
+
+
 # 播放背景音乐
 # - bgm_file_name: 背景音乐文件名
 # - volume: 音量 (默认值为1.0)
@@ -63,7 +77,7 @@ func play_bgm(bgm_name: String, volume: float = 1.0) -> void:
 	
 	bgm_player.stream = audio
 	bgm_player.volume_db = linear_to_db(volume * bgm_volume)
-	bgm_player.stream_paused = false
+	bgm_player.stream_paused = !bgm_enabled # 根据开关状态设置
 	bgm_player.play()
 
 	print("BGM播放状态:", bgm_player.playing)

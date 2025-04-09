@@ -84,11 +84,22 @@ offset_left = 192.0
 offset_top = 64.0
 offset_right = 448.0
 offset_bottom = 192.0
-text = "BGM"
+text = "BGM开关"
 label_settings = SubResource("LabelSettings_r1hnt")
 horizontal_alignment = 2
 vertical_alignment = 1
 autowrap_mode = 2
+
+[node name="CheckButton_BGMSwitch" type="CheckButton" parent="ColorRect"]
+layout_mode = 0
+offset_left = 768.0
+offset_top = 96.0
+offset_right = 1195.0
+offset_bottom = 309.0
+scale = Vector2(0.3, 0.3)
+theme_override_styles/focus = SubResource("StyleBoxEmpty_85yt1")
+theme_override_icons/checked = ExtResource("2_7t23r")
+theme_override_icons/unchecked = ExtResource("3_wmle3")
 
 [node name="Label2" type="Label" parent="ColorRect"]
 layout_mode = 0
