@@ -2,21 +2,22 @@ extends Node
 
 class_name TableManager
 
+var tables = {}
+
 # 单例实例
 static var instance: TableManager = null
-
-# 私有构造函数
-func _init():
-	if instance != null:
-		push_error("TableManager already exists. Use TableManager.get_instance() instead.")
 
 # 获取单例实例
 static func get_instance() -> TableManager:
 	if instance == null:
 		instance = TableManager.new()
+		instance.initialize()
 	return instance
 
-var tables = {}
+func initialize() -> void:
+	load_csv("res://Tables/Cards.txt")
+	load_csv("res://Tables/Stories.txt")
+
 
 # 加载CSV文件并创建可索引的结构
 func load_csv(file_path: String) -> void:
@@ -74,9 +75,3 @@ func get_row(table_name: String, id: int) -> Dictionary:
 func get_value(table_name: String, id: int, column: String):
 	var row = get_row(table_name, id)
 	return row.get(column)
-
-# 初始化函数，加载指定的CSV文件
-func initialize(file_paths: Array) -> void:
-	for path in file_paths:
-		load_csv(path)
-	print("TableManager initialized with data from: ", file_paths)

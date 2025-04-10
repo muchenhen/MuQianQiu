@@ -21,7 +21,7 @@ var is_open_first:bool = false
 var is_open_second:bool = false
 var is_open_third:bool = false
 
-var public_deal = PublicCardDeal.new()
+var public_deal:PublicCardDeal
 var player_a = Player.new()
 var player_b = Player.new()
 const PLAYER_A_SCORE_STR:String = "玩家A分数："
@@ -78,41 +78,47 @@ func _ready():
 
 
 func initialize():
-	if instance == null:
-		instance = self
-		# 设置UI树根节点
-		ui_manager.set_ui_tree_root(instance)
-		# 将动画管理器添加到场景树
-		add_child(animation_manager, true)
+	if instance != null:
+		return
+	instance = self
+	# 设置UI树根节点
+	ui_manager.set_ui_tree_root(instance)
+	# 将动画管理器添加到场景树
+	add_child(animation_manager, true)
 
-		add_child(input_manager)
+	add_child(input_manager)
 
-		animation_timer = Timer.new()
-		animation_timer.one_shot = true
-		animation_timer.connect("timeout", Callable(self, "animate_next_card"))
-		add_child(animation_timer)
+	animation_timer = Timer.new()
+	animation_timer.one_shot = true
+	animation_timer.connect("timeout", Callable(self, "animate_next_card"))
+	add_child(animation_timer)
 
-		add_child(audio_manager)
+	add_child(audio_manager)
 
-		# 初始化玩家
-		player_a.initialize("PlayerA", Player.PlayerPos.A)
-		player_b.initialize("PlayerB", Player.PlayerPos.B)
-		# 开启AI
-		player_b.bind_ai_enable()
+	initialize_players()
 
-		public_deal.bind_players(player_a, player_b)
-		card_manager.bind_players(player_a, player_b)
+	public_deal.connect("player_choose_public_card", Callable(self, "player_choose_public_card"))
+	public_deal.connect("common_suply_public_card", Callable(self, "on_suply_public_card"))
 
-		public_deal.connect("player_choose_public_card", Callable(self, "player_choose_public_card"))
-		public_deal.connect("common_suply_public_card", Callable(self, "on_suply_public_card"))
+	initialize_round_state()
 
-		current_round = GameRound.WAITING
-		current_round_index = 0
+	ui_manager.open_ui("UI_Start")
 
-		table_manager.load_csv("res://Tables/Cards.txt")
-		StoryManager.get_instance().init_all_stories_state()
+func initialize_players():
+	# 初始化玩家
+	player_a.initialize("PlayerA", Player.PlayerPos.A)
+	player_b.initialize("PlayerB", Player.PlayerPos.B)
+	# 开启AI
+	player_b.bind_ai_enable()
+	# 绑定玩家
+	public_deal = PublicCardDeal.new()
+	public_deal.bind_players(player_a, player_b)
+	card_manager.bind_players(player_a, player_b)
 
-		ui_manager.open_ui("UI_Start")
+func initialize_round_state():
+	# 初始化回合状态
+	current_round = GameRound.WAITING
+	current_round_index = 0
 
 ## 处理每帧更新
 ## 参数：
