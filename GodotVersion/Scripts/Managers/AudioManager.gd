@@ -67,6 +67,10 @@ func get_bgm_enabled() -> bool:
 # - bgm_file_name: 背景音乐文件名
 # - volume: 音量 (默认值为1.0)
 func play_bgm(bgm_name: String, volume: float = 1.0) -> void:
+	if !bgm_enabled:
+		print("BGM已关闭，不播放")
+		return
+
 	var bgm_path:String = audio_bgm_folder + bgm_name + ".mp3"
 	
 	print("BGM路径:", bgm_path)

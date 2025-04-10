@@ -129,11 +129,14 @@ func _process(_delta):
 		print("调试：快速重启游戏")
 		# 先返回主菜单，清理所有状态
 		back_to_main()
+		debug_quick_restart_enabled = false
 
 ## 开始新游戏
 ## 播放背景音乐，初始化UI，准备卡牌
 ## 设置玩家分数UI，创建卡牌实例并收集各个位置信息
 func start_new_game():
+	# debug开关
+	debug_quick_restart_enabled = true
 	print("开始新游戏")
 	ui_manager.destroy_ui("UI_Start")
 
@@ -461,6 +464,7 @@ func get_public_card_deal():
 ## 返回到主菜单
 ## 清理游戏状态，销毁UI，重置回合计数
 func back_to_main():
+	public_deal.clear()
 	story_manager.clear()
 	card_manager.clear()
 	player_a.clear()

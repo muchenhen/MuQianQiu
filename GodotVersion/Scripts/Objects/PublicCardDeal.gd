@@ -202,7 +202,7 @@ func clear():
 		var card_info = hand_cards[i]
 		if not card_info.isEmpty:
 			card_info.card.queue_free()
-	hand_cards.clear()
+	hand_cards = {}
 	player_a.disconnect("player_choose_card", Callable(self, "on_player_choose_card"))
 	player_b.disconnect("player_choose_card", Callable(self, "on_player_choose_card"))
 	player_a = null
