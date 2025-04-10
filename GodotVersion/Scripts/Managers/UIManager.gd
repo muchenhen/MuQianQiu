@@ -14,11 +14,11 @@ static var instance: UIManager = null
 static func get_instance() -> UIManager:
 	if instance == null:
 		instance = UIManager.new()
+		instance.intialize()
 	return instance
 
-func _init():
-	if instance != null:
-		push_error("UIManager already exists. Use UIManager.get_instance() instead.")
+func intialize() -> void:
+	instance.regiester_ui_elements()
 
 func set_ui_tree_root(node: Node) -> void:
 	root = node

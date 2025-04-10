@@ -6,13 +6,12 @@ static var instance: GameManager = null
 
 ############################################
 var ui_manager = UIManager.get_instance()
-
 var table_manager = TableManager.get_instance()
 var card_manager = CardManager.get_instance()
 var story_manager = StoryManager.get_instance()
-var input_manager: InputManager
+var input_manager = InputManager.get_instance()
 var animation_manager = AnimationManager.get_instance()
-var audio_manger = AudioManager.get_instance()
+var audio_manager = AudioManager.get_instance()
 
 # 调试选项
 var debug_quick_restart_enabled: bool = true # 启用快速重启功能
@@ -75,14 +74,17 @@ func get_checked_count():
 ## 设置单例实例，初始化各个管理器，注册UI元素
 ## 创建计时器和音频管理器，初始化玩家对象
 func _ready():
+	initialize()
+
+
+func initialize():
 	if instance == null:
 		instance = self
+		# 设置UI树根节点
 		ui_manager.set_ui_tree_root(instance)
-		ui_manager.regiester_ui_elements()
-		
+		# 将动画管理器添加到场景树
 		add_child(animation_manager, true)
 
-		input_manager = InputManager.new()
 		add_child(input_manager)
 
 		animation_timer = Timer.new()
@@ -90,7 +92,7 @@ func _ready():
 		animation_timer.connect("timeout", Callable(self, "animate_next_card"))
 		add_child(animation_timer)
 
-		add_child(audio_manger)
+		add_child(audio_manager)
 
 		# 初始化玩家
 		player_a.initialize("PlayerA", Player.PlayerPos.A)
@@ -106,7 +108,7 @@ func _ready():
 
 		current_round = GameRound.WAITING
 		current_round_index = 0
-	
+
 		table_manager.load_csv("res://Tables/Cards.txt")
 		StoryManager.get_instance().init_all_stories_state()
 
