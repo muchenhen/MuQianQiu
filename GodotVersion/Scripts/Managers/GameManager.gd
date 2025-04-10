@@ -14,6 +14,10 @@ var input_manager: InputManager
 var animation_manager = AnimationManager.get_instance()
 var audio_manger = AudioManager.get_instance()
 
+# 调试选项
+var debug_quick_restart_enabled: bool = true # 启用快速重启功能
+var debug_key_restart: String = "r" # 用于快速重启的键
+
 var is_open_first:bool = false
 var is_open_second:bool = false
 var is_open_third:bool = false
@@ -107,6 +111,16 @@ func _ready():
 		StoryManager.get_instance().init_all_stories_state()
 
 		ui_manager.open_ui("UI_Start")
+
+## 处理每帧更新
+## 参数：
+## - delta: 帧间隔时间
+func _process(_delta):
+	# 处理快速重启游戏的调试功能
+	if debug_quick_restart_enabled and Input.is_key_pressed(KEY_R):
+		print("调试：快速重启游戏")
+		# 先返回主菜单，清理所有状态
+		back_to_main()
 
 ## 开始新游戏
 ## 播放背景音乐，初始化UI，准备卡牌
