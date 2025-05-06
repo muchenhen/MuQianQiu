@@ -67,7 +67,7 @@ func enter_change_card_state(player: Player) -> void:
 		return
 	
 	# 玩家选择了手牌, 等待一段时间, 然后选择公共区域的牌
-	await GameManager.instance.get_tree().create_timer(1).timeout
+	await GameManager.instance.scene_tree.create_timer(1).timeout
 
 	# 进入选卡状态：随机从手牌中选一张卡
 	var available_card_indexes = current_player.get_available_hand_cards()
@@ -95,7 +95,7 @@ func select_simple_ai() -> void:
 		return
 
 	# 玩家选择了手牌, 等待一段时间, 然后选择公共区域的牌
-	await GameManager.instance.get_tree().create_timer(1).timeout
+	await GameManager.instance.scene_tree.create_timer(1).timeout
 
 	enter_next = enter_simple_choose_public_card_state()
 	if not enter_next:

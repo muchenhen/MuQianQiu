@@ -1,10 +1,17 @@
-[gd_scene load_steps=6 format=3 uid="uid://bsjufb64q25nc"]
+[gd_scene load_steps=7 format=3 uid="uid://bsjufb64q25nc"]
 
 [ext_resource type="Script" path="res://Scripts/UI/UI_StoryShow.gd" id="1_yhrfm"]
 [ext_resource type="Script" path="res://Scripts/Objects/HorizontalBox.gd" id="2_3hl4a"]
 [ext_resource type="PackedScene" uid="uid://cjtoi3cho7pbo" path="res://UI/UI_BackgroundBlur.tscn" id="2_3knxu"]
 [ext_resource type="PackedScene" uid="uid://b6vosary0xtcn" path="res://Scripts/Objects/Card.tscn" id="3_dbdpt"]
-[ext_resource type="LabelSettings" uid="uid://bgoilg613or" path="res://Font/UI_DealStatus.tres" id="4_mxq67"]
+[ext_resource type="FontFile" uid="uid://cgqf6jr2l5srf" path="res://Font/SourceHanSerifSC-Regular-simplified.otf" id="5_gq8qy"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_47ugj"]
+font = ExtResource("5_gq8qy")
+font_size = 76
+font_color = Color(1, 1, 0, 1)
+outline_size = 6
+outline_color = Color(1, 1, 0, 1)
 
 [node name="ScStoryShow" type="Node2D"]
 script = ExtResource("1_yhrfm")
@@ -37,6 +44,6 @@ offset_bottom = 691.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "首山梦时书"
-label_settings = ExtResource("4_mxq67")
+label_settings = SubResource("LabelSettings_47ugj")
 horizontal_alignment = 1
 vertical_alignment = 1

@@ -4,10 +4,24 @@ class_name InputManager
 
 signal input_state_changed(is_blocked: bool)
 
+# 单例变量
+static var _instance: InputManager = null
+
 var input_blocker: Button
 var is_input_blocked: bool = false
 
-func _ready():
+# 获取单例实例的静态方法
+static func get_instance() -> InputManager:
+	if _instance == null:
+		_instance = InputManager.new()
+		_instance.initialize()
+		print("InputManager instance created")
+	return _instance
+
+func initialize():
+	# 设置单例实例
+	_instance = self
+	
 	# 创建一个高层级的 CanvasLayer
 	var canvas_layer = CanvasLayer.new()
 	canvas_layer.layer = 128  # 设置一个很高的层级

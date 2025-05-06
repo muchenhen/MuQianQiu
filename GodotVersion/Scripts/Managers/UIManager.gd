@@ -14,11 +14,11 @@ static var instance: UIManager = null
 static func get_instance() -> UIManager:
 	if instance == null:
 		instance = UIManager.new()
+		instance.intialize()
 	return instance
 
-func _init():
-	if instance != null:
-		push_error("UIManager already exists. Use UIManager.get_instance() instead.")
+func intialize() -> void:
+	instance.regiester_ui_elements()
 
 func set_ui_tree_root(node: Node) -> void:
 	root = node
@@ -34,7 +34,7 @@ func regiester_ui_elements() -> void:
 	register_ui_element("UI_StoryShow", "res://UI/UI_StoryShow.tscn")
 	register_ui_element("UI_DealStatus", "res://UI/UI_DealStatus.tscn")
 	register_ui_element("UI_DealStoryStatus", "res://UI/UI_DealStoryStatus.tscn")
-	register_ui_element("UI_SelectInitSkillCard", "res://UI/UI_SelectInitSkillCard.tscn")
+	register_ui_element("UI_Setting", "res://UI/UI_Setting.tscn")
 
 func register_ui_element(key: String, element_path: String) -> void:
 	ui_elements_path[key] = element_path

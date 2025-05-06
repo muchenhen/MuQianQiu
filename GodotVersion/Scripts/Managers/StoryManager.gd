@@ -17,12 +17,12 @@ func _init():
 static func get_instance() -> StoryManager:
 	if instance == null:
 		instance = StoryManager.new()
+		instance.initialize()
 	return instance
 
 
-func init_all_stories_state() -> void:
+func initialize() -> void:
 	var table_manager = TableManager.get_instance()
-	table_manager.load_csv("res://Tables/Stories.txt")
 	var stories_table = table_manager.tables["Stories"]
 	for story_id in stories_table.keys():
 		var story_info = stories_table[story_id]

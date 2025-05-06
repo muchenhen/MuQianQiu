@@ -20,11 +20,6 @@ outline_size = 2
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kqa2a"]
 bg_color = Color(0.227451, 0.184314, 0.223529, 1)
-border_width_left = 10
-border_width_top = 10
-border_width_right = 10
-border_width_bottom = 10
-border_color = Color(1, 1, 1, 1)
 
 [node name="UiResult" type="Node2D"]
 script = ExtResource("1_ldy6u")
@@ -92,7 +87,7 @@ offset_top = 680.0
 offset_right = 716.0
 offset_bottom = 830.0
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
-theme_override_constants/outline_size = 2
+theme_override_constants/outline_size = 4
 theme_override_fonts/font = ExtResource("3_nofoo")
 theme_override_font_sizes/font_size = 56
 theme_override_styles/focus = SubResource("StyleBoxFlat_kqa2a")
