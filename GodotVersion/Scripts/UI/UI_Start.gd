@@ -33,30 +33,30 @@ func _on_start_button_pressed():
 	print("Start button pressed")
 
 	# 检查勾选数量 必须是 2 个
-	var count = GameManager.instance.get_checked_count()
+	var count = GameManager.get_checked_count()
 	if count != 2:
 		print("目前只支持选择两个")
 		return
 
 	# 开始新游戏
-	GameManager.instance.start_new_game()
+	GameManager.start_new_game()
 
 func _on_checkbox_1_toggled(is_checked:bool):
-	GameManager.instance.is_open_first = is_checked
+	GameManager.is_open_first = is_checked
 	print("Checkbox 1 toggled: ", is_checked)
 
 func _on_checkbox_2_toggled(is_checked:bool):
-	GameManager.instance.is_open_second = is_checked
+	GameManager.is_open_second = is_checked
 	print("Checkbox 2 toggled: ", is_checked)
 
 func _on_checkbox_3_toggled(is_checked:bool):
-	GameManager.instance.is_open_third = is_checked
+	GameManager.is_open_third = is_checked
 	print("Checkbox 3 toggled: ", is_checked)
 
 
 func _on_setting_button_pressed():
 	print("Setting button pressed")
-	var ui_setting = UIManager.instance.open_ui("UI_Setting")
+	var ui_setting = UIManager.get_instance().open_ui("UI_Setting")
 	ui_setting.show()
 
 
