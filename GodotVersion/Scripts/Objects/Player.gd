@@ -253,7 +253,7 @@ func show_one_new_finished_story(story):
 	current_sc_story_show.z_index = 999
 	current_sc_story_show.clear_all_cards()
 	# 将sc添加到最上层
-	var tree = GameManager.instance.get_tree()
+	var tree = GameManager.instance.scene_tree
 	var root = tree.get_root()
 	root.add_child(current_sc_story_show)
 	# 获取当前故事的所有id
@@ -273,12 +273,12 @@ func show_one_new_finished_story(story):
 
 func show_one_new_finished_story_anim_in_end():
 	# 1秒后开始消失动画
-	await GameManager.instance.get_tree().create_timer(1).timeout
+	await GameManager.instance.scene_tree.create_timer(1).timeout
 	AnimationManager.get_instance().start_linear_alpha(current_sc_story_show, 0, 0.5, AnimationManager.EaseType.LINEAR, Callable(self, "show_one_new_finished_story_anim_out_end"))
 	
 func show_one_new_finished_story_anim_out_end():
 	# 销毁current_sc_story_show
-	var tree = GameManager.instance.get_tree()
+	var tree = GameManager.instance.scene_tree
 	var root = tree.get_root()
 	root.remove_child(current_sc_story_show)
 	UIManager.get_instance().destroy_ui("UI_StoryShow")

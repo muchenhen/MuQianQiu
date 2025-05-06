@@ -209,7 +209,7 @@ func on_player_choose_change_card(player:Player) -> void:
 		AnimationManager.get_instance().start_linear_movement_pos(current_card_in_player, new_card_pos, 0.5, AnimationManager.EaseType.EASE_IN_OUT)
 		AnimationManager.get_instance().start_linear_movement_pos(new_card_to_player, current_card_pos, 0.5, AnimationManager.EaseType.EASE_IN_OUT)
 		# 等动画结束
-		await GameManager.instance.get_tree().create_timer(0.5).timeout
+		await GameManager.instance.scene_tree.create_timer(0.5).timeout
 		# 交换两张卡的z
 		current_card_in_player.z_index = new_card_z
 		new_card_to_player.z_index = current_card_z
@@ -246,6 +246,8 @@ func destroy_all_scene_cards() -> void:
 	all_scene_cards.clear()
 
 func clear():
+	PUBLIC_CARDS_POS = []
+	PUBLIC_CRADS_ROTATION = []
 	destroy_all_scene_cards()
 	all_storage_cards.clear()
 	cardIDs.clear()
