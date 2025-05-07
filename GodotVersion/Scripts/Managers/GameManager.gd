@@ -9,6 +9,8 @@ static var instance: GameInstance = null
 static var is_open_first: bool = false
 static var is_open_second: bool = false
 static var is_open_third: bool = false
+# 是否使用特殊牌
+static var use_special_cards: bool = false
 
 # 调试选项
 static var debug_quick_restart_enabled: bool = true # 启用快速重启功能
@@ -44,16 +46,26 @@ static func initialize_game(root_node):
 ## 开始新游戏
 static func start_new_game():
 	print("开始新游戏")
-	
-	var choosed_versions = []
-	if is_open_first:
-		choosed_versions.push_back(1)
-	if is_open_second:
-		choosed_versions.push_back(2)
-	if is_open_third:
-		choosed_versions.push_back(3)
-	
-	instance.start_new_game(choosed_versions)
+
+	# 检查是否使用特殊卡
+	if use_special_cards:
+		print("使用特殊牌")
+		# 打开选择特殊牌的UI
+		var select_skill_card = instance.ui_manager.open_ui("UI_SelectInitSkillCard")
+		instance.card_manager.collect_skill_cardIDs_for_this_game()
+		select_skill_card.set_card_datas(instance.card_manager.skill_cardIDs)
+		select_skill_card.init_card_table_view()
+	else:
+		print("不使用特殊牌")
+		var choosed_versions = []
+		if is_open_first:
+			choosed_versions.push_back(1)
+		if is_open_second:
+			choosed_versions.push_back(2)
+		if is_open_third:
+			choosed_versions.push_back(3)
+		
+		instance.start_new_game(choosed_versions)
 
 ## 返回到主菜单
 ## 清理游戏状态，销毁UI，重置并初始化新的游戏实例

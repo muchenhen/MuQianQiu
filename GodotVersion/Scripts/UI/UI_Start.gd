@@ -12,6 +12,8 @@ const SETTINGS_FILE_PATH = "user://settings.cfg"
 @onready var checkbox_2 = $Gujian2
 # 古三 Checkbox
 @onready var checkbox_3 = $Gujian3
+# 特殊牌 Checkbox
+@onready var special_card_checkbox = $SpecialCardCheckbox
 
 @onready var button_setting:Button = $SettingButton
 
@@ -25,6 +27,7 @@ func _ready() -> void:
 	checkbox_1.connect("state_changed", Callable(self, "_on_checkbox_1_toggled"))
 	checkbox_2.connect("state_changed", Callable(self, "_on_checkbox_2_toggled"))
 	checkbox_3.connect("state_changed", Callable(self, "_on_checkbox_3_toggled"))
+	special_card_checkbox.connect("toggled", Callable(self, "_on_special_card_checkbox_toggled"))
 	button_setting.connect("pressed", Callable(self, "_on_setting_button_pressed"))
 	AudioManager.get_instance().play_bgm("QianQiu")
 
@@ -53,6 +56,9 @@ func _on_checkbox_3_toggled(is_checked:bool):
 	GameManager.is_open_third = is_checked
 	print("Checkbox 3 toggled: ", is_checked)
 
+func _on_special_card_checkbox_toggled(is_checked:bool):
+	GameManager.use_special_cards = is_checked
+	print("Special Card Checkbox toggled: ", is_checked)
 
 func _on_setting_button_pressed():
 	print("Setting button pressed")
