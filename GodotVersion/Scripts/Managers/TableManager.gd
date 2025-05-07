@@ -17,6 +17,7 @@ static func get_instance() -> TableManager:
 func initialize() -> void:
 	load_csv("res://Tables/Cards.txt")
 	load_csv("res://Tables/Stories.txt")
+	load_csv("res://Tables/Skills.txt")
 
 
 # 加载CSV文件并创建可索引的结构
