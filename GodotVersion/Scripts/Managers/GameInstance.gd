@@ -7,6 +7,7 @@ class_name GameInstance
 var is_open_first:bool = false
 var is_open_second:bool = false
 var is_open_third:bool = false
+var use_special_cards:bool = false
 
 # 管理器引用
 var ui_manager
@@ -83,6 +84,7 @@ func initialize(root_node):
 	is_open_first = game_manager.is_open_first
 	is_open_second = game_manager.is_open_second
 	is_open_third = game_manager.is_open_third
+	use_special_cards = game_manager.use_special_cards
 	
 	# 设置UI树根节点
 	ui_manager.set_ui_tree_root(root_node)
@@ -140,6 +142,11 @@ func set_open_third(value):
 	is_open_third = value
 	if game_manager:
 		game_manager.is_open_third = value
+
+func set_use_special_cards(value):
+	use_special_cards = value
+	if game_manager:
+		game_manager.use_special_cards = value
 
 func initialize_players():
 	# 初始化玩家

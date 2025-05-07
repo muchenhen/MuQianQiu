@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://Scripts/UI/UI_Main.gd" id="1_nmgd6"]
 [ext_resource type="PackedScene" uid="uid://b6vosary0xtcn" path="res://Scripts/Objects/Card.tscn" id="2_immq1"]
 [ext_resource type="FontFile" uid="uid://cgqf6jr2l5srf" path="res://Font/SourceHanSerifSC-Regular-simplified.otf" id="3_hglhl"]
-[ext_resource type="PackedScene" uid="uid://cjtoi3cho7pbo" path="res://UI/UI_BackgroundBlur.tscn" id="4_o4txw"]
+[ext_resource type="PackedScene" path="res://UI/UI_BackgroundBlur.tscn" id="4_o4txw"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_32bnx"]
 font = ExtResource("3_hglhl")

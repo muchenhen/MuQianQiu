@@ -147,10 +147,11 @@ unchecked_color = Color(0.5, 0.5, 0.5, 1)
 
 [node name="SettingButton" type="Button" parent="."]
 layout_mode = 0
-offset_left = 788.0
-offset_top = 545.0
-offset_right = 1152.0
-offset_bottom = 665.0
+offset_left = 43.0
+offset_top = 35.0
+offset_right = 407.0
+offset_bottom = 155.0
+scale = Vector2(0.7, 0.7)
 theme_override_fonts/font = ExtResource("3_s0uod")
 theme_override_font_sizes/font_size = 60
 theme_override_styles/focus = SubResource("StyleBoxEmpty_7vdua")
@@ -166,3 +167,16 @@ theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_03t4l")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_hn0pt")
 text = "游戏设置"
 icon = ExtResource("8_h8nkd")
+
+[node name="SpecialCardCheckbox" type="CheckBox" parent="."]
+layout_mode = 0
+offset_left = 582.0
+offset_top = 534.0
+offset_right = 882.0
+offset_bottom = 634.0
+scale = Vector2(1.2, 1.2)
+theme_override_constants/h_separation = 20
+theme_override_fonts/font = ExtResource("3_s0uod")
+theme_override_font_sizes/font_size = 36
+theme_override_constants/check_v_offset = 0
+text = "使用特殊牌"
