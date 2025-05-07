@@ -100,7 +100,7 @@ func open_ui_to_top(key: String) -> Node:
 func open_ui_instance(ui_instance: Node) -> void:
 	root.add_child(ui_instance)
 
-func move_ui_instance_to_top(ui_instance: Node) -> void:
+func move_ui_instance_to_top(ui_instance: Node) -> Node:
 	ui_instance.z_as_relative = true
 	ui_instance.z_index = 999
 	return ui_instance
