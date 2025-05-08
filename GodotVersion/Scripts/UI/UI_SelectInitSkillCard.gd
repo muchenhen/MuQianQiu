@@ -4,6 +4,8 @@ extends Node2D
 @onready var card_table_view: VBoxContainer = $ColorRect/ScrollContainer/CardTableView
 @onready var start_button: Button = $StartButton
 @onready var scroll_container: ScrollContainer = $ColorRect/ScrollContainer
+@onready var detail_card_parent = $ColorRect/RightUIContainer/ColorRect/DetailCardParent
+@onready var special_card_detail_show = $ColorRect/RightUIContainer/ColorRect/DetailCardParent/SpecialCardDetailShow
 
 var card_ids: Array[int] = []
 var selected_cards: Array[int] = []
@@ -23,6 +25,10 @@ func _ready() -> void:
 	scroll_container.mouse_filter = Control.MOUSE_FILTER_PASS
 	# 连接滚动容器的输入事件
 	scroll_container.gui_input.connect(_on_scroll_container_gui_input)
+	# 设置右侧详情卡片为不可点击
+	special_card_detail_show.is_enable_click = false
+	# 初始化时隐藏详情卡片的父节点
+	detail_card_parent.visible = false
 
 # 处理滚动容器的输入事件
 func _on_scroll_container_gui_input(event):
@@ -168,6 +174,12 @@ func _on_card_selected(card) -> void:
 	else:
 		selected_cards.append(card.ID)
 		card.set_card_chooesd()
+		
+	# 显示DetailCardParent
+	detail_card_parent.visible = true
+	
+	# 更新右侧详情卡片显示
+	special_card_detail_show.update_card_info_by_id(card.ID)
 
 func _on_start_button_pressed() -> void:
 	# 处理开始游戏按钮点击事件
