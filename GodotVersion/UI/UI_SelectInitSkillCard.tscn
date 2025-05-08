@@ -334,7 +334,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.298039)
 
-[node name="SpecialCardDetailShow" parent="ColorRect/RightUIContainer/ColorRect" instance=ExtResource("2_utaq8")]
+[node name="DetailCardParent" type="Control" parent="ColorRect/RightUIContainer/ColorRect"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -344,6 +344,20 @@ offset_top = 40.0
 offset_right = 96.0
 offset_bottom = 296.0
 grow_horizontal = 2
+
+[node name="SpecialCardDetailShow" parent="ColorRect/RightUIContainer/ColorRect/DetailCardParent" instance=ExtResource("2_utaq8")]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -96.0
+offset_top = -128.0
+offset_right = 96.0
+offset_bottom = 128.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="Label_Title" type="Label" parent="."]
 anchors_preset = 5
