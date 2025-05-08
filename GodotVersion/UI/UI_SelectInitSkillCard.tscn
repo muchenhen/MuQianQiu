@@ -359,6 +359,98 @@ offset_bottom = 128.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="SkillInfoPanel" type="Panel" parent="ColorRect/RightUIContainer/ColorRect/DetailCardParent"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -120.0
+offset_top = 140.0
+offset_right = 120.0
+offset_bottom = 380.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ColorRect/RightUIContainer/ColorRect/DetailCardParent/SkillInfoPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TitleLabel" type="Label" parent="ColorRect/RightUIContainer/ColorRect/DetailCardParent/SkillInfoPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "技能详情"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="ColorRect/RightUIContainer/ColorRect/DetailCardParent/SkillInfoPanel/VBoxContainer"]
+layout_mode = 2
+
+[node name="Skill1Container" type="VBoxContainer" parent="ColorRect/RightUIContainer/ColorRect/DetailCardParent/SkillInfoPanel/VBoxContainer"]
+layout_mode = 2
+
+[node name="Skill1Title" type="Label" parent="ColorRect/RightUIContainer/ColorRect/DetailCardParent/SkillInfoPanel/VBoxContainer/Skill1Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "技能一"
+horizontal_alignment = 1
+
+[node name="Skill1Type" type="Label" parent="ColorRect/RightUIContainer/ColorRect/DetailCardParent/SkillInfoPanel/VBoxContainer/Skill1Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "类型: "
+autowrap_mode = 3
+
+[node name="Skill1Target" type="Label" parent="ColorRect/RightUIContainer/ColorRect/DetailCardParent/SkillInfoPanel/VBoxContainer/Skill1Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "目标: "
+autowrap_mode = 3
+
+[node name="Skill1Value" type="Label" parent="ColorRect/RightUIContainer/ColorRect/DetailCardParent/SkillInfoPanel/VBoxContainer/Skill1Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "数值: "
+autowrap_mode = 3
+
+[node name="HSeparator2" type="HSeparator" parent="ColorRect/RightUIContainer/ColorRect/DetailCardParent/SkillInfoPanel/VBoxContainer"]
+layout_mode = 2
+
+[node name="Skill2Container" type="VBoxContainer" parent="ColorRect/RightUIContainer/ColorRect/DetailCardParent/SkillInfoPanel/VBoxContainer"]
+layout_mode = 2
+
+[node name="Skill2Title" type="Label" parent="ColorRect/RightUIContainer/ColorRect/DetailCardParent/SkillInfoPanel/VBoxContainer/Skill2Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "技能二"
+horizontal_alignment = 1
+
+[node name="Skill2Type" type="Label" parent="ColorRect/RightUIContainer/ColorRect/DetailCardParent/SkillInfoPanel/VBoxContainer/Skill2Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "类型: "
+autowrap_mode = 3
+
+[node name="Skill2Target" type="Label" parent="ColorRect/RightUIContainer/ColorRect/DetailCardParent/SkillInfoPanel/VBoxContainer/Skill2Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "目标: "
+autowrap_mode = 3
+
+[node name="Skill2Value" type="Label" parent="ColorRect/RightUIContainer/ColorRect/DetailCardParent/SkillInfoPanel/VBoxContainer/Skill2Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "数值: "
+autowrap_mode = 3
+
 [node name="Label_Title" type="Label" parent="."]
 anchors_preset = 5
 anchor_left = 0.5
