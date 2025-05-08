@@ -9,6 +9,9 @@ var is_open_second:bool = false
 var is_open_third:bool = false
 var use_special_cards:bool = false
 
+# 保存选择的游戏版本
+var choosed_versions = []
+
 # 管理器引用
 var ui_manager
 var table_manager
@@ -164,14 +167,27 @@ func initialize_round_state():
 	current_round = GameRound.WAITING
 	current_round_index = 0
 
+func set_choosed_versions(in_choosed_versions):
+	# 设置选择的游戏版本
+	choosed_versions = in_choosed_versions
+	for version in choosed_versions:
+		print("选择的版本: ", version)
+		if version == 1:
+			is_open_first = true
+		elif version == 2:
+			is_open_second = true
+		elif version == 3:
+			is_open_third = true
+
 ## 开始新游戏
 ## 播放背景音乐，初始化UI，准备卡牌
 ## 设置玩家分数UI，创建卡牌实例并收集各个位置信息
-func start_new_game(choosed_versions):
+func start_new_game():
 	print("开始新游戏")
+	# 
 	ui_manager.destroy_ui("UI_Start")
 
-	card_manager.prepare_cards_for_this_game(choosed_versions)
+	card_manager.prepare_cards_for_this_game(self.choosed_versions)
 	print("本局游戏卡牌 ID: ", card_manager.cardIDs)
 
 	ui_manager.open_ui("UI_Main")

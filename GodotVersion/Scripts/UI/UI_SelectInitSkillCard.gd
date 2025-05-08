@@ -36,6 +36,24 @@ func _on_scroll_container_gui_input(event):
 
 func set_card_datas(in_card_ids: Array[int]) -> void:
 	card_ids = in_card_ids
+	
+	# 获取 GameInstance 中的版本选择
+	var game_instance = GameManager.instance
+	var filtered_ids: Array[int] = []
+	
+	# 根据选择的版本过滤卡牌
+	for card_id in card_ids:
+		var version = int(card_id / float(100)) # 获取卡牌的版本号（首位数字）
+		if version == 1 and game_instance.is_open_first:
+			filtered_ids.append(card_id)
+		elif version == 2 and game_instance.is_open_second:
+			filtered_ids.append(card_id)
+		elif version == 3 and game_instance.is_open_third:
+			filtered_ids.append(card_id)
+	
+	# 更新卡牌列表
+	card_ids = filtered_ids
+	card_ids.sort() # 将卡牌ID按从小到大排序
 
 func init_card_table_view() -> void:
 	var row_count = 6 # 总共6行
