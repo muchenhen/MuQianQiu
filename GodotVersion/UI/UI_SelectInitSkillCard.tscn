@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://nsp0dlw57dwn"]
+[gd_scene load_steps=3 format=3 uid="uid://nsp0dlw57dwn"]
 
 [ext_resource type="Script" path="res://Scripts/UI/UI_SelectInitSkillCard.gd" id="1_8rmrp"]
+[ext_resource type="PackedScene" uid="uid://b6vosary0xtcn" path="res://Scripts/Objects/Card.tscn" id="2_utaq8"]
 
 [node name="UiSelectInitSkillCard" type="Node2D"]
 script = ExtResource("1_8rmrp")
@@ -21,16 +22,16 @@ color = Color(0, 0.240964, 0.26123, 1)
 layout_mode = 0
 offset_left = 100.0
 offset_top = 150.0
-offset_right = 1848.0
+offset_right = 1500.0
 offset_bottom = 910.0
 horizontal_scroll_mode = 0
 metadata/_edit_lock_ = true
 
 [node name="CardTableView" type="VBoxContainer" parent="ColorRect/ScrollContainer"]
 clip_contents = true
-custom_minimum_size = Vector2(1740, 720)
+custom_minimum_size = Vector2(1400, 720)
 layout_mode = 2
-size_flags_horizontal = 8
+size_flags_horizontal = 4
 size_flags_vertical = 8
 metadata/_edit_lock_ = true
 
@@ -43,36 +44,43 @@ theme_override_constants/margin_bottom = 10
 
 [node name="HBoxRow1" type="HBoxContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow1"]
 layout_mode = 2
+alignment = 1
 
 [node name="MarginItem1" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow1/HBoxRow1"]
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="MarginItem2" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow1/HBoxRow1"]
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="MarginItem3" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow1/HBoxRow1"]
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="MarginItem4" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow1/HBoxRow1"]
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="MarginItem5" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow1/HBoxRow1"]
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="MarginItem6" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow1/HBoxRow1"]
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="MarginRow2" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView"]
 layout_mode = 2
@@ -83,36 +91,43 @@ theme_override_constants/margin_bottom = 10
 
 [node name="HBoxRow2" type="HBoxContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow2"]
 layout_mode = 2
+alignment = 1
 
 [node name="MarginItem1" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow2/HBoxRow2"]
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="MarginItem2" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow2/HBoxRow2"]
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="MarginItem3" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow2/HBoxRow2"]
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="MarginItem4" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow2/HBoxRow2"]
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="MarginItem5" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow2/HBoxRow2"]
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="MarginItem6" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow2/HBoxRow2"]
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="MarginRow3" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView"]
 layout_mode = 2
@@ -123,36 +138,43 @@ theme_override_constants/margin_bottom = 10
 
 [node name="HBoxRow3" type="HBoxContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow3"]
 layout_mode = 2
+alignment = 1
 
 [node name="MarginItem1" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow3/HBoxRow3"]
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="MarginItem2" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow3/HBoxRow3"]
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="MarginItem3" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow3/HBoxRow3"]
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="MarginItem4" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow3/HBoxRow3"]
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="MarginItem5" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow3/HBoxRow3"]
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="MarginItem6" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow3/HBoxRow3"]
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="MarginRow4" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView"]
 layout_mode = 2
@@ -163,36 +185,43 @@ theme_override_constants/margin_bottom = 10
 
 [node name="HBoxRow4" type="HBoxContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow4"]
 layout_mode = 2
+alignment = 1
 
 [node name="MarginItem1" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow4/HBoxRow4"]
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="MarginItem2" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow4/HBoxRow4"]
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="MarginItem3" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow4/HBoxRow4"]
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="MarginItem4" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow4/HBoxRow4"]
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="MarginItem5" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow4/HBoxRow4"]
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="MarginItem6" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow4/HBoxRow4"]
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="MarginRow5" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView"]
 layout_mode = 2
@@ -203,36 +232,43 @@ theme_override_constants/margin_bottom = 10
 
 [node name="HBoxRow5" type="HBoxContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow5"]
 layout_mode = 2
+alignment = 1
 
 [node name="MarginItem1" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow5/HBoxRow5"]
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="MarginItem2" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow5/HBoxRow5"]
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="MarginItem3" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow5/HBoxRow5"]
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="MarginItem4" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow5/HBoxRow5"]
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="MarginItem5" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow5/HBoxRow5"]
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="MarginItem6" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow5/HBoxRow5"]
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="MarginRow6" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView"]
 layout_mode = 2
@@ -243,36 +279,71 @@ theme_override_constants/margin_bottom = 10
 
 [node name="HBoxRow6" type="HBoxContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow6"]
 layout_mode = 2
+alignment = 1
 
 [node name="MarginItem1" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow6/HBoxRow6"]
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="MarginItem2" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow6/HBoxRow6"]
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="MarginItem3" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow6/HBoxRow6"]
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="MarginItem4" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow6/HBoxRow6"]
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="MarginItem5" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow6/HBoxRow6"]
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
 
 [node name="MarginItem6" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow6/HBoxRow6"]
+custom_minimum_size = Vector2(220, 120)
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="RightUIContainer" type="Control" parent="ColorRect"]
+anchors_preset = 0
+offset_left = 1550.0
+offset_top = 150.0
+offset_right = 1810.0
+offset_bottom = 910.0
+mouse_filter = 2
+
+[node name="ColorRect" type="ColorRect" parent="ColorRect/RightUIContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.298039)
+
+[node name="SpecialCardDetailShow" parent="ColorRect/RightUIContainer/ColorRect" instance=ExtResource("2_utaq8")]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -96.0
+offset_top = 40.0
+offset_right = 96.0
+offset_bottom = 296.0
+grow_horizontal = 2
 
 [node name="Label_Title" type="Label" parent="."]
 anchors_preset = 5
