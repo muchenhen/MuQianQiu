@@ -20,9 +20,10 @@ color = Color(0, 0.240964, 0.26123, 1)
 [node name="ScrollContainer" type="ScrollContainer" parent="ColorRect"]
 layout_mode = 0
 offset_left = 100.0
-offset_top = 20.0
-offset_right = 1840.0
-offset_bottom = 780.0
+offset_top = 150.0
+offset_right = 1848.0
+offset_bottom = 910.0
+horizontal_scroll_mode = 0
 metadata/_edit_lock_ = true
 
 [node name="CardTableView" type="VBoxContainer" parent="ColorRect/ScrollContainer"]
@@ -73,11 +74,6 @@ layout_mode = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_right = 20
 
-[node name="MarginItem7" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow1/HBoxRow1"]
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
-
 [node name="MarginRow2" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
@@ -114,11 +110,6 @@ theme_override_constants/margin_left = 20
 theme_override_constants/margin_right = 20
 
 [node name="MarginItem6" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow2/HBoxRow2"]
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
-
-[node name="MarginItem7" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow2/HBoxRow2"]
 layout_mode = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_right = 20
@@ -163,11 +154,6 @@ layout_mode = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_right = 20
 
-[node name="MarginItem7" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow3/HBoxRow3"]
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
-
 [node name="MarginRow4" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
@@ -204,11 +190,6 @@ theme_override_constants/margin_left = 20
 theme_override_constants/margin_right = 20
 
 [node name="MarginItem6" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow4/HBoxRow4"]
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
-
-[node name="MarginItem7" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow4/HBoxRow4"]
 layout_mode = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_right = 20
@@ -253,11 +234,6 @@ layout_mode = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_right = 20
 
-[node name="MarginItem7" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow5/HBoxRow5"]
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
-
 [node name="MarginRow6" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
@@ -294,11 +270,6 @@ theme_override_constants/margin_left = 20
 theme_override_constants/margin_right = 20
 
 [node name="MarginItem6" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow6/HBoxRow6"]
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
-
-[node name="MarginItem7" type="MarginContainer" parent="ColorRect/ScrollContainer/CardTableView/MarginRow6/HBoxRow6"]
 layout_mode = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_right = 20

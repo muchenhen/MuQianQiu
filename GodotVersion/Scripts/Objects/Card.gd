@@ -20,7 +20,7 @@ var choosed = false
 
 var is_enable_click = true
 
-var Image_ChooesdBG : TextureRect = null
+@onready var Image_ChooesdBG : TextureRect = $Image_ChooesdBG
 
 const BACK_TEXTURE_PATH: String = "res://Textures/Cards/Tex_Back.png"
 
@@ -36,7 +36,6 @@ func set_input_priority(value: int) -> void:
 
 func _ready() -> void:
 	back_texture = load(BACK_TEXTURE_PATH)
-	Image_ChooesdBG = get_node("Image_ChooesdBG")
 	# 绑定点击事件
 	connect("pressed", Callable(self, "_on_card_clicked"))
 	# connect("mouse_entered", Callable(self, "on_card_hovered"))
