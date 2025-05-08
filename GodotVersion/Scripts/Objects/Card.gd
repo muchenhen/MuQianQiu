@@ -20,6 +20,14 @@ var choosed = false
 
 var is_enable_click = true
 
+# 拖拽相关变量
+var drag_start_position: Vector2
+var is_dragging = false
+var drag_threshold = 5
+var time_since_mouse_down = 0.0
+var drag_time_threshold = 0.1
+var mouse_down = false
+
 @onready var Image_ChooesdBG : TextureRect = $Image_ChooesdBG
 
 const BACK_TEXTURE_PATH: String = "res://Textures/Cards/Tex_Back.png"
@@ -36,11 +44,59 @@ func set_input_priority(value: int) -> void:
 
 func _ready() -> void:
 	back_texture = load(BACK_TEXTURE_PATH)
-	# 绑定点击事件
-	connect("pressed", Callable(self, "_on_card_clicked"))
-	# connect("mouse_entered", Callable(self, "on_card_hovered"))
+	# 删除默认的点击事件处理
+	disconnect("pressed", Callable(self, "_on_card_clicked"))
+	# 使用gui_input代替
+	gui_input.connect(_on_card_gui_input)
 	update_card()
 	set_process_priority(input_priority)  # 设置处理优先级
+
+func _process(delta: float) -> void:
+	if mouse_down:
+		time_since_mouse_down += delta
+		
+func _on_card_gui_input(event: InputEvent) -> void:
+	if not is_enable_click:
+		return
+		
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			if event.pressed:
+				# 鼠标按下，记录起始位置和时间
+				mouse_down = true
+				time_since_mouse_down = 0.0
+				drag_start_position = event.position
+				is_dragging = false
+			else:
+				# 鼠标释放
+				mouse_down = false
+				# 如果没有被识别为拖拽，且点击时间短，才视为点击
+				if not is_dragging and time_since_mouse_down < drag_time_threshold:
+					_handle_click()
+				is_dragging = false
+				
+	elif event is InputEventMouseMotion and mouse_down:
+		# 如果鼠标按下并移动
+		var distance = event.position.distance_to(drag_start_position)
+		# 如果移动距离超过阈值，视为拖拽
+		if distance > drag_threshold:
+			is_dragging = true
+			# 告诉父容器此为拖拽事件
+			var parent = get_parent()
+			while parent and not parent.has_method("_notify_child_drag"):
+				parent = parent.get_parent()
+			if parent and parent.has_method("_notify_child_drag"):
+				parent._notify_child_drag(event.relative)
+
+func _handle_click() -> void:
+	print_card_info()
+
+	if player_owner:
+		if player_owner.player_state != Player.PlayerState.SELF_ROUND_CHANGE_CARD:
+			change_card_chooesd()
+
+	# 发送信号
+	card_clicked.emit(self)
 
 func initialize(card_id, card_info) -> void:
 	ID = card_id
@@ -75,19 +131,6 @@ func print_card_info() -> void:
 	var debug_describe = Describe.replace("\n", "")
 	# 打印卡牌所有信息
 	print("Card clicked: ", Name, " ID: ", ID, " Type: ", Type, " Score: ", Score, " Season: ", Season, " Describe: ", debug_describe, " BaseID: ", BaseID, " Special: ", Special, " IsEnableClick: ", is_enable_click)
-
-func _on_card_clicked() -> void:
-	print_card_info()
-	if not is_enable_click:
-		print_debug("Card is not enable to click.")
-		return
-
-	if player_owner:
-		if player_owner.player_state != Player.PlayerState.SELF_ROUND_CHANGE_CARD:
-			change_card_chooesd()
-
-	# 发送信号
-	card_clicked.emit(self)
 
 func update_card() -> void:
 	_load_image()
@@ -134,13 +177,6 @@ func enable_click() -> void:
 func set_card_pivot_offset_to_center() -> void:
 	self.pivot_offset = Vector2(size.x/2, size.y/2)
 
-# func on_card_hovered() -> void:
-# 	print("Card hovered: ", Name, " ID: ", ID, " Z-index ", z_index, " input_priority: ", input_priority)
-
-# func reconnect_on_card_hovered() -> void:
-# 	disconnect("mouse_entered", Callable(self, "on_card_hovered"))
-# 	connect("mouse_entered", Callable(self, "on_card_hovered"))
-
 func move_to_top() -> void:
 	var parent = get_parent()
 	if parent:
@@ -156,7 +192,6 @@ func get_season() -> String:
 
 func set_player_owner(player: Player) -> void:
 	player_owner = player
-
 
 # 设置卡面实例是否灰色
 func set_card_gray(is_gray: bool) -> void:
