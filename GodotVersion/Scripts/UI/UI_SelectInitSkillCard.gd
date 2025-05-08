@@ -51,6 +51,8 @@ func _load_skill_data() -> void:
 	
 	# 遍历Skills表的所有行
 	for index in skills_table.keys():
+		if index == 0:
+			continue
 		var skill_row = skills_table[index]
 		
 		var card_id = int(skill_row["CardID"])
@@ -266,25 +268,25 @@ func _update_skill_info(card_id: int) -> void:
 # 更新单个技能的显示
 func _update_skill_display(skill_data: Dictionary, type_label: Label, target_label: Label, value_label: Label) -> void:
 	# 如果技能类型为空，则表示没有此技能
-	if skill_data.type.strip_edges() == "":
+	if typeof(skill_data.type) == TYPE_STRING and skill_data.type.strip_edges() == "":
 		type_label.text = "类型: 无"
 		target_label.text = "目标: 无"
 		value_label.text = "数值: 无"
 		return
 	
 	# 设置技能类型
-	type_label.text = "类型: " + skill_data.type
+	type_label.text = "类型: " + str(skill_data.type)
 	
 	# 处理技能目标
 	var target_text = "目标: "
-	if skill_data.target.strip_edges() != "":
+	if typeof(skill_data.target) == TYPE_STRING and skill_data.target.strip_edges() != "":
 		if skill_data.target == "包含自身":
 			target_text += "包含自身"
 		else:
-			target_text += skill_data.target
+			target_text += str(skill_data.target)
 			
 			# 如果有目标ID，查找目标卡牌名
-			if skill_data.target_id.strip_edges() != "":
+			if typeof(skill_data.target_id) == TYPE_STRING and skill_data.target_id.strip_edges() != "":
 				# 检查是否为括号中的ID列表
 				if "(" in skill_data.target_id and ")" in skill_data.target_id:
 					var id_list_str = skill_data.target_id.trim_prefix("(").trim_suffix(")")
@@ -310,8 +312,10 @@ func _update_skill_display(skill_data: Dictionary, type_label: Label, target_lab
 	
 	# 处理技能数值
 	var value_text = "数值: "
-	if skill_data.value.strip_edges() != "":
+	if typeof(skill_data.value) == TYPE_STRING and skill_data.value.strip_edges() != "":
 		value_text += skill_data.value
+	elif typeof(skill_data.value) != TYPE_STRING and skill_data.value:
+		value_text += str(skill_data.value)
 	else:
 		value_text += "无"
 	
