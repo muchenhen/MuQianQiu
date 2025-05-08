@@ -14,7 +14,7 @@ extends Node2D
 @onready var skill2_target_label = $ColorRect/RightUIContainer/ColorRect/DetailCardParent/SkillInfoPanel/VBoxContainer/Skill2Container/Skill2Target
 @onready var skill2_value_label = $ColorRect/RightUIContainer/ColorRect/DetailCardParent/SkillInfoPanel/VBoxContainer/Skill2Container/Skill2Value
 
-# 技能数据字典，从Skills.txt加载
+# 技能数据字典
 var skill_data_dict = {}
 # 卡牌名称字典，用于显示目标名称
 var card_name_dict = {}
@@ -29,8 +29,6 @@ var card_instances = []  # 存储所有实例化的卡牌
 
 # 卡牌场景
 const CARD_SCENE = preload("res://Scripts/Objects/Card.tscn")
-# 技能数据文件路径
-const SKILL_DATA_PATH = "res://Tables/Skills.txt"
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -46,47 +44,42 @@ func _ready() -> void:
 	# 加载技能数据
 	_load_skill_data()
 
-# 加载技能数据
+# 使用TableManager加载技能数据
 func _load_skill_data() -> void:
-	var file = FileAccess.open(SKILL_DATA_PATH, FileAccess.READ)
-	if file:
-		# 读取表头行
-		var header = file.get_csv_line()
+	var table_manager = TableManager.get_instance()
+	var skills_table = table_manager.get_table("Skills")
+	
+	# 遍历Skills表的所有行
+	for index in skills_table.keys():
+		var skill_row = skills_table[index]
 		
-		# 读取数据行
-		while !file.eof_reached():
-			var line = file.get_csv_line()
-			if line.size() > 1:
-				var index = int(line[0])
-				var card_id = int(line[1])
-				var card_name = line[2]
-				
-				# 保存卡牌ID和名称的对应关系
-				card_name_dict[card_id] = card_name
-				
-				# 创建技能数据结构
-				var skill_data = {
-					"index": index,
-					"card_id": card_id,
-					"card_name": card_name,
-					"skill1": {
-						"type": line[3],
-						"target": line[4],
-						"target_id": line[5],
-						"value": line[6]
-					},
-					"skill2": {
-						"type": line[7],
-						"target": line[8],
-						"target_id": line[9],
-						"value": line[10]
-					}
-				}
-				
-				# 保存到字典中，以卡牌ID为键
-				skill_data_dict[card_id] = skill_data
+		var card_id = int(skill_row["CardID"])
+		var card_name = skill_row["CardName"]
 		
-		file.close()
+		# 保存卡牌ID和名称的对应关系
+		card_name_dict[card_id] = card_name
+		
+		# 创建技能数据结构
+		var skill_data = {
+			"index": index,
+			"card_id": card_id,
+			"card_name": card_name,
+			"skill1": {
+				"type": skill_row["Skill1Type"],
+				"target": skill_row["Skill1Target"],
+				"target_id": skill_row["Skill1TargetID"],
+				"value": skill_row["Skill1Value"]
+			},
+			"skill2": {
+				"type": skill_row["Skill2Type"],
+				"target": skill_row["Skill2Target"],
+				"target_id": skill_row["Skill2TargetID"],
+				"value": skill_row["Skill2Value"]
+			}
+		}
+		
+		# 保存到字典中，以卡牌ID为键
+		skill_data_dict[card_id] = skill_data
 
 # 处理滚动容器的输入事件
 func _on_scroll_container_gui_input(event):
