@@ -46,14 +46,17 @@ func _on_start_button_pressed():
 
 func _on_checkbox_1_toggled(is_checked:bool):
 	GameManager.is_open_first = is_checked
+	GameManager.update_choosed_versions()
 	print("Checkbox 1 toggled: ", is_checked)
 
 func _on_checkbox_2_toggled(is_checked:bool):
 	GameManager.is_open_second = is_checked
+	GameManager.update_choosed_versions()
 	print("Checkbox 2 toggled: ", is_checked)
 
 func _on_checkbox_3_toggled(is_checked:bool):
 	GameManager.is_open_third = is_checked
+	GameManager.update_choosed_versions()
 	print("Checkbox 3 toggled: ", is_checked)
 
 func _on_special_card_checkbox_toggled(is_checked:bool):

@@ -17,6 +17,9 @@ static var debug_quick_restart_enabled: bool = true # 启用快速重启功能
 static var debug_key_restart: String = "r" # 用于快速重启的键
 static var debug_key_was_pressed: bool = false # 跟踪R键的上一个状态
 
+# 游戏版本选择
+static var choosed_versions = []
+
 ############################################
 
 ## 获取当前选中的版本数量
@@ -30,6 +33,20 @@ static func get_checked_count():
 	if is_open_third:
 		count += 1
 	return count
+
+## 更新choosed_versions
+static func update_choosed_versions():
+	if is_open_first:
+		choosed_versions.push_back(1)
+	if is_open_second:
+		choosed_versions.push_back(2)
+	if is_open_third:
+		choosed_versions.push_back(3)
+
+	if instance!= null:
+		instance.set_choosed_versions(choosed_versions)
+
+	return choosed_versions
 
 ## 初始化游戏
 ## 创建新的游戏实例并初始化
@@ -45,8 +62,6 @@ static func initialize_game(root_node):
 
 ## 开始新游戏
 static func start_new_game():
-	print("开始新游戏")
-
 	# 检查是否使用特殊卡
 	if use_special_cards:
 		print("使用特殊牌")
@@ -57,15 +72,7 @@ static func start_new_game():
 		select_skill_card.init_card_table_view()
 	else:
 		print("不使用特殊牌")
-		var choosed_versions = []
-		if is_open_first:
-			choosed_versions.push_back(1)
-		if is_open_second:
-			choosed_versions.push_back(2)
-		if is_open_third:
-			choosed_versions.push_back(3)
-		
-		instance.start_new_game(choosed_versions)
+		instance.start_new_game()
 
 ## 返回到主菜单
 ## 清理游戏状态，销毁UI，重置并初始化新的游戏实例
