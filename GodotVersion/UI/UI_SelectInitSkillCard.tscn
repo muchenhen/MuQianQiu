@@ -359,6 +359,37 @@ offset_bottom = 128.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="PoemPanel" type="Panel" parent="ColorRect/RightUIContainer/ColorRect/DetailCardParent"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -120.0
+offset_top = 20.0
+offset_right = 120.0
+offset_bottom = 130.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="PoemLabel" type="Label" parent="ColorRect/RightUIContainer/ColorRect/DetailCardParent/PoemPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 16
+text = "诗句将显示在这里"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
 [node name="SkillInfoPanel" type="Panel" parent="ColorRect/RightUIContainer/ColorRect/DetailCardParent"]
 layout_mode = 1
 anchors_preset = 7
@@ -369,7 +400,7 @@ anchor_bottom = 1.0
 offset_left = -120.0
 offset_top = 140.0
 offset_right = 120.0
-offset_bottom = 380.0
+offset_bottom = 390.0
 grow_horizontal = 2
 grow_vertical = 0
 
