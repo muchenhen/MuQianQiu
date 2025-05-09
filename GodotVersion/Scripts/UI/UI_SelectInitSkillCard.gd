@@ -13,6 +13,7 @@ extends Node2D
 @onready var skill2_type_label = $ColorRect/RightUIContainer/ColorRect/DetailCardParent/SkillInfoPanel/VBoxContainer/Skill2Container/Skill2Type
 @onready var skill2_target_label = $ColorRect/RightUIContainer/ColorRect/DetailCardParent/SkillInfoPanel/VBoxContainer/Skill2Container/Skill2Target
 @onready var skill2_value_label = $ColorRect/RightUIContainer/ColorRect/DetailCardParent/SkillInfoPanel/VBoxContainer/Skill2Container/Skill2Value
+@onready var poem_label = $ColorRect/RightUIContainer/ColorRect/DetailCardParent/PoemPanel/PoemLabel
 
 # 技能数据字典
 var skill_data_dict = {}
@@ -234,8 +235,21 @@ func _on_card_selected(card) -> void:
 	# 更新右侧详情卡片显示
 	special_card_detail_show.update_card_info_by_id(card.ID)
 	
+	# 更新诗句显示
+	_update_poem(card.ID)
+	
 	# 更新技能详情
 	_update_skill_info(card.ID)
+
+# 更新诗句显示
+func _update_poem(card_id: int) -> void:
+	var table_manager = TableManager.get_instance()
+	var card_info = table_manager.get_row("Cards", card_id)
+	
+	if card_info and card_info.has("Describe"):
+		poem_label.text = card_info["Describe"]
+	else:
+		poem_label.text = "暂无诗句"
 
 # 更新技能详情显示
 func _update_skill_info(card_id: int) -> void:
