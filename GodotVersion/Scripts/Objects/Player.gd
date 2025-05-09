@@ -39,6 +39,9 @@ var story_timer: Timer
 
 var current_sc_story_show: Node = null
 
+# 玩家选择的特殊卡ID列表
+var selected_special_cards: Array[int] = []
+
 # ai agent
 var bind_ai_agent: AIAgent = null
 
@@ -349,3 +352,15 @@ func is_ai_player() -> bool:
 
 func start_ai_round() -> void:
 	bind_ai_agent.start_ai_turn()
+	
+## 设置玩家选择的特殊卡
+## 参数：
+## - cards: 特殊卡ID列表
+func set_selected_special_cards(cards: Array[int]) -> void:
+	selected_special_cards = cards
+	print("玩家 ", player_name, " 选择了 ", selected_special_cards.size(), " 张特殊卡")
+
+## 获取玩家选择的特殊卡
+## 返回：特殊卡ID列表的副本
+func get_selected_special_cards() -> Array[int]:
+	return selected_special_cards.duplicate()
