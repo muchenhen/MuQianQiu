@@ -20,11 +20,8 @@ var skill_data_dict = {}
 # 卡牌名称字典，用于显示目标名称
 var card_name_dict = {}
 
-# 当前玩家选择的特殊卡 {base_id: selected_card_id}
-var selected_special_cards = {}
-
 var card_ids: Array[int] = []
-var selected_cards: Array[int] = []
+var selected_cards: Array[int] = []  # 选中的特殊卡ID列表
 var dragging = false  # 拖拽状态标志
 var drag_start_position: Vector2  # 记录拖拽开始位置
 var is_dragging_action = false  # 标记是否正在进行拖拽动作
@@ -225,63 +222,30 @@ func _on_card_selected(card) -> void:
 		return
 		
 	var card_id = card.ID
-	var base_id = card.BaseID  # 使用卡牌对象自身的 BaseID 属性
+	var base_id = card.BaseID
 	
 	# 处理卡片选择逻辑
 	if selected_cards.has(card_id):
 		# 取消选择当前卡片
 		selected_cards.erase(card_id)
 		card.set_card_unchooesd()
-		
-		# 如果是特殊卡（BaseID 与 ID 不同），从选择的特殊卡字典中移除
-		if base_id != card_id:
-			if selected_special_cards.has(base_id):
-				selected_special_cards.erase(base_id)
-		# 如果是基础卡，从选择的特殊卡字典中移除
-		elif selected_special_cards.has(card_id):
-			selected_special_cards.erase(card_id)
 	else:
-		# 检查是否是特殊卡（BaseID 与 ID 不同）
-		if base_id != card_id:  # 如果是特殊卡
-			# 检查是否已超过特殊卡数量限制(15张)
-			if selected_special_cards.size() >= 15 and not selected_special_cards.has(base_id):
+		# 检查是否已超过卡片数量限制(15张)
+		if selected_cards.size() >= 15:
+			var ui_manager = UIManager.get_instance()
+			ui_manager.show_info_tip("特殊卡数量已达到上限(15张)，无法选择更多特殊卡")
+			return
+			
+		# 检查是否已经选择了同一基础卡的其他特殊卡
+		for selected_card in card_instances:
+			if selected_card.get_card_chooesd() and selected_card.BaseID == base_id:
+				# 显示提示信息
 				var ui_manager = UIManager.get_instance()
-				ui_manager.show_info_tip("特殊卡数量已达到上限(15张)，无法选择更多特殊卡")
-				return
-			
-			# 检查是否已经选择了同一基础卡的其他特殊卡或基础卡本身
-			# 遍历所有已选卡片
-			for selected_card in card_instances:
-				if selected_card.get_card_chooesd():
-					# 如果找到了同一个基础卡的卡片（特殊卡或基础卡本身）
-					if (selected_card.BaseID == base_id) or (selected_card.ID == base_id):
-						# 显示提示信息
-						var ui_manager = UIManager.get_instance()
-						ui_manager.show_info_tip("已替换相同系列的卡牌：" + card_name_dict[selected_card.ID])
-						# 取消选择
-						selected_cards.erase(selected_card.ID)
-						selected_card.set_card_unchooesd()
-						# 如果之前记录了这个基础卡的特殊卡选择，清除它
-						if selected_special_cards.has(base_id):
-							selected_special_cards.erase(base_id)
-						break
-			
-			# 记录新选择的特殊卡
-			selected_special_cards[base_id] = card_id
-		else:  # 如果是基础卡
-			# 检查是否已经选择了该基础卡的特殊卡
-			for selected_card in card_instances:
-				if selected_card.get_card_chooesd() and selected_card.BaseID == card_id and selected_card.ID != card_id:
-					# 显示提示信息
-					var ui_manager = UIManager.get_instance()
-					ui_manager.show_info_tip("已取消选择特殊卡：" + card_name_dict[selected_card.ID])
-					# 取消选择特殊卡
-					selected_cards.erase(selected_card.ID)
-					selected_card.set_card_unchooesd()
-					# 清除记录
-					if selected_special_cards.has(card_id):
-						selected_special_cards.erase(card_id)
-					break
+				ui_manager.show_info_tip("已替换相同系列的卡牌：" + card_name_dict[selected_card.ID])
+				# 取消之前的选择
+				selected_cards.erase(selected_card.ID)
+				selected_card.set_card_unchooesd()
+				break
 		
 		# 将当前卡片添加到选择列表
 		selected_cards.append(card_id)
@@ -396,20 +360,27 @@ func _update_skill_display(skill_data: Dictionary, type_label: Label, target_lab
 func _on_start_button_pressed() -> void:
 	# 处理开始游戏按钮点击事件
 	if selected_cards.size() > 0:
-		# 触发选择完成事件，将选择的卡片信息发送到游戏管理器
+		# 触发选择完成事件，将选择的卡片信息发送到玩家对象
 		print("选中的卡片: ", selected_cards)
-		print("选中的特殊卡: ", selected_special_cards)
 		
-		# 将玩家选择的特殊卡信息保存到游戏管理器中
+		# 获取游戏实例
 		var game_instance = GameManager.instance
 		if game_instance:
-			# 保存选择的卡片列表
-			game_instance.selected_init_cards = selected_cards.duplicate()
+			# 在PVE模式下，将特殊卡信息设置给玩家A
+			# 这种设计在未来可以扩展为联机模式，根据玩家身份设置给不同的Player对象
+			var player = game_instance.player_a
+			player.set_selected_special_cards(selected_cards.duplicate())
 			
-			# 保存选择的特殊卡映射
-			game_instance.selected_special_cards = selected_special_cards.duplicate()
-		
-		# 在这里添加跳转到下一个场景或开始游戏的逻辑
+			# 销毁当前的选牌UI
+			var ui_manager = UIManager.get_instance()
+			ui_manager.destroy_ui("UI_SelectInitSkillCard")
+			
+			# 开始新游戏
+			game_instance.start_new_game()
+	else:
+		# 如果没有选择任何卡片，显示提示信息
+		var ui_manager = UIManager.get_instance()
+		ui_manager.show_info_tip("请至少选择一张卡片")
 
 # 获取卡牌的基础卡ID
 func _get_base_card_id(card_id: int) -> int:
