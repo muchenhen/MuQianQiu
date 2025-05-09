@@ -20,6 +20,9 @@ var skill_data_dict = {}
 # 卡牌名称字典，用于显示目标名称
 var card_name_dict = {}
 
+# 当前玩家选择的特殊卡 {base_id: selected_card_id}
+var selected_special_cards = {}
+
 var card_ids: Array[int] = []
 var selected_cards: Array[int] = []
 var dragging = false  # 拖拽状态标志
@@ -221,25 +224,72 @@ func _on_card_selected(card) -> void:
 	if is_dragging_action:
 		return
 		
+	var card_id = card.ID
+	var base_id = card.BaseID  # 使用卡牌对象自身的 BaseID 属性
+	
 	# 处理卡片选择逻辑
-	if selected_cards.has(card.ID):
-		selected_cards.erase(card.ID)
+	if selected_cards.has(card_id):
+		# 取消选择当前卡片
+		selected_cards.erase(card_id)
 		card.set_card_unchooesd()
+		
+		# 如果是特殊卡（BaseID 与 ID 不同），从选择的特殊卡字典中移除
+		if base_id != card_id:
+			if selected_special_cards.has(base_id):
+				selected_special_cards.erase(base_id)
+		# 如果是基础卡，从选择的特殊卡字典中移除
+		elif selected_special_cards.has(card_id):
+			selected_special_cards.erase(card_id)
 	else:
-		selected_cards.append(card.ID)
+		# 检查是否是特殊卡（BaseID 与 ID 不同）
+		if base_id != card_id:  # 如果是特殊卡
+			# 检查是否已经选择了同一基础卡的其他特殊卡或基础卡本身
+			# 遍历所有已选卡片
+			for selected_card in card_instances:
+				if selected_card.get_card_chooesd():
+					# 如果找到了同一个基础卡的卡片（特殊卡或基础卡本身）
+					if (selected_card.BaseID == base_id) or (selected_card.ID == base_id):
+						# 取消选择
+						selected_cards.erase(selected_card.ID)
+						selected_card.set_card_unchooesd()
+						# 如果之前记录了这个基础卡的特殊卡选择，清除它
+						if selected_special_cards.has(base_id):
+							selected_special_cards.erase(base_id)
+						break
+			
+			# 记录新选择的特殊卡
+			selected_special_cards[base_id] = card_id
+		else:  # 如果是基础卡
+			# 检查是否已经选择了该基础卡的特殊卡
+			for selected_card in card_instances:
+				if selected_card.get_card_chooesd() and selected_card.BaseID == card_id and selected_card.ID != card_id:
+					# 取消选择特殊卡
+					selected_cards.erase(selected_card.ID)
+					selected_card.set_card_unchooesd()
+					# 清除记录
+					if selected_special_cards.has(card_id):
+						selected_special_cards.erase(card_id)
+					break
+		
+		# 将当前卡片添加到选择列表
+		selected_cards.append(card_id)
 		card.set_card_chooesd()
 		
 	# 显示DetailCardParent
 	detail_card_parent.visible = true
 	
 	# 更新右侧详情卡片显示
-	special_card_detail_show.update_card_info_by_id(card.ID)
+	special_card_detail_show.update_card_info_by_id(card_id)
 	
 	# 更新诗句显示
-	_update_poem(card.ID)
+	_update_poem(card_id)
 	
 	# 更新技能详情
-	_update_skill_info(card.ID)
+	_update_skill_info(card_id)
+	
+	# 输出当前选择的卡片和特殊卡信息（调试用）
+	print("选中的卡片: ", selected_cards)
+	print("选中的特殊卡: ", selected_special_cards)
 
 # 更新诗句显示
 func _update_poem(card_id: int) -> void:
@@ -338,6 +388,27 @@ func _update_skill_display(skill_data: Dictionary, type_label: Label, target_lab
 func _on_start_button_pressed() -> void:
 	# 处理开始游戏按钮点击事件
 	if selected_cards.size() > 0:
-		# 触发选择完成事件，可以在此处添加将选择的卡片信息发送到游戏管理器的代码
-		print("Selected cards: ", selected_cards)
+		# 触发选择完成事件，将选择的卡片信息发送到游戏管理器
+		print("选中的卡片: ", selected_cards)
+		print("选中的特殊卡: ", selected_special_cards)
+		
+		# 将玩家选择的特殊卡信息保存到游戏管理器中
+		var game_instance = GameManager.instance
+		if game_instance:
+			# 保存选择的卡片列表
+			game_instance.selected_init_cards = selected_cards.duplicate()
+			
+			# 保存选择的特殊卡映射
+			game_instance.selected_special_cards = selected_special_cards.duplicate()
+		
 		# 在这里添加跳转到下一个场景或开始游戏的逻辑
+
+# 获取卡牌的基础卡ID
+func _get_base_card_id(card_id: int) -> int:
+	var table_manager = TableManager.get_instance()
+	var card_info = table_manager.get_row("Cards", card_id)
+	
+	if card_info and card_info.has("BaseCardID") and not card_info["BaseCardID"].strip_edges().is_empty():
+		return int(card_info["BaseCardID"])
+	
+	return 0
