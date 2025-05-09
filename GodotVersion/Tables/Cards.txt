@@ -160,7 +160,7 @@ ID,Name,PinyinName,Score,Season,Describe,Special,BaseID,SpecialName,SkillsID
 236,阿阮·山鬼,ARuan_ShanGui,6,春,"崔嵬未起逐风舞，
 羲和停云坠玉露。",true,204,204,
 237,禺期·无名,YuQi_WuMing,4,夏,"贤者无名入神识，
-?一片丹心报苍生。",true,208,208,
+?一片丹心报苍生。",true,205,205,
 238,沈夜·紫微,ShenYe_ZiWei,4,冬,"天命难解此中局，
 神血护佑心魔曲。",true,207,207,
 239,沈曦·魔化,ShenXi_MoHua,4,春,"稚童新衫犹未裁，
