@@ -36,6 +36,7 @@ func regiester_ui_elements() -> void:
 	register_ui_element("UI_DealStoryStatus", "res://UI/UI_DealStoryStatus.tscn")
 	register_ui_element("UI_Setting", "res://UI/UI_Setting.tscn")
 	register_ui_element("UI_SelectInitSkillCard", "res://UI/UI_SelectInitSkillCard.tscn")
+	register_ui_element("UI_Tip", "res://UI/UI_Tip.tscn")
 
 func register_ui_element(key: String, element_path: String) -> void:
 	ui_elements_path[key] = element_path
@@ -126,3 +127,36 @@ func destroy_ui(key: String) -> void:
 		if key in ui_element_single_instance:
 			ui_element_single_instance.erase(ui_instance)
 			ui_element_single_instance.erase(key)
+
+# 显示快速提示
+func show_tip(text: String, duration: float = 2.0, color: Color = Color.TRANSPARENT) -> void:
+	var tip:UI_Tip = create_ui_instance_for_multi("UI_Tip")
+	if tip:
+		# 先添加到UI树
+		open_ui_instance(tip)
+		move_ui_instance_to_top(tip)
+		
+		# 再设置属性
+		tip.set_text(text)
+		if color != Color.TRANSPARENT:
+			tip.set_color(color)
+		tip.display_duration = duration
+		
+		# 最后显示动画
+		tip.show_tip()
+
+# 显示成功提示
+func show_success_tip(text: String, duration: float = 2.0) -> void:
+	show_tip(text, duration, Color(0.2, 0.7, 0.2, 0.8))
+
+# 显示错误提示
+func show_error_tip(text: String, duration: float = 2.0) -> void:
+	show_tip(text, duration, Color(0.7, 0.2, 0.2, 0.8))
+
+# 显示警告提示
+func show_warning_tip(text: String, duration: float = 2.0) -> void:
+	show_tip(text, duration, Color(0.7, 0.7, 0.2, 0.8))
+
+# 显示信息提示
+func show_info_tip(text: String, duration: float = 2.0) -> void:
+	show_tip(text, duration, Color(0.2, 0.2, 0.7, 0.8))

@@ -1,0 +1,60 @@
+[gd_scene load_steps=4 format=3 uid="uid://1f46ub0n34lx"]
+
+[ext_resource type="Script" path="res://Scripts/UI/UI_Tip.gd" id="1_cqi2j"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4xnni"]
+bg_color = Color(0.196078, 0.196078, 0.196078, 0.784314)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_color = Color(0, 0, 0, 0.392157)
+shadow_size = 4
+shadow_offset = Vector2(0, 2)
+
+[sub_resource type="LabelSettings" id="LabelSettings_3bl1p"]
+font_size = 20
+outline_size = 1
+outline_color = Color(0, 0, 0, 0.196078)
+shadow_color = Color(0, 0, 0, 0.392157)
+
+[node name="UI_Tip" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_cqi2j")
+
+[node name="Panel" type="Panel" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -40.0
+offset_right = 200.0
+offset_bottom = 40.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(200, 40)
+theme_override_styles/panel = SubResource("StyleBoxFlat_4xnni")
+
+[node name="Label" type="Label" parent="Panel"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "提示信息"
+label_settings = SubResource("LabelSettings_3bl1p")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3

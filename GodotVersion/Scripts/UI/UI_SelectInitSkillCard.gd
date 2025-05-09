@@ -249,6 +249,9 @@ func _on_card_selected(card) -> void:
 				if selected_card.get_card_chooesd():
 					# 如果找到了同一个基础卡的卡片（特殊卡或基础卡本身）
 					if (selected_card.BaseID == base_id) or (selected_card.ID == base_id):
+						# 显示提示信息
+						var ui_manager = UIManager.get_instance()
+						ui_manager.show_info_tip("已替换相同系列的卡牌：" + card_name_dict[selected_card.ID])
 						# 取消选择
 						selected_cards.erase(selected_card.ID)
 						selected_card.set_card_unchooesd()
@@ -263,6 +266,9 @@ func _on_card_selected(card) -> void:
 			# 检查是否已经选择了该基础卡的特殊卡
 			for selected_card in card_instances:
 				if selected_card.get_card_chooesd() and selected_card.BaseID == card_id and selected_card.ID != card_id:
+					# 显示提示信息
+					var ui_manager = UIManager.get_instance()
+					ui_manager.show_info_tip("已取消选择特殊卡：" + card_name_dict[selected_card.ID])
 					# 取消选择特殊卡
 					selected_cards.erase(selected_card.ID)
 					selected_card.set_card_unchooesd()
@@ -286,10 +292,6 @@ func _on_card_selected(card) -> void:
 	
 	# 更新技能详情
 	_update_skill_info(card_id)
-	
-	# 输出当前选择的卡片和特殊卡信息（调试用）
-	print("选中的卡片: ", selected_cards)
-	print("选中的特殊卡: ", selected_special_cards)
 
 # 更新诗句显示
 func _update_poem(card_id: int) -> void:
