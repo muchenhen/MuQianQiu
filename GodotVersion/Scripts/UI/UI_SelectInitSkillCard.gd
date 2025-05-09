@@ -243,6 +243,12 @@ func _on_card_selected(card) -> void:
 	else:
 		# 检查是否是特殊卡（BaseID 与 ID 不同）
 		if base_id != card_id:  # 如果是特殊卡
+			# 检查是否已超过特殊卡数量限制(15张)
+			if selected_special_cards.size() >= 15 and not selected_special_cards.has(base_id):
+				var ui_manager = UIManager.get_instance()
+				ui_manager.show_info_tip("特殊卡数量已达到上限(15张)，无法选择更多特殊卡")
+				return
+			
 			# 检查是否已经选择了同一基础卡的其他特殊卡或基础卡本身
 			# 遍历所有已选卡片
 			for selected_card in card_instances:
