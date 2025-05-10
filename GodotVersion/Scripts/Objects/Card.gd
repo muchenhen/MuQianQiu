@@ -44,8 +44,9 @@ func set_input_priority(value: int) -> void:
 
 func _ready() -> void:
 	back_texture = load(BACK_TEXTURE_PATH)
-	# 删除默认的点击事件处理
-	disconnect("pressed", Callable(self, "_on_card_clicked"))
+	# 删除默认的点击事件处理（如果存在的话）
+	if is_connected("pressed", Callable(self, "_on_card_clicked")):
+		disconnect("pressed", Callable(self, "_on_card_clicked"))
 	# 使用gui_input代替
 	gui_input.connect(_on_card_gui_input)
 	update_card()
