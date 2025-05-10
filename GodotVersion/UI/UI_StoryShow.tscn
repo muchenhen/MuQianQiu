@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://bsjufb64q25nc"]
 
-[ext_resource type="Script" path="res://Scripts/UI/UI_StoryShow.gd" id="1_yhrfm"]
-[ext_resource type="Script" path="res://Scripts/Objects/HorizontalBox.gd" id="2_3hl4a"]
+[ext_resource type="Script" uid="uid://ccq5dosfqwf4y" path="res://Scripts/UI/UI_StoryShow.gd" id="1_yhrfm"]
+[ext_resource type="Script" uid="uid://dacfkmhm6vb83" path="res://Scripts/Objects/HorizontalBox.gd" id="2_3hl4a"]
 [ext_resource type="PackedScene" uid="uid://cjtoi3cho7pbo" path="res://UI/UI_BackgroundBlur.tscn" id="2_3knxu"]
 [ext_resource type="PackedScene" uid="uid://b6vosary0xtcn" path="res://Scripts/Objects/Card.tscn" id="3_dbdpt"]
 [ext_resource type="FontFile" uid="uid://cgqf6jr2l5srf" path="res://Font/SourceHanSerifSC-Regular-simplified.otf" id="5_gq8qy"]

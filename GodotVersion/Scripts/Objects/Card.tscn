@@ -1,8 +1,8 @@
 [gd_scene load_steps=6 format=3 uid="uid://b6vosary0xtcn"]
 
-[ext_resource type="Shader" path="res://Shaders/gray.gdshader" id="1_7cn24"]
+[ext_resource type="Shader" uid="uid://bqxvdoab20n6l" path="res://Shaders/gray.gdshader" id="1_7cn24"]
 [ext_resource type="Texture2D" uid="uid://mya44gk3rdrr" path="res://Textures/Cards/2/Tex_ARuan.png" id="1_jlb4m"]
-[ext_resource type="Script" path="res://Scripts/Objects/Card.gd" id="2_67uyw"]
+[ext_resource type="Script" uid="uid://ctqsiuo7lgv14" path="res://Scripts/Objects/Card.gd" id="2_67uyw"]
 [ext_resource type="Texture2D" uid="uid://dwxj7konvmmje" path="res://Textures/Cards/Tex_CardGlow.PNG" id="3_mp0un"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ayurq"]

@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://nsp0dlw57dwn"]
 
-[ext_resource type="Script" path="res://Scripts/UI/UI_SelectInitSkillCard.gd" id="1_8rmrp"]
+[ext_resource type="Script" uid="uid://brxtn0nmeppik" path="res://Scripts/UI/UI_SelectInitSkillCard.gd" id="1_8rmrp"]
 [ext_resource type="PackedScene" uid="uid://b6vosary0xtcn" path="res://Scripts/Objects/Card.tscn" id="2_utaq8"]
 
 [node name="UiSelectInitSkillCard" type="Node2D"]
