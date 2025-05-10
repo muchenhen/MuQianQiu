@@ -337,12 +337,32 @@ func animate_next_card():
 				continue
 			print("公共区域手牌 ", key, " ID: ", public_card.card.ID)
 		print("发牌完毕")
-		input_manager.allow_input()
 		
 		# 触发游戏开始信号
 		emit_signal("game_start")
+
+		# 检查玩家特殊卡
+		process_special_cards()
 		
 		change_round()
+
+		input_manager.allow_input()
+
+
+## 处理玩家特殊卡逻辑
+## 在发牌动画完成后、进入回合前检查并应用特殊卡效果
+func process_special_cards():
+	print("检查特殊卡效果")
+	
+	# 检查玩家A是否有特殊卡
+	if use_special_cards and player_a.get_selected_special_cards().size() > 0:
+		print("玩家A选择了特殊卡，检查是否可以应用特殊卡效果")
+		player_a.check_and_apply_special_cards()
+	
+	# 检查玩家B是否有特殊卡
+	if use_special_cards and player_b.get_selected_special_cards().size() > 0:
+		print("玩家B选择了特殊卡，检查是否可以应用特殊卡效果")
+		player_b.check_and_apply_special_cards()
 
 ## 停止动画序列
 ## 立即终止所有待执行的卡牌动画

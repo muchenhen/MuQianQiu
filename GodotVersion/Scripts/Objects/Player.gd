@@ -364,3 +364,40 @@ func set_selected_special_cards(cards: Array[int]) -> void:
 ## 返回：特殊卡ID列表的副本
 func get_selected_special_cards() -> Array[int]:
 	return selected_special_cards.duplicate()
+	
+## 检查并应用特殊卡效果
+## 检查玩家手牌中是否有与选中的特殊卡BaseID匹配的卡牌，如果有则更新这个卡牌实例
+func check_and_apply_special_cards() -> void:
+	if selected_special_cards.size() == 0:
+		print("玩家 ", player_name, " 未选择特殊卡")
+		return
+	
+	print("玩家 ", player_name, " 正在检查特殊卡效果")
+	var updated_count = 0
+	var table_manager = TableManager.get_instance()
+	
+	# 遍历所有手牌槽位
+	for slot_index in hand_cards.keys():
+		var hand_card = hand_cards[slot_index]
+		
+		# 检查槽位是否有卡牌
+		if not hand_card.is_empty and hand_card.card != null:
+			var card = hand_card.card
+			
+			# 遍历所有选择的特殊卡
+			for special_card_id in selected_special_cards:
+				var special_card_data = table_manager.get_row("Cards", special_card_id)
+				
+				# 检查BaseID是否匹配
+				if special_card_data and card.BaseID == special_card_data["BaseID"]:
+					print("玩家 ", player_name, " 的手牌 ", card.ID, " 与特殊卡 ", special_card_id, " BaseID匹配")
+					
+					# 更新卡牌信息为特殊卡信息，保留原实例
+					card.update_card_info_by_id(special_card_id)
+					updated_count += 1
+					break  # 一张卡只应用一次特殊卡效果
+	
+	if updated_count > 0:
+		print("玩家 ", player_name, " 共更新了 ", updated_count, " 张手牌的特殊卡效果")
+	else:
+		print("玩家 ", player_name, " 手牌中没有与选中特殊卡匹配的卡牌")

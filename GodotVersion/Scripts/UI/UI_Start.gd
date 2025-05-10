@@ -60,7 +60,7 @@ func _on_checkbox_3_toggled(is_checked:bool):
 	print("Checkbox 3 toggled: ", is_checked)
 
 func _on_special_card_checkbox_toggled(is_checked:bool):
-	GameManager.use_special_cards = is_checked
+	GameManager.set_use_special_cards(is_checked)
 	print("Special Card Checkbox toggled: ", is_checked)
 
 func _on_setting_button_pressed():

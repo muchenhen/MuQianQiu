@@ -103,3 +103,8 @@ func _process(_delta):
 			GameManager.back_to_main(self)
 		# 更新键的状态
 		GameManager.debug_key_was_pressed = key_pressed_now
+
+static func set_use_special_cards(use_special: bool):
+	use_special_cards = use_special
+	print("设置使用特殊牌: ", use_special_cards)
+	instance.set_use_special_cards(use_special_cards)
