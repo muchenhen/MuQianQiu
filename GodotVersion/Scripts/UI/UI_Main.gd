@@ -150,9 +150,9 @@ func _show_next_card(anim_data: Dictionary, timer: Timer) -> void:
 	# 检查是否所有卡片都已显示
 	if index >= anim_data["card_ids"].size():
 		timer.queue_free()  # 停止计时器
-		# 动画完成后，恢复用户输入
-		input_manager.allow_input()
 		print("玩家A特殊卡动画完成，共", player_a_skill_cards.size(), "张卡")
+		# 动画完成后，恢复用户输入
+		# input_manager.allow_input()
 		return
 	
 	# 获取当前要显示的卡片ID
