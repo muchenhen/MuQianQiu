@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://8p14juupi406"]
 
 [ext_resource type="Texture2D" uid="uid://bm2itb8y3330b" path="res://Textures/MainBG.png" id="1_71xrv"]
-[ext_resource type="Script" path="res://Scripts/UI/UI_Main.gd" id="1_nmgd6"]
+[ext_resource type="Script" uid="uid://dhyq7sutxpxhd" path="res://Scripts/UI/UI_Main.gd" id="1_nmgd6"]
 [ext_resource type="PackedScene" uid="uid://b6vosary0xtcn" path="res://Scripts/Objects/Card.tscn" id="2_immq1"]
 [ext_resource type="FontFile" uid="uid://cgqf6jr2l5srf" path="res://Font/SourceHanSerifSC-Regular-simplified.otf" id="3_hglhl"]
 [ext_resource type="PackedScene" uid="uid://cjtoi3cho7pbo" path="res://UI/UI_BackgroundBlur.tscn" id="4_o4txw"]
@@ -169,12 +169,13 @@ offset_bottom = 304.0
 pivot_offset = Vector2(96, 128)
 metadata/_edit_lock_ = true
 
-[node name="SkillCardZone" type="ColorRect" parent="Cards"]
-offset_left = 1642.0
+[node name="PlayerASkillCardZone" type="ColorRect" parent="Cards"]
+offset_left = 1632.0
 offset_top = 773.0
-offset_right = 1871.0
+offset_right = 1904.0
 offset_bottom = 1029.0
 color = Color(0.986965, 0.679503, 0.140191, 1)
+metadata/_edit_lock_ = true
 
 [node name="UI" type="Node" parent="."]
 

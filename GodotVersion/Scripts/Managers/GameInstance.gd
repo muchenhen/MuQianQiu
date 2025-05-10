@@ -2,6 +2,9 @@ extends Node
 
 class_name GameInstance
 
+# 游戏开始信号，在游戏完全初始化后触发
+signal game_start
+
 ############################################
 # 全局管理的数据 - 从GameManager移植过来
 var is_open_first:bool = false
@@ -266,7 +269,10 @@ func send_card_for_play_without_anim(cards):
 		public_deal.set_one_hand_card(card, position, rotation)
 		card.position = position
 		card.rotation = rotation
-		
+	
+	# 触发游戏开始信号
+	emit_signal("game_start")
+	
 	start_round()
 
 ## 带动画效果的发牌
@@ -332,6 +338,10 @@ func animate_next_card():
 			print("公共区域手牌 ", key, " ID: ", public_card.card.ID)
 		print("发牌完毕")
 		input_manager.allow_input()
+		
+		# 触发游戏开始信号
+		emit_signal("game_start")
+		
 		change_round()
 
 ## 停止动画序列
