@@ -524,13 +524,3 @@ func clear():
 	if animation_timer != null and animation_timer.is_inside_tree():
 		animation_timer.queue_free()
 		animation_timer = null
-
-## 处理卡牌点击事件
-func on_card_clicked(card):
-	# 实现卡牌点击逻辑
-	pass
-
-## 处理卡牌动画结束事件
-func player_choose_card_anim_end(card):
-	# 实现卡牌动画结束逻辑
-	pass
