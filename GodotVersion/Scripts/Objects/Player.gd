@@ -365,11 +365,63 @@ func set_selected_special_cards(cards: Array[int]) -> void:
 func get_selected_special_cards() -> Array[int]:
 	return selected_special_cards.duplicate()
 	
-## 检查并应用特殊卡效果
-## 检查玩家手牌中是否有与选中的特殊卡BaseID匹配的卡牌，如果有则更新这个卡牌实例
-func check_and_apply_special_cards() -> void:
+## 检查玩家手牌中是否有与选中的特殊卡BaseID匹配的卡牌
+func check_special_cards() -> bool:
 	if selected_special_cards.size() == 0:
 		print("玩家 ", player_name, " 未选择特殊卡")
+		return false
+	return true
+
+## 获取玩家手牌中可以升级为特殊卡的手牌 和 玩家拥有的可以使用的特殊卡
+## 返回：可升级为特殊卡的手牌列表
+func get_hand_upgradable_cards() -> Array:
+	var table_manager = TableManager.get_instance()
+	var upgradable_cards = []
+
+	# 遍历所有手牌槽位
+	for slot_index in hand_cards.keys():
+		var hand_card = hand_cards[slot_index]
+		
+		# 检查槽位是否有卡牌
+		if not hand_card.is_empty and hand_card.card != null:
+			var card = hand_card.card
+			
+			# 遍历所有选择的特殊卡
+			for special_card_id in selected_special_cards:
+				var special_card_data = table_manager.get_row("Cards", special_card_id)
+				
+				# 检查BaseID是否匹配
+				if special_card_data and card.BaseID == special_card_data["BaseID"]:
+					print("玩家 ", player_name, " 的手牌 ", card.ID, " 可以升级为特殊卡 ", special_card_id)
+					upgradable_cards.append(card)
+					break  # 一张卡只应用一次特殊卡效果
+	# 返回可升级为特殊卡的手牌列表
+	return upgradable_cards
+
+## 获取  玩家拥有的 并且 可以使用的特殊卡
+## 返回：特殊卡列表
+func get_available_special_cards() -> Array:
+	var table_manager = TableManager.get_instance()
+	var available_special_cards = []
+
+	# 遍历所有选择的特殊卡
+	for special_card_id in selected_special_cards:
+		var special_card_data = table_manager.get_row("Cards", special_card_id)
+		
+		# 检查BaseID是否匹配
+		if special_card_data and special_card_data["Available"]:
+			print("玩家 ", player_name, " 拥有可用的特殊卡 ", special_card_id)
+			available_special_cards.append(special_card_id)
+	
+	# 返回可用的特殊卡列表
+	return available_special_cards
+
+
+## 检查并应用特殊卡效果
+## 检查玩家手牌中是否有与选中的特殊卡BaseID匹配的卡牌，如果有则更新这个卡牌实例
+func apply_special_cards() -> void:
+	if not check_special_cards():
+		print("玩家 ", player_name, " 没有选中特殊卡，无法应用效果")
 		return
 	
 	print("玩家 ", player_name, " 正在检查特殊卡效果")
