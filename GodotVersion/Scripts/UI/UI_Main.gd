@@ -204,3 +204,10 @@ func _show_next_card(anim_data: Dictionary, timer: Timer) -> void:
 	
 	# 进入下一张卡片的索引
 	anim_data["current_index"] += 1
+
+func play_player_a_special_apply_anim() -> void:
+	# 玩家A可以使用的特殊卡 和 玩家A手牌中可以升级的卡
+	var upgradable_card = GameManager.instance.player_a.get_hand_upgradable_cards()
+	for card in upgradable_card:
+		# 这里可以添加动画效果
+		print("玩家A可以升级的卡:", card.get_card_id())
