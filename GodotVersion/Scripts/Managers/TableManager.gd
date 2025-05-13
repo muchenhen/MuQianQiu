@@ -76,3 +76,7 @@ func get_row(table_name: String, id: int) -> Dictionary:
 func get_value(table_name: String, id: int, column: String):
 	var row = get_row(table_name, id)
 	return row.get(column)
+
+# 获取表中的所有行
+func get_all_rows(table_name: String) -> Dictionary:
+	return tables.get(table_name, {})

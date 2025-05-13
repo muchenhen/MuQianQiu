@@ -40,7 +40,8 @@ var story_timer: Timer
 var current_sc_story_show: Node = null
 
 # 玩家选择的特殊卡ID列表
-var selected_special_cards: Array[int] = []
+var selected_special_card_ids: Array[int] = []
+var selected_special_cards: Array[Card] = []
 
 # ai agent
 var bind_ai_agent: AIAgent = null
@@ -353,68 +354,57 @@ func is_ai_player() -> bool:
 func start_ai_round() -> void:
 	bind_ai_agent.start_ai_turn()
 	
-## 设置玩家选择的特殊卡
+## 设置玩家选择的特殊卡ID
 ## 参数：
-## - cards: 特殊卡ID列表
-func set_selected_special_cards(cards: Array[int]) -> void:
-	selected_special_cards = cards
-	print("玩家 ", player_name, " 选择了 ", selected_special_cards.size(), " 张特殊卡")
+## - card_ids: 特殊卡ID列表
+func set_selected_special_cards(card_ids: Array[int]) -> void:
+	selected_special_card_ids = card_ids
+	print("玩家 ", player_name, " 选择了 ", selected_special_card_ids.size(), " 张特殊卡")
 
 ## 获取玩家选择的特殊卡
 ## 返回：特殊卡ID列表的副本
 func get_selected_special_cards() -> Array[int]:
-	return selected_special_cards.duplicate()
+	return selected_special_card_ids.duplicate()
+
+## 设置玩家选择的特殊卡对象实例
+## 参数：
+## - cards: 特殊卡对象实例列表
+func set_selected_special_cards_instance(cards: Array[Card]) -> void:
+	selected_special_cards = cards
+	print("玩家 ", player_name, " 拥有 ", selected_special_cards.size(), " 张特殊卡实例")
 	
 ## 检查玩家手牌中是否有与选中的特殊卡BaseID匹配的卡牌
 func check_special_cards() -> bool:
-	if selected_special_cards.size() == 0:
+	if selected_special_card_ids.size() == 0:
 		print("玩家 ", player_name, " 未选择特殊卡")
 		return false
 	return true
 
-## 获取玩家手牌中可以升级为特殊卡的手牌 和 玩家拥有的可以使用的特殊卡
-## 返回：可升级为特殊卡的手牌列表
-func get_hand_upgradable_cards() -> Array:
-	var table_manager = TableManager.get_instance()
-	var upgradable_cards = []
-
+## 获取玩家手牌与特殊卡的匹配映射
+## 返回：字典，key为普通卡实例，value为对应的特殊卡实例
+func get_card_special_card_map() -> Dictionary:	
+	var card_special_card_map: Dictionary = {}
 	# 遍历所有手牌槽位
 	for slot_index in hand_cards.keys():
 		var hand_card = hand_cards[slot_index]
 		
 		# 检查槽位是否有卡牌
-		if not hand_card.is_empty and hand_card.card != null:
-			var card = hand_card.card
-			
-			# 遍历所有选择的特殊卡
-			for special_card_id in selected_special_cards:
-				var special_card_data = table_manager.get_row("Cards", special_card_id)
-				
-				# 检查BaseID是否匹配
-				if special_card_data and card.BaseID == special_card_data["BaseID"]:
-					print("玩家 ", player_name, " 的手牌 ", card.ID, " 可以升级为特殊卡 ", special_card_id)
-					upgradable_cards.append(card)
-					break  # 一张卡只应用一次特殊卡效果
-	# 返回可升级为特殊卡的手牌列表
-	return upgradable_cards
+		if hand_card.is_empty or hand_card.card == null:
+			continue
 
-## 获取  玩家拥有的 并且 可以使用的特殊卡
-## 返回：特殊卡列表
-func get_available_special_cards() -> Array:
-	var table_manager = TableManager.get_instance()
-	var available_special_cards = []
-
-	# 遍历所有选择的特殊卡
-	for special_card_id in selected_special_cards:
-		var special_card_data = table_manager.get_row("Cards", special_card_id)
-		
-		# 检查BaseID是否匹配
-		if special_card_data and special_card_data["Available"]:
-			print("玩家 ", player_name, " 拥有可用的特殊卡 ", special_card_id)
-			available_special_cards.append(special_card_id)
+		var base_card = hand_card.base_card
+		var base_card_id = base_card.ID 
+		for special_card:Card in selected_special_cards:
+			if special_card.BaseID == base_card_id:
+				print("玩家 ", player_name, " 的手牌 ", base_card.Name, " 与特殊卡 ", special_card.Name, " BaseID匹配")
+				card_special_card_map[base_card] = special_card
 	
-	# 返回可用的特殊卡列表
-	return available_special_cards
+	if card_special_card_map.size() > 0:
+		print("玩家 ", player_name, " 共有 ", card_special_card_map.size(), " 张可升级的卡牌")
+	else:
+		print("玩家 ", player_name, " 没有可升级的卡牌")
+		
+	return card_special_card_map	
 
 
 ## 检查并应用特殊卡效果
@@ -437,7 +427,7 @@ func apply_special_cards() -> void:
 			var card = hand_card.card
 			
 			# 遍历所有选择的特殊卡
-			for special_card_id in selected_special_cards:
+			for special_card_id in selected_special_card_ids:
 				var special_card_data = table_manager.get_row("Cards", special_card_id)
 				
 				# 检查BaseID是否匹配
