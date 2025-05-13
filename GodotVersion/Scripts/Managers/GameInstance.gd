@@ -357,11 +357,11 @@ func process_special_cards():
 		# 检查玩家A的特殊卡
 		if player_a.check_special_cards():
 			# 播放应用特殊卡的动画
+			var ui_main = ui_manager.get_ui_instance("UI_Main")
+			ui_main.send_special_cards_to_player_a()
 			
-			pass
-
-		player_a.apply_special_cards()
-		player_b.apply_special_cards()
+		# player_a.apply_special_cards()
+		# player_b.apply_special_cards()
 
 ## 停止动画序列
 ## 立即终止所有待执行的卡牌动画

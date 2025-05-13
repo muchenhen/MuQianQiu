@@ -2,6 +2,9 @@ extends Node
 
 class_name UI_Main
 
+# 添加特殊卡动画完成信号
+signal skill_cards_animation_completed
+
 @onready var player_a_deal:Button = $PlayerADeal
 @onready var player_b_deal:Button = $PlayerBDeal
 @onready var player_a_skill_card_zone:ColorRect = $Cards/PlayerASkillCardZone
@@ -11,7 +14,9 @@ var card_manager = CardManager.get_instance()
 var input_manager = InputManager.get_instance()
 
 # 玩家A的特殊卡实例
-var player_a_skill_cards = []
+var player_a_skill_cards:Array[Card] = []
+# 等待特殊卡动画完成的回调函数
+var pending_after_animation_callback = null
 
 func _ready() -> void:
 	# player_a_deal绑定点击事件
@@ -152,7 +157,14 @@ func _show_next_card(anim_data: Dictionary, timer: Timer) -> void:
 		timer.queue_free()  # 停止计时器
 		print("玩家A特殊卡动画完成，共", player_a_skill_cards.size(), "张卡")
 		# 动画完成后，恢复用户输入
-		# input_manager.allow_input()
+		input_manager.allow_input()
+		# 发出动画完成信号
+		emit_signal("skill_cards_animation_completed")
+		# 如果有待执行的回调函数，执行它
+		if pending_after_animation_callback != null:
+			print("执行动画完成后的回调函数")
+			pending_after_animation_callback.call()
+			pending_after_animation_callback = null
 		return
 	
 	# 获取当前要显示的卡片ID
@@ -205,9 +217,31 @@ func _show_next_card(anim_data: Dictionary, timer: Timer) -> void:
 	# 进入下一张卡片的索引
 	anim_data["current_index"] += 1
 
-func play_player_a_special_apply_anim() -> void:
-	# 玩家A可以使用的特殊卡 和 玩家A手牌中可以升级的卡
-	var upgradable_card = GameManager.instance.player_a.get_hand_upgradable_cards()
-	for card in upgradable_card:
-		# 这里可以添加动画效果
-		print("玩家A可以升级的卡:", card.get_card_id())
+# 修改后的send_special_cards_to_player_a函数，确保动画完成后才执行
+func send_special_cards_to_player_a() -> void:
+	# 获取玩家A
+	var player_a = GameManager.instance.player_a
+	if player_a == null:
+		print("玩家A对象无效")
+		return
+	
+	# 检查是否有特殊卡动画正在播放
+	if has_node("CardAnimTimer"):
+		print("特殊卡动画正在播放，将回调函数加入到动画完成后执行")
+		# 如果动画正在播放，将逻辑设置为回调函数，等待动画完成后执行
+		pending_after_animation_callback = func():
+			print("动画完成后，将特殊卡实例传递给玩家A")
+			player_a.set_selected_special_cards_instance(player_a_skill_cards)
+	else:
+		# 如果没有动画正在播放，直接执行
+		print("没有特殊卡动画播放中，直接将特殊卡实例传递给玩家A")
+		player_a.set_selected_special_cards_instance(player_a_skill_cards)
+
+# 等待特殊卡动画完成后执行指定的回调函数
+func wait_for_skill_cards_animation_complete(callback: Callable) -> void:
+	if has_node("CardAnimTimer"):
+		print("设置特殊卡动画完成后的回调函数")
+		pending_after_animation_callback = callback
+	else:
+		print("没有特殊卡动画正在播放，直接执行回调函数")
+		callback.call()
