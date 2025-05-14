@@ -24,7 +24,7 @@ var hand_cards = {
 # map - card_id -> card
 var deal_cards:Dictionary = {}
 
-var player_score: int = 0
+var player_score: int
 
 var score_ui:Label = null
 
@@ -42,6 +42,9 @@ var current_sc_story_show: Node = null
 # 玩家选择的特殊卡ID列表
 var selected_special_card_ids: Array[int] = []
 var selected_special_cards: Array[Card] = []
+
+# 被特殊卡替换的原始手牌，用于后续可能的恢复操作
+var hidden_original_cards: Dictionary = {}
 
 # ai agent
 var bind_ai_agent: AIAgent = null
@@ -366,13 +369,6 @@ func set_selected_special_cards(card_ids: Array[int]) -> void:
 func get_selected_special_cards() -> Array[int]:
 	return selected_special_card_ids.duplicate()
 
-## 设置玩家选择的特殊卡对象实例
-## 参数：
-## - cards: 特殊卡对象实例列表
-func set_selected_special_cards_instance(cards: Array[Card]) -> void:
-	selected_special_cards = cards
-	print("玩家 ", player_name, " 拥有 ", selected_special_cards.size(), " 张特殊卡实例")
-	
 ## 检查玩家手牌中是否有与选中的特殊卡BaseID匹配的卡牌
 func check_special_cards() -> bool:
 	if selected_special_card_ids.size() == 0:
@@ -380,66 +376,286 @@ func check_special_cards() -> bool:
 		return false
 	return true
 
+## 设置玩家选择的特殊卡对象实例
+## 参数：
+## - cards: 特殊卡对象实例列表
+func set_selected_special_cards_instance(cards: Array[Card]) -> void:
+	selected_special_cards = cards
+	print("玩家 ", player_name, " 拥有 ", selected_special_cards.size(), " 张特殊卡实例")
+	play_base_card_upgrade_anim()
+
+func play_base_card_upgrade_anim() -> void:
+	var card_special_card_map = get_card_special_card_map()
+	if card_special_card_map.size() == 0:
+		print("玩家 ", player_name, " 没有可升级的卡牌")
+		return
+	# 所有可以升级的手牌和可以使用的特殊卡，一起位移
+	# 如果是PlayerA，向上位移，否则向下位移
+	var animation_manager = AnimationManager.get_instance()
+	var vertical_offset = 100  # 垂直位移像素
+	var anim_duration = 0.5  # 动画持续时间
+	var waiting_time = anim_duration + 0.3  # 动画后等待时间
+	
+	# 判断玩家位置类型，决定位移方向
+	var offset_direction = 1 if player_name == "Player A" else -1
+	
+	# 创建一个数据结构来保存卡牌和原始位置
+	var animation_cards = []
+	
+	# 收集所有需要动画处理的卡牌
+	for base_card in card_special_card_map.keys():
+		var special_card = card_special_card_map[base_card]
+		
+		# 确保卡牌是有效的
+		if is_instance_valid(base_card) and is_instance_valid(special_card):
+			# 记录基础卡的z_index用于后续参考
+			var base_z_index = base_card.z_index if "z_index" in base_card else 0
+			
+			animation_cards.append({
+				"base_card": base_card,
+				"special_card": special_card,
+				"base_original_pos": base_card.position,
+				"special_original_pos": special_card.position,
+				"base_target_pos": Vector2(base_card.position.x, base_card.position.y + vertical_offset * offset_direction),
+				"special_target_pos": Vector2(special_card.position.x, special_card.position.y + vertical_offset * offset_direction),
+				"base_z_index": base_z_index
+			})
+	
+	# 执行向目标位置的动画
+	for card_data in animation_cards:
+		var base_card = card_data["base_card"]
+		var special_card = card_data["special_card"]
+		
+		# 再次检查卡牌是否有效，以防在上次循环后被销毁
+		if not is_instance_valid(base_card) or not is_instance_valid(special_card):
+			continue
+			
+		# 确保卡牌有必要的属性
+		if not "position" in base_card or not "position" in special_card or not "modulate" in base_card or not "modulate" in special_card:
+			continue
+		
+		# 位移动画
+		animation_manager.start_linear_movement_pos(base_card, card_data["base_target_pos"], anim_duration, AnimationManager.EaseType.EASE_IN_OUT)
+		animation_manager.start_linear_movement_pos(special_card, card_data["special_target_pos"], anim_duration, AnimationManager.EaseType.EASE_IN_OUT)
+		
+		# 高亮动画 - 使用分离的透明度控制
+		if base_card.modulate != null:
+			animation_manager.start_linear_alpha(base_card, 1.2, anim_duration/2, AnimationManager.EaseType.EASE_IN_OUT)
+		
+		if special_card.modulate != null:
+			animation_manager.start_linear_alpha(special_card, 1.2, anim_duration/2, AnimationManager.EaseType.EASE_IN_OUT)
+	
+	# 等待动画完成
+	await GameManager.instance.scene_tree.create_timer(waiting_time).timeout
+	
+	# 恢复透明度，但保持位移状态
+	for card_data in animation_cards:
+		# 再次检查卡牌是否有效
+		if is_instance_valid(card_data["base_card"]) and is_instance_valid(card_data["special_card"]):
+			# 检查卡牌是否有modulate属性
+			if "modulate" in card_data["base_card"] and card_data["base_card"].modulate != null:
+				animation_manager.start_linear_alpha(card_data["base_card"], 1.0, anim_duration/2, AnimationManager.EaseType.EASE_IN_OUT)
+				
+			if "modulate" in card_data["special_card"] and card_data["special_card"].modulate != null:
+				animation_manager.start_linear_alpha(card_data["special_card"], 1.0, anim_duration/2, AnimationManager.EaseType.EASE_IN_OUT)
+	
+	# 等待透明度动画完成
+	await GameManager.instance.scene_tree.create_timer(anim_duration/2).timeout
+	
+	# 将特殊卡牌移动到对应的基础卡的位置
+	print("玩家 ", player_name, " 开始将特殊卡移动到基础卡位置")
+	
+	# 对每对卡牌，将特殊卡移动到基础卡位置
+	for card_data in animation_cards:
+		# 再次检查卡牌是否有效
+		if is_instance_valid(card_data["base_card"]) and is_instance_valid(card_data["special_card"]):
+			# 确保特殊卡的z_index大于基础卡，这样移动到相同位置后能覆盖在上面
+			if "z_index" in card_data["base_card"] and "z_index" in card_data["special_card"]:
+				# 将特殊卡的z_index设置为基础卡的z_index
+				card_data["special_card"].z_index = card_data["base_card"].z_index
+				print("调整特殊卡 z_index: ", card_data["special_card"].z_index, ", 基础卡 z_index: ", card_data["base_card"].z_index)
+			
+			# 特殊卡移动到基础卡的当前位置（即升起后的位置）
+			if "position" in card_data["base_card"] and "position" in card_data["special_card"]:
+				var target_pos = card_data["base_card"].position
+				animation_manager.start_linear_movement_pos(card_data["special_card"], target_pos, anim_duration, AnimationManager.EaseType.EASE_IN_OUT)
+	
+	# 等待特殊卡移动到基础卡位置的动画完成
+	await GameManager.instance.scene_tree.create_timer(anim_duration).timeout
+	
+	# 确保所有卡牌的透明度恢复正常
+	for card_data in animation_cards:
+		if is_instance_valid(card_data["base_card"]):
+			if "modulate" in card_data["base_card"] and card_data["base_card"].modulate != null:
+				var final_modulate = card_data["base_card"].modulate
+				final_modulate.a = 1.0
+				card_data["base_card"].modulate = final_modulate
+				
+		if is_instance_valid(card_data["special_card"]):
+			if "modulate" in card_data["special_card"] and card_data["special_card"].modulate != null:
+				var final_modulate = card_data["special_card"].modulate
+				final_modulate.a = 1.0
+				card_data["special_card"].modulate = final_modulate
+			
+			# 确保特殊卡最终位置与基础卡完全一致
+			if "position" in card_data["base_card"] and "position" in card_data["special_card"] and is_instance_valid(card_data["base_card"]):
+				card_data["special_card"].position = card_data["base_card"].position
+	
+	print("玩家 ", player_name, " 完成卡牌升级动画，特殊卡已移动到基础卡位置")
+	
+	# 危险操作：替换手牌中的卡牌为特殊卡
+	print("玩家 ", player_name, " 开始替换手牌中的卡牌为特殊卡")
+	replace_hand_cards_with_special_cards(animation_cards)
+	
+	# 替换完成后，将新手牌移回原始位置
+	await return_cards_to_original_positions()
+
+# 将所有手牌移回到它们原始的位置
+func return_cards_to_original_positions() -> void:
+	print("玩家 ", player_name, " 开始将手牌移回原始位置")
+	var animation_manager = AnimationManager.get_instance()
+	var anim_duration = 0.5  # 动画持续时间
+	
+	# 记录需要移动的卡牌，避免在执行动画时修改hand_cards
+	var cards_to_move = []
+	
+	# 收集所有需要移动的卡牌信息
+	for slot_index in hand_cards.keys():
+		if not hand_cards[slot_index].is_empty and hand_cards[slot_index].card != null:
+			if is_instance_valid(hand_cards[slot_index].card):
+				cards_to_move.append({
+					"card": hand_cards[slot_index].card,
+					"target_pos": hand_cards[slot_index].pos
+				})
+	
+	# 执行位移动画
+	for card_data in cards_to_move:
+		var card = card_data["card"]
+		var target_pos = card_data["target_pos"]
+		
+		if is_instance_valid(card) and "position" in card:
+			animation_manager.start_linear_movement_pos(card, target_pos, anim_duration, AnimationManager.EaseType.EASE_IN_OUT)
+	
+	# 等待所有卡牌移回原位的动画完成
+	await GameManager.instance.scene_tree.create_timer(anim_duration).timeout
+	
+	# 为所有替换的卡牌设置玩家所有者并启用点击
+	for slot_index in hand_cards.keys():
+		if not hand_cards[slot_index].is_empty and hand_cards[slot_index].card != null:
+			var card = hand_cards[slot_index].card
+			if is_instance_valid(card):
+				# 设置卡牌的玩家所有者
+				if "player_owner" in card:
+					card.set_player_owner(self)
+				
+				# 设置卡牌为可点击（非AI玩家）
+				if not self.is_ai_player() and "is_enable_click" in card:
+					card.enable_click()
+				
+	print("玩家 ", player_name, " 手牌已移回原始位置并完成属性设置")
+	return
+
+# 替换手牌中的卡牌为特殊卡，并将原始卡牌隐藏保存
+# 添加协程标记，以便可以使用await等待函数完成
+func replace_hand_cards_with_special_cards(animation_cards: Array) -> void:
+	# 清空之前可能存在的隐藏卡牌
+	hidden_original_cards.clear()
+	
+	# 遍历所有需要替换的卡牌对
+	for card_data in animation_cards:
+		var base_card = card_data["base_card"]
+		var special_card = card_data["special_card"]
+		
+		# 确保两张卡牌都有效
+		if not is_instance_valid(base_card) or not is_instance_valid(special_card):
+			print("警告: 基础卡或特殊卡无效，跳过替换")
+			continue
+			
+		# 查找基础卡在哪个槽位
+		var slot_found = false
+		var slot_index = -1
+		
+		for i in hand_cards.keys():
+			if not hand_cards[i].is_empty and hand_cards[i].card == base_card:
+				slot_index = i
+				slot_found = true
+				break
+				
+		if not slot_found:
+			print("警告: 未找到基础卡对应的槽位，跳过替换")
+			continue
+			
+		# 保存原始卡牌到隐藏字典中
+		var original_card = hand_cards[slot_index].card
+		if original_card:
+			# 使用卡牌ID作为键，避免直接使用对象引用
+			hidden_original_cards[original_card.ID] = original_card
+			
+			# 从原来的位置移除但不销毁
+			original_card.position = Vector2(-1000, -1000)  # 移到屏幕外
+			original_card.visible = false
+			
+			# 转移事件连接
+			if original_card.is_connected("card_clicked", Callable(self, "on_card_clicked")):
+				original_card.disconnect("card_clicked", Callable(self, "on_card_clicked"))
+			
+			if not special_card.is_connected("card_clicked", Callable(self, "on_card_clicked")):
+				special_card.connect("card_clicked", Callable(self, "on_card_clicked"))
+			
+			# 替换槽位中的卡牌
+			hand_cards[slot_index].card = special_card
+			
+			# 这里先不设置点击状态，等卡牌移回原位后统一设置
+			# 但可以预先设置player_owner，确保卡牌知道它属于哪个玩家
+			if "player_owner" in special_card:
+				special_card.set_player_owner(self)
+			
+			print("成功替换槽位 ", slot_index, " 中的基础卡为特殊卡")
+	
+	print("玩家 ", player_name, " 完成手牌替换，替换了 ", hidden_original_cards.size(), " 张卡牌")
+
 ## 获取玩家手牌与特殊卡的匹配映射
 ## 返回：字典，key为普通卡实例，value为对应的特殊卡实例
 func get_card_special_card_map() -> Dictionary:	
 	var card_special_card_map: Dictionary = {}
+	print("玩家 ", player_name, " 的手牌数量: ", hand_cards.size(), ", 特殊卡数量: ", selected_special_cards.size())
+	
 	# 遍历所有手牌槽位
 	for slot_index in hand_cards.keys():
-		var hand_card = hand_cards[slot_index]
+		var hand_card:PlayerHandCard = hand_cards[slot_index]
 		
 		# 检查槽位是否有卡牌
 		if hand_card.is_empty or hand_card.card == null:
+			print("玩家 ", player_name, " 的槽位 ", slot_index, " 为空或没有卡牌")
 			continue
 
-		var base_card = hand_card.base_card
-		var base_card_id = base_card.ID 
-		for special_card:Card in selected_special_cards:
+		var base_card = hand_card.card
+		
+		# 确保基本卡有效且有ID属性
+		if not is_instance_valid(base_card) or not "ID" in base_card:
+			print("玩家 ", player_name, " 的手牌在槽位 ", slot_index, " 不是有效的卡牌")
+			continue
+			
+		var base_card_id = base_card.ID
+		
+		for special_card in selected_special_cards:
+			# 确保特殊卡有效且有BaseID属性
+			if not is_instance_valid(special_card) or not "BaseID" in special_card:
+				print("玩家 ", player_name, " 的特殊卡无效或缺少BaseID")
+				continue
+				
 			if special_card.BaseID == base_card_id:
 				print("玩家 ", player_name, " 的手牌 ", base_card.Name, " 与特殊卡 ", special_card.Name, " BaseID匹配")
-				card_special_card_map[base_card] = special_card
+				
+				# 确认卡牌必须是节点对象，才能作为字典的键
+				if base_card is Node and special_card is Node:
+					card_special_card_map[base_card] = special_card
+				else:
+					print("警告: 卡牌不是Node类型，无法作为字典键使用")
 	
 	if card_special_card_map.size() > 0:
 		print("玩家 ", player_name, " 共有 ", card_special_card_map.size(), " 张可升级的卡牌")
 	else:
 		print("玩家 ", player_name, " 没有可升级的卡牌")
 		
-	return card_special_card_map	
-
-
-## 检查并应用特殊卡效果
-## 检查玩家手牌中是否有与选中的特殊卡BaseID匹配的卡牌，如果有则更新这个卡牌实例
-func apply_special_cards() -> void:
-	if not check_special_cards():
-		print("玩家 ", player_name, " 没有选中特殊卡，无法应用效果")
-		return
-	
-	print("玩家 ", player_name, " 正在检查特殊卡效果")
-	var updated_count = 0
-	var table_manager = TableManager.get_instance()
-	
-	# 遍历所有手牌槽位
-	for slot_index in hand_cards.keys():
-		var hand_card = hand_cards[slot_index]
-		
-		# 检查槽位是否有卡牌
-		if not hand_card.is_empty and hand_card.card != null:
-			var card = hand_card.card
-			
-			# 遍历所有选择的特殊卡
-			for special_card_id in selected_special_card_ids:
-				var special_card_data = table_manager.get_row("Cards", special_card_id)
-				
-				# 检查BaseID是否匹配
-				if special_card_data and card.BaseID == special_card_data["BaseID"]:
-					print("玩家 ", player_name, " 的手牌 ", card.ID, " 与特殊卡 ", special_card_id, " BaseID匹配")
-					
-					# 更新卡牌信息为特殊卡信息，保留原实例
-					card.update_card_info_by_id(special_card_id)
-					updated_count += 1
-					break  # 一张卡只应用一次特殊卡效果
-	
-	if updated_count > 0:
-		print("玩家 ", player_name, " 共更新了 ", updated_count, " 张手牌的特殊卡效果")
-	else:
-		print("玩家 ", player_name, " 手牌中没有与选中特殊卡匹配的卡牌")
+	return card_special_card_map
