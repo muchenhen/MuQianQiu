@@ -557,6 +557,10 @@ func replace_hand_cards_with_special_cards(animation_cards: Array) -> void:
 	# 清空之前可能存在的隐藏卡牌
 	hidden_original_cards.clear()
 	
+	# 记录已使用的特殊卡，用于之后从选择列表中移除
+	var used_special_cards = []
+	var used_special_card_ids = []
+	
 	# 遍历所有需要替换的卡牌对
 	for card_data in animation_cards:
 		var base_card = card_data["base_card"]
@@ -606,9 +610,29 @@ func replace_hand_cards_with_special_cards(animation_cards: Array) -> void:
 			if "player_owner" in special_card:
 				special_card.set_player_owner(self)
 			
+			# 记录已使用的特殊卡，以便之后从选择列表中移除
+			if "ID" in special_card:
+				used_special_card_ids.append(special_card.ID)
+				used_special_cards.append(special_card)
+			
 			print("成功替换槽位 ", slot_index, " 中的基础卡为特殊卡")
 	
-	print("玩家 ", player_name, " 完成手牌替换，替换了 ", hidden_original_cards.size(), " 张卡牌")
+	# 从选择的特殊卡列表中移除已使用的卡牌
+	for special_card in used_special_cards:
+		var index = selected_special_cards.find(special_card)
+		if index != -1:
+			selected_special_cards.remove_at(index)
+			print("从selected_special_cards中移除已使用的特殊卡: ", special_card.Name)
+	
+	for special_card_id in used_special_card_ids:
+		var index = selected_special_card_ids.find(special_card_id)
+		if index != -1:
+			selected_special_card_ids.remove_at(index)
+			print("从selected_special_card_ids中移除已使用的特殊卡ID: ", special_card_id)
+	
+	update_self_card_z_index()
+
+	print("玩家 ", player_name, " 完成手牌替换，替换了 ", hidden_original_cards.size(), " 张卡牌，剩余特殊卡 ", selected_special_cards.size(), " 张")
 
 ## 获取玩家手牌与特殊卡的匹配映射
 ## 返回：字典，key为普通卡实例，value为对应的特殊卡实例
@@ -655,3 +679,77 @@ func get_card_special_card_map() -> Dictionary:
 		print("玩家 ", player_name, " 没有可升级的卡牌")
 		
 	return card_special_card_map
+
+func check_if_card_can_upgrade_then_apply() -> bool:
+	# 存储可升级的卡牌配对：基础卡 -> 特殊卡
+	var can_upgrade_cards: Dictionary[Card, Card] = {}
+	
+	# 检查牌堆中的基础卡是否可以升级
+	for card:Card in deal_cards.values():
+		# 跳过已经是特殊卡的卡牌
+		if card.Special:
+			continue
+		
+		# 寻找匹配的特殊卡
+		for special_card:Card in selected_special_cards:
+			# 如果基础卡的ID与特殊卡的BaseID匹配，则可以升级
+			if card.BaseID == special_card.BaseID:
+				print("玩家 ", player_name, " 牌堆的卡牌 ", card.Name, " 可以升级为特殊卡 ", special_card.Name)
+				can_upgrade_cards[card] = special_card
+				break # 找到匹配的特殊卡后，不再继续寻找其他匹配
+	
+	# 如果没有可升级的卡牌，返回false
+	if can_upgrade_cards.is_empty():
+		print("玩家 ", player_name, " 没有可升级的牌堆卡牌")
+		return false
+	
+	# 记录已使用的特殊卡，用于之后从选择列表中移除
+	var used_special_cards = []
+	var used_special_card_ids = []
+	
+	# 执行升级操作
+	for base_card in can_upgrade_cards.keys():
+		var special_card = can_upgrade_cards[base_card]
+		
+		# 确保卡牌仍然有效
+		if is_instance_valid(base_card) and is_instance_valid(special_card):
+			print("升级卡牌: 从 ", base_card.Name, " 到 ", special_card.Name)
+			
+			# 替换牌堆中的卡牌
+			var base_card_id = base_card.ID
+			deal_cards.erase(base_card_id)
+			deal_cards[special_card.ID] = special_card
+			
+			# 设置卡牌相关属性
+			special_card.set_player_owner(self)
+			special_card.set_card_unchooesd()
+			special_card.disable_click()
+			
+			# 调整卡牌显示位置，使特殊卡显示在原基础卡的位置
+			if "position" in base_card and "position" in special_card:
+				special_card.position = base_card.position
+			
+			# 记录已使用的特殊卡
+			used_special_cards.append(special_card)
+			used_special_card_ids.append(special_card.ID)
+			
+			# 处理基础卡（可以选择隐藏或销毁）
+			base_card.visible = false
+			base_card.position = Vector2(-1000, -1000)  # 移到屏幕外
+	
+	# 从选择的特殊卡列表中移除已使用的卡牌
+	for special_card in used_special_cards:
+		var index = selected_special_cards.find(special_card)
+		if index != -1:
+			selected_special_cards.remove_at(index)
+			print("从selected_special_cards中移除已使用的特殊卡: ", special_card.Name)
+	
+	for special_card_id in used_special_card_ids:
+		var index = selected_special_card_ids.find(special_card_id)
+		if index != -1:
+			selected_special_card_ids.remove_at(index)
+			print("从selected_special_card_ids中移除已使用的特殊卡ID: ", special_card_id)
+	
+	print("玩家 ", player_name, " 完成牌堆卡牌升级，升级了 ", used_special_cards.size(), " 张卡牌")
+	return true
+		

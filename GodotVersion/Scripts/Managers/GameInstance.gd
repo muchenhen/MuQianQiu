@@ -504,6 +504,8 @@ func player_choose_public_card(player_choosing_card:Card, public_choosing_card:C
 	temp_timer.start(anim_dutation + 0.1)
 	await temp_timer.timeout
 
+	# 再检查玩家是否完成了故事之前，检查进入玩家牌堆的卡是否有可以升级为特殊卡的
+	player.check_if_card_can_upgrade_then_apply()
 	player.check_finish_story()
 
 ## 显示新完成的故事
