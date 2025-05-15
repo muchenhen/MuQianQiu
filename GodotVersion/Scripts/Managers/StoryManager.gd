@@ -91,24 +91,27 @@ func get_relent_stories_by_cards_id(cards_id:Array) -> Array:
 	return relent_stories
 
 # 检查玩家是否完成了某个故事
-func check_story_finish_by_cards_id(cards_id:Array) -> Array:
+# 直接使用玩家牌堆数组
+func check_story_finish_for_player(player:Player):
 	if DEBUG_SKIP_STORTY:
 		return []
-	# print("检查故事完成情况", cards_id)
+	var cards:Array[Card] = player.deal_cards.values()
 	var this_time_completed_stories = []
 	for story_id in stories:
 		var story = stories[story_id]
-		# print("准备检查故事 ", story["Name"])
 		if story["Finished"]:
-			# print(story["Name"], "故事已完成，跳过")
 			continue
 		var story_cards_id = story["CardsID"]
-		# print(story["Name"], "故事所需卡牌ID: ", story_cards_id)
+		var cards_id = []
+		for card in cards:
+			if card.Special:
+				cards_id.append(card.BaseID)
+			else:
+				cards_id.append(card.ID)
 		var finished = true
 		for card_id in story_cards_id:
 			if cards_id.find(card_id) == -1:
 				finished = false
-				# print("玩家牌堆中没有卡牌 ", card_id, " 无法完成故事 ", story["Name"])
 				break
 		if finished:
 			story["Finished"] = true

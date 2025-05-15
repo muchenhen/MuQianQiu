@@ -22,7 +22,7 @@ var hand_cards = {
 }
 
 # map - card_id -> card
-var deal_cards:Dictionary = {}
+var deal_cards:Dictionary[int,Card] = {}
 
 var player_score: int
 
@@ -231,11 +231,7 @@ func send_card_to_deal(card: Card) -> void:
 
 # 一个玩家的回合结束，检查故事完成情况
 func check_finish_story() -> void:
-	var deal_cards_id = []
-	for card_id in deal_cards.keys():
-		deal_cards_id.append(card_id)
-	var story_manager = StoryManager.get_instance()
-	var this_time_completed_stories = story_manager.check_story_finish_by_cards_id(deal_cards_id)
+	var this_time_completed_stories = StoryManager.get_instance().check_story_finish_for_player(self)
 	show_new_finished_stories(this_time_completed_stories)
 	
 # 展示新完成的故事
