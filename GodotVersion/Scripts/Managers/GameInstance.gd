@@ -463,7 +463,7 @@ func change_to_b_round():
 ## - player_choosing_card: 玩家选择的手牌
 ## - public_choosing_card: 选择的公共卡牌
 ## 执行卡牌移动动画，更新玩家分数
-func player_choose_public_card(player_choosing_card, public_choosing_card):
+func player_choose_public_card(player_choosing_card:Card, public_choosing_card:Card):
 	input_manager.block_input()
 	var player
 	var target_pos
@@ -475,7 +475,7 @@ func player_choose_public_card(player_choosing_card, public_choosing_card):
 		player = player_b
 		target_pos = card_manager.PLAYER_B_DEAL_CARD_POS
 
-	print("玩家 ", player.player_name, " 选择了手牌 ", player_choosing_card.ID, " 和公共区域的牌 ", public_choosing_card.ID)
+	print("玩家 ", player.player_name, " 选择了手牌 ", player_choosing_card.ID, player_choosing_card.Name, " 和公共区域的牌 ", public_choosing_card.ID, public_choosing_card.Name)
 
 	var anim_dutation = 1
 
