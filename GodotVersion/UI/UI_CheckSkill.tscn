@@ -1,308 +1,100 @@
-[gd_scene load_steps=7 format=3 uid="uid://cq3qq55fwdktl"]
+[gd_scene load_steps=3 format=3 uid="uid://bctrasxafgi4y"]
 
-[ext_resource type="Script" uid="uid://k55lwwj1vg2w" path="res://Scripts/UI/UI_CheckSkill.gd" id="1_qfp5h"]
-[ext_resource type="FontFile" uid="uid://cgqf6jr2l5srf" path="res://Font/SourceHanSerifSC-Regular-simplified.otf" id="2_3bbdg"]
-[ext_resource type="PackedScene" uid="uid://b6vosary0xtcn" path="res://Scripts/Objects/Card.tscn" id="3_rdqyj"]
+[ext_resource type="Script" uid="uid://dxxqywfapk4hl" path="res://Scripts/UI/UI_CheckSkill.gd" id="1_v5qmc"]
+[ext_resource type="PackedScene" uid="uid://b6vosary0xtcn" path="res://Scripts/Objects/Card.tscn" id="2_xy7m3"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_trjpw"]
-font = ExtResource("2_3bbdg")
-font_size = 40
-font_color = Color(0.866667, 0.866667, 0.866667, 1)
-outline_size = 2
-outline_color = Color(0, 0, 0, 1)
-shadow_size = 2
-shadow_color = Color(0, 0, 0, 0.635294)
+[node name="UiCheckSkill" type="Node2D"]
+z_index = 100
+script = ExtResource("1_v5qmc")
 
-[sub_resource type="LabelSettings" id="LabelSettings_ulmgr"]
-font = ExtResource("2_3bbdg")
-font_size = 32
-font_color = Color(0.866667, 0.866667, 0.866667, 1)
-outline_size = 1
-outline_color = Color(0, 0, 0, 1)
-shadow_color = Color(0, 0, 0, 0.635294)
+[node name="Background" type="ColorRect" parent="."]
+z_index = 101
+offset_top = 245.0
+offset_right = 1920.0
+offset_bottom = 845.0
+color = Color(0.133333, 0.133333, 0.133333, 0.9)
 
-[sub_resource type="LabelSettings" id="LabelSettings_nwvon"]
-font = ExtResource("2_3bbdg")
-font_size = 24
-outline_size = 1
-outline_color = Color(0, 0, 0, 1)
-
-[node name="UI_CheckSkill" type="Control"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("1_qfp5h")
-
-[node name="Background" type="TextureRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Label_Title" type="Label" parent="."]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -200.0
-offset_top = 30.0
-offset_right = 200.0
-offset_bottom = 110.0
-grow_horizontal = 2
-text = "技能检查"
-label_settings = SubResource("LabelSettings_trjpw")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Label_SubTitle" type="Label" parent="."]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -400.0
-offset_top = 100.0
-offset_right = 400.0
-offset_bottom = 160.0
-grow_horizontal = 2
-text = "以下卡牌将进入牌堆"
-label_settings = SubResource("LabelSettings_ulmgr")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="CardsContainer" type="HBoxContainer" parent="."]
-custom_minimum_size = Vector2(800, 400)
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -470.0
-offset_top = -348.0
-offset_right = 470.0
-offset_bottom = 52.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 100
+[node name="CardContainer" type="VBoxContainer" parent="Background"]
+z_index = 102
+layout_mode = 0
+offset_left = 20.0
+offset_top = 50.0
+offset_right = 1900.0
+offset_bottom = 550.0
+theme_override_constants/separation = 20
 alignment = 1
 
-[node name="Card1Parent" type="Control" parent="CardsContainer"]
-custom_minimum_size = Vector2(350, 400)
+[node name="Row1" type="HBoxContainer" parent="Background/CardContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 15
+
+[node name="CardVisual" parent="Background/CardContainer/Row1" instance=ExtResource("2_xy7m3")]
+z_index = 103
+z_as_relative = true
+layout_mode = 2
+size_flags_horizontal = 0
+stretch_mode = 5
+
+[node name="Skill1" type="RichTextLabel" parent="Background/CardContainer/Row1"]
+z_index = 103
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "[center][b]技能1[/b][/center]
+技能1描述内容"
+fit_content = true
 
-[node name="Card1" parent="CardsContainer/Card1Parent" instance=ExtResource("3_rdqyj")]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -96.0
-offset_top = -128.0
-offset_right = 96.0
-offset_bottom = 128.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Label_Card1" type="Label" parent="CardsContainer/Card1Parent"]
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -175.0
-offset_top = 10.0
-offset_right = 175.0
-offset_bottom = 45.0
-grow_horizontal = 2
-grow_vertical = 0
-text = "基础卡"
-label_settings = SubResource("LabelSettings_nwvon")
-horizontal_alignment = 1
-
-[node name="Arrow" type="Label" parent="CardsContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-text = "→"
-label_settings = SubResource("LabelSettings_trjpw")
-horizontal_alignment = 1
-
-[node name="Card2Parent" type="Control" parent="CardsContainer"]
-custom_minimum_size = Vector2(350, 400)
+[node name="Skill2" type="RichTextLabel" parent="Background/CardContainer/Row1"]
+z_index = 103
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "[center][b]技能2[/b][/center]
+技能2描述内容"
+fit_content = true
 
-[node name="Card2" parent="CardsContainer/Card2Parent" instance=ExtResource("3_rdqyj")]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -96.0
-offset_top = -128.0
-offset_right = 96.0
-offset_bottom = 128.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="Row2" type="HBoxContainer" parent="Background/CardContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 15
 
-[node name="Label_Card2" type="Label" parent="CardsContainer/Card2Parent"]
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -175.0
+[node name="CardVisual" parent="Background/CardContainer/Row2" instance=ExtResource("2_xy7m3")]
+z_index = 103
+z_as_relative = true
+layout_mode = 2
+size_flags_horizontal = 0
+stretch_mode = 5
+
+[node name="Skill1" type="RichTextLabel" parent="Background/CardContainer/Row2"]
+z_index = 103
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "[center][b]技能1[/b][/center]
+技能1描述内容"
+fit_content = true
+
+[node name="Skill2" type="RichTextLabel" parent="Background/CardContainer/Row2"]
+z_index = 103
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "[center][b]技能2[/b][/center]
+技能2描述内容"
+fit_content = true
+
+[node name="CloseButton" type="Button" parent="Background"]
+z_index = 103
+layout_mode = 0
+offset_left = 1880.0
 offset_top = 10.0
-offset_right = 175.0
-offset_bottom = 45.0
-grow_horizontal = 2
-grow_vertical = 0
-text = "特殊卡"
-label_settings = SubResource("LabelSettings_nwvon")
-horizontal_alignment = 1
+offset_right = 1910.0
+offset_bottom = 40.0
+text = "X"
 
-[node name="SkillPanel" type="Panel" parent="."]
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 200.0
-offset_top = -552.0
-offset_right = -200.0
-offset_bottom = -120.0
-grow_horizontal = 2
-grow_vertical = 0
-
-[node name="VBoxContainer" type="VBoxContainer" parent="SkillPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 20.0
-offset_top = 10.0
-offset_right = -20.0
-offset_bottom = -10.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Label_SkillTitle" type="Label" parent="SkillPanel/VBoxContainer"]
-layout_mode = 2
-text = "技能信息"
-label_settings = SubResource("LabelSettings_nwvon")
-horizontal_alignment = 1
-
-[node name="HSeparator" type="HSeparator" parent="SkillPanel/VBoxContainer"]
-layout_mode = 2
-
-[node name="Skill1Container" type="VBoxContainer" parent="SkillPanel/VBoxContainer"]
-layout_mode = 2
-
-[node name="Skill1Title" type="Label" parent="SkillPanel/VBoxContainer/Skill1Container"]
-layout_mode = 2
-text = "技能一"
-label_settings = SubResource("LabelSettings_nwvon")
-horizontal_alignment = 1
-
-[node name="Skill1Type" type="Label" parent="SkillPanel/VBoxContainer/Skill1Container"]
-layout_mode = 2
-text = "类型: 增加分数"
-label_settings = SubResource("LabelSettings_nwvon")
-
-[node name="Skill1Target" type="Label" parent="SkillPanel/VBoxContainer/Skill1Container"]
-layout_mode = 2
-text = "目标: 古剑奇谭一"
-label_settings = SubResource("LabelSettings_nwvon")
-
-[node name="Skill1Value" type="Label" parent="SkillPanel/VBoxContainer/Skill1Container"]
-layout_mode = 2
-text = "数值: 30"
-label_settings = SubResource("LabelSettings_nwvon")
-
-[node name="HSeparator2" type="HSeparator" parent="SkillPanel/VBoxContainer"]
-layout_mode = 2
-
-[node name="Skill2Container" type="VBoxContainer" parent="SkillPanel/VBoxContainer"]
-layout_mode = 2
-
-[node name="Skill2Title" type="Label" parent="SkillPanel/VBoxContainer/Skill2Container"]
-layout_mode = 2
-text = "技能二"
-label_settings = SubResource("LabelSettings_nwvon")
-horizontal_alignment = 1
-
-[node name="Skill2Type" type="Label" parent="SkillPanel/VBoxContainer/Skill2Container"]
-layout_mode = 2
-text = "类型: 保证出现"
-label_settings = SubResource("LabelSettings_nwvon")
-
-[node name="Skill2Target" type="Label" parent="SkillPanel/VBoxContainer/Skill2Container"]
-layout_mode = 2
-text = "目标: 夏夷则"
-label_settings = SubResource("LabelSettings_nwvon")
-
-[node name="Skill2Value" type="Label" parent="SkillPanel/VBoxContainer/Skill2Container"]
-layout_mode = 2
-text = "数值: 无"
-label_settings = SubResource("LabelSettings_nwvon")
-
-[node name="EffectPanel" type="Panel" parent="."]
-visible = false
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -600.0
-offset_top = 170.0
-offset_right = 600.0
-offset_bottom = 270.0
-grow_horizontal = 2
-
-[node name="Label_Effect" type="Label" parent="EffectPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 20.0
-offset_top = 10.0
-offset_right = -20.0
-offset_bottom = -10.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "技能效果: 随机翻看对手一张手牌"
-label_settings = SubResource("LabelSettings_nwvon")
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 3
-
-[node name="ButtonContainer" type="HBoxContainer" parent="."]
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -150.0
-offset_top = -100.0
-offset_right = 150.0
-offset_bottom = -30.0
-grow_horizontal = 2
-grow_vertical = 0
-alignment = 1
-
-[node name="Button_Confirm" type="Button" parent="ButtonContainer"]
-custom_minimum_size = Vector2(300, 70)
-layout_mode = 2
-focus_mode = 0
-theme_override_fonts/font = ExtResource("2_3bbdg")
-theme_override_font_sizes/font_size = 30
-text = "确认"
+[connection signal="pressed" from="Background/CloseButton" to="." method="_on_close_button_pressed"]
