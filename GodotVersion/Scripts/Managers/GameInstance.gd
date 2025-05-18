@@ -483,30 +483,37 @@ func player_choose_public_card(player_choosing_card:Card, public_choosing_card:C
 	player_choosing_card.set_card_unchooesd()
 	player_choosing_card.set_card_pivot_offset_to_center()
 
-	animation_manager.start_linear_movement_combined(player_choosing_card, target_pos, target_rotation, anim_dutation, animation_manager.EaseType.EASE_IN_OUT, Callable(self, "player_choose_card_anim_end"), [player_choosing_card])
+	# 检查特殊卡
+	var ui_checkskill =  ui_manager.open_ui("UI_CheckSkill")
+	ui_manager.move_ui_instance_to_top(ui_checkskill)
 
-	public_choosing_card.set_card_pivot_offset_to_center()
-	target_rotation = card_manager.get_random_deal_card_rotation()
-	animation_manager.start_linear_movement_combined(public_choosing_card, target_pos, target_rotation, anim_dutation, animation_manager.EaseType.EASE_IN_OUT, Callable(self, "player_choose_card_anim_end"), [public_choosing_card])
+	# TODO：这里要处理特殊卡的相关逻辑
 
-	# 更新玩家分数
-	player.add_score(player_choosing_card.Score + public_choosing_card.Score)
+	# animation_manager.start_linear_movement_combined(player_choosing_card, target_pos, target_rotation, anim_dutation, animation_manager.EaseType.EASE_IN_OUT, Callable(self, "player_choose_card_anim_end"), [player_choosing_card])
+
+	# public_choosing_card.set_card_pivot_offset_to_center()
+	# target_rotation = card_manager.get_random_deal_card_rotation()
+	# animation_manager.start_linear_movement_combined(public_choosing_card, target_pos, target_rotation, anim_dutation, animation_manager.EaseType.EASE_IN_OUT, Callable(self, "player_choose_card_anim_end"), [public_choosing_card])
+
+	# # 更新玩家分数
+	# player.add_score(player_choosing_card.Score + public_choosing_card.Score)
 	
-	player.send_card_to_deal(player_choosing_card)
-	player.send_card_to_deal(public_choosing_card)
+	# player.send_card_to_deal(player_choosing_card)
+	# player.send_card_to_deal(public_choosing_card)
 
-	player.remove_hand_card(player_choosing_card)
+	# player.remove_hand_card(player_choosing_card)
 
-	# 延时anim_dutation + 0.1秒后继续
-	var temp_timer = Timer.new()
-	# 使用保存的场景树引用而不是get_tree()
-	scene_tree.root.add_child(temp_timer)
-	temp_timer.start(anim_dutation + 0.1)
-	await temp_timer.timeout
+	# # 延时anim_dutation + 0.1秒后继续
+	# var temp_timer = Timer.new()
+	# # 使用保存的场景树引用而不是get_tree()
+	# scene_tree.root.add_child(temp_timer)
+	# temp_timer.start(anim_dutation + 0.1)
+	# await temp_timer.timeout
 
-	# 再检查玩家是否完成了故事之前，检查进入玩家牌堆的卡是否有可以升级为特殊卡的
-	player.check_if_card_can_upgrade_then_apply()
-	player.check_finish_story()
+	# # 再检查玩家是否完成了故事之前，检查进入玩家牌堆的卡是否有可以升级为特殊卡的
+	# player.check_if_card_can_upgrade_then_apply()
+
+	# player.check_finish_story()
 
 ## 显示新完成的故事
 ## 切换回合并允许输入
