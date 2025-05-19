@@ -753,3 +753,20 @@ func check_if_card_can_upgrade_then_apply() -> bool:
 	print("玩家 ", player_name, " 完成牌堆卡牌升级，升级了 ", used_special_cards.size(), " 张卡牌")
 	return true
 		
+func check_card_can_upgrade(card:Card) -> Card:
+	# 检查当前卡牌是否可以升级
+	if card.Special:
+		print(card.Name, " 已经是特殊卡，无法升级")
+		return null
+	
+	for special_card in selected_special_cards:
+		if special_card.BaseID == card.BaseID:
+			# 玩家当前手中的特殊卡包含这张被选中的公共卡牌的BaseID，将玩家手中的特殊卡返回
+			return special_card
+
+	return null
+
+## 获取当前选择的手牌
+## 返回：当前选择的手牌对象
+func get_choosing_hand_card() -> Card:
+	return get_current_choosing_card()

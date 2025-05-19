@@ -108,3 +108,51 @@ static func set_use_special_cards(use_special: bool):
 	use_special_cards = use_special
 	print("设置使用特殊牌: ", use_special_cards)
 	instance.set_use_special_cards(use_special_cards)
+
+## 创建一个定时器并返回
+## 参数：
+##  - wait_time: 定时器等待时间，以秒为单位
+##  - callback: 定时器超时时要调用的回调函数
+## 返回：创建的定时器对象
+## 用法示例：
+##   GameManager.create_timer(2.0, Callable(self, "my_function"))
+##   GameManager.create_timer(1.5, func(): print("定时器完成"))
+static func create_timer(wait_time: float, callback: Callable) -> SceneTreeTimer:
+	# 获取节点所在的场景树
+	if not is_instance_valid(instance) or not is_instance_valid(instance.scene_tree):
+		push_error("GameManager: 无法创建计时器，游戏实例或场景树无效")
+		return null
+		
+	# 通过场景树创建计时器
+	var timer = instance.scene_tree.create_timer(wait_time)
+	
+	# 连接计时器的timeout信号到传入的回调函数
+	timer.timeout.connect(callback)
+	
+	print("GameManager: 创建了一个定时器，等待时间：", wait_time, "秒")
+	return timer
+
+## 创建一个高级定时器并返回
+## 参数：
+##  - wait_time: 定时器等待时间，以秒为单位
+##  - callback: 定时器超时时要调用的回调函数
+##  - process_physics: 是否在物理帧处理 (true) 或空闲帧处理 (false)
+##  - process_always: 是否在暂停时也处理
+##  - process_in_editor: 是否在编辑器中也处理（仅调试时使用）
+## 返回：创建的定时器对象
+## 用法示例：
+##   GameManager.create_timer_advanced(2.0, Callable(self, "my_function"), true, false, false)
+static func create_timer_advanced(wait_time: float, callback: Callable, process_physics: bool = false, process_always: bool = false, process_in_editor: bool = false) -> SceneTreeTimer:
+	# 获取节点所在的场景树
+	if not is_instance_valid(instance) or not is_instance_valid(instance.scene_tree):
+		push_error("GameManager: 无法创建计时器，游戏实例或场景树无效")
+		return null
+		
+	# 通过场景树创建计时器，使用高级参数
+	var timer = instance.scene_tree.create_timer(wait_time, process_physics, process_always, process_in_editor)
+	
+	# 连接计时器的timeout信号到传入的回调函数
+	timer.timeout.connect(callback)
+	
+	print("GameManager: 创建了一个高级定时器，等待时间：", wait_time, "秒")
+	return timer
