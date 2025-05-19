@@ -3,6 +3,7 @@ extends Node2D
 @onready var label_title: Label = $Label_Title
 @onready var card_table_view: VBoxContainer = $ColorRect/ScrollContainer/CardTableView
 @onready var start_button: Button = $StartButton
+@onready var debug_button: Button = $DebugButton
 @onready var scroll_container: ScrollContainer = $ColorRect/ScrollContainer
 @onready var detail_card_parent = $ColorRect/RightUIContainer/ColorRect/DetailCardParent
 @onready var special_card_detail_show = $ColorRect/RightUIContainer/ColorRect/DetailCardParent/SpecialCardDetailShow
@@ -27,6 +28,7 @@ var drag_start_position: Vector2  # 记录拖拽开始位置
 var is_dragging_action = false  # 标记是否正在进行拖拽动作
 var drag_threshold = 10  # 拖拽阈值，超过此距离才认为是拖拽动作
 var card_instances = []  # 存储所有实例化的卡牌
+var max_special_cards = 88  # 可选择的特殊卡最大数量限制
 
 # 卡牌场景
 const CARD_SCENE = preload("res://Scripts/Objects/Card.tscn")
@@ -34,6 +36,7 @@ const CARD_SCENE = preload("res://Scripts/Objects/Card.tscn")
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	start_button.pressed.connect(_on_start_button_pressed)
+	debug_button.pressed.connect(_on_debug_button_pressed)
 	# 设置ScrollContainer可以接收输入
 	scroll_container.mouse_filter = Control.MOUSE_FILTER_PASS
 	# 连接滚动容器的输入事件
@@ -230,10 +233,10 @@ func _on_card_selected(card) -> void:
 		selected_cards.erase(card_id)
 		card.set_card_unchooesd()
 	else:
-		# 检查是否已超过卡片数量限制(15张)
-		if selected_cards.size() >= 15:
+		# 检查是否已超过卡片数量限制
+		if selected_cards.size() >= max_special_cards:
 			var ui_manager = UIManager.get_instance()
-			ui_manager.show_info_tip("特殊卡数量已达到上限(15张)，无法选择更多特殊卡")
+			ui_manager.show_info_tip("特殊卡数量已达到上限(" + str(max_special_cards) + "张)，无法选择更多特殊卡")
 			return
 			
 		# 检查是否已经选择了同一基础卡的其他特殊卡
@@ -391,3 +394,115 @@ func _get_base_card_id(card_id: int) -> int:
 		return int(card_info["BaseCardID"])
 	
 	return 0
+
+func _on_debug_button_pressed() -> void:
+	# 清除所有已选卡牌
+	_clear_all_selected_cards()
+	
+	# 智能选择符合规则的特殊卡
+	_auto_select_special_cards()
+	
+	# 显示提示信息
+	var ui_manager = UIManager.get_instance()
+	ui_manager.show_info_tip("已自动选择 " + str(selected_cards.size()) + " 张符合规则的特殊卡")
+
+# 清除所有已选择的卡牌
+func _clear_all_selected_cards() -> void:
+	# 取消所有已选卡牌
+	for card_id in selected_cards.duplicate():
+		for card in card_instances:
+			if card.ID == card_id:
+				selected_cards.erase(card_id)
+				card.set_card_unchooesd()
+	
+	# 确保选择列表为空
+	selected_cards.clear()
+
+# 自动选择符合规则的特殊卡
+func _auto_select_special_cards() -> void:
+	var selected_base_ids = {}  # 用于记录已选择的基础卡ID
+	var cards_to_select = []    # 待选择的卡牌列表
+	
+	# 第一步：收集所有可选卡牌，按价值排序
+	for card in card_instances:
+		# 跳过无效卡牌
+		if not is_instance_valid(card) or card.get_card_chooesd():
+			continue
+		
+		var card_value = _evaluate_card_value(card.ID)
+		cards_to_select.append({
+			"card": card,
+			"value": card_value
+		})
+	
+	# 按价值排序 (降序)
+	cards_to_select.sort_custom(func(a, b): return a["value"] > b["value"])
+	
+	# 第二步：选择卡牌，确保不超过最大数量且不重复基础卡
+	for card_data in cards_to_select:
+		var card = card_data["card"]
+		var base_id = card.BaseID
+		
+		# 如果已达到最大数量，停止选择
+		if selected_cards.size() >= max_special_cards:
+			break
+		
+		# 如果该基础卡已有卡被选择，跳过
+		if selected_base_ids.has(base_id):
+			continue
+		
+		# 选择该卡，并记录基础卡ID
+		selected_cards.append(card.ID)
+		selected_base_ids[base_id] = true
+		card.set_card_chooesd()
+	
+	# 如果有选择卡片，更新右侧详情显示
+	if selected_cards.size() > 0:
+		# 显示DetailCardParent
+		detail_card_parent.visible = true
+		
+		# 显示最后一张选择的卡牌详情
+		var last_card_id = selected_cards[selected_cards.size() - 1]
+		special_card_detail_show.update_card_info_by_id(last_card_id)
+		_update_poem(last_card_id)
+		_update_skill_info(last_card_id)
+
+# 评估卡牌价值的函数，可按需扩展
+func _evaluate_card_value(card_id: int) -> float:
+	var value = 0.0
+	
+	# 如果在技能字典中有数据，评估其价值
+	if skill_data_dict.has(card_id):
+		var skill_data = skill_data_dict[card_id]
+		
+		# 基本分
+		value += 50.0
+		
+		# 技能一检查
+		if typeof(skill_data.skill1.type) == TYPE_STRING and not skill_data.skill1.type.strip_edges().is_empty():
+			value += 20.0
+			
+			# 根据技能类型加分
+			if "增加分数" in skill_data.skill1.type:
+				value += 15.0
+			elif "禁用技能" in skill_data.skill1.type:
+				value += 10.0
+			elif "保证出现" in skill_data.skill1.type:
+				value += 5.0
+		
+		# 技能二检查
+		if typeof(skill_data.skill2.type) == TYPE_STRING and not skill_data.skill2.type.strip_edges().is_empty():
+			value += 20.0
+			
+			# 根据技能类型加分
+			if "增加分数" in skill_data.skill2.type:
+				value += 15.0
+			elif "禁用技能" in skill_data.skill2.type:
+				value += 10.0
+			elif "保证出现" in skill_data.skill2.type:
+				value += 5.0
+	
+	# 卡牌ID也会影响价值（假设较小ID的卡牌更珍贵）
+	value -= card_id * 0.01
+	
+	return value

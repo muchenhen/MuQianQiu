@@ -375,6 +375,13 @@ func stop_animation_sequence():
 func send_card_anim_end(card):
 	card.update_card()
 
+## 玩家选择卡牌动画结束的回调函数
+## 参数：
+## - card: 完成动画的卡牌
+func player_choose_card_anim_end(card):
+	print("玩家选择卡牌动画结束: ", card.ID, card.Name)
+	card.update_card()
+
 ## 开始新的回合
 ## 重置卡牌状态，更新Z轴索引，切换回合
 func start_round():
@@ -483,11 +490,50 @@ func player_choose_public_card(player_choosing_card:Card, public_choosing_card:C
 	player_choosing_card.set_card_unchooesd()
 	player_choosing_card.set_card_pivot_offset_to_center()
 
+	# 检查玩家选择的卡能否被升级为特殊卡
+	var public_choosing_card_special = player.check_card_can_upgrade(public_choosing_card)
+	if public_choosing_card_special:
+		print("玩家选择的公共卡可以升级为特殊卡: ", public_choosing_card_special.Name)
+		# 插入一段动画，将玩家手中的特殊卡位移到当前public_choosing_card的位置 包括旋转角度 zindex等
+		
+		# 保存特殊卡的原始z_index，用于动画结束后恢复
+		var original_zindex = public_choosing_card_special.z_index
+		
+		# 临时提高z_index确保特殊卡显示在最上层
+		public_choosing_card_special.z_index = 1000
+		
+		# 禁用输入，确保动画期间无法点击
+		public_choosing_card_special.disable_click()
+		public_choosing_card.disable_click()
+		
+		# 设置卡片中心点用于旋转动画
+		public_choosing_card_special.set_card_pivot_offset_to_center()
+		public_choosing_card.set_card_pivot_offset_to_center()
+		
+		# 获取公共卡的缩放比例，确保特殊卡与其一致
+		var target_scale = public_choosing_card.scale
+		
+		# 启动移动动画，将特殊卡移动到公共卡位置
+		animation_manager.start_linear_movement_combined(
+			public_choosing_card_special, 
+			public_choosing_card.position, 
+			public_choosing_card.rotation, 
+			0.8, 
+			animation_manager.EaseType.EASE_IN_OUT, 
+			Callable(self, "_on_special_card_upgrade_complete"), 
+			[public_choosing_card_special, public_choosing_card, original_zindex, player, target_scale]
+		)
+		
+		# 使用await暂停函数执行，直到所有动画完成
+		await GameManager.create_timer(1.0, func(): pass).timeout
+	else:
+		print("玩家选择的公共卡不能升级为特殊卡")
+
 	# 检查特殊卡
-	var ui_checkskill =  ui_manager.open_ui("UI_CheckSkill")
-	ui_manager.move_ui_instance_to_top(ui_checkskill)
-	ui_checkskill.set_card1(player_choosing_card)
-	ui_checkskill.set_card2(public_choosing_card)
+	# var ui_checkskill =  ui_manager.open_ui("UI_CheckSkill")
+	# ui_manager.move_ui_instance_to_top(ui_checkskill)
+	# ui_checkskill.set_card1(player_choosing_card)
+	# ui_checkskill.set_card2(public_choosing_card)
 
 	# TODO：这里要处理特殊卡的相关逻辑
 
@@ -516,6 +562,37 @@ func player_choose_public_card(player_choosing_card:Card, public_choosing_card:C
 	# player.check_if_card_can_upgrade_then_apply()
 
 	# player.check_finish_story()
+
+## 特殊卡升级动画完成的回调函数
+## 参数：
+## - special_card: 特殊卡对象
+## - public_card: 公共卡对象
+## - original_zindex: 特殊卡原始z_index值
+## - player: 玩家对象
+## - target_scale: 目标缩放比例
+func _on_special_card_upgrade_complete(special_card, public_card, original_zindex, player, target_scale):
+	print("特殊卡升级动画完成")
+	
+	# 确保特殊卡与公共卡完全对齐
+	special_card.position = public_card.position
+	special_card.rotation = public_card.rotation
+	special_card.scale = target_scale
+	
+	# 将公共卡升级为特殊卡
+	public_card.upgrade_to_special(special_card.ID)
+	
+	# 隐藏特殊卡，因为公共卡已经升级成特殊卡了
+	special_card.visible = false
+	
+	# 恢复特殊卡的原始z_index
+	special_card.z_index = original_zindex
+	
+	# 启用公共卡的点击（现在是升级后的特殊卡）
+	public_card.enable_click()
+	
+	# 继续执行选择卡牌的后续流程
+	player.add_score(public_card.Score)
+	
 
 ## 显示新完成的故事
 ## 切换回合并允许输入

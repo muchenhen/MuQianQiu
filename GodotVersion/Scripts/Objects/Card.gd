@@ -201,3 +201,13 @@ func set_card_gray(is_gray: bool) -> void:
 	card_material.shader = gray_shader
 	card_material.set_shader_parameter("is_gray", is_gray)
 	self.material = card_material
+	
+# 将普通卡牌升级为特殊卡牌
+func upgrade_to_special(special_card_id: int) -> void:
+	var card_info = TableManager.get_instance().get_row("Cards", special_card_id)
+	if card_info:
+		update_card_info(special_card_id, card_info)
+		Special = true
+		print("卡牌升级成功：", Name, " ID: ", ID)
+	else:
+		print("卡牌升级失败，找不到ID为 ", special_card_id, " 的卡牌信息")
