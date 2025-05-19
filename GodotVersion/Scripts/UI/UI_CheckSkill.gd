@@ -5,26 +5,27 @@ extends Node2D
 
 signal closed
 
-var card1_data = null
-var card2_data = null
+var card1: Card = null
+var card2: Card = null
+var table_manager = null
 
 # 初始化UI
 func _ready():
-	pass
+	table_manager = TableManager.get_instance()
 
 # 设置第一张卡的数据
-func set_card1(card_data):
-	card1_data = card_data
-	update_card_display(card_data, $Background/CardContainer/Row1)
+func set_card1(card_instance: Card):
+	card1 = card_instance
+	update_card_display(card_instance, $Background/CardContainer/Row1)
 
 # 设置第二张卡的数据
-func set_card2(card_data):
-	card2_data = card_data
-	update_card_display(card_data, $Background/CardContainer/Row2)
+func set_card2(card_instance: Card):
+	card2 = card_instance
+	update_card_display(card_instance, $Background/CardContainer/Row2)
 
 # 更新卡牌显示
-func update_card_display(card_data, row_container):
-	if card_data == null:
+func update_card_display(card_instance: Card, row_container):
+	if card_instance == null:
 		row_container.visible = false
 		return
 		
@@ -33,21 +34,39 @@ func update_card_display(card_data, row_container):
 	var skill1 = row_container.get_node("Skill1")
 	var skill2 = row_container.get_node("Skill2")
 	
-	# 设置卡牌图像
-	if "texture" in card_data:
-		card_visual.texture_normal = card_data.texture
-		
-	# 设置技能描述
-	if "skills" in card_data and card_data.skills.size() > 0:
-		skill1.visible = true
-		skill1.text = "[center][b]" + card_data.skills[0].name + "[/b][/center]\n" + card_data.skills[0].description
-		
-		if card_data.skills.size() > 1:
+	# 设置卡牌视觉部分
+	card_visual.texture_normal = card_instance.texture_normal
+	
+	# 获取技能信息 - 使用CardSkill静态方法
+	var skill_info = CardSkill.get_card_skill_info(card_instance.ID, table_manager)
+	if skill_info:
+		# 技能1
+		if "Skill1Type" in skill_info and skill_info["Skill1Type"]:
+			skill1.visible = true
+			var skill1_text = CardSkill.format_skill_text(
+				skill_info["Skill1Type"],
+				skill_info.get("Skill1Target", ""),
+				skill_info.get("Skill1TargetID", ""),
+				skill_info.get("Skill1Value", "")
+			)
+			skill1.text = skill1_text
+		else:
+			skill1.visible = false
+			
+		# 技能2
+		if "Skill2Type" in skill_info and skill_info["Skill2Type"]:
 			skill2.visible = true
-			skill2.text = "[center][b]" + card_data.skills[1].name + "[/b][/center]\n" + card_data.skills[1].description
+			var skill2_text = CardSkill.format_skill_text(
+				skill_info["Skill2Type"],
+				skill_info.get("Skill2Target", ""),
+				skill_info.get("Skill2TargetID", ""),
+				skill_info.get("Skill2Value", "")
+			)
+			skill2.text = skill2_text
 		else:
 			skill2.visible = false
 	else:
+		# 没有技能信息
 		skill1.visible = false
 		skill2.visible = false
 
