@@ -759,9 +759,21 @@ func check_card_can_upgrade(card:Card) -> Card:
 		print(card.Name, " 已经是特殊卡，无法升级")
 		return null
 	
-	for special_card in selected_special_cards:
+	for i in range(selected_special_cards.size() - 1, -1, -1):
+		var special_card = selected_special_cards[i]
 		if special_card.BaseID == card.BaseID:
-			# 玩家当前手中的特殊卡包含这张被选中的公共卡牌的BaseID，将玩家手中的特殊卡返回
+			# 玩家当前手中的特殊卡包含这张被选中的公共卡牌的BaseID
+			# 从数组中移除特殊卡
+			selected_special_cards.remove_at(i)
+			print("从selected_special_cards中移除已使用的特殊卡: ", special_card.Name)
+			
+			# 同时从ID列表中移除
+			var id_index = selected_special_card_ids.find(special_card.ID)
+			if id_index != -1:
+				selected_special_card_ids.remove_at(id_index)
+				print("从selected_special_card_ids中移除已使用的特殊卡ID: ", special_card.ID)
+			
+			# 将玩家手中的特殊卡返回
 			return special_card
 
 	return null
