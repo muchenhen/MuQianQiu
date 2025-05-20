@@ -268,11 +268,32 @@ func show_one_new_finished_story(story):
 	root.add_child(current_sc_story_show)
 	# 获取当前故事的所有id
 	var card_ids = story["CardsID"]
+	
+	# 创建一个映射，用于记录原始卡牌ID到特殊卡牌ID的映射
+	var card_id_to_special_id_map = {}
+	
+	# 检查玩家deal中的卡牌，找出特殊卡
+	for deal_card_id in deal_cards:
+		var deal_card = deal_cards[deal_card_id]
+		if deal_card.Special and deal_card.BaseID in card_ids:
+			# 如果是特殊卡，且它的BaseID在故事所需的卡牌列表中
+			# 记录这个映射关系
+			card_id_to_special_id_map[deal_card.BaseID] = deal_card.ID
+			print("找到特殊卡: ", deal_card.Name, " ID: ", deal_card.ID, " BaseID: ", deal_card.BaseID)
+	
 	# 创建新的卡牌，添加到sc中
 	for card_id in card_ids:
-		var card = card_manager.create_one_card(card_id)
+		var display_card_id = card_id
+		# 检查是否有对应的特殊卡
+		if card_id in card_id_to_special_id_map:
+			# 如果有特殊卡，使用特殊卡的ID
+			display_card_id = card_id_to_special_id_map[card_id]
+			print("使用特殊卡ID: ", display_card_id, " 替代普通卡ID: ", card_id)
+		
+		var card = card_manager.create_one_card(display_card_id)
 		card.z_index = 1000
 		current_sc_story_show.add_card(card)
+	
 	# 设置故事名
 	current_sc_story_show.set_story_name(story["Name"])
 	current_sc_story_show.layout_children()
