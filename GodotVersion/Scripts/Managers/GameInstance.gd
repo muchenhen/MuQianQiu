@@ -517,10 +517,7 @@ func player_choose_public_card(player_choosing_card:Card, public_choosing_card:C
 		player.remove_hand_card(player_choosing_card)
 
 		# 延时anim_dutation + 0.1秒后继续
-		var temp_timer = Timer.new()
-		# 使用保存的场景树引用而不是get_tree()
-		scene_tree.root.add_child(temp_timer)
-		temp_timer.start(anim_dutation + 0.1)
+		var temp_timer = GameManager.create_timer(anim_dutation + 0.1, func(): pass)
 		await temp_timer.timeout
 
 		player.check_finish_story()
