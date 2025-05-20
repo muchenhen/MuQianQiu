@@ -474,7 +474,6 @@ func player_choose_public_card(player_choosing_card:Card, public_choosing_card:C
 	input_manager.block_input()
 	var player
 	var target_pos
-	var target_rotation = card_manager.get_random_deal_card_rotation()
 	if current_round == GameRound.PLAYER_A:
 		player = player_a
 		target_pos = card_manager.PLAYER_A_DEAL_CARD_POS
@@ -490,78 +489,92 @@ func player_choose_public_card(player_choosing_card:Card, public_choosing_card:C
 	player_choosing_card.set_card_unchooesd()
 	player_choosing_card.set_card_pivot_offset_to_center()
 
-	# 检查玩家选择的卡能否被升级为特殊卡
-	var public_choosing_card_special = player.check_card_can_upgrade(public_choosing_card)
-	if public_choosing_card_special:
-		print("玩家选择的公共卡可以升级为特殊卡: ", public_choosing_card_special.Name)
+	var continue_after_animation = func():
+		animation_manager.start_linear_movement_combined(
+			player_choosing_card, 
+			target_pos, 
+			card_manager.get_random_deal_card_rotation(), 
+			anim_dutation, 
+			animation_manager.EaseType.EASE_IN_OUT, 
+			Callable(self, "player_choose_card_anim_end"), [player_choosing_card])
+
+		public_choosing_card.set_card_pivot_offset_to_center()
+
+		animation_manager.start_linear_movement_combined(
+			public_choosing_card, 
+			target_pos, 
+			card_manager.get_random_deal_card_rotation(), 
+			anim_dutation, 
+			animation_manager.EaseType.EASE_IN_OUT, 
+			Callable(self, "player_choose_card_anim_end"), [public_choosing_card])
+
+		# 更新玩家分数
+		player.add_score(player_choosing_card.Score + public_choosing_card.Score)
+		
+		player.send_card_to_deal(player_choosing_card)
+		player.send_card_to_deal(public_choosing_card)
+
+		player.remove_hand_card(player_choosing_card)
+
+		# 延时anim_dutation + 0.1秒后继续
+		var temp_timer = Timer.new()
+		# 使用保存的场景树引用而不是get_tree()
+		scene_tree.root.add_child(temp_timer)
+		temp_timer.start(anim_dutation + 0.1)
+		await temp_timer.timeout
+
+		# 再检查玩家是否完成了故事之前，检查进入玩家牌堆的卡是否有可以升级为特殊卡的
+		player.check_if_card_can_upgrade_then_apply()
+
+		player.check_finish_story()
+
+	var play_player_choosing_card_upgrade_anim = func(special_card:Card):
+		print("玩家选择的公共卡可以升级为特殊卡: ", special_card.Name)
 		# 插入一段动画，将玩家手中的特殊卡位移到当前public_choosing_card的位置 包括旋转角度 zindex等
 		
 		# 保存特殊卡的原始z_index，用于动画结束后恢复
-		var original_zindex = public_choosing_card_special.z_index
+		var original_zindex = special_card.z_index
 		
 		# 临时提高z_index确保特殊卡显示在最上层
-		public_choosing_card_special.z_index = 1000
+		special_card.z_index = 1000
 		
 		# 禁用输入，确保动画期间无法点击
-		public_choosing_card_special.disable_click()
+		special_card.disable_click()
 		public_choosing_card.disable_click()
 		
 		# 设置卡片中心点用于旋转动画
-		public_choosing_card_special.set_card_pivot_offset_to_center()
+		special_card.set_card_pivot_offset_to_center()
 		public_choosing_card.set_card_pivot_offset_to_center()
-		
-		# 获取公共卡的缩放比例，确保特殊卡与其一致
-		var target_scale = public_choosing_card.scale
-		
+				
 		# 启动移动动画，将特殊卡移动到公共卡位置
 		animation_manager.start_linear_movement_combined(
-			public_choosing_card_special, 
+			special_card, 
 			public_choosing_card.position, 
 			public_choosing_card.rotation, 
 			0.8, 
 			animation_manager.EaseType.EASE_IN_OUT, 
 			Callable(self, "_on_special_card_upgrade_complete"), 
-			[public_choosing_card_special, public_choosing_card, original_zindex, player, target_scale]
+			[special_card, public_choosing_card, original_zindex, continue_after_animation]
 		)
 		
 		# 使用await暂停函数执行，直到所有动画完成
 		await GameManager.create_timer(1.0, func(): pass).timeout
+
+	# 检查玩家选择的卡能否被升级为特殊卡
+	var public_choosing_card_special = player.check_card_can_upgrade(public_choosing_card)
+	if public_choosing_card_special:
+		play_player_choosing_card_upgrade_anim.call(public_choosing_card_special)
 	else:
 		print("玩家选择的公共卡不能升级为特殊卡")
+		continue_after_animation.call()
+
 
 	# 检查特殊卡
 	# var ui_checkskill =  ui_manager.open_ui("UI_CheckSkill")
 	# ui_manager.move_ui_instance_to_top(ui_checkskill)
 	# ui_checkskill.set_card1(player_choosing_card)
 	# ui_checkskill.set_card2(public_choosing_card)
-
-	# TODO：这里要处理特殊卡的相关逻辑
-
-	# animation_manager.start_linear_movement_combined(player_choosing_card, target_pos, target_rotation, anim_dutation, animation_manager.EaseType.EASE_IN_OUT, Callable(self, "player_choose_card_anim_end"), [player_choosing_card])
-
-	# public_choosing_card.set_card_pivot_offset_to_center()
-	# target_rotation = card_manager.get_random_deal_card_rotation()
-	# animation_manager.start_linear_movement_combined(public_choosing_card, target_pos, target_rotation, anim_dutation, animation_manager.EaseType.EASE_IN_OUT, Callable(self, "player_choose_card_anim_end"), [public_choosing_card])
-
-	# # 更新玩家分数
-	# player.add_score(player_choosing_card.Score + public_choosing_card.Score)
 	
-	# player.send_card_to_deal(player_choosing_card)
-	# player.send_card_to_deal(public_choosing_card)
-
-	# player.remove_hand_card(player_choosing_card)
-
-	# # 延时anim_dutation + 0.1秒后继续
-	# var temp_timer = Timer.new()
-	# # 使用保存的场景树引用而不是get_tree()
-	# scene_tree.root.add_child(temp_timer)
-	# temp_timer.start(anim_dutation + 0.1)
-	# await temp_timer.timeout
-
-	# # 再检查玩家是否完成了故事之前，检查进入玩家牌堆的卡是否有可以升级为特殊卡的
-	# player.check_if_card_can_upgrade_then_apply()
-
-	# player.check_finish_story()
 
 ## 特殊卡升级动画完成的回调函数
 ## 参数：
@@ -570,13 +583,11 @@ func player_choose_public_card(player_choosing_card:Card, public_choosing_card:C
 ## - original_zindex: 特殊卡原始z_index值
 ## - player: 玩家对象
 ## - target_scale: 目标缩放比例
-func _on_special_card_upgrade_complete(special_card, public_card, original_zindex, player, target_scale):
+func _on_special_card_upgrade_complete(special_card, public_card, original_zindex, continue_after_animation):
 	print("特殊卡升级动画完成")
-	
 	# 确保特殊卡与公共卡完全对齐
 	special_card.position = public_card.position
 	special_card.rotation = public_card.rotation
-	special_card.scale = target_scale
 	
 	# 将公共卡升级为特殊卡
 	public_card.upgrade_to_special(special_card.ID)
@@ -591,7 +602,7 @@ func _on_special_card_upgrade_complete(special_card, public_card, original_zinde
 	public_card.enable_click()
 	
 	# 继续执行选择卡牌的后续流程
-	player.add_score(public_card.Score)
+	continue_after_animation.call()
 	
 
 ## 显示新完成的故事
