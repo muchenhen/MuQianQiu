@@ -2,8 +2,6 @@ extends Node
 
 class_name CardSkill
 
-var table_manager = TableManager.get_instance()
-
 enum SKILL_TYPE {
     DISABLE_SKILL,# 禁用技能
     GUARANTEE_APPEAR, # 保证出现
@@ -13,6 +11,7 @@ enum SKILL_TYPE {
     EXCHANGE_CARD, # 交换卡牌
     OPEN_OPPONENT_HAND, # 翻开对手的手牌
     EXCHANGE_DISABLE_SKILL, # 交换后禁用技能
+    NULL # 空技能
 }
 
 # 技能类型对应字符串
@@ -26,7 +25,47 @@ const SKILL_TYPE_STRINGS = {
     SKILL_TYPE.OPEN_OPPONENT_HAND: "翻开对手手牌",
     SKILL_TYPE.EXCHANGE_DISABLE_SKILL: "交换后无效"
 }
-    
+
+# Convert skill type enum to string
+static func skill_type_to_string(type: int) -> String:
+    if SKILL_TYPE_STRINGS.has(type):
+        return SKILL_TYPE_STRINGS[type]
+    return "未知技能"
+
+# Convert string to skill type enum
+static func string_to_skill_type(type_str: String) -> SKILL_TYPE:
+    for type in SKILL_TYPE_STRINGS.keys():
+        if SKILL_TYPE_STRINGS[type] == type_str:
+            return type
+    return SKILL_TYPE.NULL
+
+static func get_skill_num_for_card(card:Card) -> int:
+    var table_manager = TableManager.get_instance()
+    var card_skill_row = table_manager.get_row("Skills", card.ID)
+    var num = 0
+    if card_skill_row:
+        if card_skill_row.has("Skill1Type"):
+            num = 1
+        if card_skill_row.has("Skill2Type"):
+            num = 2
+    return num
+
+static func get_first_skill_type(card:Card) -> SKILL_TYPE:
+    var table_manager = TableManager.get_instance()
+    var card_skill_row = table_manager.get_row("Skills", card.ID)
+    if card_skill_row:
+        if card_skill_row.has("Skill1Type"):
+            return string_to_skill_type(card_skill_row["Skill1Type"])
+    return SKILL_TYPE.NULL
+
+static func get_second_skill_type(card:Card) -> SKILL_TYPE:
+    var table_manager = TableManager.get_instance()
+    var card_skill_row = table_manager.get_row("Skills", card.ID)
+    if card_skill_row:
+        if card_skill_row.has("Skill2Type"):
+            return string_to_skill_type(card_skill_row["Skill2Type"])
+    return SKILL_TYPE.NULL
+
 
 # 触发技能：禁用技能
 func trigger_DISABLE_SKILL() -> void:
