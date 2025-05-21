@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bctrasxafgi4y"]
 
-[ext_resource type="Script" uid="uid://dxxqywfapk4hl" path="res://Scripts/UI/UI_CheckSkill.gd" id="1_v5qmc"]
+[ext_resource type="Script" path="res://Scripts/UI/UI_CheckSkill.gd" id="1_v5qmc"]
 [ext_resource type="PackedScene" uid="uid://b6vosary0xtcn" path="res://Scripts/Objects/Card.tscn" id="2_xy7m3"]
 
 [node name="UiCheckSkill" type="Node2D"]
