@@ -77,8 +77,13 @@ func add_card_score(player: Player, card: Card) -> void:
 		_add_score_record(player, ScoreSource.CARD_SCORE, base_score, desc)
 
 	# 2. 如果是特殊卡，检查技能表中的加分效果
+	if card.Special:
+		
 
 
+func add_story_score(player: Player):
+	print(player)
+	pass
 
 # 重置所有玩家分数
 func reset_scores() -> void:
