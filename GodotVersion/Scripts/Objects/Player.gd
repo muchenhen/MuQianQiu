@@ -100,6 +100,7 @@ func initialize(p_name, player_pos) -> void:
 
 func _on_score_changed(player: Player, old_score: int, new_score: int, change: int) -> void:
 	if player == self:
+		player_score = new_score
 		print("玩家 ", player_name, " 分数变化: ", old_score, " -> ", new_score, " 变化: ", change)
 		if score_ui:
 			score_ui.text = "当前分数：" + str(new_score)
@@ -191,12 +192,6 @@ func set_all_hand_card_can_click() -> void:
 		if not hand_cards[i].is_empty:
 			hand_cards[i].card.enable_click()
 
-func add_score(score: int) -> void:
-	player_score += score
-	print("玩家 ", player_name, " 得分: ", player_score)
-	if score_ui:
-		score_ui.text = "当前分数：" + str(player_score)
-
 func set_score_ui(ui: Node) -> void:
 	score_ui = ui
 
@@ -240,6 +235,8 @@ func send_card_to_deal(card: Card) -> void:
 # 一个玩家的回合结束，检查故事完成情况
 func check_finish_story() -> void:
 	var this_time_completed_stories = StoryManager.get_instance().check_story_finish_for_player(self)
+	# 给对应玩家增加当前故事的分数
+	ScoreManager.get_instance().add_story_score(self, this_time_completed_stories)
 	show_new_finished_stories(this_time_completed_stories)
 	
 # 展示新完成的故事
@@ -261,8 +258,6 @@ func show_one_new_finished_story(story):
 	print("玩家 ", player_name, " 完成了故事 ", story["Name"])
 	# 将故事添加到玩家的完成故事列表中
 	finished_stories.append(story)
-	# 给对应玩家增加当前故事的分数
-	add_score(story["Score"])
 	# 使用sc_story_show展示当前故事的卡牌
 	
 	current_sc_story_show = UIManager.get_instance().ensure_get_ui_instance("UI_StoryShow")
