@@ -95,6 +95,14 @@ func initialize(p_name, player_pos) -> void:
 		hand_cards[i].pos = hand_cards_pos_array[i]
 		hand_cards[i].zindex = 10 - i
 		hand_cards[i].is_empty = true
+	# 绑定分数变化信号
+	ScoreManager.get_instance().score_changed.connect(Callable(self, "_on_score_changed"))
+
+func _on_score_changed(player: Player, old_score: int, new_score: int, change: int) -> void:
+	if player == self:
+		print("玩家 ", player_name, " 分数变化: ", old_score, " -> ", new_score, " 变化: ", change)
+		if score_ui:
+			score_ui.text = "当前分数：" + str(new_score)
 
 func assign_player_hand_card_to_slot(card: Card, slot_index: int) -> void:
 	if slot_index < 0 or slot_index > 9:

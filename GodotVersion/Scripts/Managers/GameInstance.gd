@@ -196,10 +196,12 @@ func start_new_game():
 	ui_manager.open_ui("UI_Main")
 
 	var ui_main = ui_manager.ensure_get_ui_instance("UI_Main")
-	player_a.set_score_ui(ui_main.get_node("UI/Text_AScore"))
-	player_b.set_score_ui(ui_main.get_node("UI/Text_BScore"))
-	player_a.add_score(0)
-	player_b.add_score(0)
+	var player_a_score_ui = ui_main.get_node("UI/Text_AScore")
+	var player_b_score_ui = ui_main.get_node("UI/Text_BScore")
+	player_a_score_ui.text = "当前分数: 0"
+	player_b_score_ui.text = "当前分数: 0"
+	player_a.set_score_ui(player_a_score_ui)
+	player_b.set_score_ui(player_b_score_ui)
 
 	player_a.new_story_show_finished.connect(Callable(self, "show_new_finished_stories"))
 	player_b.new_story_show_finished.connect(Callable(self, "show_new_finished_stories"))
@@ -509,7 +511,8 @@ func player_choose_public_card(player_choosing_card:Card, public_choosing_card:C
 			Callable(self, "player_choose_card_anim_end"), [public_choosing_card])
 
 		# 更新玩家分数
-		player.add_score(player_choosing_card.Score + public_choosing_card.Score)
+		ScoreManager.get_instance().add_card_score(player, player_choosing_card)
+		ScoreManager.get_instance().add_card_score(player, public_choosing_card)
 		
 		player.send_card_to_deal(player_choosing_card)
 		player.send_card_to_deal(public_choosing_card)

@@ -14,6 +14,8 @@ var BaseID: int = 201
 var Special: bool = false
 var player_owner: Player = null
 
+var card_skill_num = 0
+
 signal card_clicked(card)
 
 var choosed = false
@@ -134,6 +136,8 @@ func print_card_info() -> void:
 	print("Card clicked: ", Name, " ID: ", ID, " Type: ", Type, " Score: ", Score, " Season: ", Season, " Describe: ", debug_describe, " BaseID: ", BaseID, " Special: ", Special, " IsEnableClick: ", is_enable_click)
 
 func update_card() -> void:
+	if Special:
+		self.card_skill_num = CardSkill.get_skill_num_for_card(self)
 	_load_image()
 
 func _load_image() -> void:

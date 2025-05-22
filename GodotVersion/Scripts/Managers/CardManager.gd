@@ -84,11 +84,9 @@ func collect_cardIDs_for_this_game(types:Array) -> void:
 func collect_skill_cardIDs_for_this_game() -> void:
 	skill_cardIDs = []
 	var index_to_card_skill = tableManager.get_table("Skills")
-	for index in index_to_card_skill.keys():
-		if index == 0:
+	for card_id in index_to_card_skill.keys():
+		if card_id == 0:
 			continue
-		var skill_info = index_to_card_skill[index]
-		var card_id = skill_info["CardID"]
 		skill_cardIDs.append(card_id)
 		print_debug("skill_cardIDs: ", skill_cardIDs)
 
@@ -99,9 +97,8 @@ func shuffle_cardIDs() -> void:
 func create_skill_card_map():
 	skill_card_map = {}
 	var skills = tableManager.get_table("Skills")
-	for skill_id in skills.keys():
-		var skill_info = skills[skill_id]
-		var card_id = skill_info["CardID"]
+	for card_id in skills.keys():
+		var skill_info = skills[card_id]
 		skill_card_map[card_id] = skill_info
 
 	for card_id in cardIDs:

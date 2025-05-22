@@ -78,7 +78,11 @@ func add_card_score(player: Player, card: Card) -> void:
 
 	# 2. 如果是特殊卡，检查技能表中的加分效果
 	if card.Special:
-		
+		for i in range(1,card.card_skill_num):
+			var skill_type = CardSkill.get_skill_type_by_index(card, i)
+			print("特殊卡名称: ", card.Name, " 技能类型: ", CardSkill.skill_type_to_string(skill_type))
+			if skill_type == CardSkill.SKILL_TYPE.ADD_SCORE:
+				print("特殊卡名称: ", card.Name, " 技能类型: 增加分数")
 
 
 func add_story_score(player: Player):

@@ -53,13 +53,9 @@ func _load_skill_data() -> void:
 	var table_manager = TableManager.get_instance()
 	var skills_table = table_manager.get_table("Skills")
 	
-	# 遍历Skills表的所有行
-	for index in skills_table.keys():
-		if index == 0:
-			continue
-		var skill_row = skills_table[index]
-		
-		var card_id = int(skill_row["CardID"])
+	# 直接遍历Skills表，其中key就是CardID
+	for card_id in skills_table.keys():
+		var skill_row = skills_table[card_id]
 		var card_name = skill_row["CardName"]
 		
 		# 保存卡牌ID和名称的对应关系
@@ -67,7 +63,6 @@ func _load_skill_data() -> void:
 		
 		# 创建技能数据结构
 		var skill_data = {
-			"index": index,
 			"card_id": card_id,
 			"card_name": card_name,
 			"skill1": {
