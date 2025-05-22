@@ -98,10 +98,10 @@ func initialize(p_name, player_pos) -> void:
 	# 绑定分数变化信号
 	ScoreManager.get_instance().score_changed.connect(Callable(self, "_on_score_changed"))
 
-func _on_score_changed(player: Player, old_score: int, new_score: int, change: int) -> void:
+func _on_score_changed(player: Player, old_score: int, new_score: int, change: int, description: String) -> void:
 	if player == self:
 		player_score = new_score
-		print("玩家 ", player_name, " 分数变化: ", old_score, " -> ", new_score, " 变化: ", change)
+		print("玩家 ", player_name, " 分数变化: ", old_score, " -> ", new_score, " 变化: ", change, " 描述: ", description)
 		if score_ui:
 			score_ui.text = "当前分数：" + str(new_score)
 

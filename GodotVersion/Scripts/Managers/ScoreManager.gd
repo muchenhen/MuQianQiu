@@ -54,7 +54,7 @@ var score_history: Dictionary = {}  # 玩家分数历史记录
 var player_score_effect: Dictionary = {}  # 玩家分数特效
 
 # 信号
-signal score_changed(player: Player, old_score: int, new_score: int, change: int)
+signal score_changed(player: Player, old_score: int, new_score: int, change: int, description: String)
 
 # 获取单例实例
 static func get_instance() -> ScoreManager:
@@ -86,7 +86,7 @@ func _add_score_record(player: Player, source: ScoreSource, score: int, descript
 	var old_score = player_scores[player]
 	player_scores[player] += score
 	
-	score_changed.emit(player, old_score, player_scores[player], score)
+	score_changed.emit(player, old_score, player_scores[player], score, description)
 
 # 添加卡牌得分
 # 统一处理普通卡和特殊卡的得分逻辑
