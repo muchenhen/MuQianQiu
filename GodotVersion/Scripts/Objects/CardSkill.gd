@@ -66,6 +66,16 @@ static func get_second_skill_type(card:Card) -> SKILL_TYPE:
             return string_to_skill_type(card_skill_row["Skill2Type"])
     return SKILL_TYPE.NULL
 
+static func get_skill_type_by_index(card:Card, index:int) -> SKILL_TYPE:
+    var table_manager = TableManager.get_instance()
+    var card_skill_row = table_manager.get_row("Skills", card.ID)
+    if card_skill_row:
+        if index == 1 and card_skill_row.has("Skill1Type"):
+            return string_to_skill_type(card_skill_row["Skill1Type"])
+        elif index == 2 and card_skill_row.has("Skill2Type"):
+            return string_to_skill_type(card_skill_row["Skill2Type"])
+    return SKILL_TYPE.NULL
+
 
 # 触发技能：禁用技能
 func trigger_DISABLE_SKILL() -> void:
