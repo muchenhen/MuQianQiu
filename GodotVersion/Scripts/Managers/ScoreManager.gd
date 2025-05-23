@@ -1,6 +1,9 @@
 extends Node
 
+
 class_name ScoreManager
+
+var story_manager: StoryManager = StoryManager.get_instance()
 
 # 单例模式
 static var _instance: ScoreManager = null
@@ -184,9 +187,66 @@ func apply_score_effects(player: Player) -> void:
 	
 	var effects = player_score_effect[player]
 	for effect in effects:
-		if not effect.is_applied:
-			_apply_single_effect(player, effect)
-			effect.is_applied = true
+		if effect.is_applied:
+			continue
+		
+		var should_apply = false
+		if effect.effect_type == ScoreEffectType.SPECIFIC_CARD:
+			# 对玩家的特定卡牌加分，需要检查玩家当前牌堆中是否有该卡牌
+			var target_card_id = effect.target_id
+			should_apply = player.chenk_card_in_deal(target_card_id)
+			if should_apply:
+				_apply_single_effect(player, effect)
+				effect.is_applied = true  # 标记为已应用
+
+		elif effect.effect_type == ScoreEffectType.SPECIFIC_STORY:
+			# 特定故事加分,需要检查玩家是否完成了该故事
+			var target_story_id = effect.target_id
+			should_apply = player.finished_stories.has(target_story_id)
+			if should_apply:
+				_apply_single_effect(player, effect)
+				effect.is_applied = true  # 标记为已应用
+
+		elif effect.effect_type == ScoreEffectType.MULTI_STORIES:
+			# 多个故事加分，需要检查每个故事是否完成，并记录已加分的故事
+			var stories_id = effect.target_id
+			
+			# 如果没有已处理故事的属性，添加一个
+			if not effect.has("processed_stories"):
+				effect.processed_stories = []
+				
+			if stories_id is Array and stories_id.size() > 0:
+				var all_processed = true
+				var has_new_story = false
+				
+				for story_id in stories_id:
+					# 检查这个故事是否已经被处理过
+					if effect.processed_stories.has(story_id):
+						continue
+						
+					# 检查故事是否完成
+					if player.finished_stories.has(story_id):
+						var story = story_manager.stories[story_id]
+						var story_name = story["Name"]
+						var description = "卡牌 '%s' 对故事 '%s' 的加成分数" % [effect.source_card.Name, story_name]
+						
+						# 为这个故事加分
+						_add_score_record(player, ScoreSource.SPECIAL_BONUS, int(effect.value), description)
+						
+						# 记录这个故事已被处理
+						effect.processed_stories.append(story_id)
+						has_new_story = true
+					else:
+						# 还有故事未完成
+						all_processed = false
+				
+				# 如果所有故事都已处理或者没有新的故事完成，则标记效果状态
+				if all_processed:
+					effect.is_applied = true  # 所有故事都已处理，标记为已应用
+				elif not has_new_story:
+					# 没有新的故事完成，但还有未完成的故事，保持效果未应用状态
+					pass
+
 
 # 应用单个分数效果
 func _apply_single_effect(player: Player, effect: ScoreEffect) -> void:
