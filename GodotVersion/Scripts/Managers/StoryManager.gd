@@ -4,8 +4,14 @@ class_name StoryManager
 
 static var instance: StoryManager = null
 
+# 引用Story类
+const StoryClass = preload("res://Scripts/Story.gd")
+
+# 存储所有故事，key为故事ID，value为Story对象
 var stories = {}
+# 卡牌ID到故事ID的映射
 var card_to_story_map = {}
+# 已完成的故事列表
 var completed_stories = []
 
 var DEBUG_SKIP_STORTY = false
@@ -20,7 +26,7 @@ static func get_instance() -> StoryManager:
 		instance.initialize()
 	return instance
 
-
+# 初始化故事管理器
 func initialize() -> void:
 	var table_manager = TableManager.get_instance()
 	var stories_table = table_manager.tables["Stories"]
@@ -39,23 +45,26 @@ func initialize() -> void:
 		for card_id_str in story_cards_id_array_str:
 			story_cards_id_array.append(int(card_id_str))
 		var story_score = story_info["Score"]
-		var story_audio_id = story_info["AudioID"]
-		stories[story_id] = {
-			"ID": story_id,
-			"Name": story_name,
-			"CardsName": story_cards_name_array,
-			"CardsID": story_cards_id_array,
-			"Score": story_score,
-			"AudioID": story_audio_id,
-			"Finished": false
-		}
+		var story_audio_id = str(story_info["AudioID"])  # 确保AudioID为字符串类型
+		
+		# 创建新的Story对象
+		var story = StoryClass.new(
+			story_id,
+			story_name,
+			story_cards_name_array,
+			story_cards_id_array,
+			story_score,
+			story_audio_id
+		)
+		
+		stories[story_id] = story
 	create_card_to_story_map()
 
 # 创建卡牌ID到故事ID的映射
 func create_card_to_story_map():
 	for story_id in stories:
 		var story = stories[story_id]
-		for card_id in story["CardsID"]:
+		for card_id in story.cards_id:
 			if card_id not in card_to_story_map:
 				card_to_story_map[card_id] = []
 			card_to_story_map[card_id].append(story_id)
@@ -76,8 +85,8 @@ func get_relent_stories_id_by_cards_id(cards_id:Array) -> Array:
 	for card_id in cards_id:
 		var card_relent_stories = get_relent_stories(card_id)
 		for story in card_relent_stories:
-			if stories_id.find(story["ID"]) == -1:
-				stories_id.append(story["ID"])
+			if stories_id.find(story.id) == -1:
+				stories_id.append(story.id)
 	return stories_id
 
 # 通过卡牌ID数组，获取与这些卡牌相关的故事，返回去重后的故事结构所组成的数组
@@ -97,27 +106,33 @@ func check_story_finish_for_player(player:Player):
 		return []
 	var cards:Array[Card] = player.deal_cards.values()
 	var this_time_completed_stories = []
+	var cards_id = []
+	
+	# 获取玩家所有卡牌ID
+	for card in cards:
+		if card.Special:
+			cards_id.append(card.BaseID)
+		else:
+			cards_id.append(card.ID)
+			
+	# 检查每个故事是否完成
 	for story_id in stories:
 		var story = stories[story_id]
-		if story["Finished"]:
+		if story.is_finished():
 			continue
-		var story_cards_id = story["CardsID"]
-		var cards_id = []
-		for card in cards:
-			if card.Special:
-				cards_id.append(card.BaseID)
-			else:
-				cards_id.append(card.ID)
-		var finished = true
-		for card_id in story_cards_id:
+			
+		var all_cards_present = true
+		for card_id in story.cards_id:
 			if cards_id.find(card_id) == -1:
-				finished = false
+				all_cards_present = false
 				break
-		if finished:
-			story["Finished"] = true
-			print(story["Name"], "故事完成")
+				
+		if all_cards_present:
+			story.mark_as_finished()
+			print(story.name, "故事完成")
 			completed_stories.append(story)
 			this_time_completed_stories.append(story)
+			
 	return this_time_completed_stories
 
 # 清理所有状态 准备下一轮游戏
