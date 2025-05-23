@@ -741,3 +741,10 @@ func check_special_card_in_deal(card_id: int) -> int:
 		if card.BaseID == card_id and card.Special:
 			return card.ID
 	return -1
+
+## 检查玩家牌堆中是否有这个卡牌
+func chenk_card_in_deal(card_id: int) -> bool:
+	for card in deal_cards.values():
+		if card.ID == card_id:
+			return true
+	return false
