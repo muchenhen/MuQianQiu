@@ -37,18 +37,27 @@ class ScoreRecord:
 # 分数效果结构
 class ScoreEffect:
 	var effect_type: ScoreEffectType  # 效果类型
-	var target_id                     # 目标ID(可能是卡牌ID或故事ID)，如果是多个故事，则为数组
-	var target_name: String           # 目标名称
+	var target_ids: Array             # 目标ID数组(可能是卡牌ID或故事ID)
+	var target_name: String           # 目标名称描述
 	var value: float                  # 加分值
 	var source_card: Card             # 来源卡牌
-	var is_applied: bool = false      # 是否已应用
+	var is_applied: bool = false      # 整个效果是否已应用完成
+	var applied_targets: Dictionary = {} # 记录每个目标是否已应用 {target_id: bool}
 	
 	func _init(type: ScoreEffectType, tid, tname: String, val: float, card: Card):
 		effect_type = type
-		target_id = tid
+		# 确保 target_ids 始终是数组
+		if tid is Array:
+			target_ids = tid
+		else:
+			target_ids = [tid]
 		target_name = tname
 		value = val
 		source_card = card
+		
+		# 初始化所有目标为未应用
+		for target_id in target_ids:
+			applied_targets[target_id] = false
 
 # 玩家分数数据
 var player_scores: Dictionary = {}  # 玩家当前分数
@@ -148,16 +157,14 @@ func _create_score_effect_from_skill(player: Player, card: Card, skill_index: in
 	if card_skill_row.has(skill_value_key) and card_skill_row[skill_value_key]:
 		value = float(card_skill_row[skill_value_key])
 	
-	var effect_type = ScoreEffectType.SPECIFIC_CARD
-	var story_manager = StoryManager.get_instance()
-	
+	var effect_type = ScoreEffectType.SPECIFIC_CARD	
 	# 根据目标确定效果类型
 	if target_name == "包含自身":
 		# 包含自身一定是对多个故事加分
 		effect_type = ScoreEffectType.MULTI_STORIES
 		var card_id = card.BaseID if card.Special else card.ID
-		var stories_id = story_manager.get_relent_stories_id_by_cards_id([card_id])
-		target_id = stories_id  # 多个故事ID的数组
+		var stories_ids = story_manager.get_relent_stories_id_by_cards_id([card_id])
+		target_id = stories_ids  # 多个故事ID的数组
 		target_name = "包含卡牌 '%s' 的故事" % card.Name
 	else:
 		# 通过查询故事表判断目标是故事还是卡牌
@@ -166,8 +173,7 @@ func _create_score_effect_from_skill(player: Player, card: Card, skill_index: in
 			# 获取故事的真实名称
 			target_name = story_manager.stories[target_id]["Name"]
 		else:
-			effect_type = ScoreEffectType.SPECIFIC_CARD
-	
+			effect_type = ScoreEffectType.SPECIFIC_CARD	
 	# 创建分数效果
 	var effect = ScoreEffect.new(
 		effect_type,
@@ -180,6 +186,17 @@ func _create_score_effect_from_skill(player: Player, card: Card, skill_index: in
 	# 添加到玩家的分数效果列表中
 	player_score_effect[player].append(effect)
 
+static func convert_effect_type_to_string(effect_type: ScoreEffectType) -> String:
+	match effect_type:
+		ScoreEffectType.SPECIFIC_CARD:
+			return "SPECIFIC_CARD"
+		ScoreEffectType.SPECIFIC_STORY:
+			return "SPECIFIC_STORY"
+		ScoreEffectType.MULTI_STORIES:
+			return "MULTI_STORIES"
+	
+	return "UNKNOWN_EFFECT_TYPE"
+
 # 应用所有分数效果
 func apply_score_effects(player: Player) -> void:
 	if not player_score_effect.has(player):
@@ -189,96 +206,84 @@ func apply_score_effects(player: Player) -> void:
 	for effect in effects:
 		if effect.is_applied:
 			continue
-		
-		var should_apply = false
+		print(player.name, "已准备的应用分数效果：", convert_effect_type_to_string(effect.effect_type), " ", effect.target_ids)
 		if effect.effect_type == ScoreEffectType.SPECIFIC_CARD:
 			# 对玩家的特定卡牌加分，需要检查玩家当前牌堆中是否有该卡牌
-			var target_card_id = effect.target_id
-			should_apply = player.chenk_card_in_deal(target_card_id)
-			if should_apply:
-				_apply_single_effect(player, effect)
-				effect.is_applied = true  # 标记为已应用
+			for target_id in effect.target_ids:
+				if effect.applied_targets[target_id]:
+					continue
+					
+				if player.chenk_card_in_deal(target_id):
+					# 记录此目标已应用
+					effect.applied_targets[target_id] = true
+					_apply_single_effect(player, effect, target_id)
+			
+			# 检查是否所有目标都已应用
+			var all_applied = true
+			for target_id in effect.target_ids:
+				if not effect.applied_targets[target_id]:
+					all_applied = false
+					break
+			
+			effect.is_applied = all_applied
 
 		elif effect.effect_type == ScoreEffectType.SPECIFIC_STORY:
 			# 特定故事加分,需要检查玩家是否完成了该故事
-			var target_story_id = effect.target_id
-			should_apply = player.finished_stories.has(target_story_id)
-			if should_apply:
-				_apply_single_effect(player, effect)
-				effect.is_applied = true  # 标记为已应用
-
-		elif effect.effect_type == ScoreEffectType.MULTI_STORIES:
-			# 多个故事加分，需要检查每个故事是否完成，并记录已加分的故事
-			var stories_id = effect.target_id
+			for target_id in effect.target_ids:
+				if effect.applied_targets[target_id]:
+					continue
+					
+				if player.check_story_in_finished_stories(target_id):
+					# 记录此目标已应用
+					effect.applied_targets[target_id] = true
+					_apply_single_effect(player, effect, target_id)
 			
-			# 如果没有已处理故事的属性，添加一个
-			if not effect.has("processed_stories"):
-				effect.processed_stories = []
-				
-			if stories_id is Array and stories_id.size() > 0:
-				var all_processed = true
-				var has_new_story = false
-				
-				for story_id in stories_id:
-					# 检查这个故事是否已经被处理过
-					if effect.processed_stories.has(story_id):
-						continue
-						
-					# 检查故事是否完成
-					if player.finished_stories.has(story_id):
-						var story = story_manager.stories[story_id]
-						var story_name = story["Name"]
-						var description = "卡牌 '%s' 对故事 '%s' 的加成分数" % [effect.source_card.Name, story_name]
-						
-						# 为这个故事加分
-						_add_score_record(player, ScoreSource.SPECIAL_BONUS, int(effect.value), description)
-						
-						# 记录这个故事已被处理
-						effect.processed_stories.append(story_id)
-						has_new_story = true
-					else:
-						# 还有故事未完成
-						all_processed = false
-				
-				# 如果所有故事都已处理或者没有新的故事完成，则标记效果状态
-				if all_processed:
-					effect.is_applied = true  # 所有故事都已处理，标记为已应用
-				elif not has_new_story:
-					# 没有新的故事完成，但还有未完成的故事，保持效果未应用状态
-					pass
-
+			# 检查是否所有目标都已应用
+			var all_applied = true
+			for target_id in effect.target_ids:
+				if not effect.applied_targets[target_id]:
+					all_applied = false
+					break
+			
+			effect.is_applied = all_applied
+		elif effect.effect_type == ScoreEffectType.MULTI_STORIES:
+			# 多个故事加分，需要检查每个故事是否完成
+			var all_applied = true
+			
+			for target_id in effect.target_ids:
+				if effect.applied_targets[target_id]:
+					continue
+					
+				if player.finished_stories.has(target_id):
+					# 记录此目标已应用
+					effect.applied_targets[target_id] = true
+					_apply_single_effect(player, effect, target_id)
+				else:
+					all_applied = false
+			
+			effect.is_applied = all_applied
 
 # 应用单个分数效果
-func _apply_single_effect(player: Player, effect: ScoreEffect) -> void:
+func _apply_single_effect(player: Player, effect: ScoreEffect, target_id = null) -> void:
 	var score_value = int(effect.value)  # 转换为整数
 	var description = ""
 	
 	match effect.effect_type:
 		ScoreEffectType.SPECIFIC_CARD:
 			description = "卡牌 '%s' 对 '%s' 的加成分数" % [effect.source_card.Name, effect.target_name]
+			_add_score_record(player, ScoreSource.SPECIAL_BONUS, score_value, description)
 		
 		ScoreEffectType.SPECIFIC_STORY:
 			description = "卡牌 '%s' 对故事 '%s' 的加成分数" % [effect.source_card.Name, effect.target_name]
+			_add_score_record(player, ScoreSource.SPECIAL_BONUS, score_value, description)
 		
 		ScoreEffectType.MULTI_STORIES:
-			description = "卡牌 '%s' 对 %s 的加成分数" % [effect.source_card.Name, effect.target_name]
-			
-			# 如果是多个故事，需要获取故事详情并加分
-			var story_manager = StoryManager.get_instance()
-			var stories_id = effect.target_id
-			if stories_id is Array and stories_id.size() > 0:
-				for story_id in stories_id:
-					if story_manager.stories.has(story_id):
-						var story = story_manager.stories[story_id]
-						var story_name = story["Name"]
-						description = "卡牌 '%s' 对故事 '%s' 的加成分数" % [effect.source_card.Name, story_name]
-						_add_score_record(player, ScoreSource.SPECIAL_BONUS, score_value, description)
-				
-				# 提前返回，因为我们已经在循环中添加了所有记录
-				return
-	
-	# 添加分数记录（对于非多故事类型）
-	_add_score_record(player, ScoreSource.SPECIAL_BONUS, score_value, description)
+			# 对指定的单个故事加分
+			if target_id != null and story_manager.stories.has(target_id):
+				var story = story_manager.stories[target_id]
+				var story_name = story["Name"]
+				description = "卡牌 '%s' 对故事 '%s' 的加成分数" % [effect.source_card.Name, story_name]
+				_add_score_record(player, ScoreSource.SPECIAL_BONUS, score_value, description)
 
 # 获取玩家的未应用分数效果
 func get_pending_score_effects(player: Player) -> Array:

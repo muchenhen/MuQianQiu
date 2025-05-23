@@ -235,6 +235,9 @@ func send_card_to_deal(card: Card) -> void:
 # 一个玩家的回合结束，检查故事完成情况
 func check_finish_story() -> void:
 	var this_time_completed_stories = StoryManager.get_instance().check_story_finish_for_player(self)
+	# 将故事添加到玩家的完成故事列表中
+	if this_time_completed_stories.size() > 0:
+		finished_stories.append(this_time_completed_stories)
 	# 给对应玩家增加当前故事的分数
 	ScoreManager.get_instance().add_story_score(self, this_time_completed_stories)
 	show_new_finished_stories(this_time_completed_stories)
@@ -256,8 +259,6 @@ func _show_next_story():
 # 展示一个新完成的故事
 func show_one_new_finished_story(story):
 	print("玩家 ", player_name, " 完成了故事 ", story["Name"])
-	# 将故事添加到玩家的完成故事列表中
-	finished_stories.append(story)
 	# 使用sc_story_show展示当前故事的卡牌
 	
 	current_sc_story_show = UIManager.get_instance().ensure_get_ui_instance("UI_StoryShow")
@@ -745,6 +746,13 @@ func check_special_card_in_deal(card_id: int) -> int:
 ## 检查玩家牌堆中是否有这个卡牌
 func chenk_card_in_deal(card_id: int) -> bool:
 	for card in deal_cards.values():
-		if card.ID == card_id:
+		if card.ID == card_id or card.BaseID == card_id:
+			return true
+	return false
+
+## 检查玩家已完成的故事中是否有这个故事
+func check_story_in_finished_stories(story_id: int) -> bool:
+	for story in finished_stories:
+		if story["ID"] == story_id:
 			return true
 	return false
