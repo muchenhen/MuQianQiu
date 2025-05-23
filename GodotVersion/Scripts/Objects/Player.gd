@@ -733,3 +733,11 @@ func check_card_can_upgrade(card:Card) -> Card:
 ## 返回：当前选择的手牌对象
 func get_choosing_hand_card() -> Card:
 	return get_current_choosing_card()
+
+## 传入一个卡牌ID，检查当前玩家的牌堆中是否有这个卡牌的特殊牌
+## 有的话返回这个特殊牌ID
+func check_special_card_in_deal(card_id: int) -> int:
+	for card in deal_cards.values():
+		if card.BaseID == card_id and card.Special:
+			return card.ID
+	return -1

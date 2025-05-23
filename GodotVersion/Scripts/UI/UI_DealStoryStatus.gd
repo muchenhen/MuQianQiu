@@ -29,7 +29,8 @@ func _ready() -> void:
 		card.disable_click()
 
 # 通过故事ID更新UI，显示故事对应的卡牌，但是保持不可点击
-func update_story_status_by_id(story_id: int) -> void:
+# 如果传入了player参数，会检查玩家牌堆中是否有对应的特殊卡，有则优先显示特殊卡
+func update_story_status_by_id(story_id: int, player: Player = null) -> void:
 	hor_box.layout_items()
 	var story_manager = StoryManager.get_instance()
 	var story = story_manager.stories[story_id]
@@ -38,13 +39,18 @@ func update_story_status_by_id(story_id: int) -> void:
 
 	var index:int = 0
 	for card_id in cards_id:
-		var card = cards[index]
+		var card:Card = cards[index]
 		card.show()
-		card.update_card_info_by_id(card_id)
+		var special_card_id = player.check_special_card_in_deal(card_id)
+		if special_card_id != -1:
+			card.update_card_info_by_id(special_card_id)
+		else:
+			card.update_card_info_by_id(card_id)
 		index += 1		
 	
 
 # 传入一组卡牌ID，检查所有可见的卡牌，ID存在于传入的卡牌ID数组中的卡牌，设置彩色，否则设置灰色
+# 特殊处理：如果传入的卡牌ID中包含特殊卡，则其对应的基础卡也视为可用
 func set_card_color_by_ids(cards_id:Array) -> void:
 	for card in cards:
 		if card.is_visible():

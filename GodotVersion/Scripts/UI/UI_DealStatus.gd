@@ -98,7 +98,8 @@ func update_finished_story_by_player(player: Player) -> void:
 		# 将deal_story_status添加到finished_story_vb
 		deal_story_status.name = story["Name"]
 		finished_story_vb.add_child(deal_story_status)
-		deal_story_status.update_story_status_by_id(story_id)
+		# 传入玩家参数，使其能检查特殊卡
+		deal_story_status.update_story_status_by_id(story_id, player)
 
 
 func update_unfinished_story_by_player(player: Player) -> void:
@@ -120,7 +121,8 @@ func update_unfinished_story_by_player(player: Player) -> void:
 		var deal_story_status:UI_DealStoryStatus = ui_manager.create_ui_instance_for_multi("UI_DealStoryStatus")
 		deal_story_status.name = story_manager.stories[story_id]["Name"]
 		unfinished_story_vb.add_child(deal_story_status)
-		deal_story_status.update_story_status_by_id(story_id)
+		# 传入玩家参数，使其能检查特殊卡
+		deal_story_status.update_story_status_by_id(story_id, player)
 		# 玩家没有的卡牌设置为灰色
 		deal_story_status.set_card_color_by_ids(deal_cards_id)
 
