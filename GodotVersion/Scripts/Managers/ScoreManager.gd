@@ -120,13 +120,13 @@ func add_card_score(player: Player, card: Card) -> void:
 				# 创建增加分数的效果
 				_create_score_effect_from_skill(player, card, i)
 				
-func add_story_score(player: Player, completed_stories: Array):
+func add_story_score(player: Player, completed_stories: Array[Story]) -> void:
 	if not player_scores.has(player):
 		init_player_score(player)
 	
 	for story in completed_stories:
-		var story_name = story["Name"]
-		var story_score = story["Score"]
+		var story_name = story.name
+		var story_score = story.score
 		
 		if story_score > 0:
 			var desc = "完成故事 '%s' 获得分数" % story_name
@@ -171,7 +171,8 @@ func _create_score_effect_from_skill(player: Player, card: Card, skill_index: in
 		if story_manager.stories.has(target_id):
 			effect_type = ScoreEffectType.SPECIFIC_STORY
 			# 获取故事的真实名称
-			target_name = story_manager.stories[target_id]["Name"]
+			var target_story:Story = story_manager.stories[target_id]
+			target_name = target_story.name
 		else:
 			effect_type = ScoreEffectType.SPECIFIC_CARD	
 	# 创建分数效果
@@ -281,7 +282,7 @@ func _apply_single_effect(player: Player, effect: ScoreEffect, target_id = null)
 			# 对指定的单个故事加分
 			if target_id != null and story_manager.stories.has(target_id):
 				var story = story_manager.stories[target_id]
-				var story_name = story["Name"]
+				var story_name = story.name
 				description = "卡牌 '%s' 对故事 '%s' 的加成分数" % [effect.source_card.Name, story_name]
 				_add_score_record(player, ScoreSource.SPECIAL_BONUS, score_value, description)
 
