@@ -237,7 +237,7 @@ func check_finish_story() -> void:
 	var this_time_completed_stories = StoryManager.get_instance().check_story_finish_for_player(self)
 	# 将故事添加到玩家的完成故事列表中
 	if this_time_completed_stories.size() > 0:
-		finished_stories.append(this_time_completed_stories)
+		finished_stories.append_array(this_time_completed_stories)
 	# 给对应玩家增加当前故事的分数
 	ScoreManager.get_instance().add_story_score(self, this_time_completed_stories)
 	show_new_finished_stories(this_time_completed_stories)
@@ -257,8 +257,8 @@ func _show_next_story():
 		new_story_show_finished.emit()
 
 # 展示一个新完成的故事
-func show_one_new_finished_story(story):
-	print("玩家 ", player_name, " 完成了故事 ", story["Name"])
+func show_one_new_finished_story(story:Story):
+	print("玩家 ", player_name, " 完成了故事 ", story.name)
 	# 使用sc_story_show展示当前故事的卡牌
 	
 	current_sc_story_show = UIManager.get_instance().ensure_get_ui_instance("UI_StoryShow")
@@ -271,7 +271,7 @@ func show_one_new_finished_story(story):
 	var root = tree.get_root()
 	root.add_child(current_sc_story_show)
 	# 获取当前故事的所有id
-	var card_ids = story["CardsID"]
+	var card_ids = story.cards_id
 	
 	# 创建一个映射，用于记录原始卡牌ID到特殊卡牌ID的映射
 	var card_id_to_special_id_map = {}
@@ -299,11 +299,11 @@ func show_one_new_finished_story(story):
 		current_sc_story_show.add_card(card)
 	
 	# 设置故事名
-	current_sc_story_show.set_story_name(story["Name"])
+	current_sc_story_show.set_story_name(story.name)
 	current_sc_story_show.layout_children()
 	AnimationManager.get_instance().start_linear_alpha(current_sc_story_show, 1, 0.5, AnimationManager.EaseType.LINEAR, Callable(self, "show_one_new_finished_story_anim_in_end"))
 	# 播放故事对应的音频
-	var audio_id = story["AudioID"]
+	var audio_id = story.audio_id
 	AudioManager.get_instance().play_story_sfx(audio_id)
 
 func show_one_new_finished_story_anim_in_end():
@@ -753,6 +753,6 @@ func chenk_card_in_deal(card_id: int) -> bool:
 ## 检查玩家已完成的故事中是否有这个故事
 func check_story_in_finished_stories(story_id: int) -> bool:
 	for story in finished_stories:
-		if story["ID"] == story_id:
+		if story.id == story_id:
 			return true
 	return false

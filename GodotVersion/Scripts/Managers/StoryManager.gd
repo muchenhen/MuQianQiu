@@ -4,11 +4,10 @@ class_name StoryManager
 
 static var instance: StoryManager = null
 
-# 引用Story类
-const StoryClass = preload("res://Scripts/Story.gd")
+
 
 # 存储所有故事，key为故事ID，value为Story对象
-var stories = {}
+var stories:Dictionary[int, Story] = {}
 # 卡牌ID到故事ID的映射
 var card_to_story_map = {}
 # 已完成的故事列表
@@ -47,8 +46,8 @@ func initialize() -> void:
 		var story_score = story_info["Score"]
 		var story_audio_id = str(story_info["AudioID"])  # 确保AudioID为字符串类型
 		
-		# 创建新的Story对象
-		var story = StoryClass.new(
+		# 创建新的Story对象，直接使用Story类而不是StoryClass
+		var story = Story.new(
 			story_id,
 			story_name,
 			story_cards_name_array,
@@ -101,11 +100,11 @@ func get_relent_stories_by_cards_id(cards_id:Array) -> Array:
 
 # 检查玩家是否完成了某个故事
 # 直接使用玩家牌堆数组
-func check_story_finish_for_player(player:Player):
+func check_story_finish_for_player(player:Player) -> Array[Story]:
 	if DEBUG_SKIP_STORTY:
 		return []
 	var cards:Array[Card] = player.deal_cards.values()
-	var this_time_completed_stories = []
+	var this_time_completed_stories:Array[Story] = []
 	var cards_id = []
 	
 	# 获取玩家所有卡牌ID

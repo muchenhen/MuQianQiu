@@ -92,11 +92,11 @@ func update_current_deal_status_by_player(player: Player) -> void:
 func update_finished_story_by_player(player: Player) -> void:
 	var finished_stories = player.finished_stories
 	for story in finished_stories:
-		var story_id = story["ID"]
+		var story_id = story.id
 		# 创建一个UI_DealStoryStatus实例
 		var deal_story_status:UI_DealStoryStatus = ui_manager.create_ui_instance_for_multi("UI_DealStoryStatus")
 		# 将deal_story_status添加到finished_story_vb
-		deal_story_status.name = story["Name"]
+		deal_story_status.name = story.name
 		finished_story_vb.add_child(deal_story_status)
 		# 传入玩家参数，使其能检查特殊卡
 		deal_story_status.update_story_status_by_id(story_id, player)
@@ -115,7 +115,7 @@ func update_unfinished_story_by_player(player: Player) -> void:
 	# 从所有故事中去掉已完成的故事
 	var finished_stories = player.finished_stories
 	for story in finished_stories:
-		stories_id.erase(story["ID"])
+		stories_id.erase(story.id)
 	# 创建UI_DealStoryStatus实例
 	for story_id in stories_id:
 		var deal_story_status:UI_DealStoryStatus = ui_manager.create_ui_instance_for_multi("UI_DealStoryStatus")

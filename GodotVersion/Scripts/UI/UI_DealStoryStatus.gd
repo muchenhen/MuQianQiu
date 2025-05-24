@@ -34,8 +34,8 @@ func update_story_status_by_id(story_id: int, player: Player = null) -> void:
 	hor_box.layout_items()
 	var story_manager = StoryManager.get_instance()
 	var story = story_manager.stories[story_id]
-	var cards_id:Array = story["CardsID"]
-	story_name.text = story["Name"]
+	var cards_id:Array = story.cards_id
+	story_name.text = story.name
 
 	var index:int = 0
 	for card_id in cards_id:
