@@ -26,4 +26,4 @@ func set_result(p_player_a_score:int, p_player_b_score:int) -> void:
 	player_b_score.text = str(p_player_b_score)
 
 func on_button_back_to_main_pressed():
-	GameManager.instance.back_to_main()
+	GameManager.back_to_main()
