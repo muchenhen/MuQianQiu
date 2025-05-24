@@ -22,13 +22,13 @@ var skill_data_dict = {}
 var card_name_dict = {}
 
 var card_ids: Array[int] = []
-var selected_cards: Array[int] = []  # 选中的特殊卡ID列表
+var selected_cards: Array[int] = []  # 选中的珍稀牌ID列表
 var dragging = false  # 拖拽状态标志
 var drag_start_position: Vector2  # 记录拖拽开始位置
 var is_dragging_action = false  # 标记是否正在进行拖拽动作
 var drag_threshold = 10  # 拖拽阈值，超过此距离才认为是拖拽动作
 var card_instances = []  # 存储所有实例化的卡牌
-var max_special_cards = 88  # 可选择的特殊卡最大数量限制
+var max_special_cards = 88  # 可选择的珍稀牌最大数量限制
 
 # 卡牌场景
 const CARD_SCENE = preload("res://Scripts/Objects/Card.tscn")
@@ -231,10 +231,10 @@ func _on_card_selected(card) -> void:
 		# 检查是否已超过卡片数量限制
 		if selected_cards.size() >= max_special_cards:
 			var ui_manager = UIManager.get_instance()
-			ui_manager.show_info_tip("特殊卡数量已达到上限(" + str(max_special_cards) + "张)，无法选择更多特殊卡")
+			ui_manager.show_info_tip("珍稀牌数量已达到上限(" + str(max_special_cards) + "张)，无法选择更多珍稀牌")
 			return
 			
-		# 检查是否已经选择了同一基础卡的其他特殊卡
+		# 检查是否已经选择了同一基础卡的其他珍稀牌
 		for selected_card in card_instances:
 			if selected_card.get_card_chooesd() and selected_card.BaseID == base_id:
 				# 显示提示信息
@@ -364,7 +364,7 @@ func _on_start_button_pressed() -> void:
 		# 获取游戏实例
 		var game_instance = GameManager.instance
 		if game_instance:
-			# 在PVE模式下，将特殊卡信息设置给玩家A
+			# 在PVE模式下，将珍稀牌信息设置给玩家A
 			# 这种设计在未来可以扩展为联机模式，根据玩家身份设置给不同的Player对象
 			var player = game_instance.player_a
 			player.set_selected_special_cards(selected_cards.duplicate())
@@ -394,12 +394,12 @@ func _on_debug_button_pressed() -> void:
 	# 清除所有已选卡牌
 	_clear_all_selected_cards()
 	
-	# 智能选择符合规则的特殊卡
+	# 智能选择符合规则的珍稀牌
 	_auto_select_special_cards()
 	
 	# 显示提示信息
 	var ui_manager = UIManager.get_instance()
-	ui_manager.show_info_tip("已自动选择 " + str(selected_cards.size()) + " 张符合规则的特殊卡")
+	ui_manager.show_info_tip("已自动选择 " + str(selected_cards.size()) + " 张符合规则的珍稀牌")
 
 # 清除所有已选择的卡牌
 func _clear_all_selected_cards() -> void:
@@ -413,7 +413,7 @@ func _clear_all_selected_cards() -> void:
 	# 确保选择列表为空
 	selected_cards.clear()
 
-# 自动选择符合规则的特殊卡
+# 自动选择符合规则的珍稀牌
 func _auto_select_special_cards() -> void:
 	var selected_base_ids = {}  # 用于记录已选择的基础卡ID
 	var cards_to_select = []    # 待选择的卡牌列表

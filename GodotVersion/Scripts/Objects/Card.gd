@@ -206,7 +206,7 @@ func set_card_gray(is_gray: bool) -> void:
 	card_material.set_shader_parameter("is_gray", is_gray)
 	self.material = card_material
 	
-# 将普通卡牌升级为特殊卡牌
+# 将普通卡牌升级为珍稀牌牌
 func upgrade_to_special(special_card_id: int) -> void:
 	var card_info = TableManager.get_instance().get_row("Cards", special_card_id)
 	if card_info:

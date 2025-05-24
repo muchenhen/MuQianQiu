@@ -99,7 +99,7 @@ func _add_score_record(player: Player, source: ScoreSource, score: int, descript
 	score_changed.emit(player, old_score, player_scores[player], score, description)
 
 # 添加卡牌得分
-# 统一处理普通卡和特殊卡的得分逻辑
+# 统一处理普通卡和珍稀牌的得分逻辑
 func add_card_score(player: Player, card: Card) -> void:
 	if not player_scores.has(player):
 		init_player_score(player)
@@ -110,7 +110,7 @@ func add_card_score(player: Player, card: Card) -> void:
 		var desc = "使用卡牌 '%s' 获得基础分数" % card.Name
 		_add_score_record(player, ScoreSource.CARD_SCORE, base_score, desc)
 
-	# 2. 如果是特殊卡，检查技能表中的加分效果
+	# 2. 如果是珍稀牌，检查技能表中的加分效果
 	if card.Special:
 		for i in range(1, card.card_skill_num + 1):
 			var skill_type = CardSkill.get_skill_type_by_index(card, i)

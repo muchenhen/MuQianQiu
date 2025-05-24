@@ -2,7 +2,7 @@ extends Node
 
 class_name UI_Main
 
-# 添加特殊卡动画完成信号
+# 添加珍稀牌动画完成信号
 signal skill_cards_animation_completed
 
 @onready var player_a_deal:Button = $PlayerADeal
@@ -13,9 +13,9 @@ var ui_manager:UIManager = UIManager.get_instance()
 var card_manager = CardManager.get_instance()
 var input_manager = InputManager.get_instance()
 
-# 玩家A的特殊卡实例
+# 玩家A的珍稀牌实例
 var player_a_skill_cards:Array[Card] = []
-# 等待特殊卡动画完成的回调函数
+# 等待珍稀牌动画完成的回调函数
 var pending_after_animation_callback = null
 
 func _ready() -> void:
@@ -28,7 +28,7 @@ func _ready() -> void:
 	if player_a_skill_card_zone:
 		player_a_skill_card_zone.color = Color(0, 0, 0, 0)
 	
-	# 监听玩家A特殊卡选择变化
+	# 监听玩家A珍稀牌选择变化
 	var game_instance = GameManager.instance
 	if game_instance:
 		# 确保信号未连接才进行连接，避免重复
@@ -36,12 +36,12 @@ func _ready() -> void:
 			game_instance.connect("game_start", Callable(self, "_on_game_start"))
 			print("UI_Main: 已连接game_start信号")
 
-# 游戏开始后，显示玩家的特殊卡
+# 游戏开始后，显示玩家的珍稀牌
 func _on_game_start():
 	print("UI_Main: 收到游戏开始信号")
 	var player_a = GameManager.instance.player_a
 	if player_a:
-		print("UI_Main: 开始更新玩家A的特殊卡")
+		print("UI_Main: 开始更新玩家A的珍稀牌")
 		update_player_a_skill_cards(player_a)
 	else:
 		print("UI_Main: 无法获取player_a对象")
@@ -58,7 +58,7 @@ func _on_player_a_deal_clcik():
 func _on_player_b_deal_clcik():
 	print("玩家B牌堆点击")
 	
-# 更新玩家A的特殊卡显示
+# 更新玩家A的珍稀牌显示
 func update_player_a_skill_cards(player:Player) -> void:
 	# 清理旧的卡牌
 	for card in player_a_skill_cards:
@@ -66,12 +66,12 @@ func update_player_a_skill_cards(player:Player) -> void:
 			card.queue_free()
 	player_a_skill_cards.clear()
 	
-	# 获取玩家选择的特殊卡ID数组
+	# 获取玩家选择的珍稀牌ID数组
 	var skill_card_ids = player.get_selected_special_cards()
 	if skill_card_ids.size() == 0:
 		return
 		
-	# 计算特殊卡区域的布局参数
+	# 计算珍稀牌区域的布局参数
 	var zone_rect = Rect2(player_a_skill_card_zone.position, player_a_skill_card_zone.size)
 	var card_width = card_manager.CARD_WIDTH
 	var card_height = card_manager.CARD_HEIGHT
@@ -108,12 +108,12 @@ func update_player_a_skill_cards(player:Player) -> void:
 	# 阻止用户输入，直到动画完成
 	input_manager.block_input()
 	
-	# 创建并放置特殊卡，但启用动画
+	# 创建并放置珍稀牌，但启用动画
 	_create_skill_cards_with_animation(skill_card_ids, start_x, start_y, offset_x, player_a_skill_card_zone.z_index)
 	
-	print("玩家A特殊卡动画开始，共", skill_card_ids.size(), "张卡")
+	print("玩家A珍稀牌动画开始，共", skill_card_ids.size(), "张卡")
 
-# 使用动画创建特殊卡
+# 使用动画创建珍稀牌
 func _create_skill_cards_with_animation(skill_card_ids: Array, start_x: float, start_y: float, offset_x: float, base_z_index: int) -> void:
 	# 清除任何可能正在运行的卡片动画计时器
 	if has_node("CardAnimTimer"):
@@ -155,7 +155,7 @@ func _show_next_card(anim_data: Dictionary, timer: Timer) -> void:
 	# 检查是否所有卡片都已显示
 	if index >= anim_data["card_ids"].size():
 		timer.queue_free()  # 停止计时器
-		print("玩家A特殊卡动画完成，共", player_a_skill_cards.size(), "张卡")
+		print("玩家A珍稀牌动画完成，共", player_a_skill_cards.size(), "张卡")
 		# 动画完成后，恢复用户输入
 		input_manager.allow_input()
 		# 发出动画完成信号
@@ -225,23 +225,23 @@ func send_special_cards_to_player_a() -> void:
 		print("玩家A对象无效")
 		return
 	
-	# 检查是否有特殊卡动画正在播放
+	# 检查是否有珍稀牌动画正在播放
 	if has_node("CardAnimTimer"):
-		print("特殊卡动画正在播放，将回调函数加入到动画完成后执行")
+		print("珍稀牌动画正在播放，将回调函数加入到动画完成后执行")
 		# 如果动画正在播放，将逻辑设置为回调函数，等待动画完成后执行
 		pending_after_animation_callback = func():
-			print("动画完成后，将特殊卡实例传递给玩家A")
+			print("动画完成后，将珍稀牌实例传递给玩家A")
 			player_a.set_selected_special_cards_instance(player_a_skill_cards)
 	else:
 		# 如果没有动画正在播放，直接执行
-		print("没有特殊卡动画播放中，直接将特殊卡实例传递给玩家A")
+		print("没有珍稀牌动画播放中，直接将珍稀牌实例传递给玩家A")
 		player_a.set_selected_special_cards_instance(player_a_skill_cards)
 
-# 等待特殊卡动画完成后执行指定的回调函数
+# 等待珍稀牌动画完成后执行指定的回调函数
 func wait_for_skill_cards_animation_complete(callback: Callable) -> void:
 	if has_node("CardAnimTimer"):
-		print("设置特殊卡动画完成后的回调函数")
+		print("设置珍稀牌动画完成后的回调函数")
 		pending_after_animation_callback = callback
 	else:
-		print("没有特殊卡动画正在播放，直接执行回调函数")
+		print("没有珍稀牌动画正在播放，直接执行回调函数")
 		callback.call()
