@@ -3,8 +3,6 @@ extends Node
 
 class_name ScoreManager
 
-var story_manager: StoryManager = StoryManager.get_instance()
-
 # 单例模式
 static var _instance: ScoreManager = null
 
@@ -163,15 +161,15 @@ func _create_score_effect_from_skill(player: Player, card: Card, skill_index: in
 		# 包含自身一定是对多个故事加分
 		effect_type = ScoreEffectType.MULTI_STORIES
 		var card_id = card.BaseID if card.Special else card.ID
-		var stories_ids = story_manager.get_relent_stories_id_by_cards_id([card_id])
+		var stories_ids = StoryManager.get_instance().get_relent_stories_id_by_cards_id([card_id])
 		target_id = stories_ids  # 多个故事ID的数组
 		target_name = "包含卡牌 '%s' 的故事" % card.Name
 	else:
 		# 通过查询故事表判断目标是故事还是卡牌
-		if story_manager.stories.has(target_id):
+		if StoryManager.get_instance().stories.has(target_id):
 			effect_type = ScoreEffectType.SPECIFIC_STORY
 			# 获取故事的真实名称
-			var target_story:Story = story_manager.stories[target_id]
+			var target_story:Story = StoryManager.get_instance().stories[target_id]
 			target_name = target_story.name
 		else:
 			effect_type = ScoreEffectType.SPECIFIC_CARD	
@@ -280,8 +278,8 @@ func _apply_single_effect(player: Player, effect: ScoreEffect, target_id = null)
 		
 		ScoreEffectType.MULTI_STORIES:
 			# 对指定的单个故事加分
-			if target_id != null and story_manager.stories.has(target_id):
-				var story = story_manager.stories[target_id]
+			if target_id != null and StoryManager.get_instance().stories.has(target_id):
+				var story = StoryManager.get_instance().stories[target_id]
 				var story_name = story.name
 				description = "卡牌 '%s' 对故事 '%s' 的加成分数" % [effect.source_card.Name, story_name]
 				_add_score_record(player, ScoreSource.SPECIAL_BONUS, score_value, description)
