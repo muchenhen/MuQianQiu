@@ -4,6 +4,8 @@ class_name GameManager
 
 # 静态引用，指向当前游戏实例
 static var instance: GameInstance = null
+static var manager_node: GameManager = null
+
 
 # 全局状态数据
 static var is_open_first: bool = false
@@ -76,20 +78,20 @@ static func start_new_game():
 
 ## 返回到主菜单
 ## 清理游戏状态，销毁UI，重置并初始化新的游戏实例
-static func back_to_main(root_node):
+static func back_to_main():
 	var ui_manager = UIManager.get_instance()
 	
 	# 销毁UI
 	ui_manager.destroy_ui("UI_Result")
 	ui_manager.destroy_ui("UI_Main")
-	
-	# 重新初始化游戏实例
-	initialize_game(root_node)
 
+	initialize_game(manager_node)
+	
 # 这个游戏节点类仅用于挂载在场景中并处理输入
 # 其他所有功能都通过静态方法实现
 func _ready():
 	# 初始化游戏
+	GameManager.manager_node = self
 	GameManager.initialize_game(self)
 
 func _process(_delta):
@@ -100,7 +102,7 @@ func _process(_delta):
 		if key_pressed_now and not GameManager.debug_key_was_pressed:
 			print("调试：快速重启游戏")
 			# 先返回主菜单，清理所有状态
-			GameManager.back_to_main(self)
+			GameManager.back_to_main()
 		# 更新键的状态
 		GameManager.debug_key_was_pressed = key_pressed_now
 
