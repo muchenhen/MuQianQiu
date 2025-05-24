@@ -229,57 +229,10 @@ func start_new_game():
 	card_manager.collect_public_deal_cards_pos(public_deal_cards_pos, public_deal_cards_rotation)
 
 	# 进入发牌流程 持续一段时间 结束后才能让玩家操作
-	var skip_anim = false
-	if not skip_anim:
-		input_manager.block_input()
-		send_card_for_play(card_manager.all_storage_cards)
-	else:
-		send_card_for_play_without_anim(card_manager.all_storage_cards)
+	input_manager.block_input()
+	send_card_for_play(card_manager.all_storage_cards)
 
-## 不带动画效果的发牌
-## 参数：
-## - cards: 要发放的卡牌数组
-## 直接设置卡牌位置，跳过动画效果
-func send_card_for_play_without_anim(cards):
-	cards_to_animate = []
-	current_card_index = 0
 
-	for i in range(player_a.hand_cards_pos_array.size() + player_b.hand_cards_pos_array.size()):
-		# A和B玩家轮流发牌
-		var card = cards.pop_back()
-		card.update_card()
-		if i % 2 == 0:
-			var index:int = player_a.get_player_first_enpty_hand_card_index()
-			player_a.assign_player_hand_card_to_slot(card, index)
-			card.position = player_a.hand_cards_pos_array.pop_front()
-			card.set_player_owner(player_a)
-		else:
-			var index:int = player_b.get_player_first_enpty_hand_card_index()
-			player_b.assign_player_hand_card_to_slot(card, index)
-			card.position = player_b.hand_cards_pos_array.pop_front()
-			card.set_player_owner(player_b)
-
-	for i in range(card_manager.PUBLIC_CARDS_POS.size()):
-		var position = card_manager.PUBLIC_CARDS_POS[i]
-		var rotation = card_manager.PUBLIC_CRADS_ROTATION[i]
-		var card = cards.pop_back()
-		card.z_index = 8 - i
-		card.set_input_priority(card.z_index)
-		card.update_card()
-		# 公共卡池的手牌禁止点击
-		card.connect("card_clicked", Callable(self, "on_card_clicked"))
-		public_deal.set_one_hand_card(card, position, rotation)
-		card.position = position
-		card.rotation = rotation
-	
-	# 触发游戏开始信号
-	emit_signal("game_start")
-	
-	start_round()
-
-## 带动画效果的发牌
-## 参数：
-## - cards: 要发放的卡牌数组
 ## 设置动画序列，逐张发牌
 func send_card_for_play(cards):
 	cards_to_animate = []
