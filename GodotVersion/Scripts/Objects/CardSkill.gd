@@ -89,10 +89,6 @@ func trigger_GUARANTEE_APPEAR() -> void:
 func trigger_INCREASE_APPEAR() -> void:
     pass
 
-# 触发技能：增加分数
-func trigger_ADD_SCORE() -> void:
-    pass
-
 # 触发技能：复制技能
 func trigger_COPY_SKILL() -> void:
     pass
