@@ -517,13 +517,6 @@ func player_choose_public_card(player_choosing_card:Card, public_choosing_card:C
 	else:
 		print("玩家选择的公共卡不能升级为特殊卡")
 		continue_after_animation.call()
-
-
-	# 检查特殊卡
-	# var ui_checkskill =  ui_manager.open_ui("UI_CheckSkill")
-	# ui_manager.move_ui_instance_to_top(ui_checkskill)
-	# ui_checkskill.set_card1(player_choosing_card)
-	# ui_checkskill.set_card2(public_choosing_card)
 	
 
 ## 特殊卡升级动画完成的回调函数
