@@ -4,16 +4,16 @@ class_name GameInstance
 
 # 回合状态枚举
 enum RoundPhase {
-    ROUND_START,           # 回合开始
-    SUPPLY_PUBLIC_CARDS,   # 补充公共牌阶段
-    CHECK_PLAYER_ACTION,   # 检查玩家行动能力
-    PLAYER_ACTION,         # 玩家行动
-    SPECIAL_CARD_EFFECT,   # 特殊卡效果结算
-    STORY_CHECK,           # 故事完成检查
-    ROUND_END              # 回合结束
+	ROUND_START,           # 回合开始
+	SUPPLY_PUBLIC_CARDS,   # 补充公共牌阶段
+	CHECK_PLAYER_ACTION,   # 检查玩家行动能力
+	PLAYER_ACTION,         # 玩家行动
+	SPECIAL_CARD_EFFECT,   # 特殊卡效果结算
+	STORY_CHECK,           # 故事完成检查
+	ROUND_END              # 回合结束
 }
 
-var current_phase = RoundPhase.ROUND_START
+var current_phase:RoundPhase = RoundPhase.ROUND_START
 
 # 游戏开始信号，在游戏完全初始化后触发
 signal game_start
@@ -189,16 +189,63 @@ func change_round():
 	current_round_index += 1
 	print("当前回合: ", current_round_index)
 	
+	# 检查游戏是否结束
 	if current_round_index > MAX_ROUND:
-		print("游戏结束")
-		ui_manager.open_ui("UI_Result")
-		var ui_result_instance = ui_manager.get_ui_instance("UI_Result")
-		ui_result_instance.z_index = 2999
-		ui_result_instance.set_result(player_a.get_score(), player_b.get_score())
+		end_game()
 		return
 
-	# 补充公共牌手牌
-	public_deal.supply_hand_card()
+	# 设置当前回合的玩家
+	if current_round_index % 2 == 1:
+		current_round = GameRound.PLAYER_A
+		start_player_round(player_a, player_b)
+	else:
+		current_round = GameRound.PLAYER_B
+		start_player_round(player_b, player_a)
+
+	# 进入回合开始阶段
+	current_phase = RoundPhase.ROUND_START
+	process_round_phase()
+
+## 处理玩家回合
+func process_round_phase():
+	match current_phase:
+		RoundPhase.ROUND_START:
+			# 回合开始逻辑
+			print("回合", str(current_round_index), "开始")
+			current_phase = RoundPhase.SUPPLY_PUBLIC_CARDS
+			process_round_phase()
+
+		RoundPhase.SUPPLY_PUBLIC_CARDS:
+			# 补充公共卡牌逻辑
+			supply_public_cards_with_effects()
+
+		RoundPhase.CHECK_PLAYER_ACTION:
+			# 检查当前玩家是否可以行动
+			check_current_player_can_act()
+
+		RoundPhase.PLAYER_ACTION:
+			# 等待玩家行动(玩家行动结束后会调用player_choose_public_card)
+			enable_current_player_action()
+
+		RoundPhase.SPECIAL_CARD_EFFECT:
+			# 处理特殊卡效果
+			process_special_card_effects()
+
+		RoundPhase.STORY_CHECK:
+			# 检查故事完成情况
+			check_stories_completion()
+
+		RoundPhase.ROUND_END:
+			# 回合结束，准备下一回合
+			prepare_next_round()
+
+
+func end_game():
+	print("游戏结束")
+	ui_manager.open_ui("UI_Result")
+	var ui_result_instance = ui_manager.get_ui_instance("UI_Result")
+	ui_result_instance.z_index = 2999
+	ui_result_instance.set_result(player_a.get_score(), player_b.get_score())
 
 func set_choosed_versions(in_choosed_versions):
 	# 设置选择的游戏版本
