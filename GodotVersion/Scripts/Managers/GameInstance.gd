@@ -2,6 +2,19 @@ extends Node
 
 class_name GameInstance
 
+# 回合状态枚举
+enum RoundPhase {
+    ROUND_START,           # 回合开始
+    SUPPLY_PUBLIC_CARDS,   # 补充公共牌阶段
+    CHECK_PLAYER_ACTION,   # 检查玩家行动能力
+    PLAYER_ACTION,         # 玩家行动
+    SPECIAL_CARD_EFFECT,   # 特殊卡效果结算
+    STORY_CHECK,           # 故事完成检查
+    ROUND_END              # 回合结束
+}
+
+var current_phase = RoundPhase.ROUND_START
+
 # 游戏开始信号，在游戏完全初始化后触发
 signal game_start
 
