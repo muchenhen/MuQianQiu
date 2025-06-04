@@ -183,6 +183,23 @@ func initialize_round_state():
 	current_round = GameRound.WAITING
 	current_round_index = 0
 
+## 切换回合
+## 更新回合计数，检查游戏是否结束，补充公共卡牌
+func change_round():
+	current_round_index += 1
+	print("当前回合: ", current_round_index)
+	
+	if current_round_index > MAX_ROUND:
+		print("游戏结束")
+		ui_manager.open_ui("UI_Result")
+		var ui_result_instance = ui_manager.get_ui_instance("UI_Result")
+		ui_result_instance.z_index = 2999
+		ui_result_instance.set_result(player_a.get_score(), player_b.get_score())
+		return
+
+	# 补充公共牌手牌
+	public_deal.supply_hand_card()
+
 func set_choosed_versions(in_choosed_versions):
 	# 设置选择的游戏版本
 	choosed_versions = in_choosed_versions
@@ -275,6 +292,10 @@ func send_card_for_play(cards):
 		cards_to_animate.append({"card": card, "position": position, "rotation":rotation })
 	
 	public_deal.disable_all_hand_card_click()
+
+
+	
+
 	# 开始第一张卡的动画
 	animate_next_card()
 
@@ -350,21 +371,6 @@ func player_choose_card_anim_end(card):
 	print("玩家选择卡牌动画结束: ", card.ID, card.Name)
 	card.update_card()
 
-## 开始新的回合
-## 重置卡牌状态，更新Z轴索引，切换回合
-func start_round():
-	print("开始新一轮")
-
-	# 重置所有卡片的选中状态
-	for key in public_deal.hand_cards.keys():
-		public_deal.hand_cards[key].card.set_card_unchooesd()
-
-	player_a.update_self_card_z_index()
-	player_b.update_self_card_z_index()
-	
-	# 重置当前轮次
-	change_round()
-
 ## 处理公共卡牌补充事件
 ## 参数：
 ## - type: 补充类型
@@ -378,22 +384,6 @@ func on_suply_public_card(type):
 			change_to_b_round()
 		else:
 			change_to_a_round()
-
-## 切换回合
-## 更新回合计数，检查游戏是否结束，补充公共卡牌
-func change_round():
-	current_round_index += 1
-	print("当前回合: ", current_round_index)
-	if current_round_index > MAX_ROUND:
-		print("游戏结束")
-		ui_manager.open_ui("UI_Result")
-		var ui_result_instance = ui_manager.get_ui_instance("UI_Result")
-		ui_result_instance.z_index = 2999
-		ui_result_instance.set_result(player_a.get_score(), player_b.get_score())
-		return
-
-	# 补充公共牌手牌
-	public_deal.supply_hand_card()
 
 ## 切换到玩家A的回合
 ## 设置玩家状态，更新卡牌可点击状态，处理AI玩家
