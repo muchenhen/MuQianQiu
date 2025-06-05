@@ -162,6 +162,18 @@ func set_open_third(value):
 	if game_manager:
 		game_manager.is_open_third = value
 
+func set_choosed_versions(in_choosed_versions):
+	# 设置选择的游戏版本
+	choosed_versions = in_choosed_versions
+	for version in choosed_versions:
+		print("选择的版本: ", version)
+		if version == 1:
+			is_open_first = true
+		elif version == 2:
+			is_open_second = true
+		elif version == 3:
+			is_open_third = true
+
 func set_use_special_cards(value):
 	use_special_cards = value
 	if game_manager:
@@ -240,24 +252,26 @@ func process_round_phase():
 			prepare_next_round()
 
 
+func supply_public_cards_with_effects():
+	# 检查需要生效的技能
+	# 检查是否有保证出现
+	var has_guarantee_card = check_guarantee_card_skills()
+	if not has_guarantee_card:
+		# 检查是否有增加出现概率
+		var has_increased_prob = check_increased_probability_skills()
+		if not has_increased_prob:
+			# 正常补充牌
+			public_deal.supply_hand_card()
+	# 补充完毕之后进入下一阶段
+	current_phase = RoundPhase.CHECK_PLAYER_ACTION
+	process_round_phase()
+
 func end_game():
 	print("游戏结束")
 	ui_manager.open_ui("UI_Result")
 	var ui_result_instance = ui_manager.get_ui_instance("UI_Result")
 	ui_result_instance.z_index = 2999
 	ui_result_instance.set_result(player_a.get_score(), player_b.get_score())
-
-func set_choosed_versions(in_choosed_versions):
-	# 设置选择的游戏版本
-	choosed_versions = in_choosed_versions
-	for version in choosed_versions:
-		print("选择的版本: ", version)
-		if version == 1:
-			is_open_first = true
-		elif version == 2:
-			is_open_second = true
-		elif version == 3:
-			is_open_third = true
 
 ## 开始新游戏
 ## 播放背景音乐，初始化UI，准备卡牌
