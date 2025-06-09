@@ -49,8 +49,6 @@ const PLAYER_B_SCORE_STR:String = "玩家B分数："
 
 var current_all_cards
 
-var cards_to_animate = []
-var current_card_index = 0
 var animation_timer: Timer
 
 var current_round = GameRound.WAITING
@@ -118,7 +116,6 @@ func initialize(root_node):
 	# 创建新计时器
 	animation_timer = Timer.new()
 	animation_timer.one_shot = true
-	animation_timer.connect("timeout", Callable(self, "animate_next_card"))
 	root_node.add_child(animation_timer)
 
 	if not audio_manager.is_inside_tree():
@@ -195,83 +192,6 @@ func initialize_round_state():
 	current_round = GameRound.WAITING
 	current_round_index = 0
 
-## 切换回合
-## 更新回合计数，检查游戏是否结束，补充公共卡牌
-func change_round():
-	current_round_index += 1
-	print("当前回合: ", current_round_index)
-	
-	# 检查游戏是否结束
-	if current_round_index > MAX_ROUND:
-		end_game()
-		return
-
-	# 设置当前回合的玩家
-	if current_round_index % 2 == 1:
-		current_round = GameRound.PLAYER_A
-		start_player_round(player_a, player_b)
-	else:
-		current_round = GameRound.PLAYER_B
-		start_player_round(player_b, player_a)
-
-	# 进入回合开始阶段
-	current_phase = RoundPhase.ROUND_START
-	process_round_phase()
-
-## 处理玩家回合
-func process_round_phase():
-	match current_phase:
-		RoundPhase.ROUND_START:
-			# 回合开始逻辑
-			print("回合", str(current_round_index), "开始")
-			current_phase = RoundPhase.SUPPLY_PUBLIC_CARDS
-			process_round_phase()
-
-		RoundPhase.SUPPLY_PUBLIC_CARDS:
-			# 补充公共卡牌逻辑
-			supply_public_cards_with_effects()
-
-		RoundPhase.CHECK_PLAYER_ACTION:
-			# 检查当前玩家是否可以行动
-			check_current_player_can_act()
-
-		RoundPhase.PLAYER_ACTION:
-			# 等待玩家行动(玩家行动结束后会调用player_choose_public_card)
-			enable_current_player_action()
-
-		RoundPhase.SPECIAL_CARD_EFFECT:
-			# 处理特殊卡效果
-			process_special_card_effects()
-
-		RoundPhase.STORY_CHECK:
-			# 检查故事完成情况
-			check_stories_completion()
-
-		RoundPhase.ROUND_END:
-			# 回合结束，准备下一回合
-			prepare_next_round()
-
-
-func supply_public_cards_with_effects():
-	# 检查需要生效的技能
-	# 检查是否有保证出现
-	var has_guarantee_card = check_guarantee_card_skills()
-	if not has_guarantee_card:
-		# 检查是否有增加出现概率
-		var has_increased_prob = check_increased_probability_skills()
-		if not has_increased_prob:
-			# 正常补充牌
-			public_deal.supply_hand_card()
-	# 补充完毕之后进入下一阶段
-	current_phase = RoundPhase.CHECK_PLAYER_ACTION
-	process_round_phase()
-
-func end_game():
-	print("游戏结束")
-	ui_manager.open_ui("UI_Result")
-	var ui_result_instance = ui_manager.get_ui_instance("UI_Result")
-	ui_result_instance.z_index = 2999
-	ui_result_instance.set_result(player_a.get_score(), player_b.get_score())
 
 ## 开始新游戏
 ## 播放背景音乐，初始化UI，准备卡牌
@@ -324,23 +244,27 @@ func start_new_game():
 	send_card_for_play(card_manager.all_storage_cards)
 
 
-## 设置动画序列，逐张发牌
+## 执行发牌流程，包含发牌和动画
+## 参数：
+## - cards: 要发放的卡牌数组
 func send_card_for_play(cards):
-	cards_to_animate = []
-	current_card_index = 0
-
+	# 阶段1: 准备要动画的卡牌数据
+	var cards_to_deal = []  # 存储所有需要发牌的数据
+	
+	# 处理玩家手牌
 	for i in range(player_a.hand_cards_pos_array.size() + player_b.hand_cards_pos_array.size()):
 		# A和B玩家轮流发牌
 		var card = cards.pop_back()
 		if i % 2 == 0:
-			cards_to_animate.append({"card": card, "position": player_a.hand_cards_pos_array.pop_front()})
+			cards_to_deal.append({"card": card, "position": player_a.hand_cards_pos_array.pop_front()})
 			var index:int = player_a.get_player_first_enpty_hand_card_index()
 			player_a.assign_player_hand_card_to_slot(card, index)
 		else:
-			cards_to_animate.append({"card": card, "position": player_b.hand_cards_pos_array.pop_front()})
+			cards_to_deal.append({"card": card, "position": player_b.hand_cards_pos_array.pop_front()})
 			var index:int = player_b.get_player_first_enpty_hand_card_index()
 			player_b.assign_player_hand_card_to_slot(card, index)
-
+	
+	# 处理公共卡牌
 	for i in range(card_manager.PUBLIC_CARDS_POS.size()):
 		var position = card_manager.PUBLIC_CARDS_POS[i]
 		var rotation = card_manager.PUBLIC_CRADS_ROTATION[i]
@@ -350,54 +274,210 @@ func send_card_for_play(cards):
 		# 公共卡池的手牌禁止点击
 		card.connect("card_clicked", Callable(self, "on_card_clicked"))
 		public_deal.set_one_hand_card(card, position, rotation)
-		cards_to_animate.append({"card": card, "position": position, "rotation":rotation })
+		cards_to_deal.append({"card": card, "position": position, "rotation":rotation })
 	
 	public_deal.disable_all_hand_card_click()
-
-
 	
+	# 阶段2: 创建用于处理发牌动画的函数
+	var process_card_animation
+	process_card_animation = func(index):
+		if index < cards_to_deal.size():
+			var card_data = cards_to_deal[index]
+			var card = card_data["card"]
+			var position = card_data["position"]
+			
+			# 启动移动动画
+			animation_manager.start_linear_movement_pos(card, position, 0.6, animation_manager.EaseType.EASE_IN_OUT, 
+				Callable(self, "card_animation_end"), [card, false])
+			
+			# 如果需要旋转，添加旋转动画
+			if "rotation" in card_data:
+				var rotation = card_data["rotation"]
+				animation_manager.start_linear_movement_rotation(card, rotation, 0.6, animation_manager.EaseType.EASE_IN_OUT)
+			
+			# 设置定时器处理下一张卡
+			var timer = Timer.new()
+			timer.one_shot = true
+			timer.wait_time = 0.1
+			timer.connect("timeout", Callable(process_card_animation).bind(index + 1))
+			add_child(timer)
+			timer.start()
+			
+			# 设置自动清理定时器
+			timer.connect("timeout", Callable(func(): timer.queue_free()))
+		else:
+			# 所有卡牌发放完毕
+			for key in public_deal.hand_cards.keys():
+				var public_card = public_deal.hand_cards[key]
+				if public_card.isEmpty:
+					continue
+				print("公共区域手牌 ", key, " ID: ", public_card.card.ID)
+			print("发牌完毕")
+			
+			# 触发游戏开始信号
+			emit_signal("game_start")
+			
+			# 检查玩家特殊卡
+			process_special_cards()
+			
+			prepare_first_round()
+			
+			input_manager.allow_input()
+	
+	# 开始发牌动画
+	process_card_animation.call(0)
 
-	# 开始第一张卡的动画
-	animate_next_card()
+func prepare_first_round():
+	print("准备第一回合")
+	current_round_index = 1
+	current_round = GameRound.PLAYER_A
+	start_player_round(player_a, player_b)
+	# 进入回合开始阶段
+	current_phase = RoundPhase.ROUND_START
+	process_round_phase()
 
-## 执行下一张卡牌的动画
-## 处理卡牌移动和旋转动画，设置下一张卡牌的动画定时器
-func animate_next_card():
-	if current_card_index < cards_to_animate.size():
-		var card_data = cards_to_animate[current_card_index]
-		var card = card_data["card"]
-		var position = card_data["position"]
 
-		animation_manager.start_linear_movement_pos(card, position, 0.6, animation_manager.EaseType.EASE_IN_OUT, Callable(self, "send_card_anim_end"), [card])
+## 处理玩家回合
+func process_round_phase():
+	match current_phase:
+		RoundPhase.ROUND_START:
+			# 回合开始逻辑
+			start_round()
+
+		RoundPhase.SUPPLY_PUBLIC_CARDS:
+			# 补充公共卡牌逻辑
+			supply_public_cards_with_effects()
+
+		RoundPhase.CHECK_PLAYER_ACTION:
+			# 检查当前玩家是否可以行动
+			check_current_player_can_act()
+
+		RoundPhase.PLAYER_ACTION:
+			# 等待玩家行动(玩家行动结束后会调用player_choose_public_card)
+			enable_current_player_action()
+
+		RoundPhase.SPECIAL_CARD_EFFECT:
+			# 处理特殊卡效果
+			process_special_card_effects()
+
+		RoundPhase.STORY_CHECK:
+			# 检查故事完成情况
+			check_stories_completion()
+
+		RoundPhase.ROUND_END:
+			# 回合结束，准备下一回合
+			prepare_next_round()
+
+# ROUND_START 回合开始阶段
+func start_round():
+	print("回合", str(current_round_index), "开始")
+	current_phase = RoundPhase.SUPPLY_PUBLIC_CARDS
+	process_round_phase()
+
+# SUPPLY_PUBLIC_CARDS 补充公共卡牌阶段
+func supply_public_cards_with_effects():
+	# 检查需要生效的技能
+	# 检查是否有保证出现
+	var has_guarantee_card = SkillManager.instance.check_guarantee_card_skills()
+	if not has_guarantee_card:
+		# 检查是否有增加出现概率
+		var has_increased_prob = SkillManager.instance.check_increased_probability_skills()
+		if not has_increased_prob:
+			# 正常补充牌
+			public_deal.supply_hand_card()
+			
+	# 补充完毕之后进入下一阶段
+	current_phase = RoundPhase.CHECK_PLAYER_ACTION
+	process_round_phase()
+
+# CHECK_PLAYER_ACTION 检查玩家行动能力阶段
+func check_current_player_can_act():
+
+	# TODO: 检查玩家是否可以行动
+	current_phase = RoundPhase.PLAYER_ACTION
+	process_round_phase()
+
+# PLAYER_ACTION 等待玩家行动阶段
+func enable_current_player_action():
+	
+	# TODO: 等待玩家行动
+	current_phase = RoundPhase.SPECIAL_CARD_EFFECT
+	process_round_phase()
+
+# SPECIAL_CARD_EFFECT 处理特殊卡效果阶段
+func process_special_card_effects():
+	# 检查玩家是否有特殊卡效果需要处理
+	# TODO: 处理特殊卡效果
+	
+	current_phase = RoundPhase.STORY_CHECK
+	process_round_phase()
+
+# STORY_CHECK 检查故事完成情况阶段
+func check_stories_completion():
+	# 检查玩家故事是否完成
+	# TODO: 检查故事完成情况
+	
+	current_phase = RoundPhase.ROUND_END
+	process_round_phase()
+
+# ROUND_END 准备下一回合阶段
+func prepare_next_round():
+	print("回合", str(current_round_index), "结束")
+	
+	# 清理当前回合的临时状态
+	var active_player = player_a if current_round == GameRound.PLAYER_A else player_b
+	active_player.clear_round_state()
+	
+	# 增加回合索引
+	current_round_index += 1
+	print("准备进入回合:", current_round_index)
+	
+	# 检查游戏是否结束
+	if current_round_index > MAX_ROUND:
+		end_game()
+		return
 		
-		if "rotation" in card_data:
-			var rotation = card_data["rotation"]
-			animation_manager.start_linear_movement_rotation(card, rotation, 0.6, animation_manager.EaseType.EASE_IN_OUT)
-
-		current_card_index += 1
-		
-		# 设置下一张卡片动画的延迟
-		animation_timer.start(0.1)
+	# 设置下一回合的玩家
+	if current_round_index % 2 == 1:
+		current_round = GameRound.PLAYER_A
+		start_player_round(player_a, player_b)
 	else:
-		# 所有卡片动画播放完毕
-		print("All cards animated")
-		for key in public_deal.hand_cards.keys():
-			var public_card = public_deal.hand_cards[key]
-			if public_card.isEmpty:
-				continue
-			print("公共区域手牌 ", key, " ID: ", public_card.card.ID)
-		print("发牌完毕")
+		current_round = GameRound.PLAYER_B
+		start_player_round(player_b, player_a)
 		
-		# 触发游戏开始信号
-		emit_signal("game_start")
+	# 进入下一回合的开始阶段
+	current_phase = RoundPhase.ROUND_START
+	process_round_phase()
 
-		# 检查玩家特殊卡
-		process_special_cards()
-		
-		change_round()
+## 切换回合
+## 更新回合计数，检查游戏是否结束，补充公共卡牌
+func change_round():
+	current_round_index += 1
+	print("当前回合: ", current_round_index)
+	
+	# 检查游戏是否结束
+	if current_round_index > MAX_ROUND:
+		end_game()
+		return
 
-		input_manager.allow_input()
+	# 设置当前回合的玩家
+	if current_round_index % 2 == 1:
+		current_round = GameRound.PLAYER_A
+		start_player_round(player_a, player_b)
+	else:
+		current_round = GameRound.PLAYER_B
+		start_player_round(player_b, player_a)
 
+	# 进入回合开始阶段
+	current_phase = RoundPhase.ROUND_START
+	process_round_phase()
+
+func end_game():
+	print("游戏结束")
+	ui_manager.open_ui("UI_Result")
+	var ui_result_instance = ui_manager.get_ui_instance("UI_Result")
+	ui_result_instance.z_index = 2999
+	ui_result_instance.set_result(player_a.get_score(), player_b.get_score())
 
 ## 处理玩家特殊卡逻辑
 ## 在发牌动画完成后、进入回合前检查并应用特殊卡效果
@@ -413,23 +493,13 @@ func process_special_cards():
 		# player_a.apply_special_cards()
 		# player_b.apply_special_cards()
 
-## 停止动画序列
-## 立即终止所有待执行的卡牌动画
-func stop_animation_sequence():
-	animation_timer.stop()
-	current_card_index = cards_to_animate.size()  # 这将阻止进一步的动画
-
-## 单张卡牌动画结束的回调函数
+## 卡牌动画结束的统一回调函数
 ## 参数：
 ## - card: 完成动画的卡牌
-func send_card_anim_end(card):
-	card.update_card()
-
-## 玩家选择卡牌动画结束的回调函数
-## 参数：
-## - card: 完成动画的卡牌
-func player_choose_card_anim_end(card):
-	print("玩家选择卡牌动画结束: ", card.ID, card.Name)
+## - is_player_choice: 是否为玩家选择的卡牌（可选参数，默认为false）
+func card_animation_end(card, is_player_choice = false):
+	if is_player_choice:
+		print("玩家选择卡牌动画结束: ", card.ID, card.Name)
 	card.update_card()
 
 ## 处理公共卡牌补充事件
@@ -515,7 +585,7 @@ func player_choose_public_card(player_choosing_card:Card, public_choosing_card:C
 			card_manager.get_random_deal_card_rotation(), 
 			anim_dutation, 
 			animation_manager.EaseType.EASE_IN_OUT, 
-			Callable(self, "player_choose_card_anim_end"), [player_choosing_card])
+			Callable(self, "card_animation_end"), [player_choosing_card, true])
 
 		public_choosing_card.set_card_pivot_offset_to_center()
 
@@ -525,7 +595,7 @@ func player_choose_public_card(player_choosing_card:Card, public_choosing_card:C
 			card_manager.get_random_deal_card_rotation(), 
 			anim_dutation, 
 			animation_manager.EaseType.EASE_IN_OUT, 
-			Callable(self, "player_choose_card_anim_end"), [public_choosing_card])
+			Callable(self, "card_animation_end"), [public_choosing_card, true])
 
 		# 更新玩家分数
 		ScoreManager.get_instance().add_card_score(player, player_choosing_card)
@@ -615,17 +685,8 @@ func _on_special_card_upgrade_complete(special_card, public_card, original_zinde
 ## 显示新完成的故事
 ## 切换回合并允许输入
 func show_new_finished_stories():
-	change_round()
+	prepare_next_round()
 	input_manager.allow_input()
-
-## 打印场景树结构的辅助函数
-## 参数：
-## - node: 要打印的节点
-## - indent: 缩进字符串
-func print_scene_tree(node, indent=""):
-	print(indent + node.name)
-	for child in node.get_children():
-		print_scene_tree(child, indent + "  ")
 
 ## 获取公共卡牌管理对象
 ## 返回：PublicCardDeal实例

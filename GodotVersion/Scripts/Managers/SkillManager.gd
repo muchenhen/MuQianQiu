@@ -28,6 +28,16 @@ func register_skill_handlers():
     skill_handlers[CardSkill.SKILL_TYPE.EXCHANGE_DISABLE_SKILL] = Callable(self, "handle_exchange_disable_skill")
     # ADD_SCORE已经由ScoreManager处理，这里不需要重复注册
 
+func check_guarantee_card_skills():
+    # 检查待生效的技能中是否有"保证出现"技能，有的话执行并按照技能补充PublicCardDeal
+    # TODO：等待完成保证出现
+    pass
+
+func check_increased_probability_skills():
+    # 检查待生效的技能中是否有"增加出现概率"技能，有的话执行并按照技能补充PublicCardDeal
+    # TODO：等待完成增加出现概率
+    pass
+
 # 处理发牌前的技能效果
 func process_card_distribution_skills(cards: Array, player_a: Player, player_b: Player) -> Array:
     # 处理"保证出现"和"增加出现概率"技能
