@@ -331,7 +331,6 @@ func prepare_first_round():
 	print("准备第一回合")
 	current_round_index = 1
 	current_round = GameRound.PLAYER_A
-	start_player_round(player_a, player_b)
 	# 进入回合开始阶段
 	current_phase = RoundPhase.ROUND_START
 	process_round_phase()
@@ -440,10 +439,8 @@ func prepare_next_round():
 	# 设置下一回合的玩家
 	if current_round_index % 2 == 1:
 		current_round = GameRound.PLAYER_A
-		start_player_round(player_a, player_b)
 	else:
 		current_round = GameRound.PLAYER_B
-		start_player_round(player_b, player_a)
 		
 	# 进入下一回合的开始阶段
 	current_phase = RoundPhase.ROUND_START
@@ -463,10 +460,8 @@ func change_round():
 	# 设置当前回合的玩家
 	if current_round_index % 2 == 1:
 		current_round = GameRound.PLAYER_A
-		start_player_round(player_a, player_b)
 	else:
 		current_round = GameRound.PLAYER_B
-		start_player_round(player_b, player_a)
 
 	# 进入回合开始阶段
 	current_phase = RoundPhase.ROUND_START
