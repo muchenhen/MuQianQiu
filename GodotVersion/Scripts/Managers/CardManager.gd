@@ -41,6 +41,10 @@ var cardIDs = []
 var skill_cardIDs: Array[int] = []
 var skill_card_map = {}
 
+# 添加发牌相关的变量
+var current_card_index = 0
+var game_instance_ref = null
+
 func _init():
 	if instance == null:
 		print("CardManager already exists. Use CardManager.get_instance() instead.")
@@ -92,6 +96,97 @@ func collect_skill_cardIDs_for_this_game() -> void:
 
 func shuffle_cardIDs() -> void:
 	cardIDs.shuffle()
+
+## 执行发牌流程，包含发牌和动画
+## 参数：
+## - cards: 要发放的卡牌数组
+## - game_instance: GameInstance引用，用于回调
+func send_cards_for_play(cards: Array, game_instance):
+	game_instance_ref = game_instance
+	
+	# 阶段1: 准备要动画的卡牌数据
+	var cards_to_deal = []  # 存储所有需要发牌的数据
+	
+	# 处理玩家手牌
+	for i in range(player_a.hand_cards_pos_array.size() + player_b.hand_cards_pos_array.size()):
+		# A和B玩家轮流发牌
+		var card = cards.pop_back()
+		if i % 2 == 0:
+			cards_to_deal.append({"card": card, "position": player_a.hand_cards_pos_array.pop_front()})
+			var index:int = player_a.get_player_first_enpty_hand_card_index()
+			player_a.assign_player_hand_card_to_slot(card, index)
+		else:
+			cards_to_deal.append({"card": card, "position": player_b.hand_cards_pos_array.pop_front()})
+			var index:int = player_b.get_player_first_enpty_hand_card_index()
+			player_b.assign_player_hand_card_to_slot(card, index)
+	
+	# 处理公共卡牌
+	for i in range(PUBLIC_CARDS_POS.size()):
+		var position = PUBLIC_CARDS_POS[i]
+		var rotation = PUBLIC_CRADS_ROTATION[i]
+		var card = cards.pop_back()
+		card.z_index = 8 - i
+		card.set_input_priority(card.z_index)
+		# 公共卡池的手牌禁止点击
+		card.connect("card_clicked", Callable(game_instance, "on_card_clicked"))
+		game_instance.public_deal.set_one_hand_card(card, position, rotation)
+		cards_to_deal.append({"card": card, "position": position, "rotation": rotation})
+	
+	game_instance.public_deal.disable_all_hand_card_click()
+	
+	# 开始发牌动画
+	_start_card_dealing_sequence(cards_to_deal)
+
+## 开始发牌动画序列
+func _start_card_dealing_sequence(cards_to_deal: Array):
+	current_card_index = 0
+	_deal_next_card(cards_to_deal)
+
+## 处理下一张卡的发牌动画
+func _deal_next_card(cards_to_deal: Array):
+	if current_card_index < cards_to_deal.size():
+		var card_data = cards_to_deal[current_card_index]
+		var card = card_data["card"]
+		var position = card_data["position"]
+		
+		# 启动移动动画
+		AnimationManager.get_instance().start_linear_movement_pos(card, position, 0.6, 
+			AnimationManager.EaseType.EASE_IN_OUT, 
+			Callable(game_instance_ref, "card_animation_end"), [card, false])
+		
+		# 如果需要旋转，添加旋转动画
+		if "rotation" in card_data:
+			var rotation = card_data["rotation"]
+			AnimationManager.get_instance().start_linear_movement_rotation(card, rotation, 0.6, 
+				AnimationManager.EaseType.EASE_IN_OUT)
+		
+		current_card_index += 1
+		
+		# 使用GameManager创建定时器处理下一张卡
+		GameManager.create_timer(0.1, Callable(self, "_deal_next_card").bind(cards_to_deal))
+	else:
+		# 所有卡牌发放完毕
+		_on_all_cards_dealt()
+
+## 所有卡牌发放完毕的回调
+func _on_all_cards_dealt():
+	for key in game_instance_ref.public_deal.hand_cards.keys():
+		var public_card = game_instance_ref.public_deal.hand_cards[key]
+		if public_card.isEmpty:
+			continue
+		print("公共区域手牌 ", key, " ID: ", public_card.card.ID)
+	print("发牌完毕")
+	
+	# 触发游戏开始信号
+	game_instance_ref.emit_signal("game_start")
+	
+	# 检查玩家特殊卡
+	game_instance_ref.process_special_cards()
+	
+	game_instance_ref.prepare_first_round()
+	
+	InputManager.get_instance().allow_input()
+
 
 # 创建技能牌的映射
 func create_skill_card_map():

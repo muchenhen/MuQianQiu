@@ -241,91 +241,8 @@ func start_new_game():
 
 	# 进入发牌流程 持续一段时间 结束后才能让玩家操作
 	input_manager.block_input()
-	send_card_for_play(card_manager.all_storage_cards)
-
-
-## 执行发牌流程，包含发牌和动画
-## 参数：
-## - cards: 要发放的卡牌数组
-func send_card_for_play(cards):
-	# 阶段1: 准备要动画的卡牌数据
-	var cards_to_deal = []  # 存储所有需要发牌的数据
-	
-	# 处理玩家手牌
-	for i in range(player_a.hand_cards_pos_array.size() + player_b.hand_cards_pos_array.size()):
-		# A和B玩家轮流发牌
-		var card = cards.pop_back()
-		if i % 2 == 0:
-			cards_to_deal.append({"card": card, "position": player_a.hand_cards_pos_array.pop_front()})
-			var index:int = player_a.get_player_first_enpty_hand_card_index()
-			player_a.assign_player_hand_card_to_slot(card, index)
-		else:
-			cards_to_deal.append({"card": card, "position": player_b.hand_cards_pos_array.pop_front()})
-			var index:int = player_b.get_player_first_enpty_hand_card_index()
-			player_b.assign_player_hand_card_to_slot(card, index)
-	
-	# 处理公共卡牌
-	for i in range(card_manager.PUBLIC_CARDS_POS.size()):
-		var position = card_manager.PUBLIC_CARDS_POS[i]
-		var rotation = card_manager.PUBLIC_CRADS_ROTATION[i]
-		var card = cards.pop_back()
-		card.z_index = 8 - i
-		card.set_input_priority(card.z_index)
-		# 公共卡池的手牌禁止点击
-		card.connect("card_clicked", Callable(self, "on_card_clicked"))
-		public_deal.set_one_hand_card(card, position, rotation)
-		cards_to_deal.append({"card": card, "position": position, "rotation":rotation })
-	
-	public_deal.disable_all_hand_card_click()
-	
-	# 阶段2: 创建用于处理发牌动画的函数
-	var process_card_animation
-	process_card_animation = func(index):
-		if index < cards_to_deal.size():
-			var card_data = cards_to_deal[index]
-			var card = card_data["card"]
-			var position = card_data["position"]
-			
-			# 启动移动动画
-			animation_manager.start_linear_movement_pos(card, position, 0.6, animation_manager.EaseType.EASE_IN_OUT, 
-				Callable(self, "card_animation_end"), [card, false])
-			
-			# 如果需要旋转，添加旋转动画
-			if "rotation" in card_data:
-				var rotation = card_data["rotation"]
-				animation_manager.start_linear_movement_rotation(card, rotation, 0.6, animation_manager.EaseType.EASE_IN_OUT)
-			
-			# 设置定时器处理下一张卡
-			var timer = Timer.new()
-			timer.one_shot = true
-			timer.wait_time = 0.1
-			timer.connect("timeout", Callable(process_card_animation).bind(index + 1))
-			add_child(timer)
-			timer.start()
-			
-			# 设置自动清理定时器
-			timer.connect("timeout", Callable(func(): timer.queue_free()))
-		else:
-			# 所有卡牌发放完毕
-			for key in public_deal.hand_cards.keys():
-				var public_card = public_deal.hand_cards[key]
-				if public_card.isEmpty:
-					continue
-				print("公共区域手牌 ", key, " ID: ", public_card.card.ID)
-			print("发牌完毕")
-			
-			# 触发游戏开始信号
-			emit_signal("game_start")
-			
-			# 检查玩家特殊卡
-			process_special_cards()
-			
-			prepare_first_round()
-			
-			input_manager.allow_input()
-	
-	# 开始发牌动画
-	process_card_animation.call(0)
+	# 发牌
+	card_manager.send_cards_for_play(card_manager.all_storage_cards, self)
 
 func prepare_first_round():
 	print("准备第一回合")
@@ -377,10 +294,10 @@ func start_round():
 func supply_public_cards_with_effects():
 	# 检查需要生效的技能
 	# 检查是否有保证出现
-	var has_guarantee_card = SkillManager.instance.check_guarantee_card_skills()
+	var has_guarantee_card = SkillManager.get_instance().check_guarantee_card_skills()
 	if not has_guarantee_card:
 		# 检查是否有增加出现概率
-		var has_increased_prob = SkillManager.instance.check_increased_probability_skills()
+		var has_increased_prob = SkillManager.get_instance().check_increased_probability_skills()
 		if not has_increased_prob:
 			# 正常补充牌
 			public_deal.supply_hand_card()
