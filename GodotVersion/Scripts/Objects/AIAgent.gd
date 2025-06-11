@@ -160,10 +160,10 @@ func enter_simple_choose_public_card_state() -> bool:
 
 
 func select_medium_ai() -> void:
-	#TODD
+	#TODO 中等难度AI
 	pass
 
 
 func select_hard_ai() -> void:
-	#TODD
+	#TODO 困难AI
 	pass

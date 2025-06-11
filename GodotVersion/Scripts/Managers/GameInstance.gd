@@ -252,6 +252,14 @@ func prepare_first_round():
 	current_phase = RoundPhase.ROUND_START
 	process_round_phase()
 
+func get_current_active_player():
+	# 获取当前回合的玩家
+	if current_round == GameRound.PLAYER_A:
+		return player_a
+	elif current_round == GameRound.PLAYER_B:
+		return player_b
+	else:
+		return null
 
 ## 处理玩家回合
 func process_round_phase():
@@ -287,6 +295,15 @@ func process_round_phase():
 # ROUND_START 回合开始阶段
 func start_round():
 	print("回合", str(current_round_index), "开始")
+
+	# 根据回合数判断当前是哪个玩家的回合
+	if current_round_index % 2 == 1:
+		current_round = GameRound.PLAYER_A
+		print("当前是玩家A的回合")
+	else:
+		current_round = GameRound.PLAYER_B
+		print("当前是玩家B的回合")
+		
 	current_phase = RoundPhase.SUPPLY_PUBLIC_CARDS
 	process_round_phase()
 
@@ -300,7 +317,8 @@ func supply_public_cards_with_effects():
 		var has_increased_prob = SkillManager.get_instance().check_increased_probability_skills()
 		if not has_increased_prob:
 			# 正常补充牌
-			public_deal.supply_hand_card()
+			if public_deal.need_supply_hand_card():
+				public_deal.supply_hand_card()
 			
 	# 补充完毕之后进入下一阶段
 	current_phase = RoundPhase.CHECK_PLAYER_ACTION
@@ -308,17 +326,102 @@ func supply_public_cards_with_effects():
 
 # CHECK_PLAYER_ACTION 检查玩家行动能力阶段
 func check_current_player_can_act():
+	var current_player = get_current_active_player()
+	if current_player == null:
+		print("当前没有玩家可以行动")
+		return
+	
+	# 检查玩家是否有手牌
+	if not current_player.has_hand_card():
+		print("玩家 ", current_player.player_name, " 没有手牌，无法行动")
+		# 没有手牌直接结束游戏
+		end_game()
+		return
 
-	# TODO: 检查玩家是否可以行动
+	# 检查玩家手牌是否与公共区域季节匹配
+	if not current_player.check_hand_card_season():
+		print("玩家 ", current_player.player_name, " 需要换牌")
+		# 进入换牌流程
+		_handle_card_exchange(current_player)
+		return
+
+	# 玩家可以正常行动，进入行动阶段
 	current_phase = RoundPhase.PLAYER_ACTION
 	process_round_phase()
+
+# 处理换牌逻辑的私有函数
+func _handle_card_exchange(current_player: Player):
+	# 检查牌库中是否还有匹配季节的卡牌
+	var public_seasons = public_deal.get_choosable_seasons()
+	var storage_seasons = card_manager.get_storage_seasons()
+	var has_matching_season = false
+	
+	for season in storage_seasons:
+		if public_seasons.find(season) != -1:
+			has_matching_season = true
+			break
+	
+	if not has_matching_season:
+		print("牌库中没有匹配季节的卡牌，游戏结束")
+		end_game()
+		return
+	
+	# AI玩家自动选择换牌
+	if current_player.is_ai_player():
+		print("AI玩家自动换牌")
+		var hand_cards = current_player.get_all_hand_cards()
+		if hand_cards.size() > 0:
+			var random_card = hand_cards[randi() % hand_cards.size()]
+			current_player.current_choosing_card_id = random_card.ID
+			
+			# 执行换牌逻辑
+			card_manager.on_player_choose_change_card(current_player)
+			
+			# 等待换牌动画完成后重新检查
+			await get_tree().create_timer(1.5).timeout
+			
+			# 换牌完成后重新检查手牌季节
+			if current_player.check_hand_card_season():
+				# 换牌成功，继续游戏
+				current_player.set_player_state(Player.PlayerState.SELF_ROUND_UNCHOOSING)
+				current_phase = RoundPhase.PLAYER_ACTION
+				process_round_phase()
+			else:
+				# 仍然没有匹配卡牌，递归重新换牌
+				_handle_card_exchange(current_player)
+	else:
+		# 人类玩家，等待手动选择换牌
+		print("等待玩家手动选择换牌")
+		current_player.set_player_state(Player.PlayerState.SELF_ROUND_CHANGE_CARD)
+		
+		# 连接换牌完成信号（使用一次性连接）
+		if not current_player.is_connected("card_exchange_completed", _on_card_exchange_complete):
+			current_player.connect("card_exchange_completed", _on_card_exchange_complete, CONNECT_ONE_SHOT)
+
+# 处理换牌完成信号的回调函数
+func _on_card_exchange_complete():
+	var current_player = get_current_active_player()
+	if current_player == null:
+		return
+		
+	# 重新检查手牌季节
+	if current_player.check_hand_card_season():
+		# 换牌成功，继续游戏
+		current_player.set_player_state(Player.PlayerState.SELF_ROUND_UNCHOOSING)
+		current_phase = RoundPhase.PLAYER_ACTION
+		process_round_phase()
+	else:
+		# 仍然需要换牌，继续处理
+		print("换牌后仍需继续换牌")
+		_handle_card_exchange(current_player)
 
 # PLAYER_ACTION 等待玩家行动阶段
 func enable_current_player_action():
 	
 	# TODO: 等待玩家行动
-	current_phase = RoundPhase.SPECIAL_CARD_EFFECT
-	process_round_phase()
+	# current_phase = RoundPhase.SPECIAL_CARD_EFFECT
+	# process_round_phase()
+	pass
 
 # SPECIAL_CARD_EFFECT 处理特殊卡效果阶段
 func process_special_card_effects():
@@ -339,10 +442,6 @@ func check_stories_completion():
 # ROUND_END 准备下一回合阶段
 func prepare_next_round():
 	print("回合", str(current_round_index), "结束")
-	
-	# 清理当前回合的临时状态
-	var active_player = player_a if current_round == GameRound.PLAYER_A else player_b
-	active_player.clear_round_state()
 	
 	# 增加回合索引
 	current_round_index += 1

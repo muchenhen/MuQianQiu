@@ -705,8 +705,9 @@ func get_card_special_card_map() -> Dictionary:
 		
 	return card_special_card_map
 		
+# 检查当前卡牌是否可以升级
 func check_card_can_upgrade(card:Card) -> Card:
-	# 检查当前卡牌是否可以升级
+	
 	if card.Special:
 		print(card.Name, " 已经是特殊卡，无法升级")
 		return null

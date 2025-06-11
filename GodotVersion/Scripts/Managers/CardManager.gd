@@ -178,7 +178,7 @@ func _on_all_cards_dealt():
 	print("发牌完毕")
 	
 	# 触发游戏开始信号
-	game_instance_ref.emit_signal("game_start")
+	game_instance_ref.game_start.emit()
 	
 	# 检查玩家特殊卡
 	game_instance_ref.process_special_cards()

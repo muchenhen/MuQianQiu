@@ -121,6 +121,27 @@ func get_hand_card_by_id(card_id) -> Node:
 				return card_info.card
 	return null
 
+func need_supply_hand_card() -> bool:
+	# 检查是否有空位需要补充
+	for i in hand_cards.keys():
+		var card_info: PublicHandCardInfo = hand_cards[i]
+		if card_info.isEmpty:
+			return true
+	return false
+
+# 或者更详细的版本，返回需要补充的数量
+func get_empty_hand_card_count() -> int:
+	var empty_count = 0
+	for i in hand_cards.keys():
+		var card_info: PublicHandCardInfo = hand_cards[i]
+		if card_info.isEmpty:
+			empty_count += 1
+	return empty_count
+
+# 检查公共牌区域是否已满
+func is_hand_cards_full() -> bool:
+	return hand_cards.size() >= PUBLIC_HAND_MAX and not need_supply_hand_card()
+
 func supply_hand_card():
 	for i in hand_cards.keys():
 		var card_info: PublicHandCardInfo = hand_cards[i]
