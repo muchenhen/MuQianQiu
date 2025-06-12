@@ -368,6 +368,28 @@ func on_player_choose_change_card(player:Player) -> void:
 
 		new_card_to_player.enable_click()
 
+## 特殊卡升级动画完成的回调函数
+func on_special_card_upgrade_complete(special_card, public_card, original_zindex, continue_callback):
+	print("特殊卡升级动画完成")
+	# 确保特殊卡与公共卡完全对齐
+	special_card.position = public_card.position
+	special_card.rotation = public_card.rotation
+	
+	# 将公共卡升级为特殊卡
+	public_card.upgrade_to_special(special_card.ID)
+	
+	# 隐藏特殊卡，因为公共卡已经升级成特殊卡了
+	special_card.visible = false
+	
+	# 恢复特殊卡的原始z_index
+	special_card.z_index = original_zindex
+	
+	# 启用公共卡的点击（现在是升级后的特殊卡）
+	public_card.enable_click()
+	
+	# 继续执行选择卡牌的后续流程
+	continue_callback.call()
+
 
 func destroy_all_scene_cards() -> void:
 	for card in all_scene_cards:

@@ -2,6 +2,8 @@ extends Node
 
 class_name GameInstance
 
+const CardExchangeManager = preload("res://Scripts/Managers/CardExchangeManager.gd")
+
 # 回合状态枚举
 enum RoundPhase {
 	ROUND_START,           # 回合开始
@@ -36,6 +38,7 @@ var story_manager
 var input_manager
 var animation_manager
 var audio_manager
+var card_exchange_manager
 
 # 场景树引用
 var scene_tree
@@ -87,6 +90,7 @@ func _init():
 	input_manager = InputManager.get_instance()
 	animation_manager = AnimationManager.get_instance()
 	audio_manager = AudioManager.get_instance()
+	card_exchange_manager = CardExchangeManager.get_instance()
 
 ## 初始化GameInstance
 ## 设置UI树根节点，添加必要的子节点，绑定信号
@@ -130,6 +134,12 @@ func initialize(root_node):
 	initialize_round_state()
 
 	ui_manager.open_ui("UI_Start")
+
+	# 初始化卡牌交换管理器
+	card_exchange_manager.initialize(self)
+	
+	# 连接卡牌交换完成信号
+	card_exchange_manager.exchange_completed.connect(Callable(self, "_on_exchange_completed"))
 
 ## 获取当前选中的版本数量
 ## 返回：选中版本的总数
@@ -342,78 +352,23 @@ func check_current_player_can_act():
 	if not current_player.check_hand_card_season():
 		print("玩家 ", current_player.player_name, " 需要换牌")
 		# 进入换牌流程
-		_handle_card_exchange(current_player)
+		card_exchange_manager.handle_card_exchange(current_player)
 		return
 
 	# 玩家可以正常行动，进入行动阶段
 	current_phase = RoundPhase.PLAYER_ACTION
 	process_round_phase()
 
-# 处理换牌逻辑的私有函数
-func _handle_card_exchange(current_player: Player):
-	# 检查牌库中是否还有匹配季节的卡牌
-	var public_seasons = public_deal.get_choosable_seasons()
-	var storage_seasons = card_manager.get_storage_seasons()
-	var has_matching_season = false
-	
-	for season in storage_seasons:
-		if public_seasons.find(season) != -1:
-			has_matching_season = true
-			break
-	
-	if not has_matching_season:
-		print("牌库中没有匹配季节的卡牌，游戏结束")
+# 处理卡牌交换完成信号
+func _on_exchange_completed(success: bool):
+	if not success:
+		# 换牌失败，游戏结束
 		end_game()
 		return
 	
-	# AI玩家自动选择换牌
-	if current_player.is_ai_player():
-		print("AI玩家自动换牌")
-		var hand_cards = current_player.get_all_hand_cards()
-		if hand_cards.size() > 0:
-			var random_card = hand_cards[randi() % hand_cards.size()]
-			current_player.current_choosing_card_id = random_card.ID
-			
-			# 执行换牌逻辑
-			card_manager.on_player_choose_change_card(current_player)
-			
-			# 等待换牌动画完成后重新检查
-			await get_tree().create_timer(1.5).timeout
-			
-			# 换牌完成后重新检查手牌季节
-			if current_player.check_hand_card_season():
-				# 换牌成功，继续游戏
-				current_player.set_player_state(Player.PlayerState.SELF_ROUND_UNCHOOSING)
-				current_phase = RoundPhase.PLAYER_ACTION
-				process_round_phase()
-			else:
-				# 仍然没有匹配卡牌，递归重新换牌
-				_handle_card_exchange(current_player)
-	else:
-		# 人类玩家，等待手动选择换牌
-		print("等待玩家手动选择换牌")
-		current_player.set_player_state(Player.PlayerState.SELF_ROUND_CHANGE_CARD)
-		
-		# 连接换牌完成信号（使用一次性连接）
-		if not current_player.is_connected("card_exchange_completed", _on_card_exchange_complete):
-			current_player.connect("card_exchange_completed", _on_card_exchange_complete, CONNECT_ONE_SHOT)
-
-# 处理换牌完成信号的回调函数
-func _on_card_exchange_complete():
-	var current_player = get_current_active_player()
-	if current_player == null:
-		return
-		
-	# 重新检查手牌季节
-	if current_player.check_hand_card_season():
-		# 换牌成功，继续游戏
-		current_player.set_player_state(Player.PlayerState.SELF_ROUND_UNCHOOSING)
-		current_phase = RoundPhase.PLAYER_ACTION
-		process_round_phase()
-	else:
-		# 仍然需要换牌，继续处理
-		print("换牌后仍需继续换牌")
-		_handle_card_exchange(current_player)
+	# 换牌成功，进入玩家行动阶段
+	current_phase = RoundPhase.PLAYER_ACTION
+	process_round_phase()
 
 # PLAYER_ACTION 等待玩家行动阶段
 func enable_current_player_action():
@@ -648,7 +603,7 @@ func player_choose_public_card(player_choosing_card:Card, public_choosing_card:C
 			public_choosing_card.rotation, 
 			0.8, 
 			animation_manager.EaseType.EASE_IN_OUT, 
-			Callable(self, "_on_special_card_upgrade_complete"), 
+			Callable(self, "on_special_card_upgrade_complete"), 
 			[special_card, public_choosing_card, original_zindex, continue_after_animation]
 		)
 		
@@ -663,36 +618,6 @@ func player_choose_public_card(player_choosing_card:Card, public_choosing_card:C
 		print("玩家选择的公共卡不能升级为特殊卡")
 		continue_after_animation.call()
 	
-
-## 特殊卡升级动画完成的回调函数
-## 参数：
-## - special_card: 特殊卡对象
-## - public_card: 公共卡对象
-## - original_zindex: 特殊卡原始z_index值
-## - player: 玩家对象
-## - target_scale: 目标缩放比例
-func _on_special_card_upgrade_complete(special_card, public_card, original_zindex, continue_after_animation):
-	print("特殊卡升级动画完成")
-	# 确保特殊卡与公共卡完全对齐
-	special_card.position = public_card.position
-	special_card.rotation = public_card.rotation
-	
-	# 将公共卡升级为特殊卡
-	public_card.upgrade_to_special(special_card.ID)
-	
-	# 隐藏特殊卡，因为公共卡已经升级成特殊卡了
-	special_card.visible = false
-	
-	# 恢复特殊卡的原始z_index
-	special_card.z_index = original_zindex
-	
-	# 启用公共卡的点击（现在是升级后的特殊卡）
-	public_card.enable_click()
-	
-	# 继续执行选择卡牌的后续流程
-	continue_after_animation.call()
-	
-
 ## 显示新完成的故事
 ## 切换回合并允许输入
 func show_new_finished_stories():
@@ -726,6 +651,13 @@ func clear():
 		
 		if public_deal.is_connected("common_suply_public_card", Callable(self, "on_suply_public_card")):
 			public_deal.disconnect("common_suply_public_card", Callable(self, "on_suply_public_card"))
+
+	# 断开卡牌交换管理器信号
+	if card_exchange_manager and card_exchange_manager.is_connected("exchange_completed", Callable(self, "_on_exchange_completed")):
+		card_exchange_manager.disconnect("exchange_completed", Callable(self, "_on_exchange_completed"))
+	
+	if card_exchange_manager:
+		card_exchange_manager.clear()
 	
 	# 清理计时器
 	if animation_timer != null and animation_timer.is_inside_tree():
