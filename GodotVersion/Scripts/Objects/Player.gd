@@ -757,3 +757,124 @@ func check_story_in_finished_stories(story_id: int) -> bool:
 		if story.id == story_id:
 			return true
 	return false
+
+## 处理玩家选择公共卡牌的事件
+func handle_card_selection(player_choosing_card: Card, public_choosing_card: Card, game_instance: GameInstance):
+	var input_manager = InputManager.get_instance()
+	
+	input_manager.block_input()
+	
+	var target_pos = _get_deal_position()
+	
+	print("玩家 ", player_name, " 选择了手牌 ", player_choosing_card.ID, player_choosing_card.Name, " 和公共区域的牌 ", public_choosing_card.ID, public_choosing_card.Name)
+	
+	var anim_duration = 1
+	
+	# 准备卡牌动画
+	_prepare_card_for_animation(player_choosing_card)
+	
+	var continue_callback = func():
+		await _execute_card_animations(player_choosing_card, public_choosing_card, target_pos, anim_duration, game_instance)
+		_update_player_data(player_choosing_card, public_choosing_card)
+		await _wait_for_animation_complete(anim_duration)
+		check_finish_story()
+	
+	# 检查升级逻辑
+	var special_card = check_card_can_upgrade(public_choosing_card)
+	if special_card:
+		await _play_upgrade_animation(special_card, public_choosing_card, continue_callback)
+	else:
+		continue_callback.call()
+
+## 获取当前玩家的发牌位置
+func _get_deal_position() -> Vector2:
+	if player_name == "PlayerA":
+		return card_manager.PLAYER_A_DEAL_CARD_POS
+	else:
+		return card_manager.PLAYER_B_DEAL_CARD_POS
+
+## 准备卡牌用于动画
+func _prepare_card_for_animation(card: Card):
+	card.disable_click()
+	card.set_card_unchooesd()
+	card.set_card_pivot_offset_to_center()
+
+## 执行卡牌动画
+func _execute_card_animations(player_choosing_card: Card, public_choosing_card: Card, target_pos: Vector2, anim_duration: float, game_instance: GameInstance):
+	var animation_manager = AnimationManager.get_instance()
+	
+	animation_manager.start_linear_movement_combined(
+		player_choosing_card, 
+		target_pos, 
+		card_manager.get_random_deal_card_rotation(), 
+		anim_duration, 
+		animation_manager.EaseType.EASE_IN_OUT, 
+		Callable(game_instance, "card_animation_end"), [player_choosing_card, true])
+
+	public_choosing_card.set_card_pivot_offset_to_center()
+
+	animation_manager.start_linear_movement_combined(
+		public_choosing_card, 
+		target_pos, 
+		card_manager.get_random_deal_card_rotation(), 
+		anim_duration, 
+		animation_manager.EaseType.EASE_IN_OUT, 
+		Callable(game_instance, "card_animation_end"), [public_choosing_card, true])
+
+## 更新玩家数据
+func _update_player_data(player_choosing_card: Card, public_choosing_card: Card):
+	# 更新玩家分数
+	ScoreManager.get_instance().add_card_score(self, player_choosing_card)
+	ScoreManager.get_instance().add_card_score(self, public_choosing_card)
+	
+	send_card_to_deal(player_choosing_card)
+	send_card_to_deal(public_choosing_card)
+	
+	remove_hand_card(player_choosing_card)
+
+## 等待动画完成
+func _wait_for_animation_complete(anim_duration: float):
+	var temp_timer = GameManager.create_timer(anim_duration + 0.1, func(): pass)
+	await temp_timer.timeout
+
+## 播放卡牌升级动画
+func _play_upgrade_animation(special_card: Card, public_choosing_card: Card, continue_callback: Callable):
+	print("玩家选择的公共卡可以升级为特殊卡: ", special_card.Name)
+	
+	var animation_manager = AnimationManager.get_instance()
+	
+	# 保存特殊卡的原始z_index，用于动画结束后恢复
+	var original_zindex = special_card.z_index
+	
+	# 临时提高z_index确保特殊卡显示在最上层
+	special_card.z_index = 1000
+	
+	# 禁用输入，确保动画期间无法点击
+	special_card.disable_click()
+	public_choosing_card.disable_click()
+	
+	# 设置卡片中心点用于旋转动画
+	special_card.set_card_pivot_offset_to_center()
+	public_choosing_card.set_card_pivot_offset_to_center()
+			
+	# 启动移动动画，将特殊卡移动到公共卡位置
+	animation_manager.start_linear_movement_combined(
+		special_card, 
+		public_choosing_card.position, 
+		public_choosing_card.rotation, 
+		0.8, 
+		animation_manager.EaseType.EASE_IN_OUT, 
+		Callable(self, "_on_special_card_upgrade_complete"), 
+		[special_card, public_choosing_card, original_zindex, continue_callback]
+	)
+	
+	# 使用await暂停函数执行，直到所有动画完成
+	await GameManager.create_timer(1.0, func(): pass).timeout
+
+## 特殊卡升级动画完成回调（从GameInstance移植）
+func on_special_card_upgrade_complete(special_card: Card, original_zindex: int, continue_callback: Callable):
+	# 恢复特殊卡的原始z_index
+	special_card.z_index = original_zindex
+	
+	# 继续执行后续动画
+	continue_callback.call()

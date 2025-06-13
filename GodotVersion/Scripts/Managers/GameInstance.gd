@@ -2,7 +2,7 @@ extends Node
 
 class_name GameInstance
 
-const CardExchangeManager = preload("res://Scripts/Managers/CardExchangeManager.gd")
+# const CardExchangeManager = preload("res://Scripts/Managers/CardExchangeManager.gd")
 
 # 回合状态枚举
 enum RoundPhase {
@@ -127,8 +127,8 @@ func initialize(root_node):
 
 	initialize_players()
 
-	# 绑定信号
-	public_deal.connect("player_choose_public_card", Callable(self, "player_choose_public_card"))
+	# 绑定信号 - 修改为路由到当前玩家
+	public_deal.connect("player_choose_public_card", Callable(self, "_route_card_selection"))
 	public_deal.connect("common_suply_public_card", Callable(self, "on_suply_public_card"))
 
 	initialize_round_state()
@@ -373,7 +373,18 @@ func _on_exchange_completed(success: bool):
 # PLAYER_ACTION 等待玩家行动阶段
 func enable_current_player_action():
 	
+	var current_player = get_current_active_player()
+	if current_player == null:
+		print("当前没有玩家可以行动")
+		return
+	# 设置当前玩家状态为可以行动
+	current_player.set_player_state(Player.PlayerState.SELF_ROUND_CHOOSING)
+	# 设置另一个玩家为等待状态
+	var other_player = player_a if current_player == player_b else player_b
+	other_player.set_player_state(Player.PlayerState.WAITING)
+
 	# TODO: 等待玩家行动
+	
 	# current_phase = RoundPhase.SPECIAL_CARD_EFFECT
 	# process_round_phase()
 	pass
@@ -520,109 +531,11 @@ func change_to_b_round():
 	if player_b.has_hand_card():
 		player_b.check_hand_card_season()
 
-## 处理玩家选择公共卡牌的事件
-## 参数：
-## - player_choosing_card: 玩家选择的手牌
-## - public_choosing_card: 选择的公共卡牌
-## 执行卡牌移动动画，更新玩家分数
-func player_choose_public_card(player_choosing_card:Card, public_choosing_card:Card):
-	input_manager.block_input()
-	var player
-	var target_pos
-	if current_round == GameRound.PLAYER_A:
-		player = player_a
-		target_pos = card_manager.PLAYER_A_DEAL_CARD_POS
-	else:
-		player = player_b
-		target_pos = card_manager.PLAYER_B_DEAL_CARD_POS
-
-	print("玩家 ", player.player_name, " 选择了手牌 ", player_choosing_card.ID, player_choosing_card.Name, " 和公共区域的牌 ", public_choosing_card.ID, public_choosing_card.Name)
-
-	var anim_dutation = 1
-
-	player_choosing_card.disable_click()
-	player_choosing_card.set_card_unchooesd()
-	player_choosing_card.set_card_pivot_offset_to_center()
-
-	var continue_after_animation = func():
-		animation_manager.start_linear_movement_combined(
-			player_choosing_card, 
-			target_pos, 
-			card_manager.get_random_deal_card_rotation(), 
-			anim_dutation, 
-			animation_manager.EaseType.EASE_IN_OUT, 
-			Callable(self, "card_animation_end"), [player_choosing_card, true])
-
-		public_choosing_card.set_card_pivot_offset_to_center()
-
-		animation_manager.start_linear_movement_combined(
-			public_choosing_card, 
-			target_pos, 
-			card_manager.get_random_deal_card_rotation(), 
-			anim_dutation, 
-			animation_manager.EaseType.EASE_IN_OUT, 
-			Callable(self, "card_animation_end"), [public_choosing_card, true])
-
-		# 更新玩家分数
-		ScoreManager.get_instance().add_card_score(player, player_choosing_card)
-		ScoreManager.get_instance().add_card_score(player, public_choosing_card)
-		
-		player.send_card_to_deal(player_choosing_card)
-		player.send_card_to_deal(public_choosing_card)
-
-		player.remove_hand_card(player_choosing_card)
-
-		# 延时anim_dutation + 0.1秒后继续
-		var temp_timer = GameManager.create_timer(anim_dutation + 0.1, func(): pass)
-		await temp_timer.timeout
-
-		player.check_finish_story()
-
-	var play_player_choosing_card_upgrade_anim = func(special_card:Card):
-		print("玩家选择的公共卡可以升级为特殊卡: ", special_card.Name)
-		# 插入一段动画，将玩家手中的特殊卡位移到当前public_choosing_card的位置 包括旋转角度 zindex等
-		
-		# 保存特殊卡的原始z_index，用于动画结束后恢复
-		var original_zindex = special_card.z_index
-		
-		# 临时提高z_index确保特殊卡显示在最上层
-		special_card.z_index = 1000
-		
-		# 禁用输入，确保动画期间无法点击
-		special_card.disable_click()
-		public_choosing_card.disable_click()
-		
-		# 设置卡片中心点用于旋转动画
-		special_card.set_card_pivot_offset_to_center()
-		public_choosing_card.set_card_pivot_offset_to_center()
-				
-		# 启动移动动画，将特殊卡移动到公共卡位置
-		animation_manager.start_linear_movement_combined(
-			special_card, 
-			public_choosing_card.position, 
-			public_choosing_card.rotation, 
-			0.8, 
-			animation_manager.EaseType.EASE_IN_OUT, 
-			Callable(self, "on_special_card_upgrade_complete"), 
-			[special_card, public_choosing_card, original_zindex, continue_after_animation]
-		)
-		
-		# 使用await暂停函数执行，直到所有动画完成
-		await GameManager.create_timer(1.0, func(): pass).timeout
-
-	# 检查玩家选择的卡能否被升级为特殊卡
-	var public_choosing_card_special = player.check_card_can_upgrade(public_choosing_card)
-	if public_choosing_card_special:
-		play_player_choosing_card_upgrade_anim.call(public_choosing_card_special)
-	else:
-		print("玩家选择的公共卡不能升级为特殊卡")
-		continue_after_animation.call()
-	
-## 显示新完成的故事
-## 切换回合并允许输入
-func show_new_finished_stories():
-	prepare_next_round()
-	input_manager.allow_input()
+## 路由卡牌选择到当前活跃玩家
+func _route_card_selection(player_choosing_card: Card, public_choosing_card: Card):
+	var current_player = get_current_active_player()
+	if current_player:
+		current_player.handle_card_selection(player_choosing_card, public_choosing_card, self)
 
 ## 获取公共卡牌管理对象
 ## 返回：PublicCardDeal实例
