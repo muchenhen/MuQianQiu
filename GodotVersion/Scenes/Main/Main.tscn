@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=3 uid="uid://v1sq3384jf42"]
+
+[ext_resource type="Script" uid="uid://ly3v0pf4h2oi" path="res://Scenes/Main/Main.gd" id="1_p8rbg"]
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_p8rbg")
+
+[node name="UILayer" type="CanvasLayer" parent="."]
+
+[node name="MainMenu" type="Control" parent="UILayer"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
