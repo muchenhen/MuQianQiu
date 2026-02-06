@@ -1,6 +1,6 @@
 # 千秋戏
 
-## Readme更新于2024-10-7 18:05:32
+## Readme更新于2026-02-06
 
 ---
 
@@ -16,9 +16,11 @@
 不接受任何玩法相关的建议和意见，想改玩法规则的话自己fork。
 
 
-本仓库中目前一共有三个不同版本的具体项目
+本仓库中目前一共有三个不同版本的具体项目，已拆分到不同分支
 
-### UMG+slua
+主分支仅保留 Godot 版本，其余版本在各自分支中维护。
+
+### UMG+slua（分支：slua-umg）
 
 QianQiuUMGVersion\SluaVersion
 
@@ -26,13 +28,13 @@ QianQiuUMGVersion\SluaVersion
 
 需要虚幻引擎5.4+以上版本
 
-### 原生虚幻C++
+### 原生虚幻C++（分支：source）
 
 QianQiu
 
 该目录下使用纯C++进行开发，使用3D场景，卡牌使用Actor基类来进行实现，没有使用脚本语言
 
-### Godot 4
+### Godot 4（分支：main）
 
 GodotVersion
 
@@ -58,13 +60,20 @@ Texture目录下是贴图资源
 
 ## 拉取指南
 
-将整个仓库拉取到本地后，使用`git submodule update --init --recursive`来拉取子模块，slua版本下依赖了我自己fork的slua仓库。
+根据需要切换到对应分支：
 
-纯C++版本直接使用Rider打开sln文件之后编译即可。
+`main`：仅 Godot 版本  
+`slua-umg`：仅 UMG+slua 版本  
+`source`：仅 原生虚幻 C++ 版本
 
-UMG+slua版本需要确保slua的Plugins存在，然后使用Rider打开sln文件之后编译即可。
+slua 版本依赖子模块，切到 `slua-umg` 后执行：
+`git submodule update --init --recursive`
 
-Godot版本可以使用最新的稳定发布版本直接打开，或者自行编译4.3以上的版本。
+纯 C++ 版本切到 `source`，直接使用 Rider 打开 `sln` 文件编译即可。
+
+UMG+slua 版本切到 `slua-umg`，确保 slua 的 Plugins 存在后，使用 Rider 打开 `sln` 文件编译即可。
+
+Godot 版本切到 `main`，使用 Godot 4.3+ 打开即可。
 
 ## 注意
 
@@ -95,4 +104,3 @@ https://github.com/bubububaoshe/bubububaoshe.github.io
 </p>
 
 <font size = 5> [**JetBrains 开源项目支持申请链接**](https://www.jetbrains.com/lp/rider-unreal/)</font>
-
