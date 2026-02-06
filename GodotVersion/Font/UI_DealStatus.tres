@@ -1,8 +1,0 @@
-[gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://bgoilg613or"]
-
-[ext_resource type="FontFile" uid="uid://cgqf6jr2l5srf" path="res://Font/SourceHanSerifSC-Regular-simplified.otf" id="1_t8m6f"]
-
-[resource]
-font = ExtResource("1_t8m6f")
-font_size = 46
-outline_size = 2
