@@ -12,6 +12,8 @@ signal skill_cards_animation_completed
 var ui_manager:UIManager = UIManager.get_instance()
 var card_manager = CardManager.get_instance()
 var input_manager = InputManager.get_instance()
+var _debug_layer: CanvasLayer = null
+var _debug_log: RichTextLabel = null
 
 # 玩家A的珍稀牌实例
 var player_a_skill_cards:Array[Card] = []
@@ -35,6 +37,10 @@ func _ready() -> void:
 		if not game_instance.is_connected("game_start", Callable(self, "_on_game_start")):
 			game_instance.connect("game_start", Callable(self, "_on_game_start"))
 			print("UI_Main: 已连接game_start信号")
+		if not game_instance.is_connected("skill_debug_event", Callable(self, "_on_skill_debug_event")):
+			game_instance.connect("skill_debug_event", Callable(self, "_on_skill_debug_event"))
+	
+	_setup_skill_debug_panel()
 
 # 游戏开始后，显示玩家的珍稀牌
 func _on_game_start():
@@ -45,6 +51,79 @@ func _on_game_start():
 		update_player_a_skill_cards(player_a)
 	else:
 		print("UI_Main: 无法获取player_a对象")
+
+	if _debug_log != null:
+		_debug_log.clear()
+		_debug_log.append_text("[技能调试] 已开始新对局\n")
+
+func _on_skill_debug_event(payload: Dictionary) -> void:
+	if _debug_log == null:
+		return
+
+	var round_index = int(payload.get("round_index", -1))
+	var player_name = str(payload.get("player_name", "Unknown"))
+	var triggered = payload.get("triggered", [])
+	if not (triggered is Array):
+		return
+
+	for item in triggered:
+		if not (item is Dictionary):
+			continue
+		var skill_name = str(item.get("skill", "UNKNOWN"))
+		var card_id = int(item.get("card_id", -1))
+		var line = "R%s | %s | %s | CardID=%s" % [
+			str(round_index),
+			player_name,
+			skill_name,
+			str(card_id),
+		]
+		_debug_log.append_text(line + "\n")
+
+	var last_line = maxi(_debug_log.get_line_count() - 1, 0)
+	_debug_log.scroll_to_line(last_line)
+
+func _setup_skill_debug_panel() -> void:
+	if _debug_layer != null:
+		return
+
+	_debug_layer = CanvasLayer.new()
+	_debug_layer.layer = 90
+	add_child(_debug_layer)
+
+	var panel = PanelContainer.new()
+	panel.name = "SkillDebugPanel"
+	panel.position = Vector2(1360, 28)
+	panel.custom_minimum_size = Vector2(530, 290)
+	_debug_layer.add_child(panel)
+
+	var vbox = VBoxContainer.new()
+	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	panel.add_child(vbox)
+
+	var title = Label.new()
+	title.text = "技能触发调试面板"
+	vbox.add_child(title)
+
+	_debug_log = RichTextLabel.new()
+	_debug_log.bbcode_enabled = false
+	_debug_log.fit_content = false
+	_debug_log.scroll_following = true
+	_debug_log.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_debug_log.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_debug_log.custom_minimum_size = Vector2(510, 220)
+	vbox.add_child(_debug_log)
+
+	var clear_btn = Button.new()
+	clear_btn.text = "清空日志"
+	clear_btn.pressed.connect(func():
+		if _debug_log != null:
+			_debug_log.clear()
+			_debug_log.append_text("[技能调试] 日志已清空\n")
+	)
+	vbox.add_child(clear_btn)
+
+	_debug_log.append_text("[技能调试] 面板初始化完成，等待技能触发...\n")
 
 # 将两个点击牌堆的按钮移动到最上面
 
@@ -245,3 +324,8 @@ func wait_for_skill_cards_animation_complete(callback: Callable) -> void:
 	else:
 		print("没有珍稀牌动画正在播放，直接执行回调函数")
 		callback.call()
+
+func _exit_tree() -> void:
+	var game_instance = GameManager.instance
+	if game_instance != null and game_instance.is_connected("skill_debug_event", Callable(self, "_on_skill_debug_event")):
+		game_instance.disconnect("skill_debug_event", Callable(self, "_on_skill_debug_event"))

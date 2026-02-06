@@ -837,6 +837,7 @@ func handle_card_selection(player_choosing_card: Card, public_choosing_card: Car
 	input_manager.block_input()
 	
 	var target_pos = _get_deal_position()
+	var acquired_public_card: Card = public_choosing_card
 	
 	print("玩家 ", player_name, " 选择了手牌 ", player_choosing_card.ID, player_choosing_card.Name, " 和公共区域的牌 ", public_choosing_card.ID, public_choosing_card.Name)
 	
@@ -845,22 +846,19 @@ func handle_card_selection(player_choosing_card: Card, public_choosing_card: Car
 	# 准备卡牌动画
 	_prepare_card_for_animation(player_choosing_card)
 	
-	var continue_callback = func():
-		await _execute_card_animations(player_choosing_card, public_choosing_card, target_pos, anim_duration, game_instance)
-		_update_player_data(player_choosing_card, public_choosing_card)
-		await _wait_for_animation_complete(anim_duration)
-		var has_new_story = check_finish_story()
-		if has_new_story:
-			await new_story_show_finished
-		InputManager.get_instance().allow_input()
-		action_resolution_completed.emit(self, [player_choosing_card, public_choosing_card])
-	
 	# 检查升级逻辑
 	var special_card = check_card_can_upgrade(public_choosing_card)
 	if special_card:
-		await _play_upgrade_animation(special_card, public_choosing_card, continue_callback)
-	else:
-		continue_callback.call()
+		acquired_public_card = await _play_upgrade_animation(special_card, public_choosing_card)
+
+	await _execute_card_animations(player_choosing_card, acquired_public_card, target_pos, anim_duration, game_instance)
+	_update_player_data(player_choosing_card, acquired_public_card)
+	await _wait_for_animation_complete(anim_duration)
+	var has_new_story = check_finish_story()
+	if has_new_story:
+		await new_story_show_finished
+	InputManager.get_instance().allow_input()
+	action_resolution_completed.emit(self, [player_choosing_card, acquired_public_card])
 
 ## 获取当前玩家的发牌位置
 func _get_deal_position() -> Vector2:
@@ -914,7 +912,7 @@ func _wait_for_animation_complete(anim_duration: float):
 	await temp_timer.timeout
 
 ## 播放卡牌升级动画
-func _play_upgrade_animation(special_card: Card, public_choosing_card: Card, continue_callback: Callable):
+func _play_upgrade_animation(special_card: Card, public_choosing_card: Card) -> Card:
 	print("玩家选择的公共卡可以升级为特殊卡: ", special_card.Name)
 	
 	var animation_manager = AnimationManager.get_instance()
@@ -941,21 +939,21 @@ func _play_upgrade_animation(special_card: Card, public_choosing_card: Card, con
 		0.8, 
 		animation_manager.EaseType.EASE_IN_OUT, 
 		Callable(self, "_on_special_card_upgrade_complete"), 
-		[special_card, public_choosing_card, original_zindex, continue_callback]
+		[special_card, public_choosing_card, original_zindex]
 	)
 	
 	# 使用await暂停函数执行，直到所有动画完成
 	await GameManager.create_timer(1.0, func(): pass).timeout
+	public_choosing_card.visible = false
+	public_choosing_card.disable_click()
+	return special_card
 
 ## 特殊卡升级动画完成回调（从GameInstance移植）
-func _on_special_card_upgrade_complete(special_card: Card, _public_choosing_card: Card, original_zindex: int, continue_callback: Callable):
+func _on_special_card_upgrade_complete(special_card: Card, _public_choosing_card: Card, original_zindex: int):
 	# 恢复特殊卡的原始z_index
 	special_card.z_index = original_zindex
-	
-	# 继续执行后续动画
-	continue_callback.call()
 
-func on_special_card_upgrade_complete(special_card: Card, original_zindex: int, continue_callback: Callable):
-	_on_special_card_upgrade_complete(special_card, null, original_zindex, continue_callback)
+func on_special_card_upgrade_complete(special_card: Card, original_zindex: int):
+	_on_special_card_upgrade_complete(special_card, null, original_zindex)
 
 

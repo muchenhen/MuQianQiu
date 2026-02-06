@@ -48,7 +48,7 @@ func has_pending_increase() -> bool:
 func pick_card_for_supply(card_manager: CardManager) -> Card:
 	var guarantee_entry = skill_queue.pop_next_guarantee()
 	if guarantee_entry != null:
-		for target_id in guarantee_entry.skill_target_ids:
+		for target_id in guarantee_entry.target_ids:
 			var guaranteed_card = card_manager.pop_card_by_id(target_id)
 			if guaranteed_card != null:
 				return guaranteed_card
@@ -57,7 +57,7 @@ func pick_card_for_supply(card_manager: CardManager) -> Card:
 	if increase_entry != null:
 		var probability = clampf(increase_entry.probability, 0.0, 1.0)
 		if rng.randf() <= probability:
-			for target_id in increase_entry.skill_target_ids:
+			for target_id in increase_entry.target_ids:
 				var increased_card = card_manager.pop_card_by_id(target_id)
 				if increased_card != null:
 					return increased_card

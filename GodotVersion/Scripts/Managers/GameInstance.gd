@@ -10,6 +10,8 @@ enum GameRound {
 
 # 游戏开始信号，在游戏完全初始化后触发
 signal game_start
+# 技能触发调试信号（给UI调试面板）
+signal skill_debug_event(payload: Dictionary)
 
 # 全局设置
 var is_open_first: bool = false
@@ -348,6 +350,14 @@ func _on_player_action_resolution_completed(player: Player, action_cards: Array)
 			action_cards_typed.append(card)
 
 	var skill_result = skill_manager.resolve_turn_skills(player, opponent, action_cards_typed)
+	var triggered_skills = skill_result.get("triggered", [])
+	if triggered_skills is Array and triggered_skills.size() > 0:
+		print("技能已触发，数量: ", triggered_skills.size(), " 详情: ", triggered_skills)
+		skill_debug_event.emit({
+			"round_index": current_round_index,
+			"player_name": player.player_name,
+			"triggered": triggered_skills,
+		})
 	if skill_result.has("revealed_card_ids") and skill_result.revealed_card_ids.size() > 0:
 		UIManager.get_instance().show_info_tip("技能生效：翻开了对手手牌")
 
