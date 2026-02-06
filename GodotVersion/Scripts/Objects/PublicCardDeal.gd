@@ -105,13 +105,15 @@ func set_aim_season_hand_card_chooesd(season) -> void:
 
 func disable_all_hand_card_click() -> void:
 	for i in hand_cards.keys():
-		var card = hand_cards[i].card
-		card.disable_click()
+		var card_info = hand_cards[i]
+		if card_info != null and not card_info.isEmpty and card_info.card != null:
+			card_info.card.disable_click()
 
 func enable_all_hand_card_click() -> void:
 	for i in hand_cards.keys():
-		var card = hand_cards[i].card
-		card.enable_click()
+		var card_info = hand_cards[i]
+		if card_info != null and not card_info.isEmpty and card_info.card != null:
+			card_info.card.enable_click()
 
 func get_hand_card_by_id(card_id) -> Node:
 	for i in hand_cards.keys():
@@ -143,10 +145,19 @@ func is_hand_cards_full() -> bool:
 	return hand_cards.size() >= PUBLIC_HAND_MAX and not need_supply_hand_card()
 
 func supply_hand_card():
+	_supply_with_card(card_manager.pop_one_card())
+
+func supply_specific_card(card: Card):
+	_supply_with_card(card)
+
+func _supply_with_card(card: Card):
+	if card == null:
+		common_suply_public_card.emit("supply_end")
+		return
+
 	for i in hand_cards.keys():
 		var card_info: PublicHandCardInfo = hand_cards[i]
 		if card_info.isEmpty:
-			var card = card_manager.pop_one_card()
 			card.move_to_top()
 			card.z_index = 8 - i + 1
 			card.set_input_priority(card.z_index)
@@ -160,7 +171,8 @@ func supply_hand_card():
 				card_info.card.rotation = card_info.rotation
 				card_info.card.disable_click()
 				card.update_card()
-				card.card_clicked.connect(Callable(self, "on_card_clicked"))
+				if not card.card_clicked.is_connected(Callable(self, "on_card_clicked")):
+					card.card_clicked.connect(Callable(self, "on_card_clicked"))
 				common_suply_public_card.emit("supply_end")
 			else:
 				# 播放动画
@@ -169,6 +181,8 @@ func supply_hand_card():
 				animation_manager.start_linear_movement_combined(card, taget_pos, target_rotation, 1, animation_manager.EaseType.EASE_IN_OUT, Callable(self, "supply_hand_card_anim_end"), [card])
 			return
 
+	# 没有空位，放回牌库
+	card_manager.push_one_card(card)
 	common_suply_public_card.emit("supply_end")
 
 # 补充公共手牌的动画结束回调
@@ -186,7 +200,8 @@ func supply_hand_card_anim_end(card: Card):
 		card_info.card.rotation = card_info.rotation
 		
 	card.update_card()
-	card.card_clicked.connect(Callable(self, "on_card_clicked"))
+	if not card.card_clicked.is_connected(Callable(self, "on_card_clicked")):
+		card.card_clicked.connect(Callable(self, "on_card_clicked"))
 	print("补充公共手牌动画结束: ", card.ID)
 
 	# 动画结束后，发送公共区域补充牌的信号
@@ -217,18 +232,30 @@ func get_choosable_seasons() -> Array:
 				seasons.append(card_info.card.Season)
 	return seasons
 
+func get_all_public_cards() -> Array[Card]:
+	var result: Array[Card] = []
+	for i in hand_cards.keys():
+		var card_info = hand_cards[i]
+		if card_info != null and not card_info.isEmpty and card_info.card != null:
+			result.append(card_info.card)
+	return result
+
 # 清理所有状态 准备下一轮
 func clear():
 	for i in hand_cards.keys():
 		var card_info = hand_cards[i]
-		if not card_info.isEmpty:
+		if not card_info.isEmpty and card_info.card != null:
 			card_info.card.queue_free()
 	hand_cards = {}
-	player_a.disconnect("player_choose_card", Callable(self, "on_player_choose_card"))
-	player_b.disconnect("player_choose_card", Callable(self, "on_player_choose_card"))
+	if player_a != null and player_a.is_connected("player_choose_card", Callable(self, "on_player_choose_card")):
+		player_a.disconnect("player_choose_card", Callable(self, "on_player_choose_card"))
+	if player_b != null and player_b.is_connected("player_choose_card", Callable(self, "on_player_choose_card")):
+		player_b.disconnect("player_choose_card", Callable(self, "on_player_choose_card"))
 	player_a = null
 	player_b = null
 	player_current_choosing_card = null
 	current_player = null
 	skip_supply_anim = false
 	debug_player_change_card = false
+
+

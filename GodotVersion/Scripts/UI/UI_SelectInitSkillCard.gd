@@ -28,7 +28,7 @@ var drag_start_position: Vector2  # 记录拖拽开始位置
 var is_dragging_action = false  # 标记是否正在进行拖拽动作
 var drag_threshold = 10  # 拖拽阈值，超过此距离才认为是拖拽动作
 var card_instances = []  # 存储所有实例化的卡牌
-var max_special_cards = 88  # 可选择的珍稀牌最大数量限制
+var max_special_cards = 15  # 可选择的珍稀牌最大数量限制
 
 # 卡牌场景
 const CARD_SCENE = preload("res://Scripts/Objects/Card.tscn")
@@ -356,29 +356,15 @@ func _update_skill_display(skill_data: Dictionary, type_label: Label, target_lab
 	value_label.text = value_text
 
 func _on_start_button_pressed() -> void:
-	# 处理开始游戏按钮点击事件
-	if selected_cards.size() > 0:
-		# 触发选择完成事件，将选择的卡片信息发送到玩家对象
-		print("选中的卡片: ", selected_cards)
-		
-		# 获取游戏实例
-		var game_instance = GameManager.instance
-		if game_instance:
-			# 在PVE模式下，将珍稀牌信息设置给玩家A
-			# 这种设计在未来可以扩展为联机模式，根据玩家身份设置给不同的Player对象
-			var player = game_instance.player_a
-			player.set_selected_special_cards(selected_cards.duplicate())
-			
-			# 销毁当前的选牌UI
-			var ui_manager = UIManager.get_instance()
-			ui_manager.destroy_ui("UI_SelectInitSkillCard")
-			
-			# 开始新游戏
-			game_instance.start_new_game()
-	else:
-		# 如果没有选择任何卡片，显示提示信息
+	# 允许0~15张，直接开始
+	print("选中的卡片: ", selected_cards)
+	var game_instance = GameManager.instance
+	if game_instance:
+		var player = game_instance.player_a
+		player.set_selected_special_cards(selected_cards.duplicate())
 		var ui_manager = UIManager.get_instance()
-		ui_manager.show_info_tip("请至少选择一张卡片")
+		ui_manager.destroy_ui("UI_SelectInitSkillCard")
+		game_instance.start_new_game()
 
 # 获取卡牌的基础卡ID
 func _get_base_card_id(card_id: int) -> int:
@@ -452,7 +438,7 @@ func _auto_select_special_cards() -> void:
 		card.set_card_chooesd()
 	
 	# 如果有选择卡片，更新右侧详情显示
-	if selected_cards.size() > 0:
+	if selected_cards.size() >= 0:
 		# 显示DetailCardParent
 		detail_card_parent.visible = true
 		
@@ -501,3 +487,5 @@ func _evaluate_card_value(card_id: int) -> float:
 	value -= card_id * 0.01
 	
 	return value
+
+

@@ -70,6 +70,8 @@ func collect_public_deal_cards_pos(cards_pos:Array, cards_rotation:Array) -> voi
 # @param types 包含在游戏中的卡牌类型数组。
 # @return void
 func prepare_cards_for_this_game(types:Array) -> void:
+	cardIDs.clear()
+	all_storage_cards.clear()
 	collect_cardIDs_for_this_game(types)
 	shuffle_cardIDs()
 	collect_skill_cardIDs_for_this_game()
@@ -127,8 +129,7 @@ func send_cards_for_play(cards: Array, game_instance):
 		var card = cards.pop_back()
 		card.z_index = 8 - i
 		card.set_input_priority(card.z_index)
-		# 公共卡池的手牌禁止点击
-		card.connect("card_clicked", Callable(game_instance, "on_card_clicked"))
+		# 公共卡池点击交由 PublicCardDeal 统一处理
 		game_instance.public_deal.set_one_hand_card(card, position, rotation)
 		cards_to_deal.append({"card": card, "position": position, "rotation": rotation})
 	
@@ -170,6 +171,9 @@ func _deal_next_card(cards_to_deal: Array):
 
 ## 所有卡牌发放完毕的回调
 func _on_all_cards_dealt():
+	_on_all_cards_dealt_async.call_deferred()
+
+func _on_all_cards_dealt_async():
 	for key in game_instance_ref.public_deal.hand_cards.keys():
 		var public_card = game_instance_ref.public_deal.hand_cards[key]
 		if public_card.isEmpty:
@@ -180,8 +184,8 @@ func _on_all_cards_dealt():
 	# 触发游戏开始信号
 	game_instance_ref.game_start.emit()
 	
-	# 检查玩家特殊卡
-	game_instance_ref.process_special_cards()
+	# 检查并处理玩家特殊卡（等待动画完成）
+	await game_instance_ref.process_special_cards()
 	
 	game_instance_ref.prepare_first_round()
 	
@@ -232,6 +236,14 @@ func pop_one_card() -> Node:
 		return null
 	var card = all_storage_cards.pop_back()
 	return card
+
+func pop_card_by_id(card_id: int) -> Card:
+	for i in range(all_storage_cards.size() - 1, -1, -1):
+		var card: Card = all_storage_cards[i]
+		if card.ID == card_id or card.BaseID == card_id:
+			all_storage_cards.remove_at(i)
+			return card
+	return null
 
 func push_one_card(card:Card) -> void:
 	all_storage_cards.append(card)
@@ -402,7 +414,12 @@ func clear():
 	destroy_all_scene_cards()
 	all_storage_cards.clear()
 	cardIDs.clear()
-	player_a.disconnect("player_choose_change_card", Callable(self, "on_player_choose_change_card"))
-	player_b.disconnect("player_choose_change_card", Callable(self, "on_player_choose_change_card"))
+	skill_cardIDs.clear()
+	if player_a != null and player_a.is_connected("player_choose_change_card", Callable(self, "on_player_choose_change_card")):
+		player_a.disconnect("player_choose_change_card", Callable(self, "on_player_choose_change_card"))
+	if player_b != null and player_b.is_connected("player_choose_change_card", Callable(self, "on_player_choose_change_card")):
+		player_b.disconnect("player_choose_change_card", Callable(self, "on_player_choose_change_card"))
 	player_a = null
 	player_b = null
+
+

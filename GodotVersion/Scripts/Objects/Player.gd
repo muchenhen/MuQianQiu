@@ -48,6 +48,7 @@ var hidden_original_cards: Dictionary = {}
 
 # ai agent
 var bind_ai_agent: AIAgent = null
+var ai_controlled: bool = false
 
 signal player_choose_card(Player)
 signal player_choose_change_card(Player)
@@ -55,6 +56,8 @@ signal player_state_changed(Player, PlayerState)
 
 # 新完成的故事展示完毕
 signal new_story_show_finished()
+# 当前回合动作结算完成（动画和故事展示完成后）
+signal action_resolution_completed(player: Player, action_cards: Array)
 
 enum PlayerState{
 	# 不在自己的回合中
@@ -233,7 +236,7 @@ func send_card_to_deal(card: Card) -> void:
 	card.disable_click()
 
 # 一个玩家的回合结束，检查故事完成情况
-func check_finish_story() -> void:
+func check_finish_story() -> bool:
 	var this_time_completed_stories = StoryManager.get_instance().check_story_finish_for_player(self)
 	# 将故事添加到玩家的完成故事列表中
 	if this_time_completed_stories.size() > 0:
@@ -241,6 +244,7 @@ func check_finish_story() -> void:
 	# 给对应玩家增加当前故事的分数
 	ScoreManager.get_instance().add_story_score(self, this_time_completed_stories)
 	show_new_finished_stories(this_time_completed_stories)
+	return this_time_completed_stories.size() > 0
 	
 # 展示新完成的故事
 func show_new_finished_stories(this_time_completed_stories: Array):
@@ -359,24 +363,92 @@ func get_available_hand_cards() -> Array:
 		
 	return card_indexes
 
+func get_all_hand_cards() -> Array[Card]:
+	var result: Array[Card] = []
+	for i in hand_cards.keys():
+		if not hand_cards[i].is_empty and hand_cards[i].card != null:
+			result.append(hand_cards[i].card)
+	return result
+
+func is_card_in_hand(card: Card) -> bool:
+	for i in hand_cards.keys():
+		if not hand_cards[i].is_empty and hand_cards[i].card == card:
+			return true
+	return false
+
+func get_hand_slot_index(card: Card) -> int:
+	for i in hand_cards.keys():
+		if not hand_cards[i].is_empty and hand_cards[i].card == card:
+			return i
+	return -1
+
+func get_first_hand_card() -> Card:
+	for i in hand_cards.keys():
+		if not hand_cards[i].is_empty and hand_cards[i].card != null:
+			return hand_cards[i].card
+	return null
+
+func _disconnect_card_clicked_from_all_players(card: Card) -> void:
+	if GameManager.instance == null:
+		return
+	for player in [GameManager.instance.player_a, GameManager.instance.player_b]:
+		if player != null and card.is_connected("card_clicked", Callable(player, "on_card_clicked")):
+			card.disconnect("card_clicked", Callable(player, "on_card_clicked"))
+
+func _attach_card_to_slot(slot_index: int, card: Card) -> void:
+	hand_cards[slot_index].card = card
+	hand_cards[slot_index].slot_index = slot_index
+	hand_cards[slot_index].is_empty = false
+	_disconnect_card_clicked_from_all_players(card)
+	if not card.is_connected("card_clicked", Callable(self, "on_card_clicked")):
+		card.connect("card_clicked", Callable(self, "on_card_clicked"))
+	card.set_player_owner(self)
+	if is_ai_player():
+		card.disable_click()
+	else:
+		card.enable_click()
+
+func swap_one_hand_card_with_player(other_player: Player, self_card: Card, other_card: Card) -> Card:
+	var self_slot = get_hand_slot_index(self_card)
+	var other_slot = other_player.get_hand_slot_index(other_card)
+	if self_slot == -1 or other_slot == -1:
+		return null
+
+	hand_cards[self_slot].card = null
+	hand_cards[self_slot].is_empty = true
+	other_player.hand_cards[other_slot].card = null
+	other_player.hand_cards[other_slot].is_empty = true
+
+	_attach_card_to_slot(self_slot, other_card)
+	other_player._attach_card_to_slot(other_slot, self_card)
+	update_self_card_z_index()
+	other_player.update_self_card_z_index()
+	return other_card
+
 # 获取玩家分数
 func get_score() -> int:
 	return player_score
 
 func clear():
-	score_ui.text = "当前分数：0"
+	if score_ui:
+		score_ui.text = "当前分数：0"
 	player_score = 0
 
 
+func set_ai_controlled(value: bool) -> void:
+	ai_controlled = value
+
 func bind_ai_enable() -> void:
+	ai_controlled = true
 	bind_ai_agent = AIAgent.new()
 	bind_ai_agent.bind_player(self)
 
 func is_ai_player() -> bool:
-	return bind_ai_agent != null
+	return ai_controlled or bind_ai_agent != null
 
 func start_ai_round() -> void:
-	bind_ai_agent.start_ai_turn()
+	if bind_ai_agent:
+		bind_ai_agent.start_ai_turn()
 	
 ## 设置玩家选择的特殊卡ID
 ## 参数：
@@ -418,7 +490,7 @@ func play_base_card_upgrade_anim() -> void:
 	var waiting_time = anim_duration + 0.3  # 动画后等待时间
 	
 	# 判断玩家位置类型，决定位移方向
-	var offset_direction = 1 if player_name == "Player A" else -1
+	var offset_direction = 1 if player_name == "PlayerA" else -1
 	
 	# 创建一个数据结构来保存卡牌和原始位置
 	var animation_cards = []
@@ -777,7 +849,11 @@ func handle_card_selection(player_choosing_card: Card, public_choosing_card: Car
 		await _execute_card_animations(player_choosing_card, public_choosing_card, target_pos, anim_duration, game_instance)
 		_update_player_data(player_choosing_card, public_choosing_card)
 		await _wait_for_animation_complete(anim_duration)
-		check_finish_story()
+		var has_new_story = check_finish_story()
+		if has_new_story:
+			await new_story_show_finished
+		InputManager.get_instance().allow_input()
+		action_resolution_completed.emit(self, [player_choosing_card, public_choosing_card])
 	
 	# 检查升级逻辑
 	var special_card = check_card_can_upgrade(public_choosing_card)
@@ -872,9 +948,14 @@ func _play_upgrade_animation(special_card: Card, public_choosing_card: Card, con
 	await GameManager.create_timer(1.0, func(): pass).timeout
 
 ## 特殊卡升级动画完成回调（从GameInstance移植）
-func on_special_card_upgrade_complete(special_card: Card, original_zindex: int, continue_callback: Callable):
+func _on_special_card_upgrade_complete(special_card: Card, _public_choosing_card: Card, original_zindex: int, continue_callback: Callable):
 	# 恢复特殊卡的原始z_index
 	special_card.z_index = original_zindex
 	
 	# 继续执行后续动画
 	continue_callback.call()
+
+func on_special_card_upgrade_complete(special_card: Card, original_zindex: int, continue_callback: Callable):
+	_on_special_card_upgrade_complete(special_card, null, original_zindex, continue_callback)
+
+

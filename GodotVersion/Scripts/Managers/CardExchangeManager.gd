@@ -55,41 +55,35 @@ func _handle_ai_exchange(current_player: Player):
 		card_manager.on_player_choose_change_card(current_player)
 
 		# 等待换牌动画完成后重新检查
-		await get_tree().create_timer(1.5).timeout
+		await get_tree().create_timer(1.0).timeout
 
 		# 换牌完成后重新检查手牌季节
 		if current_player.check_hand_card_season():
-			# 换牌成功，继续游戏
 			current_player.set_player_state(Player.PlayerState.SELF_ROUND_UNCHOOSING)
 			exchange_completed.emit(true)
 		else:
-			# 仍然没有匹配卡牌，递归重新换牌
 			handle_card_exchange(current_player)
 
 # 处理人类玩家换牌
 func _handle_human_exchange(current_player: Player):
 	print("等待玩家手动选择换牌")
 	current_player.set_player_state(Player.PlayerState.SELF_ROUND_CHANGE_CARD)
+	current_player.set_all_hand_card_can_click()
 
-	# 连接换牌完成信号（使用一次性连接）
-	if not current_player.is_connected("card_exchange_completed", _on_player_exchange_complete):
-		current_player.connect("card_exchange_completed", _on_player_exchange_complete, CONNECT_ONE_SHOT)
+	var callback = Callable(self, "_on_human_selected_exchange_card")
+	if not current_player.is_connected("player_choose_change_card", callback):
+		current_player.connect("player_choose_change_card", callback, CONNECT_ONE_SHOT)
 
-# 处理玩家换牌完成信号的回调函数
-func _on_player_exchange_complete():
-	var current_player = game_instance.get_current_active_player()
-	if current_player == null:
-		return
+func _on_human_selected_exchange_card(player: Player):
+	# CardManager 已经在 player_choose_change_card 信号上执行了换牌，这里仅做结果检查
+	await get_tree().create_timer(1.0).timeout
 
-	# 重新检查手牌季节
-	if current_player.check_hand_card_season():
-		# 换牌成功，继续游戏
-		current_player.set_player_state(Player.PlayerState.SELF_ROUND_UNCHOOSING)
+	if player.check_hand_card_season():
+		player.set_player_state(Player.PlayerState.SELF_ROUND_UNCHOOSING)
 		exchange_completed.emit(true)
 	else:
-		# 仍然需要换牌，继续处理
 		print("换牌后仍需继续换牌")
-		handle_card_exchange(current_player)
+		handle_card_exchange(player)
 
 func clear():
 	if game_instance:
