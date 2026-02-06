@@ -117,6 +117,7 @@ func assign_player_hand_card_to_slot(card: Card, slot_index: int) -> void:
 	hand_cards[slot_index].is_empty = false
 	# hand_cards[slot_index].card.position = hand_cards[slot_index].pos
 	hand_cards[slot_index].card.z_index = hand_cards[slot_index].zindex
+	hand_cards[slot_index].card.set_player_owner(self)
 
 	card.connect("card_clicked", Callable(self, "on_card_clicked"))
 	# AI玩家卡牌不可点击

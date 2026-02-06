@@ -183,6 +183,7 @@ func set_opponent_hand_visible(value: bool):
 		game_manager.opponent_hand_visible = value
 	if match_config:
 		match_config.opponent_hand_visible = value
+	_refresh_all_hand_visibility()
 
 func start_new_game():
 	print("开始新游戏")
@@ -361,6 +362,7 @@ func _on_player_action_resolution_completed(player: Player, action_cards: Array)
 	if skill_result.has("revealed_card_ids") and skill_result.revealed_card_ids.size() > 0:
 		UIManager.get_instance().show_info_tip("技能生效：翻开了对手手牌")
 
+	_refresh_all_hand_visibility()
 	turn_engine.notify_action_resolved(action_cards_typed)
 
 func get_current_active_player():
@@ -403,7 +405,47 @@ func process_special_cards():
 func card_animation_end(card, is_player_choice = false):
 	if is_player_choice:
 		print("玩家选择卡牌动画结束: ", card.ID, card.Name)
-	card.update_card()
+	_refresh_card_visibility(card)
+
+func _refresh_all_hand_visibility() -> void:
+	_refresh_player_hand_visibility(player_a)
+	_refresh_player_hand_visibility(player_b)
+
+func _refresh_player_hand_visibility(player: Player) -> void:
+	if player == null:
+		return
+	for card in player.get_all_hand_cards():
+		_refresh_card_visibility(card)
+
+func _refresh_card_visibility(card: Card) -> void:
+	if card == null:
+		return
+	if _is_card_visible_for_local_player(card):
+		card.update_card()
+	else:
+		card.set_card_back()
+
+func _is_card_visible_for_local_player(card: Card) -> bool:
+	# 公共区域和牌堆卡默认可见
+	if card.player_owner == null:
+		return true
+
+	# 玩家A视角：自己的手牌总是可见
+	if card.player_owner == player_a:
+		return true
+
+	# 玩家B（对手）手牌默认背面；打开设置后可见
+	if card.player_owner == player_b:
+		if not player_b.is_card_in_hand(card):
+			return true
+		if opponent_hand_visible:
+			return true
+		if match_state != null and match_state.revealed_opponent_hand_cards.has(player_a):
+			var revealed_ids: Array = match_state.revealed_opponent_hand_cards[player_a]
+			return revealed_ids.has(card.ID)
+		return false
+
+	return true
 
 func get_public_card_deal():
 	return public_deal
