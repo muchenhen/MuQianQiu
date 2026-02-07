@@ -9,6 +9,11 @@ const STAGE_FAILED = SkillCastEventScript.Stage.FAILED
 const STAGE_WAIVED = SkillCastEventScript.Stage.WAIVED
 const STAGE_INVALID = SkillCastEventScript.Stage.INVALID
 
+const DISABLE_MODE_FIXED_SINGLE := "FIXED_SINGLE"
+const DISABLE_MODE_FIXED_GROUP := "FIXED_GROUP"
+const DISABLE_MODE_PICK_OPPONENT_SPECIAL := "PICK_OPPONENT_SPECIAL"
+const DISABLE_SCOPE_ALL_SKILLS := "ALL_SKILLS"
+
 enum SkillUseState {
 	READY,
 	USED,
@@ -21,17 +26,20 @@ var table_manager: TableManager = TableManager.get_instance()
 var skill_queue: SkillQueue = SkillQueue.new()
 var skill_states: Dictionary = {}
 var disable_watchers: Array[Dictionary] = []
+var disable_scope_registry: Dictionary = {}
 var rng := RandomNumberGenerator.new()
 var prompt_callback: Callable = Callable()
 
 func initialize(state: MatchState) -> void:
 	match_state = state
+	_register_default_disable_scope_handlers()
 	reset_for_match()
 
 func reset_for_match() -> void:
 	skill_states.clear()
 	disable_watchers.clear()
 	skill_queue.clear()
+	_register_default_disable_scope_handlers()
 	rng.randomize()
 
 func set_prompt_callback(cb: Callable) -> void:
@@ -176,8 +184,16 @@ func resolve_supply_slot(card_manager: CardManager) -> Dictionary:
 		"events": events,
 	}
 
-func check_disable_on_opponent_acquire(acquiring_player: Player, opponent_player: Player) -> Array:
+func check_disable_on_opponent_acquire(
+	acquiring_player: Player,
+	opponent_player: Player,
+	acquired_cards: Array[Card] = []
+) -> Array:
 	var events: Array = []
+	var check_pool: Array[Card] = acquired_cards.duplicate()
+	if check_pool.is_empty():
+		check_pool = _collect_special_cards_from_player(acquiring_player)
+
 	for watcher_raw in disable_watchers:
 		if not (watcher_raw is Dictionary):
 			continue
@@ -188,8 +204,10 @@ func check_disable_on_opponent_acquire(acquiring_player: Player, opponent_player
 		if owner != opponent_player:
 			continue
 
+		var mode := str(watcher.get("mode", DISABLE_MODE_FIXED_SINGLE))
+		var scope := str(watcher.get("scope", DISABLE_SCOPE_ALL_SKILLS))
 		var target_ids: Array[int] = _array_to_int_array(watcher.get("target_ids", []))
-		var target_names_text = _target_ids_to_card_names_text(target_ids)
+		var check_desc := _build_disable_check_desc(mode, target_ids, watcher)
 		events.append(_make_event_by_source(
 			owner,
 			int(watcher.get("source_card_id", -1)),
@@ -197,19 +215,22 @@ func check_disable_on_opponent_acquire(acquiring_player: Player, opponent_player
 			"DISABLE_SKILL",
 			"禁用技能",
 			STAGE_CHECK,
-			"检查禁用目标: %s" % target_names_text,
-			{"target_ids": target_ids}
+			check_desc,
+			{
+				"mode": mode,
+				"scope": scope,
+				"target_ids": target_ids,
+			}
 		))
 
-		var hit_cards: Array[Card] = []
-		for deal_card in acquiring_player.deal_cards.values():
-			if not (deal_card is Card):
+		if mode == DISABLE_MODE_PICK_OPPONENT_SPECIAL and int(watcher.get("selected_instance_id", 0)) <= 0:
+			var pick_result = await _resolve_disable_pick_target(owner, acquiring_player, watcher)
+			events.append_array(pick_result.get("events", []))
+			if not bool(pick_result.get("ok", false)):
+				watcher["active"] = false
 				continue
-			if not deal_card.Special:
-				continue
-			if target_ids.has(deal_card.ID) or target_ids.has(deal_card.BaseID):
-				hit_cards.append(deal_card)
 
+		var hit_cards: Array[Card] = _find_disable_hit_cards(watcher, acquiring_player, check_pool)
 		if hit_cards.is_empty():
 			events.append(_make_event_by_source(
 				owner,
@@ -219,18 +240,36 @@ func check_disable_on_opponent_acquire(acquiring_player: Player, opponent_player
 				"禁用技能",
 				STAGE_CHECK,
 				"未命中目标，继续监视",
-				{"target_ids": target_ids}
+				{
+					"mode": mode,
+					"scope": scope,
+					"target_ids": target_ids,
+				}
 			))
 			continue
 
+		var disabled_names: Array[String] = []
 		for target_card in hit_cards:
-			_disable_all_skills_for_card(target_card)
+			if _apply_disable_scope_to_card(scope, target_card):
+				disabled_names.append(target_card.Name)
+
+		if disabled_names.is_empty():
+			events.append(_make_event_by_source(
+				owner,
+				int(watcher.get("source_card_id", -1)),
+				str(watcher.get("source_card_name", "未知卡牌")),
+				"DISABLE_SKILL",
+				"禁用技能",
+				STAGE_FAILED,
+				"命中目标但禁用处理器无效",
+				{
+					"mode": mode,
+					"scope": scope,
+				}
+			))
+			continue
 
 		watcher["active"] = false
-		var hit_names: Array[String] = []
-		for c in hit_cards:
-			hit_names.append(c.Name)
-
 		events.append(_make_event_by_source(
 			owner,
 			int(watcher.get("source_card_id", -1)),
@@ -238,8 +277,12 @@ func check_disable_on_opponent_acquire(acquiring_player: Player, opponent_player
 			"DISABLE_SKILL",
 			"禁用技能",
 			STAGE_TRIGGER,
-			"命中目标并已禁用: %s" % "、".join(hit_names),
-			{"target_ids": target_ids}
+			"命中目标并已禁用: %s" % "、".join(disabled_names),
+			{
+				"mode": mode,
+				"scope": scope,
+				"target_ids": target_ids,
+			}
 		))
 
 	return events
@@ -453,9 +496,21 @@ func _apply_exchange_skill(current_player: Player, opponent_player: Player, entr
 func _register_disable_watch(current_player: Player, entry: Dictionary, events: Array) -> void:
 	var source_card: Card = _entry_card(entry)
 	var target_ids: Array[int] = _array_to_int_array(entry.get("skill_target_ids", []))
-	if target_ids.is_empty():
+	var disable_mode := str(entry.get("disable_mode", "")).strip_edges().to_upper()
+	var disable_scope := str(entry.get("disable_scope", DISABLE_SCOPE_ALL_SKILLS)).strip_edges().to_upper()
+	if disable_mode == "":
+		disable_mode = _infer_disable_mode(entry)
+	if disable_scope == "":
+		disable_scope = DISABLE_SCOPE_ALL_SKILLS
+
+	if not _is_valid_disable_mode(disable_mode):
 		_set_entry_state(entry, SkillUseState.USED)
-		events.append(_make_event_from_entry(current_player, entry, STAGE_INVALID, "无目标配置，未生效"))
+		events.append(_make_event_from_entry(current_player, entry, STAGE_INVALID, "禁用技能模式配置非法，未生效"))
+		return
+
+	if disable_mode != DISABLE_MODE_PICK_OPPONENT_SPECIAL and target_ids.is_empty():
+		_set_entry_state(entry, SkillUseState.USED)
+		events.append(_make_event_from_entry(current_player, entry, STAGE_INVALID, "禁用技能配置无目标，未生效"))
 		return
 
 	_set_entry_state(entry, SkillUseState.USED)
@@ -464,15 +519,35 @@ func _register_disable_watch(current_player: Player, entry: Dictionary, events: 
 		"owner": current_player,
 		"source_card_id": source_card.ID if source_card != null else -1,
 		"source_card_name": source_card.Name if source_card != null else "未知卡牌",
+		"mode": disable_mode,
+		"scope": disable_scope,
 		"target_ids": target_ids,
+		"selected_instance_id": 0,
+		"selected_card_id": -1,
+		"selected_card_name": "",
 	})
+
+	var register_text := ""
+	match disable_mode:
+		DISABLE_MODE_FIXED_SINGLE:
+			register_text = "已登记监视（单目标）: %s" % _target_ids_to_card_names_text(target_ids)
+		DISABLE_MODE_FIXED_GROUP:
+			register_text = "已登记监视（组目标）: %s" % _target_ids_to_card_names_text(target_ids)
+		DISABLE_MODE_PICK_OPPONENT_SPECIAL:
+			register_text = "已登记监视（待选目标），首次检查时选择"
+		_:
+			register_text = "已登记监视"
 
 	events.append(_make_event_from_entry(
 		current_player,
 		entry,
 		STAGE_REGISTER,
-		"已进入监视，目标: %s" % _target_ids_to_card_names_text(target_ids),
-		{"target_ids": target_ids}
+		register_text,
+		{
+			"target_ids": target_ids,
+			"mode": disable_mode,
+			"scope": disable_scope,
+		}
 	))
 
 func _apply_open_hand_skill(current_player: Player, opponent_player: Player, entry: Dictionary, result_events: Array, result_revealed_card_ids: Array) -> void:
@@ -629,9 +704,13 @@ func _build_entry_from_skill_row(card: Card, skill_index: int) -> Dictionary:
 	var value_key = "Skill%dValue" % skill_index
 	var target_key = "Skill%dTarget" % skill_index
 	var target_type_key = "Skill%dTargetType" % skill_index
+	var disable_mode_key = "Skill%dDisableMode" % skill_index
+	var disable_scope_key = "Skill%dDisableScope" % skill_index
 
 	var target_ids: Array[int] = []
+	var target_raw := ""
 	if row.has(target_id_key):
+		target_raw = str(row[target_id_key]).strip_edges()
 		target_ids = _parse_target_ids(row[target_id_key])
 
 	var skill_value := 0.0
@@ -648,13 +727,24 @@ func _build_entry_from_skill_row(card: Card, skill_index: int) -> Dictionary:
 	if row.has(target_type_key):
 		target_type = str(row[target_type_key]).strip_edges().to_upper()
 
+	var disable_mode := ""
+	if row.has(disable_mode_key):
+		disable_mode = str(row[disable_mode_key]).strip_edges().to_upper()
+
+	var disable_scope := ""
+	if row.has(disable_scope_key):
+		disable_scope = str(row[disable_scope_key]).strip_edges().to_upper()
+
 	return {
 		"card": card,
 		"skill_index": skill_index,
 		"skill_type": CardSkill.string_to_skill_type(type_str),
 		"skill_target_ids": target_ids,
+		"skill_target_raw": target_raw,
 		"skill_target_name": target_name,
 		"skill_target_type": target_type,
+		"disable_mode": disable_mode,
+		"disable_scope": disable_scope,
 		"skill_value": skill_value,
 		"is_copied": false,
 	}
@@ -853,6 +943,283 @@ func _array_to_int_array(raw_value) -> Array[int]:
 		for item in raw_value:
 			result.append(int(item))
 	return result
+
+func _register_default_disable_scope_handlers() -> void:
+	disable_scope_registry.clear()
+	disable_scope_registry[DISABLE_SCOPE_ALL_SKILLS] = Callable(self, "_disable_scope_all_skills")
+
+func _is_valid_disable_mode(mode: String) -> bool:
+	match mode:
+		DISABLE_MODE_FIXED_SINGLE, DISABLE_MODE_FIXED_GROUP, DISABLE_MODE_PICK_OPPONENT_SPECIAL:
+			return true
+		_:
+			return false
+
+func _infer_disable_mode(entry: Dictionary) -> String:
+	var explicit_mode := str(entry.get("disable_mode", "")).strip_edges().to_upper()
+	if explicit_mode != "":
+		return explicit_mode
+
+	var target_ids: Array[int] = _array_to_int_array(entry.get("skill_target_ids", []))
+	var target_raw := str(entry.get("skill_target_raw", "")).strip_edges()
+	if target_ids.is_empty():
+		return DISABLE_MODE_PICK_OPPONENT_SPECIAL
+	if target_raw.contains("(") or target_raw.contains(",") or target_raw.contains(";") or target_ids.size() > 1:
+		return DISABLE_MODE_FIXED_GROUP
+	return DISABLE_MODE_FIXED_SINGLE
+
+func _build_disable_check_desc(mode: String, target_ids: Array[int], watcher: Dictionary) -> String:
+	match mode:
+		DISABLE_MODE_FIXED_SINGLE:
+			return "检查单目标: %s" % _target_ids_to_card_names_text(target_ids)
+		DISABLE_MODE_FIXED_GROUP:
+			return "检查组目标: %s" % _target_ids_to_card_names_text(target_ids)
+		DISABLE_MODE_PICK_OPPONENT_SPECIAL:
+			var selected_name := str(watcher.get("selected_card_name", "")).strip_edges()
+			if selected_name == "":
+				return "检查待选目标（手牌+牌堆）"
+			return "检查已选目标: %s" % selected_name
+		_:
+			return "检查禁用目标"
+
+func _resolve_disable_pick_target(owner: Player, target_player: Player, watcher: Dictionary) -> Dictionary:
+	var events: Array = []
+	var candidates = _collect_disable_pick_candidates(target_player)
+	if candidates.is_empty():
+		events.append(_make_event_by_source(
+			owner,
+			int(watcher.get("source_card_id", -1)),
+			str(watcher.get("source_card_name", "未知卡牌")),
+			"DISABLE_SKILL",
+			"禁用技能",
+			STAGE_FAILED,
+			"无可选目标，禁用监视结束",
+			{"mode": DISABLE_MODE_PICK_OPPONENT_SPECIAL}
+		))
+		return {"ok": false, "events": events}
+
+	var selected_card: Card = null
+	if owner != null and owner.is_ai_player():
+		selected_card = _choose_disable_target_for_ai(candidates)
+	else:
+		if not prompt_callback.is_valid():
+			selected_card = candidates[0].get("card", null) as Card
+		else:
+			var options: Array = []
+			var token_to_card: Dictionary = {}
+			for candidate in candidates:
+				var card: Card = candidate.get("card", null) as Card
+				if card == null:
+					continue
+				var token := str(card.get_instance_id())
+				var zone_text := str(candidate.get("zone", "未知区域"))
+				options.append({
+					"id": token,
+					"label": "%s（%s）" % [card.Name, zone_text],
+					"description": "卡牌ID: %d / BaseID: %d" % [card.ID, card.BaseID],
+				})
+				token_to_card[token] = card
+
+			var choice = await prompt_callback.call({
+				"type": "DISABLE_TARGET_PICK",
+				"title": "禁用技能目标选择",
+				"description": "请选择一张对手特殊卡作为禁用目标",
+				"allow_cancel": true,
+				"options": options,
+			})
+			var choice_token := str(choice)
+			if choice_token == "" or choice_token == "cancel":
+				events.append(_make_event_by_source(
+					owner,
+					int(watcher.get("source_card_id", -1)),
+					str(watcher.get("source_card_name", "未知卡牌")),
+					"DISABLE_SKILL",
+					"禁用技能",
+					STAGE_FAILED,
+					"未选择目标，禁用监视结束",
+					{"mode": DISABLE_MODE_PICK_OPPONENT_SPECIAL}
+				))
+				return {"ok": false, "events": events}
+			selected_card = token_to_card.get(choice_token, null) as Card
+
+	if selected_card == null:
+		events.append(_make_event_by_source(
+			owner,
+			int(watcher.get("source_card_id", -1)),
+			str(watcher.get("source_card_name", "未知卡牌")),
+			"DISABLE_SKILL",
+			"禁用技能",
+			STAGE_FAILED,
+			"选择目标无效，禁用监视结束",
+			{"mode": DISABLE_MODE_PICK_OPPONENT_SPECIAL}
+		))
+		return {"ok": false, "events": events}
+
+	watcher["selected_instance_id"] = selected_card.get_instance_id()
+	watcher["selected_card_id"] = selected_card.ID
+	watcher["selected_card_name"] = selected_card.Name
+	events.append(_make_event_by_source(
+		owner,
+		int(watcher.get("source_card_id", -1)),
+		str(watcher.get("source_card_name", "未知卡牌")),
+		"DISABLE_SKILL",
+		"禁用技能",
+		STAGE_CHECK,
+		"已选定目标: %s" % selected_card.Name,
+		{
+			"mode": DISABLE_MODE_PICK_OPPONENT_SPECIAL,
+			"target_ids": [selected_card.ID, selected_card.BaseID],
+		}
+	))
+
+	return {"ok": true, "events": events}
+
+func _collect_disable_pick_candidates(target_player: Player) -> Array:
+	var candidates: Array = []
+	if target_player == null:
+		return candidates
+
+	var seen: Dictionary = {}
+	var all_cards: Array[Card] = _collect_special_cards_from_player(target_player)
+	for card in all_cards:
+		if card == null:
+			continue
+		var instance_id := card.get_instance_id()
+		if seen.has(instance_id):
+			continue
+		if not card.Special:
+			continue
+		if _is_card_already_disabled(card):
+			continue
+		seen[instance_id] = true
+		candidates.append({
+			"card": card,
+			"zone": _card_zone_text(target_player, card),
+		})
+	return candidates
+
+func _collect_special_cards_from_player(player: Player) -> Array[Card]:
+	var result: Array[Card] = []
+	if player == null:
+		return result
+
+	for card in player.get_all_hand_cards():
+		if card != null and card.Special:
+			result.append(card)
+	for card in player.deal_cards.values():
+		if card is Card and card.Special:
+			result.append(card)
+	return result
+
+func _find_disable_hit_cards(watcher: Dictionary, target_player: Player, check_pool: Array[Card]) -> Array[Card]:
+	var mode := str(watcher.get("mode", DISABLE_MODE_FIXED_SINGLE))
+	var hits: Array[Card] = []
+	var seen: Dictionary = {}
+
+	if mode == DISABLE_MODE_PICK_OPPONENT_SPECIAL:
+		var selected_instance_id := int(watcher.get("selected_instance_id", 0))
+		if selected_instance_id <= 0:
+			return hits
+		var cards_to_check: Array[Card] = _collect_special_cards_from_player(target_player)
+		for card in cards_to_check:
+			if card == null:
+				continue
+			if card.get_instance_id() == selected_instance_id:
+				hits.append(card)
+				break
+		return hits
+
+	var target_ids: Array[int] = _array_to_int_array(watcher.get("target_ids", []))
+	for card in check_pool:
+		if card == null or not card.Special:
+			continue
+		if not _card_matches_target_ids(card, target_ids):
+			continue
+		var instance_id := card.get_instance_id()
+		if seen.has(instance_id):
+			continue
+		seen[instance_id] = true
+		hits.append(card)
+
+	return hits
+
+func _card_matches_target_ids(card: Card, target_ids: Array[int]) -> bool:
+	if card == null:
+		return false
+	return target_ids.has(card.ID) or target_ids.has(card.BaseID)
+
+func _apply_disable_scope_to_card(scope: String, card: Card) -> bool:
+	var normalized_scope := scope.strip_edges().to_upper()
+	if normalized_scope == "":
+		normalized_scope = DISABLE_SCOPE_ALL_SKILLS
+	var handler: Callable = disable_scope_registry.get(normalized_scope, Callable())
+	if not handler.is_valid():
+		return false
+	return bool(handler.call(card))
+
+func _disable_scope_all_skills(card: Card) -> bool:
+	if card == null:
+		return false
+	_disable_all_skills_for_card(card)
+	return true
+
+func _is_card_already_disabled(card: Card) -> bool:
+	if card == null:
+		return true
+	register_card(card)
+	var count = CardSkill.get_skill_num_for_card(card)
+	if count <= 0:
+		return true
+	for i in range(1, count + 1):
+		if int(skill_states.get(_state_key(card.ID, i), SkillUseState.READY)) != SkillUseState.DISABLED:
+			return false
+	if card.has_meta("copied_skill_type"):
+		if int(skill_states.get(_copied_state_key(card.ID), SkillUseState.READY)) != SkillUseState.DISABLED:
+			return false
+	return true
+
+func _choose_disable_target_for_ai(candidates: Array) -> Card:
+	var best_card: Card = null
+	var best_score := -999999
+	for candidate in candidates:
+		var card: Card = candidate.get("card", null) as Card
+		if card == null:
+			continue
+		var threat = _estimate_card_threat(card)
+		if best_card == null or threat > best_score or (threat == best_score and card.ID < best_card.ID):
+			best_card = card
+			best_score = threat
+	return best_card
+
+func _estimate_card_threat(card: Card) -> int:
+	if card == null:
+		return -999999
+	var score := int(card.Score)
+	var skill_count = CardSkill.get_skill_num_for_card(card)
+	for i in range(1, skill_count + 1):
+		match CardSkill.get_skill_type_by_index(card, i):
+			CardSkill.SKILL_TYPE.COPY_SKILL:
+				score += 50
+			CardSkill.SKILL_TYPE.EXCHANGE_CARD:
+				score += 45
+			CardSkill.SKILL_TYPE.DISABLE_SKILL:
+				score += 40
+			CardSkill.SKILL_TYPE.ADD_SCORE:
+				score += 35
+			CardSkill.SKILL_TYPE.GUARANTEE_APPEAR:
+				score += 25
+			CardSkill.SKILL_TYPE.INCREASE_APPEAR:
+				score += 20
+			CardSkill.SKILL_TYPE.OPEN_OPPONENT_HAND:
+				score += 15
+			_:
+				score += 1
+	return score
+
+func _card_zone_text(target_player: Player, card: Card) -> String:
+	if target_player != null and target_player.is_card_in_hand(card):
+		return "手牌"
+	return "牌堆"
 
 func _normalize_queue_entry(raw_entry) -> Dictionary:
 	if raw_entry == null:

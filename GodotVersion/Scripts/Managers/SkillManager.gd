@@ -40,10 +40,14 @@ func resolve_supply_slot(card_manager: CardManager) -> Dictionary:
 		return {"card": null, "events": []}
 	return resolver.resolve_supply_slot(card_manager)
 
-func check_disable_on_opponent_acquire(acquiring_player: Player, opponent_player: Player) -> Array:
+func check_disable_on_opponent_acquire(
+	acquiring_player: Player,
+	opponent_player: Player,
+	acquired_cards: Array[Card] = []
+) -> Array:
 	if resolver == null:
 		return []
-	return resolver.check_disable_on_opponent_acquire(acquiring_player, opponent_player)
+	return await resolver.check_disable_on_opponent_acquire(acquiring_player, opponent_player, acquired_cards)
 
 func check_guarantee_card_skills() -> bool:
 	if resolver == null:

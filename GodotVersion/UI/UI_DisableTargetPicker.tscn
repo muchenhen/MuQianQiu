@@ -1,0 +1,67 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Scripts/UI/UI_DisableTargetPicker.gd" id="1"]
+
+[node name="UI_DisableTargetPicker" type="CanvasLayer"]
+layer = 121
+script = ExtResource("1")
+
+[node name="Background" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.75)
+
+[node name="CenterPanel" type="PanelContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -360.0
+offset_top = -250.0
+offset_right = 360.0
+offset_bottom = 250.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Content" type="VBoxContainer" parent="CenterPanel"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="CenterPanel/Content"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "禁用目标选择"
+horizontal_alignment = 1
+
+[node name="Desc" type="RichTextLabel" parent="CenterPanel/Content"]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+bbcode_enabled = true
+fit_content = true
+text = "请选择一张对手特殊卡"
+
+[node name="CandidateList" type="ItemList" parent="CenterPanel/Content"]
+custom_minimum_size = Vector2(0, 280)
+layout_mode = 2
+size_flags_vertical = 3
+select_mode = 0
+allow_reselect = true
+
+[node name="ButtonRow" type="HBoxContainer" parent="CenterPanel/Content"]
+layout_mode = 2
+alignment = 2
+theme_override_constants/separation = 12
+
+[node name="ConfirmButton" type="Button" parent="CenterPanel/Content/ButtonRow"]
+custom_minimum_size = Vector2(120, 40)
+layout_mode = 2
+text = "确认"
+
+[node name="CancelButton" type="Button" parent="CenterPanel/Content/ButtonRow"]
+custom_minimum_size = Vector2(120, 40)
+layout_mode = 2
+text = "取消"

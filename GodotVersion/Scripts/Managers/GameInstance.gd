@@ -371,7 +371,7 @@ func _on_player_action_resolution_completed(player: Player, action_cards: Array)
 
 	# 先检查“对手已登记的禁用技能”是否命中本次新入堆的卡，确保后续技能不会越过禁用。
 	stage_events.append_array(_convert_skill_events_to_display(
-		skill_manager.check_disable_on_opponent_acquire(player, opponent)
+		await skill_manager.check_disable_on_opponent_acquire(player, opponent, action_cards_typed)
 	))
 
 	var skill_result = await skill_manager.resolve_turn_skills(player, opponent, action_cards_typed)
@@ -481,6 +481,14 @@ func _play_skill_cast_events_blocking(events: Array[Dictionary]) -> void:
 	await ui.play_events(events)
 
 func _request_skill_choice(prompt: Dictionary):
+	var prompt_type := str(prompt.get("type", ""))
+	if prompt_type == "DISABLE_TARGET_PICK":
+		var picker = ui_manager.ensure_get_ui_instance("UI_DisableTargetPicker")
+		if picker.get_parent() == null:
+			ui_manager.open_ui_instance(picker)
+		ui_manager.move_ui_instance_to_top(picker)
+		return await picker.ask_pick(prompt)
+
 	var ui = _ensure_skill_cast_ui()
 	return await ui.ask_choice(prompt)
 
