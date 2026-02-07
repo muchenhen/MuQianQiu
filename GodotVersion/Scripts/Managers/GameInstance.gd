@@ -505,6 +505,15 @@ func _build_skill_result_text(skill_code: String, skill_item: Dictionary) -> Str
 			var target_names2 = _target_names_to_text(skill_item.get("targets", []))
 			var probability = float(skill_item.get("probability", 0.0))
 			return "下回合补牌出现概率提升(%.0f%%): %s" % [probability * 100.0, target_names2]
+		"ADD_SCORE":
+			var value = int(skill_item.get("value", 0))
+			var target_name = str(skill_item.get("target_name", "")).strip_edges()
+			var targets = target_name if target_name != "" else _target_names_to_text(skill_item.get("targets", []))
+			if value > 0 and targets != "":
+				return "已登记加分效果(+%d)，目标: %s（满足条件时生效）" % [value, targets]
+			if value > 0:
+				return "已登记加分效果(+%d)（满足条件时生效）" % value
+			return "已登记加分效果（满足条件时生效）"
 		_:
 			return "技能已触发"
 
@@ -538,6 +547,8 @@ func _skill_code_to_cn(skill_code: String) -> String:
 			return "保证出现"
 		"INCREASE_APPEAR":
 			return "增加出现概率"
+		"ADD_SCORE":
+			return "增加分数"
 		_:
 			return skill_code
 

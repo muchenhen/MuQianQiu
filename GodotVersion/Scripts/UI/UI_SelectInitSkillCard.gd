@@ -20,6 +20,8 @@ extends Node2D
 var skill_data_dict = {}
 # 卡牌名称字典，用于显示目标名称
 var card_name_dict = {}
+# 故事名称字典，用于显示故事目标名称
+var story_name_dict = {}
 
 var card_ids: Array[int] = []
 var selected_cards: Array[int] = []  # 选中的珍稀牌ID列表
@@ -52,6 +54,24 @@ func _ready() -> void:
 func _load_skill_data() -> void:
 	var table_manager = TableManager.get_instance()
 	var skills_table = table_manager.get_table("Skills")
+	var cards_table = table_manager.get_table("Cards")
+	var stories_table = table_manager.get_table("Stories")
+
+	card_name_dict.clear()
+	story_name_dict.clear()
+	skill_data_dict.clear()
+
+	# 先加载全量卡牌名称（不仅仅是技能卡）
+	for cid in cards_table.keys():
+		var card_row = cards_table[cid]
+		if card_row.has("Name"):
+			card_name_dict[cid] = card_row["Name"]
+
+	# 加载故事名称
+	for sid in stories_table.keys():
+		var story_row = stories_table[sid]
+		if story_row.has("Name"):
+			story_name_dict[sid] = story_row["Name"]
 	
 	# 直接遍历Skills表，其中key就是CardID
 	for card_id in skills_table.keys():
@@ -69,12 +89,14 @@ func _load_skill_data() -> void:
 				"type": skill_row["Skill1Type"],
 				"target": skill_row["Skill1Target"],
 				"target_id": skill_row["Skill1TargetID"],
+				"target_type": skill_row.get("Skill1TargetType", ""),
 				"value": skill_row["Skill1Value"]
 			},
 			"skill2": {
 				"type": skill_row["Skill2Type"],
 				"target": skill_row["Skill2Target"],
 				"target_id": skill_row["Skill2TargetID"],
+				"target_type": skill_row.get("Skill2TargetType", ""),
 				"value": skill_row["Skill2Value"]
 			}
 		}
@@ -319,7 +341,7 @@ func _update_skill_display(skill_data: Dictionary, type_label: Label, target_lab
 		else:
 			target_text += str(skill_data.target)
 			
-			# 如果有目标ID，查找目标卡牌名
+			# 如果有目标ID，查找目标名称（按TargetType优先）
 			if typeof(skill_data.target_id) == TYPE_STRING and skill_data.target_id.strip_edges() != "":
 				# 检查是否为括号中的ID列表
 				if "(" in skill_data.target_id and ")" in skill_data.target_id:
@@ -329,16 +351,18 @@ func _update_skill_display(skill_data: Dictionary, type_label: Label, target_lab
 					var target_names = []
 					for id_str in id_list:
 						var id = int(id_str)
-						if card_name_dict.has(id):
-							target_names.append(card_name_dict[id])
+						var display_name = _get_target_name_by_type(skill_data.get("target_type", ""), id)
+						if display_name != "":
+							target_names.append(display_name)
 					
 					if target_names.size() > 0:
 						target_text += " (" + ", ".join(target_names) + ")"
 				else:
 					# 单个ID
 					var target_id = int(skill_data.target_id)
-					if card_name_dict.has(target_id):
-						target_text += " (" + card_name_dict[target_id] + ")"
+					var display_name = _get_target_name_by_type(skill_data.get("target_type", ""), target_id)
+					if display_name != "":
+						target_text += " (" + display_name + ")"
 	else:
 		target_text += "无"
 	
@@ -354,6 +378,24 @@ func _update_skill_display(skill_data: Dictionary, type_label: Label, target_lab
 		value_text += "无"
 	
 	value_label.text = value_text
+
+func _get_target_name_by_type(target_type_raw, target_id: int) -> String:
+	var target_type = str(target_type_raw).to_upper().strip_edges()
+	if target_type == "CARD":
+		if card_name_dict.has(target_id):
+			return str(card_name_dict[target_id])
+		return ""
+	if target_type == "STORY" or target_type == "STORIES":
+		if story_name_dict.has(target_id):
+			return str(story_name_dict[target_id])
+		return ""
+
+	# 兼容旧数据：先卡牌再故事
+	if card_name_dict.has(target_id):
+		return str(card_name_dict[target_id])
+	if story_name_dict.has(target_id):
+		return str(story_name_dict[target_id])
+	return ""
 
 func _on_start_button_pressed() -> void:
 	# 允许0~15张，直接开始

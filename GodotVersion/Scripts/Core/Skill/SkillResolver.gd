@@ -110,8 +110,7 @@ func resolve_turn_skills(
 				CardSkill.SKILL_TYPE.INCREASE_APPEAR:
 					_enqueue_deferred_supply_skill(current_player, entry, false, result)
 				CardSkill.SKILL_TYPE.ADD_SCORE:
-					# 由 ScoreManager 在 add_card_score 时处理
-					pass
+					_apply_add_score_skill(entry, result)
 
 		# 按规则优先处理复制技能与交换卡牌
 		for entry in copy_entries:
@@ -277,6 +276,19 @@ func _enqueue_deferred_supply_skill(current_player: Player, entry: Dictionary, i
 
 	_set_entry_state(entry, SkillUseState.USED)
 
+func _apply_add_score_skill(entry: Dictionary, result: Dictionary) -> void:
+	# 分数效果的实际创建仍由 ScoreManager.add_card_score 处理，
+	# 这里补充“技能已发动”的可见事件，避免玩家无感。
+	_set_entry_state(entry, SkillUseState.USED)
+	result.triggered.append({
+		"skill": "ADD_SCORE",
+		"card_id": entry.card.ID,
+		"targets": entry.skill_target_ids,
+		"target_name": entry.get("skill_target_name", ""),
+		"target_type": entry.get("skill_target_type", ""),
+		"value": entry.skill_value,
+	})
+
 func _get_ready_entries(card: Card) -> Array:
 	var entries: Array = []
 	var count = CardSkill.get_skill_num_for_card(card)
@@ -318,6 +330,8 @@ func _build_entry_from_skill_row(card: Card, skill_index: int) -> Dictionary:
 
 	var target_id_key = "Skill%dTargetID" % skill_index
 	var value_key = "Skill%dValue" % skill_index
+	var target_key = "Skill%dTarget" % skill_index
+	var target_type_key = "Skill%dTargetType" % skill_index
 
 	var target_ids: Array[int] = []
 	if row.has(target_id_key):
@@ -329,11 +343,21 @@ func _build_entry_from_skill_row(card: Card, skill_index: int) -> Dictionary:
 		if value_raw != "":
 			skill_value = float(value_raw)
 
+	var target_name := ""
+	if row.has(target_key):
+		target_name = str(row[target_key]).strip_edges()
+
+	var target_type := ""
+	if row.has(target_type_key):
+		target_type = str(row[target_type_key]).strip_edges().to_upper()
+
 	return {
 		"card": card,
 		"skill_index": skill_index,
 		"skill_type": CardSkill.string_to_skill_type(type_str),
 		"skill_target_ids": target_ids,
+		"skill_target_name": target_name,
+		"skill_target_type": target_type,
 		"skill_value": skill_value,
 		"is_copied": false,
 	}

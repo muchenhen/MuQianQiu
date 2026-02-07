@@ -144,10 +144,11 @@ func _create_score_effect_from_skill(player: Player, card: Card, skill_index: in
 	var skill_target_key = "Skill%dTarget" % skill_index
 	var skill_target_id_key = "Skill%dTargetID" % skill_index
 	var skill_value_key = "Skill%dValue" % skill_index
-	
+	var skill_target_type_key = "Skill%dTargetType" % skill_index
+
 	if not card_skill_row.has(skill_target_key) or not card_skill_row.has(skill_target_id_key):
 		return
-	
+
 	var target_name = card_skill_row[skill_target_key]
 	var target_id = card_skill_row[skill_target_id_key]
 	var value = 10.0  # 默认值
@@ -155,24 +156,53 @@ func _create_score_effect_from_skill(player: Player, card: Card, skill_index: in
 	if card_skill_row.has(skill_value_key) and card_skill_row[skill_value_key]:
 		value = float(card_skill_row[skill_value_key])
 	
-	var effect_type = ScoreEffectType.SPECIFIC_CARD	
-	# 根据目标确定效果类型
-	if target_name == "包含自身":
-		# 包含自身一定是对多个故事加分
-		effect_type = ScoreEffectType.MULTI_STORIES
-		var card_id = card.BaseID if card.Special else card.ID
-		var stories_ids = StoryManager.get_instance().get_relent_stories_id_by_cards_id([card_id])
-		target_id = stories_ids  # 多个故事ID的数组
-		target_name = "包含卡牌 '%s' 的故事" % card.Name
+	var explicit_target_type := ""
+	if card_skill_row.has(skill_target_type_key):
+		explicit_target_type = str(card_skill_row[skill_target_type_key]).strip_edges().to_upper()
+
+	var effect_type = ScoreEffectType.SPECIFIC_CARD
+	if explicit_target_type != "":
+		match explicit_target_type:
+			"CARD":
+				effect_type = ScoreEffectType.SPECIFIC_CARD
+			"STORY":
+				effect_type = ScoreEffectType.SPECIFIC_STORY
+				if StoryManager.get_instance().stories.has(target_id):
+					var target_story: Story = StoryManager.get_instance().stories[target_id]
+					target_name = target_story.name
+			"STORIES":
+				effect_type = ScoreEffectType.MULTI_STORIES
+				if target_name == "包含自身":
+					var card_id = card.BaseID if card.Special else card.ID
+					var stories_ids = StoryManager.get_instance().get_relent_stories_id_by_cards_id([card_id])
+					target_id = stories_ids
+					target_name = "包含卡牌 '%s' 的故事" % card.Name
+				elif target_id is String:
+					target_id = _parse_target_ids(str(target_id))
+			_:
+				push_warning("ScoreManager: 未知 TargetType='%s'，回退到旧逻辑。" % explicit_target_type)
+				effect_type = _infer_legacy_effect_type(card, target_name, target_id)
+				if effect_type == ScoreEffectType.MULTI_STORIES:
+					var card_id2 = card.BaseID if card.Special else card.ID
+					var stories_ids2 = StoryManager.get_instance().get_relent_stories_id_by_cards_id([card_id2])
+					target_id = stories_ids2
+					target_name = "包含卡牌 '%s' 的故事" % card.Name
+				elif effect_type == ScoreEffectType.SPECIFIC_STORY and StoryManager.get_instance().stories.has(target_id):
+					var target_story2:Story = StoryManager.get_instance().stories[target_id]
+					target_name = target_story2.name
 	else:
-		# 通过查询故事表判断目标是故事还是卡牌
-		if StoryManager.get_instance().stories.has(target_id):
-			effect_type = ScoreEffectType.SPECIFIC_STORY
-			# 获取故事的真实名称
-			var target_story:Story = StoryManager.get_instance().stories[target_id]
-			target_name = target_story.name
-		else:
-			effect_type = ScoreEffectType.SPECIFIC_CARD	
+		# 兼容旧表：缺少 TargetType 时沿用旧推断并给出警告
+		push_warning("ScoreManager: CardID=%d Skill%d 缺少 TargetType，使用旧推断逻辑。" % [card.ID, skill_index])
+		effect_type = _infer_legacy_effect_type(card, target_name, target_id)
+		if effect_type == ScoreEffectType.MULTI_STORIES:
+			var card_id3 = card.BaseID if card.Special else card.ID
+			var stories_ids3 = StoryManager.get_instance().get_relent_stories_id_by_cards_id([card_id3])
+			target_id = stories_ids3
+			target_name = "包含卡牌 '%s' 的故事" % card.Name
+		elif effect_type == ScoreEffectType.SPECIFIC_STORY and StoryManager.get_instance().stories.has(target_id):
+			var target_story3:Story = StoryManager.get_instance().stories[target_id]
+			target_name = target_story3.name
+
 	# 创建分数效果
 	var effect = ScoreEffect.new(
 		effect_type,
@@ -184,6 +214,27 @@ func _create_score_effect_from_skill(player: Player, card: Card, skill_index: in
 	
 	# 添加到玩家的分数效果列表中
 	player_score_effect[player].append(effect)
+
+func _infer_legacy_effect_type(card: Card, target_name, target_id) -> ScoreEffectType:
+	if target_name == "包含自身":
+		return ScoreEffectType.MULTI_STORIES
+	if StoryManager.get_instance().stories.has(target_id):
+		return ScoreEffectType.SPECIFIC_STORY
+	return ScoreEffectType.SPECIFIC_CARD
+
+func _parse_target_ids(raw_value: String) -> Array[int]:
+	var raw = raw_value.strip_edges()
+	if raw == "":
+		return []
+	raw = raw.replace("(", "")
+	raw = raw.replace(")", "")
+	raw = raw.replace(";", ",")
+	var ids: Array[int] = []
+	for token in raw.split(","):
+		var t = token.strip_edges()
+		if t.is_valid_int():
+			ids.append(t.to_int())
+	return ids
 
 static func convert_effect_type_to_string(effect_type: ScoreEffectType) -> String:
 	match effect_type:
