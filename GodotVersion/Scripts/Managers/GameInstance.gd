@@ -410,14 +410,21 @@ func _consume_pending_score_events_for_player(player: Player) -> Array[Dictionar
 
 func _convert_score_event_to_display(event: Dictionary) -> Dictionary:
 	var player: Player = event.get("player", null) as Player
+	var stage_code := str(event.get("stage", "TRIGGER"))
+	var skill_code := str(event.get("skill_code", ""))
+	var skill_name := str(event.get("skill_name", "技能"))
+	var result_text := str(event.get("result_text", ""))
+	if _is_add_score_event(skill_code, skill_name):
+		result_text = _build_add_score_result_text(event, stage_code)
+
 	return {
 		"round_index": int(event.get("round_index", current_round_index)),
 		"actor_name": _format_player_display_name(player.player_name if player != null else "Unknown"),
 		"source_card_name": str(event.get("source_card_name", "未知卡牌")),
-		"skill_name": str(event.get("skill_name", "技能")),
-		"stage": str(event.get("stage", "TRIGGER")),
-		"stage_cn": _stage_code_to_cn(str(event.get("stage", "TRIGGER"))),
-		"result_text": str(event.get("result_text", "")),
+		"skill_name": skill_name,
+		"stage": stage_code,
+		"stage_cn": _stage_code_to_cn(stage_code),
+		"result_text": result_text,
 	}
 
 func _convert_skill_events_to_display(raw_events) -> Array[Dictionary]:
@@ -428,14 +435,43 @@ func _convert_skill_events_to_display(raw_events) -> Array[Dictionary]:
 		if raw_event != null and raw_event.has_method("to_dict"):
 			var d = raw_event.to_dict()
 			d["actor_name"] = _format_player_display_name(str(d.get("actor_name", "")))
+			if _is_add_score_event(str(d.get("skill_code", "")), str(d.get("skill_name", ""))):
+				d["result_text"] = _build_add_score_result_text(d, str(d.get("stage", "TRIGGER")))
 			result.append(d)
 		elif raw_event is Dictionary:
 			var dd = raw_event.duplicate(true)
 			dd["actor_name"] = _format_player_display_name(str(dd.get("actor_name", "")))
 			if not dd.has("stage_cn"):
 				dd["stage_cn"] = _stage_code_to_cn(str(dd.get("stage", "TRIGGER")))
+			if _is_add_score_event(str(dd.get("skill_code", "")), str(dd.get("skill_name", ""))):
+				dd["result_text"] = _build_add_score_result_text(dd, str(dd.get("stage", "TRIGGER")))
 			result.append(dd)
 	return result
+
+func _is_add_score_event(skill_code: String, skill_name: String) -> bool:
+	return skill_code == "ADD_SCORE" or skill_name == "增加分数"
+
+func _build_add_score_result_text(event: Dictionary, stage_code: String) -> String:
+	var target_name := str(event.get("target_name", "")).strip_edges()
+	if target_name == "":
+		target_name = "目标未指定"
+
+	var score_value := int(event.get("value", 0))
+	var score_text := "+%d" % score_value
+
+	match stage_code:
+		"REGISTER":
+			return "已登记加分：目标【%s】%s 分（满足条件时发动）" % [target_name, score_text]
+		"TRIGGER":
+			return "加分生效：目标【%s】%s 分" % [target_name, score_text]
+		"FAILED":
+			return "加分失败：目标【%s】未满足条件" % [target_name]
+		"WAIVED":
+			return "已放弃加分：目标【%s】" % [target_name]
+		"INVALID":
+			return "加分配置无效：目标【%s】" % [target_name]
+		_:
+			return "加分处理：目标【%s】%s 分" % [target_name, score_text]
 
 func _to_debug_entries(display_events: Array[Dictionary]) -> Array[Dictionary]:
 	var entries: Array[Dictionary] = []
