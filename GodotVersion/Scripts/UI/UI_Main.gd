@@ -14,6 +14,7 @@ var card_manager = CardManager.get_instance()
 var input_manager = InputManager.get_instance()
 var _debug_layer: CanvasLayer = null
 var _debug_log: RichTextLabel = null
+const ENABLE_SKILL_DEBUG_PANEL: bool = false
 
 # 玩家A的珍稀牌实例
 var player_a_skill_cards:Array[Card] = []
@@ -37,10 +38,11 @@ func _ready() -> void:
 		if not game_instance.is_connected("game_start", Callable(self, "_on_game_start")):
 			game_instance.connect("game_start", Callable(self, "_on_game_start"))
 			print("UI_Main: 已连接game_start信号")
-		if not game_instance.is_connected("skill_debug_event", Callable(self, "_on_skill_debug_event")):
+		if ENABLE_SKILL_DEBUG_PANEL and not game_instance.is_connected("skill_debug_event", Callable(self, "_on_skill_debug_event")):
 			game_instance.connect("skill_debug_event", Callable(self, "_on_skill_debug_event"))
 	
-	_setup_skill_debug_panel()
+	if ENABLE_SKILL_DEBUG_PANEL:
+		_setup_skill_debug_panel()
 
 # 游戏开始后，显示玩家的珍稀牌
 func _on_game_start():
@@ -324,5 +326,5 @@ func wait_for_skill_cards_animation_complete(callback: Callable) -> void:
 
 func _exit_tree() -> void:
 	var game_instance = GameManager.instance
-	if game_instance != null and game_instance.is_connected("skill_debug_event", Callable(self, "_on_skill_debug_event")):
+	if ENABLE_SKILL_DEBUG_PANEL and game_instance != null and game_instance.is_connected("skill_debug_event", Callable(self, "_on_skill_debug_event")):
 		game_instance.disconnect("skill_debug_event", Callable(self, "_on_skill_debug_event"))

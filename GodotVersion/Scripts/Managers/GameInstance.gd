@@ -10,6 +10,8 @@ enum GameRound {
 
 # 游戏开始信号，在游戏完全初始化后触发
 signal game_start
+# 正式技能播报信号
+signal skill_cast_events(events: Array)
 # 技能触发调试信号（给UI调试面板）
 signal skill_debug_event(payload: Dictionary)
 
@@ -50,6 +52,7 @@ var player_a = Player.new()
 var player_b = Player.new()
 
 var animation_timer: Timer
+var _pending_score_skill_events: Array[Dictionary] = []
 
 var current_round: GameRound = GameRound.WAITING
 var current_round_index: int = 0
@@ -98,6 +101,8 @@ func initialize(root_node):
 
 	player_a.action_resolution_completed.connect(Callable(self, "_on_player_action_resolution_completed"))
 	player_b.action_resolution_completed.connect(Callable(self, "_on_player_action_resolution_completed"))
+	if not ScoreManager.get_instance().is_connected("score_skill_event", Callable(self, "_on_score_skill_event")):
+		ScoreManager.get_instance().connect("score_skill_event", Callable(self, "_on_score_skill_event"))
 
 	initialize_round_state()
 	_build_match_runtime()
@@ -113,6 +118,7 @@ func _sync_settings_from_manager() -> void:
 	opponent_hand_visible = game_manager.opponent_hand_visible
 
 func _build_match_runtime() -> void:
+	_pending_score_skill_events.clear()
 	match_config = MatchConfig.new()
 	match_config.selected_versions = choosed_versions.duplicate()
 	match_config.use_special_cards = use_special_cards
@@ -129,6 +135,7 @@ func _build_match_runtime() -> void:
 
 	ai_planner = AIPlanner.new()
 	skill_manager.initialize(match_state)
+	skill_manager.set_prompt_callback(Callable(self, "_request_skill_choice"))
 
 func initialize_players():
 	player_a.initialize("PlayerA", Player.PlayerPos.A)
@@ -251,7 +258,7 @@ func _on_turn_event_emitted(event: TurnEvent) -> void:
 
 func _on_round_started(payload: Dictionary) -> void:
 	current_round_index = int(payload.get("round_index", 0))
-	var round_player: Player = payload.get("player", null)
+	var round_player: Player = payload.get("player", null) as Player
 	if round_player == player_a:
 		current_round = GameRound.PLAYER_A
 	else:
@@ -262,16 +269,21 @@ func _handle_public_supply_async() -> void:
 	turn_engine.submit_public_supply_completed()
 
 func _supply_public_cards_with_effects() -> void:
+	var supply_stage_events: Array[Dictionary] = []
 	while public_deal.need_supply_hand_card():
-		var card_to_supply = skill_manager.pick_card_for_supply(card_manager)
+		var supply_result = skill_manager.resolve_supply_slot(card_manager)
+		var card_to_supply = supply_result.get("card", null)
+		supply_stage_events.append_array(_convert_skill_events_to_display(supply_result.get("events", [])))
 		if card_to_supply != null:
 			public_deal.supply_specific_card(card_to_supply)
 		else:
 			public_deal.supply_hand_card()
 		await public_deal.common_suply_public_card
+	if not supply_stage_events.is_empty():
+		await _play_skill_cast_events_blocking(supply_stage_events)
 
 func _handle_exchange_required(payload: Dictionary) -> void:
-	var actor: Player = payload.get("player", null)
+	var actor: Player = payload.get("player", null) as Player
 	if actor == null:
 		turn_engine.notify_exchange_completed(false)
 		return
@@ -282,7 +294,7 @@ func _handle_exchange_required(payload: Dictionary) -> void:
 	card_exchange_manager.handle_card_exchange(actor)
 
 func _handle_action_required(payload: Dictionary) -> void:
-	var actor: Player = payload.get("player", null)
+	var actor: Player = payload.get("player", null) as Player
 	if actor == null:
 		return
 
@@ -320,9 +332,9 @@ func _set_turn_state(actor: Player) -> void:
 		other_player.set_all_hand_card_cannot_click()
 
 func _handle_cards_matched(payload: Dictionary) -> void:
-	var actor: Player = payload.get("player", null)
-	var hand_card: Card = payload.get("hand_card", null)
-	var public_card: Card = payload.get("public_card", null)
+	var actor: Player = payload.get("player", null) as Player
+	var hand_card: Card = payload.get("hand_card", null) as Card
+	var public_card: Card = payload.get("public_card", null) as Card
 	if actor == null or hand_card == null or public_card == null:
 		turn_engine.notify_action_resolved([])
 		return
@@ -355,22 +367,122 @@ func _on_player_action_resolution_completed(player: Player, action_cards: Array)
 		if card is Card:
 			action_cards_typed.append(card)
 
-	var skill_result = skill_manager.resolve_turn_skills(player, opponent, action_cards_typed)
-	var triggered_skills = skill_result.get("triggered", [])
-	if triggered_skills is Array and triggered_skills.size() > 0:
-		print("技能已触发，数量: ", triggered_skills.size(), " 详情: ", triggered_skills)
-		var debug_entries: Array[Dictionary] = []
-		for item in triggered_skills:
-			if item is Dictionary:
-				debug_entries.append(_build_skill_debug_entry(current_round_index, player, item))
+	var stage_events: Array[Dictionary] = []
+
+	# 先检查“对手已登记的禁用技能”是否命中本次新入堆的卡，确保后续技能不会越过禁用。
+	stage_events.append_array(_convert_skill_events_to_display(
+		skill_manager.check_disable_on_opponent_acquire(player, opponent)
+	))
+
+	var skill_result = await skill_manager.resolve_turn_skills(player, opponent, action_cards_typed)
+	stage_events.append_array(_convert_skill_events_to_display(skill_result.get("events", [])))
+	stage_events.append_array(_consume_pending_score_events_for_player(player))
+
+	if not stage_events.is_empty():
+		await _play_skill_cast_events_blocking(stage_events)
 		skill_debug_event.emit({
-			"entries": debug_entries,
+			"entries": _to_debug_entries(stage_events),
 		})
-	if skill_result.has("revealed_card_ids") and skill_result.revealed_card_ids.size() > 0:
+
+	var revealed_card_ids = skill_result.get("revealed_card_ids", [])
+	if revealed_card_ids is Array and revealed_card_ids.size() > 0:
 		UIManager.get_instance().show_info_tip("技能生效：翻开了对手手牌")
 
 	_refresh_all_hand_visibility()
 	turn_engine.notify_action_resolved(action_cards_typed)
+
+func _on_score_skill_event(event: Dictionary) -> void:
+	var normalized = event.duplicate(true)
+	normalized["round_index"] = current_round_index
+	_pending_score_skill_events.append(normalized)
+
+func _consume_pending_score_events_for_player(player: Player) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	var remains: Array[Dictionary] = []
+	for item in _pending_score_skill_events:
+		var event_player: Player = item.get("player", null) as Player
+		if event_player == player:
+			result.append(_convert_score_event_to_display(item))
+		else:
+			remains.append(item)
+	_pending_score_skill_events = remains
+	return result
+
+func _convert_score_event_to_display(event: Dictionary) -> Dictionary:
+	var player: Player = event.get("player", null) as Player
+	return {
+		"round_index": int(event.get("round_index", current_round_index)),
+		"actor_name": _format_player_display_name(player.player_name if player != null else "Unknown"),
+		"source_card_name": str(event.get("source_card_name", "未知卡牌")),
+		"skill_name": str(event.get("skill_name", "技能")),
+		"stage": str(event.get("stage", "TRIGGER")),
+		"stage_cn": _stage_code_to_cn(str(event.get("stage", "TRIGGER"))),
+		"result_text": str(event.get("result_text", "")),
+	}
+
+func _convert_skill_events_to_display(raw_events) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	if not (raw_events is Array):
+		return result
+	for raw_event in raw_events:
+		if raw_event != null and raw_event.has_method("to_dict"):
+			var d = raw_event.to_dict()
+			d["actor_name"] = _format_player_display_name(str(d.get("actor_name", "")))
+			result.append(d)
+		elif raw_event is Dictionary:
+			var dd = raw_event.duplicate(true)
+			dd["actor_name"] = _format_player_display_name(str(dd.get("actor_name", "")))
+			if not dd.has("stage_cn"):
+				dd["stage_cn"] = _stage_code_to_cn(str(dd.get("stage", "TRIGGER")))
+			result.append(dd)
+	return result
+
+func _to_debug_entries(display_events: Array[Dictionary]) -> Array[Dictionary]:
+	var entries: Array[Dictionary] = []
+	for e in display_events:
+		entries.append({
+			"round": e.get("round_index", "-"),
+			"player": e.get("actor_name", "Unknown"),
+			"card_name": e.get("source_card_name", "未知卡牌"),
+			"skill_name": e.get("skill_name", "未知技能"),
+			"result": e.get("result_text", ""),
+		})
+	return entries
+
+func _stage_code_to_cn(stage_code: String) -> String:
+	match stage_code:
+		"REGISTER":
+			return "预备"
+		"CHECK":
+			return "检查"
+		"TRIGGER":
+			return "发动"
+		"FAILED":
+			return "失败"
+		"WAIVED":
+			return "放弃"
+		"INVALID":
+			return "无效"
+		_:
+			return "发动"
+
+func _ensure_skill_cast_ui() -> UI_SkillCast:
+	var ui = ui_manager.ensure_get_ui_instance("UI_SkillCast")
+	if ui.get_parent() == null:
+		ui_manager.open_ui_instance(ui)
+	ui_manager.move_ui_instance_to_top(ui)
+	return ui as UI_SkillCast
+
+func _play_skill_cast_events_blocking(events: Array[Dictionary]) -> void:
+	if events.is_empty():
+		return
+	skill_cast_events.emit(events)
+	var ui = _ensure_skill_cast_ui()
+	await ui.play_events(events)
+
+func _request_skill_choice(prompt: Dictionary):
+	var ui = _ensure_skill_cast_ui()
+	return await ui.ask_choice(prompt)
 
 func get_current_active_player():
 	if turn_engine != null:
@@ -566,6 +678,8 @@ func clear():
 		player_a.disconnect("action_resolution_completed", Callable(self, "_on_player_action_resolution_completed"))
 	if player_b != null and player_b.is_connected("action_resolution_completed", Callable(self, "_on_player_action_resolution_completed")):
 		player_b.disconnect("action_resolution_completed", Callable(self, "_on_player_action_resolution_completed"))
+	if ScoreManager.get_instance().is_connected("score_skill_event", Callable(self, "_on_score_skill_event")):
+		ScoreManager.get_instance().disconnect("score_skill_event", Callable(self, "_on_score_skill_event"))
 
 	if card_exchange_manager and card_exchange_manager.is_connected("exchange_completed", Callable(self, "_on_exchange_completed")):
 		card_exchange_manager.disconnect("exchange_completed", Callable(self, "_on_exchange_completed"))
@@ -582,6 +696,7 @@ func clear():
 	story_manager.clear()
 	card_manager.clear()
 	skill_manager.reset_for_match()
+	_pending_score_skill_events.clear()
 
 	if animation_timer != null and animation_timer.is_inside_tree():
 		animation_timer.queue_free()

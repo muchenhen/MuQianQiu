@@ -65,6 +65,7 @@ var player_score_effect: Dictionary = {}  # 玩家分数特效
 
 # 信号
 signal score_changed(player: Player, old_score: int, new_score: int, change: int, description: String)
+signal score_skill_event(event: Dictionary)
 
 # 获取单例实例
 static func get_instance() -> ScoreManager:
@@ -103,20 +104,24 @@ func _add_score_record(player: Player, source: ScoreSource, score: int, descript
 func add_card_score(player: Player, card: Card) -> void:
 	if not player_scores.has(player):
 		init_player_score(player)
-	
-	# 1. 添加卡牌基础分数
+	add_base_card_score(player, card)
+	if card.Special:
+		for i in range(1, card.card_skill_num + 1):
+			var skill_type = CardSkill.get_skill_type_by_index(card, i)
+			if skill_type == CardSkill.SKILL_TYPE.ADD_SCORE:
+				register_add_score_effect_for_skill(player, card, i)
+
+func add_base_card_score(player: Player, card: Card) -> void:
+	if not player_scores.has(player):
+		init_player_score(player)
+
 	var base_score = card.Score
 	if base_score > 0:
 		var desc = "使用卡牌 '%s' 获得基础分数" % card.Name
 		_add_score_record(player, ScoreSource.CARD_SCORE, base_score, desc)
 
-	# 2. 如果是珍稀牌，检查技能表中的加分效果
-	if card.Special:
-		for i in range(1, card.card_skill_num + 1):
-			var skill_type = CardSkill.get_skill_type_by_index(card, i)
-			if skill_type == CardSkill.SKILL_TYPE.ADD_SCORE:
-				# 创建增加分数的效果
-				_create_score_effect_from_skill(player, card, i)
+func register_add_score_effect_for_skill(player: Player, card: Card, skill_index: int) -> void:
+	_create_score_effect_from_skill(player, card, skill_index)
 				
 func add_story_score(player: Player, completed_stories: Array[Story]) -> void:
 	if not player_scores.has(player):
@@ -214,6 +219,20 @@ func _create_score_effect_from_skill(player: Player, card: Card, skill_index: in
 	
 	# 添加到玩家的分数效果列表中
 	player_score_effect[player].append(effect)
+
+	var event_payload = {
+		"player": player,
+		"source_card_id": card.ID,
+		"source_card_name": card.Name,
+		"skill_code": "ADD_SCORE",
+		"skill_name": "增加分数",
+		"stage": "REGISTER",
+		"target_name": target_name,
+		"target_type": explicit_target_type if explicit_target_type != "" else convert_effect_type_to_string(effect_type),
+		"value": int(value),
+		"result_text": "已登记加分效果（满足条件时发动）",
+	}
+	score_skill_event.emit(event_payload)
 
 func _infer_legacy_effect_type(card: Card, target_name, target_id) -> ScoreEffectType:
 	if target_name == "包含自身":
@@ -322,10 +341,32 @@ func _apply_single_effect(player: Player, effect: ScoreEffect, target_id = null)
 		ScoreEffectType.SPECIFIC_CARD:
 			description = "卡牌 '%s' 对 '%s' 的加成分数" % [effect.source_card.Name, effect.target_name]
 			_add_score_record(player, ScoreSource.SPECIAL_BONUS, score_value, description)
+			score_skill_event.emit({
+				"player": player,
+				"source_card_id": effect.source_card.ID,
+				"source_card_name": effect.source_card.Name,
+				"skill_code": "ADD_SCORE",
+				"skill_name": "增加分数",
+				"stage": "TRIGGER",
+				"target_name": effect.target_name,
+				"value": score_value,
+				"result_text": "对目标卡牌加分生效: +%d" % score_value,
+			})
 		
 		ScoreEffectType.SPECIFIC_STORY:
 			description = "卡牌 '%s' 对故事 '%s' 的加成分数" % [effect.source_card.Name, effect.target_name]
 			_add_score_record(player, ScoreSource.SPECIAL_BONUS, score_value, description)
+			score_skill_event.emit({
+				"player": player,
+				"source_card_id": effect.source_card.ID,
+				"source_card_name": effect.source_card.Name,
+				"skill_code": "ADD_SCORE",
+				"skill_name": "增加分数",
+				"stage": "TRIGGER",
+				"target_name": effect.target_name,
+				"value": score_value,
+				"result_text": "对目标故事加分生效: +%d" % score_value,
+			})
 		
 		ScoreEffectType.MULTI_STORIES:
 			# 对指定的单个故事加分
@@ -334,6 +375,17 @@ func _apply_single_effect(player: Player, effect: ScoreEffect, target_id = null)
 				var story_name = story.name
 				description = "卡牌 '%s' 对故事 '%s' 的加成分数" % [effect.source_card.Name, story_name]
 				_add_score_record(player, ScoreSource.SPECIAL_BONUS, score_value, description)
+				score_skill_event.emit({
+					"player": player,
+					"source_card_id": effect.source_card.ID,
+					"source_card_name": effect.source_card.Name,
+					"skill_code": "ADD_SCORE",
+					"skill_name": "增加分数",
+					"stage": "TRIGGER",
+					"target_name": story_name,
+					"value": score_value,
+					"result_text": "对目标故事加分生效: +%d" % score_value,
+				})
 
 # 获取玩家的未应用分数效果
 func get_pending_score_effects(player: Player) -> Array:

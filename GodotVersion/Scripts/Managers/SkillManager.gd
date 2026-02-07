@@ -18,6 +18,10 @@ func initialize(state: MatchState) -> void:
 	resolver = SkillResolver.new()
 	resolver.initialize(state)
 
+func set_prompt_callback(cb: Callable) -> void:
+	if resolver:
+		resolver.set_prompt_callback(cb)
+
 func reset_for_match() -> void:
 	if resolver:
 		resolver.reset_for_match()
@@ -29,12 +33,17 @@ func register_card(card: Card) -> void:
 func resolve_turn_skills(current_player: Player, opponent_player: Player, action_cards: Array[Card]) -> Dictionary:
 	if resolver == null:
 		return {}
-	return resolver.resolve_turn_skills(current_player, opponent_player, action_cards)
+	return await resolver.resolve_turn_skills(current_player, opponent_player, action_cards)
 
-func pick_card_for_supply(card_manager: CardManager) -> Card:
+func resolve_supply_slot(card_manager: CardManager) -> Dictionary:
 	if resolver == null:
-		return null
-	return resolver.pick_card_for_supply(card_manager)
+		return {"card": null, "events": []}
+	return resolver.resolve_supply_slot(card_manager)
+
+func check_disable_on_opponent_acquire(acquiring_player: Player, opponent_player: Player) -> Array:
+	if resolver == null:
+		return []
+	return resolver.check_disable_on_opponent_acquire(acquiring_player, opponent_player)
 
 func check_guarantee_card_skills() -> bool:
 	if resolver == null:

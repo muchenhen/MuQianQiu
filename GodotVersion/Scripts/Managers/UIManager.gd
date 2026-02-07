@@ -38,6 +38,7 @@ func regiester_ui_elements() -> void:
 	register_ui_element("UI_SelectInitSkillCard", "res://UI/UI_SelectInitSkillCard.tscn")
 	register_ui_element("UI_Tip", "res://UI/UI_Tip.tscn")
 	register_ui_element("UI_CheckSkill", "res://UI/UI_CheckSkill.tscn")
+	register_ui_element("UI_SkillCast", "res://UI/UI_SkillCast.tscn")
 
 func register_ui_element(key: String, element_path: String) -> void:
 	ui_elements_path[key] = element_path
@@ -104,8 +105,11 @@ func open_ui_instance(ui_instance: Node) -> void:
 	root.add_child(ui_instance)
 
 func move_ui_instance_to_top(ui_instance: Node) -> Node:
-	ui_instance.z_as_relative = true
-	ui_instance.z_index = 999
+	if ui_instance is CanvasLayer:
+		ui_instance.layer = 120
+	elif ui_instance is CanvasItem:
+		ui_instance.z_as_relative = true
+		ui_instance.z_index = 999
 	return ui_instance
 
 # 关闭显示但是不销毁

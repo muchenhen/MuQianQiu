@@ -899,8 +899,8 @@ func _execute_card_animations(player_choosing_card: Card, public_choosing_card: 
 ## 更新玩家数据
 func _update_player_data(player_choosing_card: Card, public_choosing_card: Card):
 	# 更新玩家分数
-	ScoreManager.get_instance().add_card_score(self, player_choosing_card)
-	ScoreManager.get_instance().add_card_score(self, public_choosing_card)
+	ScoreManager.get_instance().add_base_card_score(self, player_choosing_card)
+	ScoreManager.get_instance().add_base_card_score(self, public_choosing_card)
 	
 	send_card_to_deal(player_choosing_card)
 	send_card_to_deal(public_choosing_card)
