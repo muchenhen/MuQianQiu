@@ -1,20 +1,12 @@
 [gd_scene load_steps=8 format=3 uid="uid://bsjufb64q25nc"]
 
 [ext_resource type="Script" uid="uid://ccq5dosfqwf4y" path="res://Scripts/UI/UI_StoryShow.gd" id="1_yhrfm"]
-[ext_resource type="Shader" uid="uid://text_gradient" path="res://Shaders/text_gradient.gdshader" id="2_text_shader"]
+[ext_resource type="Shader" uid="uid://c1ohuectfxx3p" path="res://Shaders/text_gradient.gdshader" id="2_text_shader"]
 [ext_resource type="FontFile" uid="uid://cgqf6jr2l5srf" path="res://Font/SourceHanSerifSC-Regular-simplified.otf" id="3_font"]
-[ext_resource type="Shader" uid="uid://cardbox_gradient" path="res://Shaders/cardbox_gradient.gdshader" id="4_cardbox_shader"]
+[ext_resource type="Shader" uid="uid://cjx71pnhaaypm" path="res://Shaders/cardbox_gradient.gdshader" id="4_cardbox_shader"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_Text"]
 shader = ExtResource("2_text_shader")
-shader_parameter/top_color = Color(1, 0.9, 0.6, 1)
-shader_parameter/bottom_color = Color(1, 0.7, 0.2, 1)
-shader_parameter/glow_color = Color(1, 0.8, 0.3, 0.5)
-shader_parameter/glow_strength = 0.8
-shader_parameter/glow_size = 10.0
-shader_parameter/shadow_color = Color(0, 0, 0, 0.6)
-shader_parameter/shadow_offset = Vector2(3, 3)
-shader_parameter/shadow_blur = 5.0
 
 [sub_resource type="LabelSettings" id="LabelSettings_Title"]
 font = ExtResource("3_font")
@@ -24,9 +16,9 @@ outline_color = Color(0.4, 0.25, 0.05, 0.8)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_CardBox"]
 shader = ExtResource("4_cardbox_shader")
-shader_parameter/center_color = Color(0.1, 0.1, 0.1, 0.0)
-shader_parameter/edge_color = Color(0.1, 0.1, 0.1, 0.0)
-shader_parameter/border_color = Color(0.8, 0.7, 0.5, 0.0)
+shader_parameter/center_color = Color(0.1, 0.1, 0.1, 0)
+shader_parameter/edge_color = Color(0.1, 0.1, 0.1, 0)
+shader_parameter/border_color = Color(0.8, 0.7, 0.5, 0)
 shader_parameter/border_width = 1.0
 shader_parameter/inner_shadow_strength = 0.0
 shader_parameter/corner_radius = 10.0

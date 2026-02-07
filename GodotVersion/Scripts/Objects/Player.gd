@@ -242,8 +242,7 @@ func check_finish_story() -> bool:
 	# 将故事添加到玩家的完成故事列表中
 	if this_time_completed_stories.size() > 0:
 		finished_stories.append_array(this_time_completed_stories)
-	# 给对应玩家增加当前故事的分数
-	ScoreManager.get_instance().add_story_score(self, this_time_completed_stories)
+	# 不再在这里一次性计算分数，而是在每个故事动画完成后逐个计算
 	show_new_finished_stories(this_time_completed_stories)
 	return this_time_completed_stories.size() > 0
 	
@@ -258,6 +257,8 @@ func _show_next_story():
 		var story = story_queue.pop_front()
 		show_one_new_finished_story(story)
 	else:
+		# 所有故事展示完毕，应用分数效果（技能加成分数）
+		ScoreManager.get_instance().apply_score_effects(self)
 		print("玩家 ", player_name, " 所有新完成的故事展示完毕")
 		new_story_show_finished.emit()
 
@@ -310,20 +311,53 @@ func show_one_new_finished_story(story:Story):
 	var audio_id = story.audio_id
 	AudioManager.get_instance().play_story_sfx(audio_id)
 	
-	# 调用新的播放接口
-	current_sc_story_show.play_story(story.name, cards_to_show, Callable(self, "show_one_new_finished_story_anim_out_end"))
+	# 调用新的播放接口，传递故事对象
+	current_sc_story_show.play_story(
+		story.name,
+		cards_to_show,
+		Callable(self, "show_one_new_finished_story_anim_out_end").bind(story)
+	)
 
 # 旧的动画回调不再需要
 # func show_one_new_finished_story_anim_in_end():
 	
-func show_one_new_finished_story_anim_out_end():
+func show_one_new_finished_story_anim_out_end(story: Story):
 	# 销毁current_sc_story_show
 	var tree = GameManager.instance.scene_tree
 	var root = tree.get_root()
 	root.remove_child(current_sc_story_show)
 	UIManager.get_instance().destroy_ui("UI_StoryShow")
+	
+	# 计算该故事的分数并添加到玩家分数
+	if story.score > 0:
+		ScoreManager.get_instance().add_single_story_score(self, story)
+		# 播放分数增加动画
+		_show_score_animation(story.score)
+	
 	# 故事展示完毕，继续展示下一个故事
 	_show_next_story()
+
+# 显示分数增加动画效果
+func _show_score_animation(score: int) -> void:
+	var ui_manager = UIManager.get_instance()
+	var ui_main = ui_manager.ensure_get_ui_instance("UI_Main")
+	
+	print("玩家 ", player_name, " 开始播放分数动画: +%d 分" % score)
+	print("UI_Main 是否存在: ", ui_main != null)
+	
+	if not ui_main:
+		print("警告: UI_Main 不存在，无法显示分数动画")
+		return
+	
+	# 根据玩家名称判断是玩家A还是玩家B
+	if player_name == "PlayerA":
+		print("调用玩家A的分数动画")
+		ui_main.play_player_a_score_animation(score)
+	elif player_name == "PlayerB":
+		print("调用玩家B的分数动画")
+		ui_main.play_player_b_score_animation(score)
+	else:
+		print("警告: 未知的玩家名称 '%s'" % player_name)
 
 func update_self_card_z_index() -> void:
 	# 从slot_index 0开始 move_to_top 并且设置z_index为最大 然后递减

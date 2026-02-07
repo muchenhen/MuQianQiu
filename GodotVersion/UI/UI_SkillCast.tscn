@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=2 format=3 uid="uid://dbhucxwkuusvv"]
 
-[ext_resource type="Script" path="res://Scripts/UI/UI_SkillCast.gd" id="1"]
+[ext_resource type="Script" uid="uid://dugxavugw3klr" path="res://Scripts/UI/UI_SkillCast.gd" id="1"]
 
 [node name="UI_SkillCast" type="CanvasLayer"]
 layer = 120
@@ -136,8 +136,8 @@ text = "选择描述..."
 
 [node name="OptionsContainer" type="HBoxContainer" parent="MainContainer/RightColumn/ChoicePanel"]
 layout_mode = 2
-alignment = 1
 theme_override_constants/separation = 20
+alignment = 1
 
 [node name="OptionA" type="Button" parent="MainContainer/RightColumn/ChoicePanel/OptionsContainer"]
 custom_minimum_size = Vector2(100, 40)

@@ -123,6 +123,21 @@ func add_base_card_score(player: Player, card: Card) -> void:
 func register_add_score_effect_for_skill(player: Player, card: Card, skill_index: int) -> void:
 	_create_score_effect_from_skill(player, card, skill_index)
 				
+# 计算单个故事的分数（不应用分数效果）
+# 返回该故事的分数值
+func add_single_story_score(player: Player, story: Story) -> int:
+	if not player_scores.has(player):
+		init_player_score(player)
+	
+	var story_score = story.score
+	
+	if story_score > 0:
+		var desc = "完成故事 '%s' 获得分数" % story.name
+		_add_score_record(player, ScoreSource.SPECIAL_BONUS, story_score, desc)
+	
+	return story_score
+
+# 批量添加故事分数（一次性计算所有故事）
 func add_story_score(player: Player, completed_stories: Array[Story]) -> void:
 	if not player_scores.has(player):
 		init_player_score(player)

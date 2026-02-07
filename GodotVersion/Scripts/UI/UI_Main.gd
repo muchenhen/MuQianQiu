@@ -9,6 +9,12 @@ signal skill_cards_animation_completed
 @onready var player_b_deal:Button = $PlayerBDeal
 @onready var player_a_skill_card_zone:ColorRect = $Cards/PlayerASkillCardZone
 @onready var player_b_skill_card_zone:ColorRect = get_node_or_null("Cards/PlayerBSkillCardZone")
+@onready var player_a_score_animation:Label = $UI/Text_AScoreAnimation
+@onready var player_b_score_animation:Label = $UI/Text_BScoreAnimation
+
+# 分数动画标签的初始Y位置（从tscn文件中获取）
+const PLAYER_A_SCORE_ANIMATION_Y = 600.0
+const PLAYER_B_SCORE_ANIMATION_Y = 336.0
 
 var ui_manager:UIManager = UIManager.get_instance()
 var card_manager = CardManager.get_instance()
@@ -489,6 +495,56 @@ func wait_for_skill_cards_animation_complete(callback: Callable) -> void:
 
 func is_skill_card_animation_running() -> bool:
 	return has_node("CardAnimTimer") or has_node("CardAnimTimerB")
+
+# 播放玩家A的分数增加动画
+func play_player_a_score_animation(score: int) -> void:
+	_play_score_animation(player_a_score_animation, score)
+
+# 播放玩家B的分数增加动画
+func play_player_b_score_animation(score: int) -> void:
+	_play_score_animation(player_b_score_animation, score)
+
+# 播放分数动画的通用方法
+func _play_score_animation(label: Label, score: int) -> void:
+	if not label:
+		print("警告: 分数动画标签为 null")
+		return
+	
+	# 获取标签的初始Y位置（从tscn文件中定义的固定值）
+	var initial_y = PLAYER_A_SCORE_ANIMATION_Y if label == player_a_score_animation else PLAYER_B_SCORE_ANIMATION_Y
+	
+	print("开始播放分数动画，标签位置: ", label.position, " 初始Y: ", initial_y, " 分数: ", score)
+	
+	# 设置文本
+	label.text = "+%d 分" % score
+	
+	# 重置状态：位置复原到初始位置，透明度为0（不可见）
+	label.position.y = initial_y
+	label.modulate.a = 0.0
+	
+	print("标签重置后位置: ", label.position, " 透明度: ", label.modulate.a)
+	
+	# 创建动画
+	var tween = create_tween()
+	tween.set_parallel(true)
+	
+	# 淡入（透明度从0到1）
+	tween.tween_property(label, "modulate:a", 1.0, 0.2)
+	
+	# 向上浮动（从初始位置向上移动40像素）
+	tween.tween_property(label, "position:y", initial_y - 40, 1.0).set_delay(0.2)
+	
+	# 淡出（透明度从1到0）
+	tween.tween_property(label, "modulate:a", 0.0, 0.3).set_delay(0.7)
+	
+	# 动画完成：重置位置和透明度
+	tween.tween_callback(func():
+		print("分数动画完成，重置标签状态")
+		label.position.y = initial_y  # 重置到初始位置
+		label.modulate.a = 0.0  # 透明度归零（完全不可见）
+	)
+	
+	print("播放分数动画: +%d 分" % score)
 
 func _exit_tree() -> void:
 	var game_instance = GameManager.instance

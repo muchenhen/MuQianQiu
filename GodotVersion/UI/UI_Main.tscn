@@ -199,6 +199,34 @@ text = "玩家B分数"
 label_settings = SubResource("LabelSettings_twdph")
 vertical_alignment = 1
 
+[node name="Text_AScoreAnimation" type="Label" parent="UI"]
+modulate = Color(1, 1, 0, 0)
+z_index = 1000
+offset_left = 64.0
+offset_top = 600.0
+offset_right = 256.0
+offset_bottom = 664.0
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.5)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 36
+text = "+0 分"
+
+[node name="Text_BScoreAnimation" type="Label" parent="UI"]
+modulate = Color(1, 1, 0, 0)
+z_index = 1000
+offset_left = 64.0
+offset_top = 336.0
+offset_right = 256.0
+offset_bottom = 400.0
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.5)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 36
+text = "+0 分"
+
 [node name="BGBlur" parent="UI" instance=ExtResource("4_o4txw")]
 visible = false
 
