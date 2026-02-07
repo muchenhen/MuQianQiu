@@ -917,9 +917,20 @@ func _play_upgrade_animation(special_card: Card, public_choosing_card: Card) -> 
 	print("玩家选择的公共卡可以升级为特殊卡: ", special_card.Name)
 	
 	var animation_manager = AnimationManager.get_instance()
+
+	# 兜底：若特殊卡实例尚未在场景树，挂到公共牌所在父节点，避免动画后卡牌消失。
+	if special_card.get_parent() == null and public_choosing_card.get_parent() != null:
+		public_choosing_card.get_parent().add_child(special_card)
+		special_card.position = public_choosing_card.position
+		special_card.rotation = public_choosing_card.rotation
+	special_card.visible = true
+	if "modulate" in special_card and special_card.modulate != null:
+		var special_modulate = special_card.modulate
+		special_modulate.a = 1.0
+		special_card.modulate = special_modulate
 	
 	# 保存特殊卡的原始z_index，用于动画结束后恢复
-	var original_zindex = special_card.z_index
+	var original_zindex = maxi(special_card.z_index, public_choosing_card.z_index + 1)
 	
 	# 临时提高z_index确保特殊卡显示在最上层
 	special_card.z_index = 1000
@@ -947,6 +958,7 @@ func _play_upgrade_animation(special_card: Card, public_choosing_card: Card) -> 
 	await GameManager.create_timer(1.0, func(): pass).timeout
 	public_choosing_card.visible = false
 	public_choosing_card.disable_click()
+	special_card.visible = true
 	return special_card
 
 ## 特殊卡升级动画完成回调（从GameInstance移植）

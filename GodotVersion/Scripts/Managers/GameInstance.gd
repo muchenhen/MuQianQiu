@@ -196,6 +196,7 @@ func start_new_game():
 	print("开始新游戏")
 	ui_manager.destroy_ui("UI_Start")
 	ScoreManager.get_instance().reset_scores()
+	_prepare_ai_special_cards_selection()
 	_build_match_runtime()
 
 	card_manager.prepare_cards_for_this_game(choosed_versions)
@@ -554,16 +555,140 @@ func process_special_cards():
 	if not use_special_cards:
 		return
 
-	if not player_a.check_special_cards():
-		return
-
 	var ui_main = ui_manager.get_ui_instance("UI_Main")
 	if ui_main == null:
 		return
 
-	ui_main.send_special_cards_to_player_a()
-	if ui_main.has_node("CardAnimTimer"):
+	if player_a.check_special_cards():
+		ui_main.send_special_cards_to_player_a()
+		if ui_main.has_node("CardAnimTimer"):
+			await ui_main.skill_cards_animation_completed
+	else:
+		player_a.set_selected_special_cards_instance([])
+
+	ui_main.send_special_cards_to_player_b()
+	if ui_main.has_node("CardAnimTimerB"):
 		await ui_main.skill_cards_animation_completed
+
+func _prepare_ai_special_cards_selection() -> void:
+	player_b.set_selected_special_cards([])
+	player_b.set_selected_special_cards_instance([])
+
+	if not use_special_cards:
+		return
+	if ai_difficulty != MatchConfig.AIDifficulty.NORMAL:
+		return
+
+	var player_selected_ids: Array[int] = player_a.get_selected_special_cards()
+	var target_count := player_selected_ids.size()
+	if target_count <= 0:
+		return
+
+	var available_special_ids = _get_match_available_special_card_ids()
+	if available_special_ids.is_empty():
+		return
+
+	var ai_selected_ids = _pick_normal_ai_special_card_ids(available_special_ids, target_count)
+	player_b.set_selected_special_cards(ai_selected_ids)
+
+func _get_match_available_special_card_ids() -> Array[int]:
+	var result: Array[int] = []
+	var skills_table = table_manager.get_table("Skills")
+	var cards_table = table_manager.get_table("Cards")
+	for raw_card_id in skills_table.keys():
+		var card_id := int(raw_card_id)
+		var card_row = cards_table.get(card_id, {})
+		if card_row == null or card_row.is_empty():
+			continue
+		if not bool(card_row.get("Special", false)):
+			continue
+		var card_version := int(str(card_id)[0])
+		if choosed_versions.find(card_version) == -1:
+			continue
+		result.append(card_id)
+
+	result.sort()
+	return result
+
+func _pick_normal_ai_special_card_ids(available_ids: Array[int], target_count: int) -> Array[int]:
+	var scored_candidates: Array = []
+	for card_id in available_ids:
+		scored_candidates.append({
+			"card_id": int(card_id),
+			"score": _evaluate_normal_ai_special_card_value(int(card_id)),
+		})
+
+	scored_candidates.sort_custom(func(a: Dictionary, b: Dictionary):
+		var sa = float(a.get("score", 0.0))
+		var sb = float(b.get("score", 0.0))
+		if sa == sb:
+			return int(a.get("card_id", 0)) < int(b.get("card_id", 0))
+		return sa > sb
+	)
+
+	var selected: Array[int] = []
+	var selected_base_ids: Dictionary = {}
+	for item in scored_candidates:
+		if selected.size() >= target_count:
+			break
+		var card_id := int(item.get("card_id", 0))
+		var card_row = table_manager.get_row("Cards", card_id)
+		if card_row == null or card_row.is_empty():
+			continue
+		var base_id := int(card_row.get("BaseID", card_id))
+		if selected_base_ids.has(base_id):
+			continue
+		selected.append(card_id)
+		selected_base_ids[base_id] = true
+
+	return selected
+
+func _evaluate_normal_ai_special_card_value(card_id: int) -> float:
+	var cards_row = table_manager.get_row("Cards", card_id)
+	if cards_row == null or cards_row.is_empty():
+		return 0.0
+
+	var score := float(int(cards_row.get("Score", 0))) * 2.0
+	var base_id := int(cards_row.get("BaseID", card_id))
+	var related_stories = story_manager.get_relent_stories_id_by_cards_id([base_id])
+	score += float(related_stories.size()) * 100.0
+
+	var skills_row = table_manager.get_row("Skills", card_id)
+	if skills_row == null or skills_row.is_empty():
+		return score
+
+	for i in range(1, 3):
+		var skill_key = "Skill%dType" % i
+		var value_key = "Skill%dValue" % i
+		if not skills_row.has(skill_key):
+			continue
+		var skill_type := str(skills_row[skill_key]).strip_edges()
+		if skill_type == "":
+			continue
+		var skill_value := 0.0
+		if skills_row.has(value_key):
+			var raw_val = str(skills_row[value_key]).strip_edges()
+			if raw_val != "":
+				skill_value = float(raw_val)
+		match skill_type:
+			"增加分数":
+				score += 40.0 + skill_value
+			"保证出现":
+				score += 28.0
+			"增加出现概率":
+				score += 22.0
+			"禁用技能":
+				score += 20.0
+			"复制技能":
+				score += 18.0
+			"交换卡牌":
+				score += 14.0
+			"翻开对手手牌":
+				score += 10.0
+			_:
+				score += 1.0
+
+	return score
 
 func card_animation_end(card, is_player_choice = false):
 	if is_player_choice:
@@ -573,6 +698,9 @@ func card_animation_end(card, is_player_choice = false):
 func _refresh_all_hand_visibility() -> void:
 	_refresh_player_hand_visibility(player_a)
 	_refresh_player_hand_visibility(player_b)
+	var ui_main = ui_manager.get_ui_instance("UI_Main")
+	if ui_main != null and ui_main.has_method("refresh_player_b_special_cards_visibility"):
+		ui_main.refresh_player_b_special_cards_visibility(opponent_hand_visible)
 
 func _refresh_player_hand_visibility(player: Player) -> void:
 	if player == null:

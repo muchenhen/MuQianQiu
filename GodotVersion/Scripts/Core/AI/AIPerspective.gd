@@ -16,7 +16,8 @@ static func build(
 	self_p: Player,
 	opponent_p: Player,
 	public_deal: PublicCardDeal,
-	enable_opponent_visibility: bool
+	enable_opponent_visibility: bool,
+	explicit_visible_cards: Array[Card] = []
 ) -> AIPerspective:
 	var p = AIPerspective.new()
 	p.self_player = self_p
@@ -26,7 +27,9 @@ static func build(
 	p.opponent_hand_count = opponent_p.get_all_hand_cards().size()
 	p.opponent_hand_visible = enable_opponent_visibility
 
-	if enable_opponent_visibility:
+	if not explicit_visible_cards.is_empty():
+		p.opponent_visible_hand_cards = explicit_visible_cards
+	elif enable_opponent_visibility:
 		p.opponent_visible_hand_cards = opponent_p.get_all_hand_cards()
 
 	return p

@@ -8,6 +8,7 @@ signal skill_cards_animation_completed
 @onready var player_a_deal:Button = $PlayerADeal
 @onready var player_b_deal:Button = $PlayerBDeal
 @onready var player_a_skill_card_zone:ColorRect = $Cards/PlayerASkillCardZone
+@onready var player_b_skill_card_zone:ColorRect = get_node_or_null("Cards/PlayerBSkillCardZone")
 
 var ui_manager:UIManager = UIManager.get_instance()
 var card_manager = CardManager.get_instance()
@@ -18,8 +19,10 @@ const ENABLE_SKILL_DEBUG_PANEL: bool = false
 
 # 玩家A的珍稀牌实例
 var player_a_skill_cards:Array[Card] = []
+var player_b_skill_cards:Array[Card] = []
 # 等待珍稀牌动画完成的回调函数
 var pending_after_animation_callback = null
+var pending_after_animation_callback_b = null
 
 func _ready() -> void:
 	# player_a_deal绑定点击事件
@@ -30,6 +33,9 @@ func _ready() -> void:
 	# 确保技能卡区域不会被显示，但卡会显示
 	if player_a_skill_card_zone:
 		player_a_skill_card_zone.color = Color(0, 0, 0, 0)
+	_ensure_player_b_skill_zone()
+	if player_b_skill_card_zone:
+		player_b_skill_card_zone.color = Color(0, 0, 0, 0)
 	
 	# 监听玩家A珍稀牌选择变化
 	var game_instance = GameManager.instance
@@ -48,15 +54,39 @@ func _ready() -> void:
 func _on_game_start():
 	print("UI_Main: 收到游戏开始信号")
 	var player_a = GameManager.instance.player_a
+	var player_b = GameManager.instance.player_b
 	if player_a:
 		print("UI_Main: 开始更新玩家A的珍稀牌")
 		update_player_a_skill_cards(player_a)
 	else:
 		print("UI_Main: 无法获取player_a对象")
 
+	if player_b:
+		print("UI_Main: 开始更新玩家B的珍稀牌")
+		update_player_b_skill_cards(player_b)
+	else:
+		print("UI_Main: 无法获取player_b对象")
+
 	if _debug_log != null:
 		_debug_log.clear()
 		_debug_log.append_text("[技能调试] 已开始新对局\n")
+
+func _apply_player_b_special_card_visibility(card: Card) -> void:
+	if card == null:
+		return
+	if GameManager.opponent_hand_visible:
+		card.update_card()
+	else:
+		card.set_card_back()
+
+func refresh_player_b_special_cards_visibility(opponent_visible: bool) -> void:
+	for card in player_b_skill_cards:
+		if not is_instance_valid(card):
+			continue
+		if opponent_visible:
+			card.update_card()
+		else:
+			card.set_card_back()
 
 func _on_skill_debug_event(payload: Dictionary) -> void:
 	if _debug_log == null:
@@ -135,6 +165,21 @@ func _on_player_a_deal_clcik():
 
 func _on_player_b_deal_clcik():
 	print("玩家B牌堆点击")
+
+func _ensure_player_b_skill_zone() -> void:
+	if player_b_skill_card_zone != null:
+		return
+	var cards_root = get_node_or_null("Cards")
+	if cards_root == null:
+		return
+
+	var zone = ColorRect.new()
+	zone.name = "PlayerBSkillCardZone"
+	zone.position = Vector2(1632, 53)
+	zone.size = Vector2(272, 256)
+	zone.color = Color(0, 0, 0, 0)
+	cards_root.add_child(zone)
+	player_b_skill_card_zone = zone
 	
 # 更新玩家A的珍稀牌显示
 func update_player_a_skill_cards(player:Player) -> void:
@@ -315,14 +360,135 @@ func send_special_cards_to_player_a() -> void:
 		print("没有珍稀牌动画播放中，直接将珍稀牌实例传递给玩家A")
 		player_a.set_selected_special_cards_instance(player_a_skill_cards)
 
+func send_special_cards_to_player_b() -> void:
+	var player_b = GameManager.instance.player_b
+	if player_b == null:
+		print("玩家B对象无效")
+		return
+	if has_node("CardAnimTimerB"):
+		print("玩家B珍稀牌动画正在播放，将回调函数加入到动画完成后执行")
+		pending_after_animation_callback_b = func():
+			print("动画完成后，将珍稀牌实例传递给玩家B")
+			player_b.set_selected_special_cards_instance(player_b_skill_cards)
+	else:
+		player_b.set_selected_special_cards_instance(player_b_skill_cards)
+
+func update_player_b_skill_cards(player: Player) -> void:
+	_ensure_player_b_skill_zone()
+	for card in player_b_skill_cards:
+		if is_instance_valid(card):
+			card.queue_free()
+	player_b_skill_cards.clear()
+
+	var skill_card_ids = player.get_selected_special_cards()
+	if skill_card_ids.is_empty():
+		return
+	if player_b_skill_card_zone == null:
+		return
+
+	var zone_rect = Rect2(player_b_skill_card_zone.position, player_b_skill_card_zone.size)
+	var card_width = card_manager.CARD_WIDTH
+	var card_height = card_manager.CARD_HEIGHT
+	var total_cards = skill_card_ids.size()
+	var max_width = zone_rect.size.x - 20
+	var max_overlap = card_width - 30
+	var min_overlap = 10
+	var required_width = card_width + (total_cards - 1) * (card_width - max_overlap)
+	var overlap = max_overlap
+	if required_width > max_width and total_cards > 1:
+		var remaining_width = max_width - card_width
+		var cards_to_fit = total_cards - 1
+		overlap = max(min_overlap, card_width - remaining_width / cards_to_fit)
+
+	var offset_x = card_width - overlap
+	var total_width = card_width + offset_x * (total_cards - 1)
+	var start_x = zone_rect.position.x + (zone_rect.size.x - total_width) / 2
+	var start_y = zone_rect.position.y + (zone_rect.size.y - card_height) / 2
+
+	_create_skill_cards_with_animation_player_b(
+		skill_card_ids,
+		start_x,
+		start_y,
+		offset_x,
+		player_b_skill_card_zone.z_index
+	)
+
+func _create_skill_cards_with_animation_player_b(skill_card_ids: Array, start_x: float, start_y: float, offset_x: float, base_z_index: int) -> void:
+	if has_node("CardAnimTimerB"):
+		get_node("CardAnimTimerB").queue_free()
+
+	var timer = Timer.new()
+	timer.name = "CardAnimTimerB"
+	timer.one_shot = false
+	timer.wait_time = 0.15
+	self.add_child(timer)
+
+	var anim_data = {
+		"card_ids": skill_card_ids,
+		"current_index": 0,
+		"start_x": start_x,
+		"start_y": start_y,
+		"offset_x": offset_x,
+		"base_z_index": base_z_index,
+		"anim_offset_y": 50,
+		"anim_duration": 0.3
+	}
+
+	timer.timeout.connect(func(): _show_next_card_player_b(anim_data, timer))
+	timer.start()
+
+func _show_next_card_player_b(anim_data: Dictionary, timer: Timer) -> void:
+	var index = int(anim_data["current_index"])
+	if index >= anim_data["card_ids"].size():
+		timer.queue_free()
+		print("玩家B珍稀牌动画完成，共", player_b_skill_cards.size(), "张卡")
+		emit_signal("skill_cards_animation_completed")
+		if pending_after_animation_callback_b != null:
+			pending_after_animation_callback_b.call()
+			pending_after_animation_callback_b = null
+		return
+
+	var card_id = int(anim_data["card_ids"][index])
+	var card = card_manager.create_one_card(card_id)
+	$Cards.add_child(card)
+	player_b_skill_cards.append(card)
+
+	var x_pos = anim_data["start_x"] + index * anim_data["offset_x"]
+	var initial_y = anim_data["start_y"] + anim_data["anim_offset_y"]
+	card.position = Vector2(x_pos, initial_y)
+	card.modulate.a = 0.0
+	card.scale = Vector2(0.9, 0.9)
+	card.z_index = anim_data["base_z_index"] + index + 1
+	_apply_player_b_special_card_visibility(card)
+	card.disable_click()
+
+	var tween = create_tween()
+	tween.set_ease(Tween.EASE_OUT)
+	tween.set_trans(Tween.TRANS_BACK)
+	tween.parallel().tween_property(card, "position:y", anim_data["start_y"], anim_data["anim_duration"])
+
+	var flash_tween = create_tween()
+	flash_tween.set_trans(Tween.TRANS_CUBIC)
+	flash_tween.tween_property(card, "modulate:a", 1.2, anim_data["anim_duration"] * 0.7)
+	flash_tween.tween_property(card, "modulate:a", 1.0, anim_data["anim_duration"] * 0.3)
+
+	var scale_tween = create_tween()
+	scale_tween.set_trans(Tween.TRANS_ELASTIC)
+	scale_tween.tween_property(card, "scale", Vector2(1.0, 1.0), anim_data["anim_duration"])
+
+	anim_data["current_index"] += 1
+
 # 等待珍稀牌动画完成后执行指定的回调函数
 func wait_for_skill_cards_animation_complete(callback: Callable) -> void:
-	if has_node("CardAnimTimer"):
+	if has_node("CardAnimTimer") or has_node("CardAnimTimerB"):
 		print("设置珍稀牌动画完成后的回调函数")
 		pending_after_animation_callback = callback
 	else:
 		print("没有珍稀牌动画正在播放，直接执行回调函数")
 		callback.call()
+
+func is_skill_card_animation_running() -> bool:
+	return has_node("CardAnimTimer") or has_node("CardAnimTimerB")
 
 func _exit_tree() -> void:
 	var game_instance = GameManager.instance
