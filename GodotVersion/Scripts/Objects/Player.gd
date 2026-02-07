@@ -100,6 +100,8 @@ func initialize(p_name, player_pos) -> void:
 		hand_cards[i].is_empty = true
 	# 绑定分数变化信号
 	ScoreManager.get_instance().score_changed.connect(Callable(self, "_on_score_changed"))
+	# 绑定技能分数事件信号
+	ScoreManager.get_instance().score_skill_event.connect(Callable(self, "_on_score_skill_event"))
 
 func _on_score_changed(player: Player, old_score: int, new_score: int, change: int, description: String) -> void:
 	if player == self:
@@ -107,6 +109,20 @@ func _on_score_changed(player: Player, old_score: int, new_score: int, change: i
 		print("玩家 ", player_name, " 分数变化: ", old_score, " -> ", new_score, " 变化: ", change, " 描述: ", description)
 		if score_ui:
 			score_ui.text = "当前分数：" + str(new_score)
+
+# 处理技能分数事件
+func _on_score_skill_event(event: Dictionary) -> void:
+	var event_player: Player = event.get("player", null) as Player
+	if event_player != self:
+		return
+	
+	# 检查事件阶段，只在触发阶段播放动画
+	var stage = str(event.get("stage", ""))
+	if stage == "TRIGGER":
+		var score_value = int(event.get("value", 0))
+		if score_value > 0:
+			# 播放技能分数增加动画
+			_show_score_animation(score_value, "skill")
 
 func assign_player_hand_card_to_slot(card: Card, slot_index: int) -> void:
 	if slot_index < 0 or slot_index > 9:
@@ -332,17 +348,17 @@ func show_one_new_finished_story_anim_out_end(story: Story):
 	if story.score > 0:
 		ScoreManager.get_instance().add_single_story_score(self, story)
 		# 播放分数增加动画
-		_show_score_animation(story.score)
+		_show_score_animation(story.score, "story")
 	
 	# 故事展示完毕，继续展示下一个故事
 	_show_next_story()
 
 # 显示分数增加动画效果
-func _show_score_animation(score: int) -> void:
+func _show_score_animation(score: int, score_type: String = "skill") -> void:
 	var ui_manager = UIManager.get_instance()
 	var ui_main = ui_manager.ensure_get_ui_instance("UI_Main")
 	
-	print("玩家 ", player_name, " 开始播放分数动画: +%d 分" % score)
+	print("玩家 ", player_name, " 开始播放分数动画: +%d 分, 类型: %s" % [score, score_type])
 	print("UI_Main 是否存在: ", ui_main != null)
 	
 	if not ui_main:
@@ -352,10 +368,10 @@ func _show_score_animation(score: int) -> void:
 	# 根据玩家名称判断是玩家A还是玩家B
 	if player_name == "PlayerA":
 		print("调用玩家A的分数动画")
-		ui_main.play_player_a_score_animation(score)
+		ui_main.play_player_a_score_animation(score, score_type)
 	elif player_name == "PlayerB":
 		print("调用玩家B的分数动画")
-		ui_main.play_player_b_score_animation(score)
+		ui_main.play_player_b_score_animation(score, score_type)
 	else:
 		print("警告: 未知的玩家名称 '%s'" % player_name)
 

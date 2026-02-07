@@ -497,15 +497,15 @@ func is_skill_card_animation_running() -> bool:
 	return has_node("CardAnimTimer") or has_node("CardAnimTimerB")
 
 # 播放玩家A的分数增加动画
-func play_player_a_score_animation(score: int) -> void:
-	_play_score_animation(player_a_score_animation, score)
+func play_player_a_score_animation(score: int, score_type: String = "skill") -> void:
+	_play_score_animation(player_a_score_animation, score, score_type)
 
 # 播放玩家B的分数增加动画
-func play_player_b_score_animation(score: int) -> void:
-	_play_score_animation(player_b_score_animation, score)
+func play_player_b_score_animation(score: int, score_type: String = "skill") -> void:
+	_play_score_animation(player_b_score_animation, score, score_type)
 
 # 播放分数动画的通用方法
-func _play_score_animation(label: Label, score: int) -> void:
+func _play_score_animation(label: Label, score: int, score_type: String = "skill") -> void:
 	if not label:
 		print("警告: 分数动画标签为 null")
 		return
@@ -513,10 +513,18 @@ func _play_score_animation(label: Label, score: int) -> void:
 	# 获取标签的初始Y位置（从tscn文件中定义的固定值）
 	var initial_y = PLAYER_A_SCORE_ANIMATION_Y if label == player_a_score_animation else PLAYER_B_SCORE_ANIMATION_Y
 	
-	print("开始播放分数动画，标签位置: ", label.position, " 初始Y: ", initial_y, " 分数: ", score)
+	print("开始播放分数动画，标签位置: ", label.position, " 初始Y: ", initial_y, " 分数: ", score, " 类型: ", score_type)
 	
-	# 设置文本
-	label.text = "+%d 分" % score
+	# 设置文本，根据分数类型显示不同的文本
+	var text_prefix = ""
+	if score_type == "story":
+		text_prefix = "完成故事 +%d"
+	elif score_type == "skill":
+		text_prefix = "触发技能 +%d"
+	else:
+		text_prefix = "+%d"
+	
+	label.text = text_prefix % score
 	
 	# 重置状态：位置复原到初始位置，透明度为0（不可见）
 	label.position.y = initial_y
@@ -544,7 +552,7 @@ func _play_score_animation(label: Label, score: int) -> void:
 		label.modulate.a = 0.0  # 透明度归零（完全不可见）
 	)
 	
-	print("播放分数动画: +%d 分" % score)
+	print("播放分数动画: %s" % (text_prefix % score))
 
 func _exit_tree() -> void:
 	var game_instance = GameManager.instance
