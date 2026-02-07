@@ -267,14 +267,16 @@ func show_one_new_finished_story(story:Story):
 	# 使用sc_story_show展示当前故事的卡牌
 	
 	current_sc_story_show = UIManager.get_instance().ensure_get_ui_instance("UI_StoryShow")
-	current_sc_story_show.modulate.a = 0
-	current_sc_story_show.visible = true
 	current_sc_story_show.z_index = 999
-	current_sc_story_show.clear_all_cards()
+	
 	# 将sc添加到最上层
 	var tree = GameManager.instance.scene_tree
 	var root = tree.get_root()
-	root.add_child(current_sc_story_show)
+	if current_sc_story_show.get_parent() != root:
+		if current_sc_story_show.get_parent():
+			current_sc_story_show.get_parent().remove_child(current_sc_story_show)
+		root.add_child(current_sc_story_show)
+	
 	# 获取当前故事的所有id
 	var card_ids = story.cards_id
 	
@@ -290,7 +292,8 @@ func show_one_new_finished_story(story:Story):
 			card_id_to_special_id_map[deal_card.BaseID] = deal_card.ID
 			print("找到特殊卡: ", deal_card.Name, " ID: ", deal_card.ID, " BaseID: ", deal_card.BaseID)
 	
-	# 创建新的卡牌，添加到sc中
+	# 创建新的卡牌列表
+	var cards_to_show = []
 	for card_id in card_ids:
 		var display_card_id = card_id
 		# 检查是否有对应的特殊卡
@@ -300,21 +303,18 @@ func show_one_new_finished_story(story:Story):
 			print("使用特殊卡ID: ", display_card_id, " 替代普通卡ID: ", card_id)
 		
 		var card = card_manager.create_one_card(display_card_id)
-		card.z_index = 1000
-		current_sc_story_show.add_card(card)
+		# UI_StoryShow现在处理卡牌的z_index和缩放
+		cards_to_show.append(card)
 	
-	# 设置故事名
-	current_sc_story_show.set_story_name(story.name)
-	current_sc_story_show.layout_children()
-	AnimationManager.get_instance().start_linear_alpha(current_sc_story_show, 1, 0.5, AnimationManager.EaseType.LINEAR, Callable(self, "show_one_new_finished_story_anim_in_end"))
 	# 播放故事对应的音频
 	var audio_id = story.audio_id
 	AudioManager.get_instance().play_story_sfx(audio_id)
+	
+	# 调用新的播放接口
+	current_sc_story_show.play_story(story.name, cards_to_show, Callable(self, "show_one_new_finished_story_anim_out_end"))
 
-func show_one_new_finished_story_anim_in_end():
-	# 1秒后开始消失动画
-	await GameManager.instance.scene_tree.create_timer(1).timeout
-	AnimationManager.get_instance().start_linear_alpha(current_sc_story_show, 0, 0.5, AnimationManager.EaseType.LINEAR, Callable(self, "show_one_new_finished_story_anim_out_end"))
+# 旧的动画回调不再需要
+# func show_one_new_finished_story_anim_in_end():
 	
 func show_one_new_finished_story_anim_out_end():
 	# 销毁current_sc_story_show

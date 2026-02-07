@@ -1,49 +1,77 @@
-[gd_scene load_steps=7 format=3 uid="uid://bsjufb64q25nc"]
+[gd_scene load_steps=8 format=3 uid="uid://bsjufb64q25nc"]
 
 [ext_resource type="Script" uid="uid://ccq5dosfqwf4y" path="res://Scripts/UI/UI_StoryShow.gd" id="1_yhrfm"]
-[ext_resource type="Script" uid="uid://dacfkmhm6vb83" path="res://Scripts/Objects/HorizontalBox.gd" id="2_3hl4a"]
-[ext_resource type="PackedScene" uid="uid://cjtoi3cho7pbo" path="res://UI/UI_BackgroundBlur.tscn" id="2_3knxu"]
-[ext_resource type="PackedScene" uid="uid://b6vosary0xtcn" path="res://Scripts/Objects/Card.tscn" id="3_dbdpt"]
-[ext_resource type="FontFile" uid="uid://cgqf6jr2l5srf" path="res://Font/SourceHanSerifSC-Regular-simplified.otf" id="5_gq8qy"]
+[ext_resource type="Shader" uid="uid://text_gradient" path="res://Shaders/text_gradient.gdshader" id="2_text_shader"]
+[ext_resource type="FontFile" uid="uid://cgqf6jr2l5srf" path="res://Font/SourceHanSerifSC-Regular-simplified.otf" id="3_font"]
+[ext_resource type="Shader" uid="uid://cardbox_gradient" path="res://Shaders/cardbox_gradient.gdshader" id="4_cardbox_shader"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_47ugj"]
-font = ExtResource("5_gq8qy")
-font_size = 76
-font_color = Color(1, 1, 0, 1)
-outline_size = 6
-outline_color = Color(1, 1, 0, 1)
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_Text"]
+shader = ExtResource("2_text_shader")
+shader_parameter/top_color = Color(1, 0.9, 0.6, 1)
+shader_parameter/bottom_color = Color(1, 0.7, 0.2, 1)
+shader_parameter/glow_color = Color(1, 0.8, 0.3, 0.5)
+shader_parameter/glow_strength = 0.8
+shader_parameter/glow_size = 10.0
+shader_parameter/shadow_color = Color(0, 0, 0, 0.6)
+shader_parameter/shadow_offset = Vector2(3, 3)
+shader_parameter/shadow_blur = 5.0
 
-[node name="ScStoryShow" type="Node2D"]
-script = ExtResource("1_yhrfm")
+[sub_resource type="LabelSettings" id="LabelSettings_Title"]
+font = ExtResource("3_font")
+font_size = 80
+outline_size = 4
+outline_color = Color(0.4, 0.25, 0.05, 0.8)
 
-[node name="UiBackgroundBlur" parent="." instance=ExtResource("2_3knxu")]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_CardBox"]
+shader = ExtResource("4_cardbox_shader")
+shader_parameter/center_color = Color(0.1, 0.1, 0.1, 0.0)
+shader_parameter/edge_color = Color(0.1, 0.1, 0.1, 0.0)
+shader_parameter/border_color = Color(0.8, 0.7, 0.5, 0.0)
+shader_parameter/border_width = 1.0
+shader_parameter/inner_shadow_strength = 0.0
+shader_parameter/corner_radius = 10.0
+shader_parameter/gradient_falloff = 1.0
 
-[node name="CardBox" type="ColorRect" parent="."]
-offset_top = 296.0
-offset_right = 1920.0
-offset_bottom = 736.0
-color = Color(0.0627451, 0.0627451, 0.0627451, 0.329412)
-script = ExtResource("2_3hl4a")
-y_offset = 55.0
-
-[node name="Card" parent="CardBox" instance=ExtResource("3_dbdpt")]
-layout_mode = 0
-offset_left = 864.0
-offset_top = 37.0
-offset_right = 1056.0
-offset_bottom = 293.0
-
-[node name="Text_StoryName" type="Label" parent="."]
+[node name="UI_StoryShow" type="Control"]
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 848.0
-offset_top = 624.0
-offset_right = 1078.0
-offset_bottom = 691.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "首山梦时书"
-label_settings = SubResource("LabelSettings_47ugj")
+script = ExtResource("1_yhrfm")
+
+[node name="ColorRect_BG" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.85)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = 60
+alignment = 1
+
+[node name="Text_StoryName" type="Label" parent="CenterContainer/VBoxContainer"]
+material = SubResource("ShaderMaterial_Text")
+layout_mode = 2
+text = "故事名称"
+label_settings = SubResource("LabelSettings_Title")
 horizontal_alignment = 1
-vertical_alignment = 1
+
+[node name="CardBox" type="HBoxContainer" parent="CenterContainer/VBoxContainer"]
+material = SubResource("ShaderMaterial_CardBox")
+layout_mode = 2
+theme_override_constants/separation = 30
+alignment = 1
