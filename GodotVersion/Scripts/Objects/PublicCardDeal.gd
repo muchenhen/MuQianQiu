@@ -266,5 +266,3 @@ func clear():
 	current_player = null
 	skip_supply_anim = false
 	debug_player_change_card = false
-
-

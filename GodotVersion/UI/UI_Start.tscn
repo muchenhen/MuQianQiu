@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://dri8ugxo2s8kr"]
+[gd_scene load_steps=25 format=3 uid="uid://dri8ugxo2s8kr"]
 
 [ext_resource type="Script" uid="uid://bg5j7u2g7ql0i" path="res://Scripts/UI/UI_Start.gd" id="1_lqrpw"]
 [ext_resource type="Texture2D" uid="uid://bm2itb8y3330b" path="res://Textures/MainBG.png" id="2_hd5da"]
@@ -8,33 +8,162 @@
 [ext_resource type="Texture2D" uid="uid://c1aaiwfgjfm6u" path="res://Textures/gujian2_logo.png" id="4_elyav"]
 [ext_resource type="Texture2D" uid="uid://cpoyon0je0and" path="res://Textures/gujian3_logo.png" id="5_aesdl"]
 [ext_resource type="Texture2D" uid="uid://yqpj8ecqukqx" path="res://Textures/UI/T_Setting.png" id="8_h8nkd"]
+[ext_resource type="Texture2D" uid="uid://b7640jbi5oo0c" path="res://Textures/UI/T_CheckButtonOff.png" id="9_check_off"]
+[ext_resource type="Texture2D" uid="uid://bely5ls113ufd" path="res://Textures/UI/T_CheckButtonOpen.png" id="10_check_on"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_focus"]
+bg_color = Color(0.25, 0.18, 0.1, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.9, 0.7, 0.3, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_disabled_mirrored"]
+bg_color = Color(0.18, 0.18, 0.18, 0.8)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.35, 0.35, 0.35, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_disabled"]
+bg_color = Color(0.18, 0.18, 0.18, 0.8)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.35, 0.35, 0.35, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hover_pressed_mirrored"]
+bg_color = Color(0.08, 0.05, 0.02, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.15, 0.1, 0.05, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hover_pressed"]
+bg_color = Color(0.08, 0.05, 0.02, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.15, 0.1, 0.05, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hover_mirrored"]
+bg_color = Color(0.3, 0.22, 0.15, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.75, 0.6, 0.25, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hover"]
+bg_color = Color(0.3, 0.22, 0.15, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.75, 0.6, 0.25, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pressed_mirrored"]
+bg_color = Color(0.08, 0.05, 0.02, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.15, 0.1, 0.05, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pressed"]
+bg_color = Color(0.08, 0.05, 0.02, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.15, 0.1, 0.05, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_normal_mirrored"]
+bg_color = Color(0.22, 0.16, 0.1, 0.85)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.45, 0.32, 0.18, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_normal"]
+bg_color = Color(0.22, 0.16, 0.1, 0.85)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.45, 0.32, 0.18, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_selection_panel"]
+bg_color = Color(0.12, 0.08, 0.04, 0.8)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.4, 0.25, 0.1, 0.9)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
 
 [sub_resource type="LabelSettings" id="LabelSettings_oeamm"]
 font = ExtResource("3_s0uod")
 font_size = 26
 outline_size = 2
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7vdua"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_grekt"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ai2g0"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f0nua"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ksihg"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qoslf"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kxmuq"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_v44j8"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ras8q"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_03t4l"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hn0pt"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_divider"]
+bg_color = Color(0, 0, 0, 0.7)
+border_width_right = 2
+border_color = Color(0.5, 0.35, 0.22, 0.8)
 
 [node name="UiStart" type="Control"]
 layout_mode = 3
@@ -61,38 +190,49 @@ theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 2
 theme_override_fonts/font = ExtResource("3_s0uod")
 theme_override_font_sizes/font_size = 56
+theme_override_styles/focus = SubResource("StyleBoxFlat_focus")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxFlat_disabled_mirrored")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_disabled")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxFlat_hover_pressed_mirrored")
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_hover_pressed")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxFlat_hover_mirrored")
+theme_override_styles/hover = SubResource("StyleBoxFlat_hover")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxFlat_pressed_mirrored")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_pressed")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxFlat_normal_mirrored")
+theme_override_styles/normal = SubResource("StyleBoxFlat_normal")
 text = "开始游戏"
 
-[node name="ColorRect2" type="ColorRect" parent="."]
+[node name="SelectionPanel" type="Panel" parent="."]
 layout_mode = 0
 offset_left = 576.0
 offset_top = 64.0
 offset_right = 1344.0
 offset_bottom = 512.0
-color = Color(0.227451, 0.196078, 0.14902, 1)
+theme_override_styles/panel = SubResource("StyleBoxFlat_selection_panel")
 
 [node name="Label_ChooseCardStore" type="Label" parent="."]
 layout_mode = 0
 offset_left = 632.0
-offset_top = 224.0
+offset_top = 80.0
 offset_right = 788.0
-offset_bottom = 352.0
-theme_override_colors/font_color = Color(0, 0, 0, 1)
+offset_bottom = 160.0
+theme_override_colors/font_color = Color(0.9, 0.9, 0.7, 1)
 text = "选择游戏内容"
 label_settings = SubResource("LabelSettings_oeamm")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ColorRect3" type="ColorRect" parent="."]
+[node name="DividerLine" type="Panel" parent="."]
 layout_mode = 0
 offset_left = 832.0
-offset_top = 64.0
-offset_right = 864.0
-offset_bottom = 512.0
-color = Color(0.35, 0.1365, 0.1365, 1)
+offset_top = 67.0
+offset_right = 848.0
+offset_bottom = 508.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_divider")
 
 [node name="Gujian1" type="TextureButton" parent="."]
-self_modulate = Color(0.5, 0.5, 0.5, 1)
+self_modulate = Color(0.6, 0.6, 0.6, 1)
 layout_mode = 0
 offset_left = 928.0
 offset_top = 64.0
@@ -107,10 +247,9 @@ texture_focused = ExtResource("3_3i3ag")
 script = ExtResource("4_26oo8")
 button_texture = ExtResource("3_3i3ag")
 button_scale = Vector2(0.5, 0.5)
-unchecked_color = Color(0.5, 0.5, 0.5, 1)
 
 [node name="Gujian2" type="TextureButton" parent="."]
-self_modulate = Color(0.5, 0.5, 0.5, 1)
+self_modulate = Color(0.6, 0.6, 0.6, 1)
 layout_mode = 0
 offset_left = 928.0
 offset_top = 216.0
@@ -125,10 +264,9 @@ texture_focused = ExtResource("4_elyav")
 script = ExtResource("4_26oo8")
 button_texture = ExtResource("4_elyav")
 button_scale = Vector2(0.5, 0.5)
-unchecked_color = Color(0.5, 0.5, 0.5, 1)
 
 [node name="Gujian3" type="TextureButton" parent="."]
-self_modulate = Color(0.5, 0.5, 0.5, 1)
+self_modulate = Color(0.6, 0.6, 0.6, 1)
 layout_mode = 0
 offset_left = 928.0
 offset_top = 368.0
@@ -143,40 +281,51 @@ texture_focused = ExtResource("5_aesdl")
 script = ExtResource("4_26oo8")
 button_texture = ExtResource("5_aesdl")
 button_scale = Vector2(0.5, 0.5)
-unchecked_color = Color(0.5, 0.5, 0.5, 1)
 
 [node name="SettingButton" type="Button" parent="."]
 layout_mode = 0
 offset_left = 43.0
 offset_top = 35.0
-offset_right = 407.0
-offset_bottom = 155.0
+offset_right = 450.0
+offset_bottom = 159.0
 scale = Vector2(0.7, 0.7)
 theme_override_fonts/font = ExtResource("3_s0uod")
 theme_override_font_sizes/font_size = 60
-theme_override_styles/focus = SubResource("StyleBoxEmpty_7vdua")
-theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_grekt")
-theme_override_styles/disabled = SubResource("StyleBoxEmpty_ai2g0")
-theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_f0nua")
-theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_ksihg")
-theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_qoslf")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_kxmuq")
-theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_v44j8")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_ras8q")
-theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_03t4l")
-theme_override_styles/normal = SubResource("StyleBoxEmpty_hn0pt")
+theme_override_styles/focus = SubResource("StyleBoxFlat_focus")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxFlat_disabled_mirrored")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_disabled")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxFlat_hover_pressed_mirrored")
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_hover_pressed")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxFlat_hover_mirrored")
+theme_override_styles/hover = SubResource("StyleBoxFlat_hover")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxFlat_pressed_mirrored")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_pressed")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxFlat_normal_mirrored")
+theme_override_styles/normal = SubResource("StyleBoxFlat_normal")
 text = "游戏设置"
 icon = ExtResource("8_h8nkd")
 
-[node name="SpecialCardCheckbox" type="CheckBox" parent="."]
+[node name="SpecialCardContainer" type="HBoxContainer" parent="."]
 layout_mode = 0
 offset_left = 582.0
-offset_top = 534.0
+offset_top = 570.0
 offset_right = 882.0
-offset_bottom = 634.0
-scale = Vector2(1.2, 1.2)
-theme_override_constants/h_separation = 20
+offset_bottom = 618.0
+theme_override_constants/separation = 8
+
+[node name="SpecialCardCheckbox" type="TextureButton" parent="SpecialCardContainer"]
+custom_minimum_size = Vector2(80, 40)
+layout_mode = 2
+toggle_mode = true
+texture_normal = ExtResource("9_check_off")
+texture_pressed = ExtResource("10_check_on")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="SpecialCardContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
 theme_override_fonts/font = ExtResource("3_s0uod")
 theme_override_font_sizes/font_size = 36
-theme_override_constants/check_v_offset = 0
-text = "使用特殊牌"
+text = " 使用特殊牌"
+vertical_alignment = 1

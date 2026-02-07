@@ -956,5 +956,3 @@ func _on_special_card_upgrade_complete(special_card: Card, _public_choosing_card
 
 func on_special_card_upgrade_complete(special_card: Card, original_zindex: int):
 	_on_special_card_upgrade_complete(special_card, null, original_zindex)
-
-

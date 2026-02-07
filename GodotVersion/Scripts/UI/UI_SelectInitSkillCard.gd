@@ -529,5 +529,3 @@ func _evaluate_card_value(card_id: int) -> float:
 	value -= card_id * 0.01
 	
 	return value
-
-

@@ -421,5 +421,3 @@ func clear():
 		player_b.disconnect("player_choose_change_card", Callable(self, "on_player_choose_change_card"))
 	player_a = null
 	player_b = null
-
-

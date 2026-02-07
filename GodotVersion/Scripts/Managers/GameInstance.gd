@@ -745,10 +745,3 @@ func clear():
 	if animation_timer != null and animation_timer.is_inside_tree():
 		animation_timer.queue_free()
 		animation_timer = null
-
-
-
-
-
-
-

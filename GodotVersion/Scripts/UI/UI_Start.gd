@@ -6,11 +6,14 @@ const SETTINGS_FILE_PATH = "user://settings.cfg"
 @onready var checkbox_1 = $Gujian1
 @onready var checkbox_2 = $Gujian2
 @onready var checkbox_3 = $Gujian3
-@onready var special_card_checkbox = $SpecialCardCheckbox
+@onready var special_card_checkbox = $SpecialCardContainer/SpecialCardCheckbox
 @onready var button_setting: Button = $SettingButton
 
 var ai_difficulty_option: OptionButton = null
 var opponent_visibility_checkbox: CheckBox = null
+
+# 动画相关变量
+var tween: Tween = null
 
 func _ready() -> void:
 	print("UI_Start ready")
@@ -25,6 +28,20 @@ func _ready() -> void:
 	button_setting.connect("pressed", Callable(self, "_on_setting_button_pressed"))
 
 	AudioManager.get_instance().play_bgm("QianQiu")
+	
+	# 执行淡入动画
+	play_fade_in_animation()
+
+func play_fade_in_animation():
+	# 初始透明度设为0
+	modulate.a = 0.0
+	
+	# 创建淡入动画
+	tween = create_tween()
+	tween.set_parallel(false)
+	tween.set_ease(Tween.EASE_OUT)
+	tween.set_trans(Tween.TRANS_CUBIC)
+	tween.tween_property(self, "modulate:a", 1.0, 1.0)
 
 func _ensure_match_setting_controls() -> void:
 	if ai_difficulty_option == null:
