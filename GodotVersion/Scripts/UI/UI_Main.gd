@@ -60,22 +60,19 @@ func _on_skill_debug_event(payload: Dictionary) -> void:
 	if _debug_log == null:
 		return
 
-	var round_index = int(payload.get("round_index", -1))
-	var player_name = str(payload.get("player_name", "Unknown"))
-	var triggered = payload.get("triggered", [])
-	if not (triggered is Array):
+	var entries = payload.get("entries", [])
+	if not (entries is Array):
 		return
 
-	for item in triggered:
+	for item in entries:
 		if not (item is Dictionary):
 			continue
-		var skill_name = str(item.get("skill", "UNKNOWN"))
-		var card_id = int(item.get("card_id", -1))
-		var line = "R%s | %s | %s | CardID=%s" % [
-			str(round_index),
-			player_name,
-			skill_name,
-			str(card_id),
+		var line = "回合: %s | 玩家: %s | 发动卡: %s | 技能: %s | 结果: %s" % [
+			str(item.get("round", "-")),
+			str(item.get("player", "Unknown")),
+			str(item.get("card_name", "未知卡牌")),
+			str(item.get("skill_name", "未知技能")),
+			str(item.get("result", "无")),
 		]
 		_debug_log.append_text(line + "\n")
 

@@ -354,10 +354,12 @@ func _on_player_action_resolution_completed(player: Player, action_cards: Array)
 	var triggered_skills = skill_result.get("triggered", [])
 	if triggered_skills is Array and triggered_skills.size() > 0:
 		print("技能已触发，数量: ", triggered_skills.size(), " 详情: ", triggered_skills)
+		var debug_entries: Array[Dictionary] = []
+		for item in triggered_skills:
+			if item is Dictionary:
+				debug_entries.append(_build_skill_debug_entry(current_round_index, player, item))
 		skill_debug_event.emit({
-			"round_index": current_round_index,
-			"player_name": player.player_name,
-			"triggered": triggered_skills,
+			"entries": debug_entries,
 		})
 	if skill_result.has("revealed_card_ids") and skill_result.revealed_card_ids.size() > 0:
 		UIManager.get_instance().show_info_tip("技能生效：翻开了对手手牌")
@@ -446,6 +448,91 @@ func _is_card_visible_for_local_player(card: Card) -> bool:
 		return false
 
 	return true
+
+func _build_skill_debug_entry(round_index: int, player: Player, skill_item: Dictionary) -> Dictionary:
+	var card_id = int(skill_item.get("card_id", -1))
+	var skill_code = str(skill_item.get("skill", "UNKNOWN"))
+	var actor_name = _format_player_display_name(player.player_name if player != null else "Unknown")
+
+	var entry := {
+		"round": round_index,
+		"player": actor_name,
+		"card_name": _get_card_name_by_id(card_id),
+		"skill_name": _skill_code_to_cn(skill_code),
+		"result": _build_skill_result_text(skill_code, skill_item),
+	}
+	return entry
+
+func _format_player_display_name(raw_name: String) -> String:
+	match raw_name:
+		"PlayerA":
+			return "玩家A"
+		"PlayerB":
+			return "玩家B"
+		_:
+			return raw_name
+
+func _build_skill_result_text(skill_code: String, skill_item: Dictionary) -> String:
+	match skill_code:
+		"COPY_SKILL":
+			var from_id = int(skill_item.get("from_card_id", -1))
+			return "复制了 %s 的技能" % _get_card_name_by_id(from_id)
+		"EXCHANGE_CARD":
+			var self_id = int(skill_item.get("self_card_id", -1))
+			var opp_id = int(skill_item.get("opponent_card_id", -1))
+			return "交换了己方[%s]与对方[%s]" % [_get_card_name_by_id(self_id), _get_card_name_by_id(opp_id)]
+		"DISABLE_SKILL":
+			var target_id = int(skill_item.get("target_card_id", -1))
+			return "禁用了对方[%s]的技能" % _get_card_name_by_id(target_id)
+		"OPEN_OPPONENT_HAND":
+			var opened_ids = skill_item.get("opened_ids", [])
+			var opened_names: Array[String] = []
+			if opened_ids is Array:
+				for cid in opened_ids:
+					opened_names.append(_get_card_name_by_id(int(cid)))
+			return "翻开了对手手牌: %s" % "、".join(opened_names)
+		"GUARANTEE_APPEAR":
+			var target_names = _target_names_to_text(skill_item.get("targets", []))
+			return "下回合补牌保证出现: %s" % target_names
+		"INCREASE_APPEAR":
+			var target_names2 = _target_names_to_text(skill_item.get("targets", []))
+			var probability = float(skill_item.get("probability", 0.0))
+			return "下回合补牌出现概率提升(%.0f%%): %s" % [probability * 100.0, target_names2]
+		_:
+			return "技能已触发"
+
+func _target_names_to_text(targets) -> String:
+	if not (targets is Array):
+		return "无"
+	var names: Array[String] = []
+	for cid in targets:
+		names.append(_get_card_name_by_id(int(cid)))
+	return "、".join(names)
+
+func _get_card_name_by_id(card_id: int) -> String:
+	if card_id <= 0:
+		return "未知卡牌"
+	var row = table_manager.get_row("Cards", card_id)
+	if row != null and not row.is_empty() and row.has("Name"):
+		return str(row["Name"])
+	return "未知卡牌"
+
+func _skill_code_to_cn(skill_code: String) -> String:
+	match skill_code:
+		"COPY_SKILL":
+			return "复制技能"
+		"EXCHANGE_CARD":
+			return "交换卡牌"
+		"DISABLE_SKILL":
+			return "禁用技能"
+		"OPEN_OPPONENT_HAND":
+			return "翻开对手手牌"
+		"GUARANTEE_APPEAR":
+			return "保证出现"
+		"INCREASE_APPEAR":
+			return "增加出现概率"
+		_:
+			return skill_code
 
 func get_public_card_deal():
 	return public_deal
