@@ -327,6 +327,11 @@ func _handle_cards_matched(payload: Dictionary) -> void:
 		turn_engine.notify_action_resolved([])
 		return
 
+	# 无论玩家还是AI，都在此统一把被选择的公共牌从公共池状态中移除，
+	# 避免AI路径绕过 PublicCardDeal.on_card_clicked 导致的“幽灵公共牌”问题。
+	if public_deal != null:
+		public_deal.set_aim_hand_card_empty(public_card)
+
 	actor.handle_card_selection(hand_card, public_card, self)
 
 func _route_card_selection(player_choosing_card: Card, public_choosing_card: Card):
@@ -490,6 +495,8 @@ func _build_skill_result_text(skill_code: String, skill_item: Dictionary) -> Str
 			if opened_ids is Array:
 				for cid in opened_ids:
 					opened_names.append(_get_card_name_by_id(int(cid)))
+			if opened_names.is_empty():
+				return "无可翻开目标"
 			return "翻开了对手手牌: %s" % "、".join(opened_names)
 		"GUARANTEE_APPEAR":
 			var target_names = _target_names_to_text(skill_item.get("targets", []))

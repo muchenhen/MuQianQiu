@@ -207,14 +207,36 @@ func _apply_open_hand_skill(current_player: Player, opponent_player: Player, ent
 		_set_entry_state(entry, SkillUseState.USED)
 		return
 
-	open_count = mini(open_count, opponent_cards.size())
-	var shuffled = opponent_cards.duplicate()
-	shuffled.shuffle()
+	# 仅从“当前未被翻开”的手牌中随机翻开，避免重复翻开同一张牌
+	var already_revealed: Array[int] = []
+	if match_state.revealed_opponent_hand_cards.has(current_player):
+		already_revealed = match_state.revealed_opponent_hand_cards[current_player]
+
+	var unrevealed_cards: Array[Card] = []
+	for card in opponent_cards:
+		if not already_revealed.has(card.ID):
+			unrevealed_cards.append(card)
+
+	if unrevealed_cards.is_empty():
+		_set_entry_state(entry, SkillUseState.USED)
+		result.triggered.append({
+			"skill": "OPEN_OPPONENT_HAND",
+			"card_id": entry.card.ID,
+			"opened_ids": [],
+		})
+		return
+
+	open_count = mini(open_count, unrevealed_cards.size())
+	unrevealed_cards.shuffle()
 	var opened_ids: Array[int] = []
 	for i in range(open_count):
-		opened_ids.append(shuffled[i].ID)
+		opened_ids.append(unrevealed_cards[i].ID)
 
-	match_state.revealed_opponent_hand_cards[current_player] = opened_ids
+	var merged_revealed: Array[int] = already_revealed.duplicate()
+	for cid in opened_ids:
+		if not merged_revealed.has(cid):
+			merged_revealed.append(cid)
+	match_state.revealed_opponent_hand_cards[current_player] = merged_revealed
 	_set_entry_state(entry, SkillUseState.USED)
 
 	for card_id in opened_ids:

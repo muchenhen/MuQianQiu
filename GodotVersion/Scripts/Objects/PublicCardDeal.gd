@@ -208,17 +208,26 @@ func supply_hand_card_anim_end(card: Card):
 	common_suply_public_card.emit("supply_end")
 
 func set_aim_hand_card_empty(card) -> void:
+	if card == null:
+		return
 	for i in hand_cards.keys():
 		var card_info = hand_cards[i]
+		if card_info == null or card_info.card == null:
+			continue
 		if card_info.card.ID == card.ID:
+			if card_info.card.is_connected("card_clicked", Callable(self, "on_card_clicked")):
+				card_info.card.disconnect("card_clicked", Callable(self, "on_card_clicked"))
+			card_info.card.disable_click()
+			card_info.card.set_card_unchooesd()
+			card_info.card = null
 			card_info.isEmpty = true
-			print("Set card empty: ", card_info.card.ID)
+			print("Set card empty: ", card.ID)
 			return
 
 func enable_aim_season_hand_card_click(season) -> void:
 	for i in hand_cards.keys():
 		var card_info = hand_cards[i]
-		if not card_info.isEmpty:
+		if not card_info.isEmpty and card_info.card != null:
 			if card_info.card.Season == season:
 				card_info.card.enable_click()
 
@@ -227,7 +236,7 @@ func get_choosable_seasons() -> Array:
 	var seasons = []
 	for i in hand_cards.keys():
 		var card_info = hand_cards[i]
-		if not card_info.isEmpty:
+		if not card_info.isEmpty and card_info.card != null:
 			if seasons.find(card_info.card.Season) == -1:
 				seasons.append(card_info.card.Season)
 	return seasons
