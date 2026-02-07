@@ -6,118 +6,159 @@
 layer = 120
 script = ExtResource("1")
 
-[node name="Overlay" type="ColorRect" parent="."]
-layout_mode = 1
+[node name="Background" type="ColorRect" parent="."]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 0.65)
+color = Color(0, 0, 0, 0.78)
 
-[node name="Panel" type="PanelContainer" parent="Overlay"]
-layout_mode = 1
+[node name="MainContainer" type="HBoxContainer" parent="."]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -360.0
-offset_top = -210.0
-offset_right = 360.0
-offset_bottom = 210.0
+offset_left = -400.0
+offset_top = -250.0
+offset_right = 400.0
+offset_bottom = 250.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 20
 
-[node name="VBox" type="VBoxContainer" parent="Overlay/Panel"]
+[node name="LeftColumn" type="VBoxContainer" parent="MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.8
+alignment = 1
+
+[node name="CardFrame" type="PanelContainer" parent="MainContainer/LeftColumn"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CardImage" type="TextureRect" parent="MainContainer/LeftColumn/CardFrame"]
+custom_minimum_size = Vector2(300, 400)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="RightColumn" type="VBoxContainer" parent="MainContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 15
+alignment = 1
+
+[node name="HeaderInfo" type="HBoxContainer" parent="MainContainer/RightColumn"]
+layout_mode = 2
+
+[node name="RoundLabel" type="Label" parent="MainContainer/RightColumn/HeaderInfo"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.7, 0.7, 1)
+theme_override_font_sizes/font_size = 18
+text = "第 X 回合"
+
+[node name="VSeparator" type="VSeparator" parent="MainContainer/RightColumn/HeaderInfo"]
+layout_mode = 2
+
+[node name="ActorLabel" type="Label" parent="MainContainer/RightColumn/HeaderInfo"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.7, 0.7, 1)
+theme_override_font_sizes/font_size = 18
+text = "玩家名称"
+
+[node name="SkillNameLabel" type="Label" parent="MainContainer/RightColumn"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0, 1)
+theme_override_font_sizes/font_size = 32
+text = "技能名称"
+
+[node name="StageContainer" type="HBoxContainer" parent="MainContainer/RightColumn"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Title" type="Label" parent="Overlay/Panel/VBox"]
+[node name="StageRegister" type="PanelContainer" parent="MainContainer/RightColumn/StageContainer"]
 layout_mode = 2
-text = "技能发动"
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MainContainer/RightColumn/StageContainer/StageRegister"]
+layout_mode = 2
+text = "预备"
 horizontal_alignment = 1
 
-[node name="Round" type="Label" parent="Overlay/Panel/VBox"]
+[node name="StageCheck" type="PanelContainer" parent="MainContainer/RightColumn/StageContainer"]
 layout_mode = 2
-text = "回合: -"
+size_flags_horizontal = 3
 
-[node name="Actor" type="Label" parent="Overlay/Panel/VBox"]
+[node name="Label" type="Label" parent="MainContainer/RightColumn/StageContainer/StageCheck"]
 layout_mode = 2
-text = "玩家: -"
+text = "检查"
+horizontal_alignment = 1
 
-[node name="Card" type="Label" parent="Overlay/Panel/VBox"]
+[node name="StageTrigger" type="PanelContainer" parent="MainContainer/RightColumn/StageContainer"]
 layout_mode = 2
-text = "发动卡: -"
+size_flags_horizontal = 3
 
-[node name="Skill" type="Label" parent="Overlay/Panel/VBox"]
+[node name="Label" type="Label" parent="MainContainer/RightColumn/StageContainer/StageTrigger"]
 layout_mode = 2
-text = "技能: -"
+text = "发动"
+horizontal_alignment = 1
 
-[node name="Stage" type="Label" parent="Overlay/Panel/VBox"]
-layout_mode = 2
-text = "阶段: -"
-
-[node name="Result" type="RichTextLabel" parent="Overlay/Panel/VBox"]
+[node name="ResultScroll" type="ScrollContainer" parent="MainContainer/RightColumn"]
 layout_mode = 2
 size_flags_vertical = 3
-custom_minimum_size = Vector2(0, 150)
-bbcode_enabled = false
-text = ""
-scroll_active = false
+horizontal_scroll_mode = 0
 
-[node name="Buttons" type="HBoxContainer" parent="Overlay/Panel/VBox"]
+[node name="ResultLabel" type="RichTextLabel" parent="MainContainer/RightColumn/ResultScroll"]
 layout_mode = 2
-alignment = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "技能发动详细结果描述..."
+fit_content = true
 
-[node name="SkipButton" type="Button" parent="Overlay/Panel/VBox/Buttons"]
-layout_mode = 2
-text = "跳过"
-
-[node name="PromptPanel" type="PanelContainer" parent="Overlay"]
+[node name="ChoicePanel" type="VBoxContainer" parent="MainContainer/RightColumn"]
 visible = false
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -300.0
-offset_top = 240.0
-offset_right = 300.0
-offset_bottom = 430.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="VBox" type="VBoxContainer" parent="Overlay/PromptPanel"]
 layout_mode = 2
-theme_override_constants/separation = 8
+size_flags_vertical = 3
 
-[node name="PromptTitle" type="Label" parent="Overlay/PromptPanel/VBox"]
+[node name="PromptTitle" type="Label" parent="MainContainer/RightColumn/ChoicePanel"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 20
 text = "请选择"
 horizontal_alignment = 1
 
-[node name="PromptDesc" type="RichTextLabel" parent="Overlay/PromptPanel/VBox"]
+[node name="PromptDesc" type="RichTextLabel" parent="MainContainer/RightColumn/ChoicePanel"]
 layout_mode = 2
-custom_minimum_size = Vector2(0, 70)
-bbcode_enabled = false
-text = ""
-scroll_active = false
+size_flags_vertical = 3
+text = "选择描述..."
 
-[node name="Options" type="HBoxContainer" parent="Overlay/PromptPanel/VBox"]
+[node name="OptionsContainer" type="HBoxContainer" parent="MainContainer/RightColumn/ChoicePanel"]
 layout_mode = 2
 alignment = 1
-theme_override_constants/separation = 10
+theme_override_constants/separation = 20
 
-[node name="OptionA" type="Button" parent="Overlay/PromptPanel/VBox/Options"]
+[node name="OptionA" type="Button" parent="MainContainer/RightColumn/ChoicePanel/OptionsContainer"]
+custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
 text = "选项A"
 
-[node name="OptionB" type="Button" parent="Overlay/PromptPanel/VBox/Options"]
+[node name="OptionB" type="Button" parent="MainContainer/RightColumn/ChoicePanel/OptionsContainer"]
+custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
 text = "选项B"
 
-[node name="OptionC" type="Button" parent="Overlay/PromptPanel/VBox/Options"]
+[node name="OptionC" type="Button" parent="MainContainer/RightColumn/ChoicePanel/OptionsContainer"]
+custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
 text = "选项C"
+
+[node name="ActionArea" type="HBoxContainer" parent="MainContainer/RightColumn"]
+layout_mode = 2
+alignment = 2
+
+[node name="SkipButton" type="Button" parent="MainContainer/RightColumn/ActionArea"]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+text = "跳过动画"
