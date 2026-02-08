@@ -58,7 +58,6 @@ signal player_state_changed(Player, PlayerState)
 signal new_story_show_finished()
 # 当前回合动作结算完成（动画和故事展示完成后）
 signal action_resolution_completed(player: Player, action_cards: Array)
-
 enum PlayerState{
 	# 不在自己的回合中
 	WAITING = 0,
@@ -896,9 +895,12 @@ func handle_card_selection(player_choosing_card: Card, public_choosing_card: Car
 	
 	var anim_duration = 1
 	
+	# 检查并翻转背面朝上的卡牌
+	_flip_back_cards_if_needed([player_choosing_card, public_choosing_card])
+	
 	# 准备卡牌动画
 	_prepare_card_for_animation(player_choosing_card)
-	
+
 	# 检查升级逻辑
 	var special_card = check_card_can_upgrade(public_choosing_card)
 	if special_card:
@@ -925,27 +927,35 @@ func _prepare_card_for_animation(card: Card):
 	card.disable_click()
 	card.set_card_unchooesd()
 	card.set_card_pivot_offset_to_center()
+	
+## 检查并翻转背面朝上的卡牌
+func _flip_back_cards_if_needed(cards: Array[Card]) -> void:
+	for card in cards:
+		if card.is_back_side_up():
+			# 如果卡牌是背面，直接翻转到正面
+			print("检测到背面卡牌，正在翻转: ", card.Name, " ID: ", card.ID)
+			card.set_card_face_up()  # 直接将背面卡牌翻转到正面
 
 ## 执行卡牌动画
 func _execute_card_animations(player_choosing_card: Card, public_choosing_card: Card, target_pos: Vector2, anim_duration: float, game_instance: GameInstance):
 	var animation_manager = AnimationManager.get_instance()
 	
 	animation_manager.start_linear_movement_combined(
-		player_choosing_card, 
-		target_pos, 
-		card_manager.get_random_deal_card_rotation(), 
-		anim_duration, 
-		animation_manager.EaseType.EASE_IN_OUT, 
+		player_choosing_card,
+		target_pos,
+		card_manager.get_random_deal_card_rotation(),
+		anim_duration,
+		animation_manager.EaseType.EASE_IN_OUT,
 		Callable(game_instance, "card_animation_end"), [player_choosing_card, true])
 
 	public_choosing_card.set_card_pivot_offset_to_center()
 
 	animation_manager.start_linear_movement_combined(
-		public_choosing_card, 
-		target_pos, 
-		card_manager.get_random_deal_card_rotation(), 
-		anim_duration, 
-		animation_manager.EaseType.EASE_IN_OUT, 
+		public_choosing_card,
+		target_pos,
+		card_manager.get_random_deal_card_rotation(),
+		anim_duration,
+		animation_manager.EaseType.EASE_IN_OUT,
 		Callable(game_instance, "card_animation_end"), [public_choosing_card, true])
 
 ## 更新玩家数据

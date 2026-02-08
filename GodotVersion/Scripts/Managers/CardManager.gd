@@ -127,7 +127,8 @@ func send_cards_for_play(cards: Array, game_instance):
 		var position = PUBLIC_CARDS_POS[i]
 		var rotation = PUBLIC_CRADS_ROTATION[i]
 		var card = cards.pop_back()
-		card.z_index = i
+		# 公共牌的视觉与点击层级应从左到右递减：第1张最高，第8张最低
+		card.z_index = PUBLIC_CARDS_POS.size() - i
 		card.set_input_priority(card.z_index)
 		# 公共卡池点击交由 PublicCardDeal 统一处理
 		game_instance.public_deal.set_one_hand_card(card, position, rotation)

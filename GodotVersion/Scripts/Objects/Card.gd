@@ -22,6 +22,9 @@ var choosed = false
 
 var is_enable_click = true
 
+# 卡牌朝向相关变量
+var is_face_up: bool = true  # true表示正面朝上，false表示背面朝上
+
 # 拖拽相关常量
 const DRAG_THRESHOLD: float = 5.0
 const DRAG_TIME_THRESHOLD: float = 0.1
@@ -58,6 +61,8 @@ func _ready() -> void:
 	gui_input.connect(_on_card_gui_input)
 	update_card()
 	set_process_priority(input_priority)  # 设置处理优先级
+	# 保证初始点击状态与 mouse_filter 同步
+	mouse_filter = Control.MOUSE_FILTER_STOP if is_enable_click else Control.MOUSE_FILTER_IGNORE
 
 func _process(delta: float) -> void:
 	if mouse_down:
@@ -156,6 +161,7 @@ func set_pinyin_name(value: String) -> void:
 
 func set_card_back() -> void:
 	self.texture_normal  = back_texture
+	is_face_up = false  # 设置为背面朝上
 
 func set_card_chooesd() -> void:
 	choosed = true
@@ -168,15 +174,26 @@ func set_card_unchooesd() -> void:
 func get_card_chooesd() -> bool:
 	return choosed
 
+# 检查卡牌是否背面朝上
+func is_back_side_up() -> bool:
+	return not is_face_up
+
+# 让卡牌正面朝上
+func set_card_face_up() -> void:
+	is_face_up = true
+	_load_image()  # 加载正面纹理
+
 func change_card_chooesd() -> void:
 	choosed = !choosed
 	Image_ChooesdBG.visible = choosed
 
 func disable_click() -> void:
 	is_enable_click = false
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 func enable_click() -> void:
 	is_enable_click = true
+	mouse_filter = Control.MOUSE_FILTER_STOP
 
 func set_card_pivot_offset_to_center() -> void:
 	self.pivot_offset = Vector2(size.x/2, size.y/2)
