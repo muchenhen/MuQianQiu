@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=2 format=3 uid="uid://ql6lqabd788n"]
 
-[ext_resource type="Script" path="res://Scripts/UI/UI_DisableTargetPicker.gd" id="1"]
+[ext_resource type="Script" uid="uid://ck2wxrs2c2cjd" path="res://Scripts/UI/UI_DisableTargetPicker.gd" id="1"]
 
 [node name="UI_DisableTargetPicker" type="CanvasLayer"]
 layer = 121
@@ -41,20 +41,19 @@ horizontal_alignment = 1
 custom_minimum_size = Vector2(0, 70)
 layout_mode = 2
 bbcode_enabled = true
-fit_content = true
 text = "请选择一张对手特殊卡"
+fit_content = true
 
 [node name="CandidateList" type="ItemList" parent="CenterPanel/Content"]
 custom_minimum_size = Vector2(0, 280)
 layout_mode = 2
 size_flags_vertical = 3
-select_mode = 0
 allow_reselect = true
 
 [node name="ButtonRow" type="HBoxContainer" parent="CenterPanel/Content"]
 layout_mode = 2
-alignment = 2
 theme_override_constants/separation = 12
+alignment = 2
 
 [node name="ConfirmButton" type="Button" parent="CenterPanel/Content/ButtonRow"]
 custom_minimum_size = Vector2(120, 40)

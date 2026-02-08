@@ -7,6 +7,14 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_Text"]
 shader = ExtResource("2_text_shader")
+shader_parameter/top_color = Color(1, 0.9, 0.5, 1)
+shader_parameter/bottom_color = Color(1, 0.7, 0.2, 1)
+shader_parameter/glow_color = Color(1, 0.85, 0.4, 0.5)
+shader_parameter/glow_strength = 0.8
+shader_parameter/glow_size = 8.0
+shader_parameter/shadow_color = Color(0, 0, 0, 0.5)
+shader_parameter/shadow_offset = Vector2(2, 2)
+shader_parameter/shadow_blur = 3.0
 
 [sub_resource type="LabelSettings" id="LabelSettings_Title"]
 font = ExtResource("3_font")

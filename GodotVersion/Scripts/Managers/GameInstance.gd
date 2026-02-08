@@ -355,6 +355,11 @@ func _on_exchange_completed(success: bool):
 		turn_engine.notify_exchange_completed(success)
 
 func _on_player_action_resolution_completed(player: Player, action_cards: Array):
+	# 由于信号连接默认不会等待async函数，对于需要阻塞的操作，使用call_deferred异步调用
+	_process_action_resolution_async.call_deferred(player, action_cards)
+
+## 异步处理玩家行动完成后的技能解析
+func _process_action_resolution_async(player: Player, action_cards: Array) -> void:
 	if turn_engine == null:
 		return
 

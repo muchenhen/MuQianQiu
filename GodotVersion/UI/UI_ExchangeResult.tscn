@@ -1,0 +1,275 @@
+[gd_scene load_steps=6 format=3 uid="uid://cfgg0fnxcrt21"]
+
+[ext_resource type="Script" uid="uid://l65xwhtjwafh" path="res://Scripts/UI/UI_ExchangeResult.gd" id="1_script"]
+[ext_resource type="FontFile" uid="uid://cgqf6jr2l5srf" path="res://Font/SourceHanSerifSC-Regular-simplified.otf" id="2_font"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_Title"]
+font = ExtResource("2_font")
+font_size = 48
+outline_size = 3
+outline_color = Color(0.3, 0.2, 0.1, 0.8)
+
+[sub_resource type="LabelSettings" id="LabelSettings_Name"]
+font = ExtResource("2_font")
+font_size = 28
+outline_size = 2
+outline_color = Color(0.2, 0.15, 0.05, 0.8)
+
+[sub_resource type="LabelSettings" id="LabelSettings_Score"]
+font = ExtResource("2_font")
+font_size = 24
+
+[node name="UI_ExchangeResult" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="ColorRect_BG" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.9)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 40.0
+offset_top = 30.0
+offset_right = -40.0
+offset_bottom = -30.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="Title" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "卡牌交换结果"
+label_settings = SubResource("LabelSettings_Title")
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 40
+alignment = 1
+
+[node name="PlayerA_Panel" type="PanelContainer" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBox" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/PlayerA_Panel"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="PlayerName" type="Label" parent="VBoxContainer/HBoxContainer/PlayerA_Panel/VBox"]
+layout_mode = 2
+text = "玩家A"
+label_settings = SubResource("LabelSettings_Name")
+horizontal_alignment = 1
+
+[node name="CardExchangeLabel" type="Label" parent="VBoxContainer/HBoxContainer/PlayerA_Panel/VBox"]
+layout_mode = 2
+text = "卡牌变化"
+horizontal_alignment = 1
+
+[node name="CardExchange" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/PlayerA_Panel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="LostCardBox" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/PlayerA_Panel/VBox/CardExchange"]
+layout_mode = 2
+alignment = 1
+
+[node name="LostLabel" type="Label" parent="VBoxContainer/HBoxContainer/PlayerA_Panel/VBox/CardExchange/LostCardBox"]
+layout_mode = 2
+text = "失去"
+horizontal_alignment = 1
+
+[node name="LostCard" type="TextureRect" parent="VBoxContainer/HBoxContainer/PlayerA_Panel/VBox/CardExchange/LostCardBox"]
+custom_minimum_size = Vector2(120, 180)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Arrow" type="Label" parent="VBoxContainer/HBoxContainer/PlayerA_Panel/VBox/CardExchange"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "→"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GainedCardBox" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/PlayerA_Panel/VBox/CardExchange"]
+layout_mode = 2
+alignment = 1
+
+[node name="GainedLabel" type="Label" parent="VBoxContainer/HBoxContainer/PlayerA_Panel/VBox/CardExchange/GainedCardBox"]
+layout_mode = 2
+text = "获得"
+horizontal_alignment = 1
+
+[node name="GainedCard" type="TextureRect" parent="VBoxContainer/HBoxContainer/PlayerA_Panel/VBox/CardExchange/GainedCardBox"]
+custom_minimum_size = Vector2(120, 180)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ScoreChangeLabel" type="Label" parent="VBoxContainer/HBoxContainer/PlayerA_Panel/VBox"]
+layout_mode = 2
+text = "分数变化"
+horizontal_alignment = 1
+
+[node name="ScoreChange" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/PlayerA_Panel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 30
+alignment = 1
+
+[node name="OldScore" type="Label" parent="VBoxContainer/HBoxContainer/PlayerA_Panel/VBox/ScoreChange"]
+layout_mode = 2
+text = "原分数: 0"
+label_settings = SubResource("LabelSettings_Score")
+
+[node name="Arrow" type="Label" parent="VBoxContainer/HBoxContainer/PlayerA_Panel/VBox/ScoreChange"]
+layout_mode = 2
+text = "→"
+
+[node name="NewScore" type="Label" parent="VBoxContainer/HBoxContainer/PlayerA_Panel/VBox/ScoreChange"]
+layout_mode = 2
+text = "新分数: 0"
+label_settings = SubResource("LabelSettings_Score")
+
+[node name="ScoreDiff" type="Label" parent="VBoxContainer/HBoxContainer/PlayerA_Panel/VBox/ScoreChange"]
+layout_mode = 2
+text = "+0"
+label_settings = SubResource("LabelSettings_Score")
+
+[node name="DetailsLabel" type="Label" parent="VBoxContainer/HBoxContainer/PlayerA_Panel/VBox"]
+layout_mode = 2
+text = "变化明细"
+horizontal_alignment = 1
+
+[node name="Details" type="RichTextLabel" parent="VBoxContainer/HBoxContainer/PlayerA_Panel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "无变化"
+fit_content = true
+
+[node name="Separator" type="VSeparator" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="PlayerB_Panel" type="PanelContainer" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBox" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/PlayerB_Panel"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="PlayerName" type="Label" parent="VBoxContainer/HBoxContainer/PlayerB_Panel/VBox"]
+layout_mode = 2
+text = "玩家B"
+label_settings = SubResource("LabelSettings_Name")
+horizontal_alignment = 1
+
+[node name="CardExchangeLabel" type="Label" parent="VBoxContainer/HBoxContainer/PlayerB_Panel/VBox"]
+layout_mode = 2
+text = "卡牌变化"
+horizontal_alignment = 1
+
+[node name="CardExchange" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/PlayerB_Panel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="LostCardBox" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/PlayerB_Panel/VBox/CardExchange"]
+layout_mode = 2
+alignment = 1
+
+[node name="LostLabel" type="Label" parent="VBoxContainer/HBoxContainer/PlayerB_Panel/VBox/CardExchange/LostCardBox"]
+layout_mode = 2
+text = "失去"
+horizontal_alignment = 1
+
+[node name="LostCard" type="TextureRect" parent="VBoxContainer/HBoxContainer/PlayerB_Panel/VBox/CardExchange/LostCardBox"]
+custom_minimum_size = Vector2(120, 180)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Arrow" type="Label" parent="VBoxContainer/HBoxContainer/PlayerB_Panel/VBox/CardExchange"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "→"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GainedCardBox" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/PlayerB_Panel/VBox/CardExchange"]
+layout_mode = 2
+alignment = 1
+
+[node name="GainedLabel" type="Label" parent="VBoxContainer/HBoxContainer/PlayerB_Panel/VBox/CardExchange/GainedCardBox"]
+layout_mode = 2
+text = "获得"
+horizontal_alignment = 1
+
+[node name="GainedCard" type="TextureRect" parent="VBoxContainer/HBoxContainer/PlayerB_Panel/VBox/CardExchange/GainedCardBox"]
+custom_minimum_size = Vector2(120, 180)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ScoreChangeLabel" type="Label" parent="VBoxContainer/HBoxContainer/PlayerB_Panel/VBox"]
+layout_mode = 2
+text = "分数变化"
+horizontal_alignment = 1
+
+[node name="ScoreChange" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/PlayerB_Panel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 30
+alignment = 1
+
+[node name="OldScore" type="Label" parent="VBoxContainer/HBoxContainer/PlayerB_Panel/VBox/ScoreChange"]
+layout_mode = 2
+text = "原分数: 0"
+label_settings = SubResource("LabelSettings_Score")
+
+[node name="Arrow" type="Label" parent="VBoxContainer/HBoxContainer/PlayerB_Panel/VBox/ScoreChange"]
+layout_mode = 2
+text = "→"
+
+[node name="NewScore" type="Label" parent="VBoxContainer/HBoxContainer/PlayerB_Panel/VBox/ScoreChange"]
+layout_mode = 2
+text = "新分数: 0"
+label_settings = SubResource("LabelSettings_Score")
+
+[node name="ScoreDiff" type="Label" parent="VBoxContainer/HBoxContainer/PlayerB_Panel/VBox/ScoreChange"]
+layout_mode = 2
+text = "+0"
+label_settings = SubResource("LabelSettings_Score")
+
+[node name="DetailsLabel" type="Label" parent="VBoxContainer/HBoxContainer/PlayerB_Panel/VBox"]
+layout_mode = 2
+text = "变化明细"
+horizontal_alignment = 1
+
+[node name="Details" type="RichTextLabel" parent="VBoxContainer/HBoxContainer/PlayerB_Panel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "无变化"
+fit_content = true
+
+[node name="ConfirmButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "确认"

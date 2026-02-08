@@ -2,16 +2,16 @@ extends RefCounted
 
 class_name Story
 
-var id: int  # 故事ID
-var name: String  # 故事名称
-var cards_name: Array  # 卡牌名称数组
-var cards_id: Array  # 卡牌ID数组
-var score: int  # 完成故事获得的分数
-var audio_id: String  # 故事相关的音频ID
-var finished: bool = false  # 故事是否已完成
+var id: int # 故事ID
+var name: String # 故事名称
+var cards_name: Array # 卡牌名称数组
+var cards_id: Array # 卡牌ID数组
+var score: int # 完成故事获得的分数
+var audio_id: String # 故事相关的音频ID
+var finished: bool = false # 故事是否已完成
 
 # 构造函数
-func _init(p_id: int, p_name: String, p_cards_name: Array, 
+func _init(p_id: int, p_name: String, p_cards_name: Array,
             p_cards_id: Array, p_score: int, p_audio_id: String):
     id = p_id
     name = p_name
@@ -23,6 +23,10 @@ func _init(p_id: int, p_name: String, p_cards_name: Array,
 # 标记故事为已完成
 func mark_as_finished() -> void:
     finished = true
+
+# 标记故事为未完成（用于交换卡牌导致的故事失效）
+func mark_as_unfinished() -> void:
+    finished = false
 
 # 检查故事是否已完成
 func is_finished() -> bool:
@@ -36,4 +40,4 @@ func get_required_cards_count() -> int:
 func _to_string() -> String:
     return "Story[id: %s, name: %s, cards: %s, finished: %s]" % [
         id, name, cards_id, finished
-    ]	
+    ]

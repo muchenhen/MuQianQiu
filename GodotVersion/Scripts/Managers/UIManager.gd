@@ -40,12 +40,13 @@ func regiester_ui_elements() -> void:
 	register_ui_element("UI_CheckSkill", "res://UI/UI_CheckSkill.tscn")
 	register_ui_element("UI_SkillCast", "res://UI/UI_SkillCast.tscn")
 	register_ui_element("UI_DisableTargetPicker", "res://UI/UI_DisableTargetPicker.tscn")
+	register_ui_element("UI_ExchangeResult", "res://UI/UI_ExchangeResult.tscn")
 
 func register_ui_element(key: String, element_path: String) -> void:
 	ui_elements_path[key] = element_path
 
 func ensure_get_ui_instance(key: String) -> Node:
-	var ui_instance  = get_ui_instance(key)
+	var ui_instance = get_ui_instance(key)
 	if not ui_instance:
 		ui_instance = create_ui_instance(key)
 	return ui_instance
@@ -136,7 +137,7 @@ func destroy_ui(key: String) -> void:
 
 # 显示快速提示
 func show_tip(text: String, duration: float = 2.0, color: Color = Color.TRANSPARENT) -> void:
-	var tip:UI_Tip = create_ui_instance_for_multi("UI_Tip")
+	var tip: UI_Tip = create_ui_instance_for_multi("UI_Tip")
 	if tip:
 		# 先添加到UI树
 		open_ui_instance(tip)

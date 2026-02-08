@@ -423,7 +423,7 @@ func resolve_turn_skills(
 				CardSkill.SKILL_TYPE.EXCHANGE_CARD:
 					exchange_entries.append(entry)
 				CardSkill.SKILL_TYPE.DISABLE_SKILL:
-					_register_disable_watch(current_player, entry, result_events)
+					await _register_disable_watch(current_player, entry, result_events)
 				CardSkill.SKILL_TYPE.OPEN_OPPONENT_HAND:
 					_apply_open_hand_skill(current_player, opponent_player, entry, result_events, result_revealed_card_ids)
 				CardSkill.SKILL_TYPE.GUARANTEE_APPEAR:
@@ -480,7 +480,7 @@ func _resolve_exchange_entries(
 			result_events.append(_make_event_from_entry(current_player, entry, STAGE_WAIVED, "玩家放弃发动"))
 			continue
 
-		var swapped_in_card = _apply_exchange_skill(current_player, opponent_player, entry, result_events)
+		var swapped_in_card = await _apply_exchange_skill(current_player, opponent_player, entry, result_events)
 		if swapped_in_card != null and swapped_in_card.Special:
 			if _has_exchange_skill(swapped_in_card):
 				_mark_exchange_skills_used(swapped_in_card)
@@ -563,30 +563,487 @@ func _apply_copy_skill(current_player: Player, opponent_player: Player, entry: D
 	))
 
 func _apply_exchange_skill(current_player: Player, opponent_player: Player, entry: Dictionary, result_events: Array) -> Card:
-	var self_card = current_player.get_first_hand_card()
-	var opp_card = opponent_player.get_first_hand_card()
-
-	if self_card == null or opp_card == null:
+	var source_card: Card = _entry_card(entry)
+	if source_card == null:
 		_set_entry_state(entry, SkillUseState.WAIVED)
-		result_events.append(_make_event_from_entry(current_player, entry, STAGE_FAILED, "交换失败：任一方无可交换手牌"))
+		result_events.append(_make_event_from_entry(current_player, entry, STAGE_FAILED, "交换失败：来源卡无效"))
 		return null
 
-	var swapped_in = current_player.swap_one_hand_card_with_player(opponent_player, self_card, opp_card)
-	_set_entry_state(entry, SkillUseState.USED)
-	_mark_exchange_disable_skill_used(_entry_card(entry))
+	# 获取可见的对手卡牌
+	var visible_cards = _get_visible_opponent_cards(current_player, opponent_player)
+	if visible_cards.is_empty():
+		_set_entry_state(entry, SkillUseState.WAIVED)
+		result_events.append(_make_event_from_entry(current_player, entry, STAGE_FAILED, "交换失败：无可见的对手卡牌"))
+		return null
 
+	# 根据玩家类型决定选择方式
+	var target_card: Card = null
+	if current_player.is_ai_player():
+		target_card = _decide_ai_exchange_target(current_player, opponent_player, source_card, visible_cards)
+	else:
+		target_card = await _ask_exchange_target(current_player, visible_cards, source_card)
+
+	# 如果选择放弃
+	if target_card == null:
+		_set_entry_state(entry, SkillUseState.USED)
+		result_events.append(_make_event_from_entry(current_player, entry, STAGE_TRIGGER, "发动成功（玩家放弃）"))
+		return null
+
+	# 执行交换
+	var swapped_in = await _execute_card_exchange(current_player, opponent_player, source_card, target_card, result_events)
+	_set_entry_state(entry, SkillUseState.USED)
+	_mark_exchange_disable_skill_used(source_card)
+
+	return swapped_in
+
+## 获取发动者可见的对手卡牌列表
+## 包括：对手的deal区所有卡牌 + 对手手牌中被己方翻开的卡牌
+func _get_visible_opponent_cards(current_player: Player, opponent_player: Player) -> Array[Card]:
+	var visible_cards: Array[Card] = []
+	if opponent_player == null:
+		return visible_cards
+
+	# 1. 添加对手deal区的所有卡牌
+	for card in opponent_player.deal_cards.values():
+		if card != null:
+			visible_cards.append(card)
+
+	# 2. 添加对手手牌中被己方翻开的卡牌
+	if match_state != null and match_state.revealed_opponent_hand_cards.has(current_player):
+		var revealed_ids_raw = match_state.revealed_opponent_hand_cards.get(current_player, [])
+		var revealed_ids: Dictionary = {}
+		if revealed_ids_raw is Array:
+			for raw_id in revealed_ids_raw:
+				revealed_ids[int(raw_id)] = true
+
+		for card in opponent_player.get_all_hand_cards():
+			if card != null and revealed_ids.has(card.ID):
+				visible_cards.append(card)
+
+	return visible_cards
+
+## 判断卡牌是否在玩家的deal区
+func _is_card_in_deal(player: Player, card: Card) -> bool:
+	if player == null or card == null:
+		return false
+	return player.deal_cards.has(card.ID)
+
+## 判断卡牌是否在玩家的手牌中
+func _is_card_in_hand(player: Player, card: Card) -> bool:
+	if player == null or card == null:
+		return false
+	return player.is_card_in_hand(card)
+
+## 玩家选择交换目标卡牌的UI提示
+func _ask_exchange_target(current_player: Player, visible_cards: Array[Card], source_card: Card) -> Card:
+	if not prompt_callback.is_valid():
+		return null
+
+	# 构建选项列表
+	var options: Array = []
+	for card in visible_cards:
+		var location = "deal区" if _is_card_in_deal(_get_opponent_of(current_player), card) else "手牌"
+		options.append({
+			"id": str(card.get_instance_id()),
+			"label": "%s (%s)" % [card.Name, location],
+			"card_id": card.ID,
+		})
+	options.append({"id": "waive", "label": "放弃交换"})
+
+	var choice = await prompt_callback.call({
+		"type": "EXCHANGE_CARD_TARGET",
+		"title": "选择交换目标",
+		"description": "使用【%s】交换一张对手的可见卡牌" % source_card.Name,
+		"options": options,
+	})
+
+	if str(choice) == "waive":
+		return null
+
+	# 根据选择的instance_id找到对应的卡牌
+	var selected_instance_id = int(choice)
+	for card in visible_cards:
+		if card.get_instance_id() == selected_instance_id:
+			return card
+
+	return null
+
+## 获取当前玩家的对手
+func _get_opponent_of(player: Player) -> Player:
+	if player == null or match_state == null:
+		return null
+	if player == match_state.player_a:
+		return match_state.player_b
+	return match_state.player_a
+
+## AI决定是否交换以及交换哪张卡
+func _decide_ai_exchange_target(ai_player: Player, _opponent_player: Player, exchange_card: Card, visible_cards: Array[Card]) -> Card:
+	if visible_cards.is_empty():
+		return null
+
+	# 收集AI当前拥有的卡牌ID集合（用于故事评估）
+	var current_owned_ids: Dictionary = {}
+	for card in ai_player.deal_cards.values():
+		if card != null:
+			current_owned_ids[_card_effective_id_for_exchange(card)] = true
+
+	# 计算当前故事价值
+	var current_story_value = _evaluate_story_value_for_cards(ai_player, current_owned_ids)
+
+	# 评估每张可见卡牌的交换价值
+	var best_target: Card = null
+	var best_value_gain := 0.0
+
+	for target_card in visible_cards:
+		# 模拟交换后的卡牌集合（移除exchange_card，加入target_card）
+		var simulated_ids: Dictionary = current_owned_ids.duplicate()
+		simulated_ids.erase(_card_effective_id_for_exchange(exchange_card))
+		simulated_ids[_card_effective_id_for_exchange(target_card)] = true
+
+		var simulated_value = _evaluate_story_value_for_cards(ai_player, simulated_ids)
+		var value_gain = simulated_value - current_story_value
+
+		# 额外考虑卡牌本身的分值差异
+		value_gain += float(target_card.Score - exchange_card.Score) * 0.1
+
+		if value_gain > best_value_gain:
+			best_value_gain = value_gain
+			best_target = target_card
+
+	# 如果没有价值提升，则放弃交换
+	return best_target
+
+## 获取卡牌的有效ID（用于故事评估）
+func _card_effective_id_for_exchange(card: Card) -> int:
+	if card == null:
+		return -1
+	return card.BaseID if card.Special else card.ID
+
+## 评估给定卡牌集合的故事价值
+func _evaluate_story_value_for_cards(player: Player, owned_ids: Dictionary) -> float:
+	var value := 0.0
+	if match_state == null or match_state.story_manager == null:
+		return value
+
+	for story_id in match_state.story_manager.stories.keys():
+		var story: Story = match_state.story_manager.stories[story_id]
+		if _player_has_finished_story_check(player, int(story_id)):
+			continue
+
+		var missing = _count_story_missing_for_exchange(story.cards_id, owned_ids)
+		if missing == 0:
+			# 故事完成
+			value += 10000.0 + float(story.score) * 20.0
+		elif missing <= 2:
+			# 接近完成
+			value += float(story.cards_id.size() - missing) * 100.0
+			value += 200.0 / float(missing)
+
+	return value
+
+## 检查玩家是否已完成指定故事
+func _player_has_finished_story_check(player: Player, story_id: int) -> bool:
+	if player == null:
+		return false
+	for item in player.finished_stories:
+		if item is Story and int(item.id) == story_id:
+			return true
+		if item is int and int(item) == story_id:
+			return true
+	return false
+
+## 计算故事缺少的卡牌数量
+func _count_story_missing_for_exchange(story_card_ids: Array, owned_ids: Dictionary) -> int:
+	var missing := 0
+	for raw_id in story_card_ids:
+		var cid := int(raw_id)
+		if not owned_ids.has(cid):
+			missing += 1
+	return missing
+
+## 执行卡牌交换
+func _execute_card_exchange(current_player: Player, opponent_player: Player, source_card: Card, target_card: Card, result_events: Array) -> Card:
+	if source_card == null or target_card == null:
+		return null
+
+	var target_in_deal = _is_card_in_deal(opponent_player, target_card)
+	var target_in_hand = _is_card_in_hand(opponent_player, target_card)
+
+	if not target_in_deal and not target_in_hand:
+		result_events.append(_make_event_from_entry(current_player, {}, STAGE_FAILED, "交换失败：目标卡不在对手的deal或手牌中"))
+		return null
+
+	# 获取ScoreManager实例
+	var score_manager = ScoreManager.get_instance()
+	
+	# 记录交换前的分数
+	var current_player_old_score = score_manager.get_player_score(current_player)
+	var opponent_old_score = score_manager.get_player_score(opponent_player)
+	
+	# 开始记录交换操作日志
+	score_manager.begin_exchange_logging(current_player, opponent_player)
+
+	# ============ 阶段1: 撤销分数 ============
+	
+	# 1.1 撤销发动者失去的卡牌分数
+	score_manager.revoke_card_score(current_player, source_card)
+	# 撤销与该卡相关的技能效果
+	score_manager.revoke_score_effects_for_card(current_player, source_card)
+	
+	# 1.2 如果目标卡在对手deal中，撤销对手的卡牌分数
+	if target_in_deal:
+		score_manager.revoke_card_score(opponent_player, target_card)
+		score_manager.revoke_score_effects_for_card(opponent_player, target_card)
+
+	# ============ 阶段2: 执行卡牌交换 ============
+	
+	# 从发动者deal中移除source_card
+	if current_player.deal_cards.has(source_card.ID):
+		current_player.deal_cards.erase(source_card.ID)
+
+	# 将target_card加入发动者deal
+	current_player.deal_cards[target_card.ID] = target_card
+	target_card.set_player_owner(current_player)
+
+	if target_in_deal:
+		# 从对手deal中移除target_card
+		opponent_player.deal_cards.erase(target_card.ID)
+		# 将source_card加入对手deal
+		opponent_player.deal_cards[source_card.ID] = source_card
+		source_card.set_player_owner(opponent_player)
+	else:
+		# target_card在对手手牌中
+		var target_slot = opponent_player.get_hand_slot_index(target_card)
+		if target_slot != -1:
+			# 清空该槽位
+			opponent_player.hand_cards[target_slot].card = null
+			opponent_player.hand_cards[target_slot].is_empty = true
+			# 将source_card放入该槽位
+			opponent_player._attach_card_to_slot(target_slot, source_card)
+
+	# ============ 阶段3: 添加新卡牌分数 ============
+	
+	# 3.1 为发动者添加获得卡牌的分数
+	score_manager.add_card_score(current_player, target_card)
+	
+	# 3.2 如果目标卡原本在deal中，为对手添加获得卡牌的分数
+	if target_in_deal:
+		score_manager.add_card_score(opponent_player, source_card)
+
+	# ============ 阶段4: 技能效果转移 ============
+	
+	# 4.1 来源卡的技能效果从发动者转移到对手（如果来源卡进入对手deal）
+	if target_in_deal and source_card.Special:
+		score_manager.transfer_score_effects(current_player, opponent_player, source_card)
+		# 尝试应用转移后的效果
+		score_manager.apply_score_effects(opponent_player)
+	
+	# 4.2 目标卡的技能效果从对手转移到发动者（如果目标卡原本在deal中）
+	if target_in_deal and target_card.Special:
+		score_manager.transfer_score_effects(opponent_player, current_player, target_card)
+		score_manager.apply_score_effects(current_player)
+
+	var location_text = "deal区" if target_in_deal else "手牌"
 	result_events.append(_make_event_from_entry(
 		current_player,
-		entry,
+		{},
 		STAGE_TRIGGER,
-		"交换了己方[%s]与对方[%s]" % [self_card.Name, opp_card.Name],
+		"交换了己方[%s]与对方%s中的[%s]" % [source_card.Name, location_text, target_card.Name],
 		{
-			"self_card_id": self_card.ID,
-			"opponent_card_id": opp_card.ID,
+			"self_card_id": source_card.ID,
+			"opponent_card_id": target_card.ID,
+			"target_location": location_text,
 		}
 	))
 
-	return swapped_in
+	# 交换后重新计算故事和分数
+	_recalculate_stories_after_exchange(current_player, opponent_player, result_events, score_manager)
+	
+	# 结束交换日志记录并获取日志数据
+	var exchange_logs = score_manager.end_exchange_logging()
+	
+	# 记录交换后的分数
+	var current_player_new_score = score_manager.get_player_score(current_player)
+	var opponent_new_score = score_manager.get_player_score(opponent_player)
+	
+	# ============ 展示交换结果UI ============
+	var ui_manager = UIManager.get_instance()
+	var exchange_ui = ui_manager.ensure_get_ui_instance("UI_ExchangeResult")
+	if exchange_ui != null:
+		if exchange_ui.get_parent() == null:
+			ui_manager.open_ui_instance(exchange_ui)
+		ui_manager.move_ui_instance_to_top(exchange_ui)
+		
+		# 构建展示数据
+		var display_data = {
+			"player_a": current_player,
+			"player_b": opponent_player,
+			"player_a_lost_card": source_card,
+			"player_a_gained_card": target_card,
+			"player_b_lost_card": target_card if target_in_deal else null,
+			"player_b_gained_card": source_card if target_in_deal else null,
+			"player_a_old_score": current_player_old_score,
+			"player_a_new_score": current_player_new_score,
+			"player_b_old_score": opponent_old_score,
+			"player_b_new_score": opponent_new_score,
+			"player_a_logs": exchange_logs.get(current_player, []),
+			"player_b_logs": exchange_logs.get(opponent_player, []),
+		}
+		exchange_ui.show_exchange_result(display_data)
+		
+		# 等待用户确认
+		await exchange_ui.wait_for_confirmation()
+
+	return target_card
+
+## 交换后重新计算双方的故事完成情况
+func _recalculate_stories_after_exchange(current_player: Player, opponent_player: Player, result_events: Array, score_manager: ScoreManager) -> void:
+	if match_state == null or match_state.story_manager == null:
+		return
+
+	var story_manager = match_state.story_manager
+
+	# 1. 收集交换前双方已完成的故事（从 Player 的 finished_stories 中获取）
+	var current_player_finished_before: Array[int] = []
+	for story in current_player.finished_stories:
+		if story is Story:
+			current_player_finished_before.append(story.id)
+		elif story is int:
+			current_player_finished_before.append(story)
+
+	var opponent_finished_before: Array[int] = []
+	for story in opponent_player.finished_stories:
+		if story is Story:
+			opponent_finished_before.append(story.id)
+		elif story is int:
+			opponent_finished_before.append(story)
+
+	# 2. 检查每个故事是否因为交换而失效
+	var current_player_invalidated: Array[Story] = []
+	var opponent_invalidated: Array[Story] = []
+
+	for story_id in current_player_finished_before:
+		var story: Story = story_manager.stories.get(story_id, null)
+		if story == null:
+			continue
+		if not _player_still_has_story_cards(current_player, story):
+			story.mark_as_unfinished()
+			current_player_invalidated.append(story)
+			# 撤销故事分数
+			score_manager.revoke_story_score(current_player, story)
+			# 撤销与故事相关的技能加分
+			score_manager.revoke_score_effects_for_story(current_player, story)
+			# 从玩家的完成故事列表中移除
+			_remove_story_from_player(current_player, story)
+			# 从 story_manager 的 completed_stories 中移除
+			var idx = story_manager.completed_stories.find(story)
+			if idx != -1:
+				story_manager.completed_stories.remove_at(idx)
+
+	for story_id in opponent_finished_before:
+		var story: Story = story_manager.stories.get(story_id, null)
+		if story == null:
+			continue
+		if not _player_still_has_story_cards(opponent_player, story):
+			story.mark_as_unfinished()
+			opponent_invalidated.append(story)
+			# 撤销故事分数
+			score_manager.revoke_story_score(opponent_player, story)
+			# 撤销与故事相关的技能加分
+			score_manager.revoke_score_effects_for_story(opponent_player, story)
+			_remove_story_from_player(opponent_player, story)
+			var idx = story_manager.completed_stories.find(story)
+			if idx != -1:
+				story_manager.completed_stories.remove_at(idx)
+
+	# 3. 检查是否有新完成的故事
+	var current_player_new = story_manager.check_story_finish_for_player(current_player)
+	var opponent_new = story_manager.check_story_finish_for_player(opponent_player)
+	
+	# 为新完成的故事添加分数
+	for story in current_player_new:
+		score_manager.add_single_story_score(current_player, story)
+	for story in opponent_new:
+		score_manager.add_single_story_score(opponent_player, story)
+	
+	# 应用可能因新故事完成而触发的技能效果
+	score_manager.apply_score_effects(current_player)
+	score_manager.apply_score_effects(opponent_player)
+
+	# 4. 生成事件记录
+	for story in current_player_invalidated:
+		result_events.append(_make_event_by_source(
+			current_player,
+			-1,
+			"交换卡牌",
+			"STORY_CHANGE",
+			"故事变化",
+			STAGE_TRIGGER,
+			"因交换导致故事失效: %s" % story.name,
+			{"story_id": story.id, "story_name": story.name, "change_type": "invalidated"}
+		))
+
+	for story in opponent_invalidated:
+		result_events.append(_make_event_by_source(
+			opponent_player,
+			-1,
+			"交换卡牌",
+			"STORY_CHANGE",
+			"故事变化",
+			STAGE_TRIGGER,
+			"因交换导致故事失效: %s" % story.name,
+			{"story_id": story.id, "story_name": story.name, "change_type": "invalidated"}
+		))
+
+	for story in current_player_new:
+		result_events.append(_make_event_by_source(
+			current_player,
+			-1,
+			"交换卡牌",
+			"STORY_CHANGE",
+			"故事变化",
+			STAGE_TRIGGER,
+			"因交换完成新故事: %s" % story.name,
+			{"story_id": story.id, "story_name": story.name, "change_type": "completed"}
+		))
+
+	for story in opponent_new:
+		result_events.append(_make_event_by_source(
+			opponent_player,
+			-1,
+			"交换卡牌",
+			"STORY_CHANGE",
+			"故事变化",
+			STAGE_TRIGGER,
+			"因交换完成新故事: %s" % story.name,
+			{"story_id": story.id, "story_name": story.name, "change_type": "completed"}
+		))
+
+	# 5. 将新完成的故事添加到玩家的finished_stories
+	current_player.finished_stories.append_array(current_player_new)
+	opponent_player.finished_stories.append_array(opponent_new)
+
+## 检查玩家是否仍然拥有完成故事所需的所有卡牌
+func _player_still_has_story_cards(player: Player, story: Story) -> bool:
+	var owned_ids: Dictionary = {}
+	for card in player.deal_cards.values():
+		if card != null:
+			var effective_id = card.BaseID if card.Special else card.ID
+			owned_ids[effective_id] = true
+
+	for card_id in story.cards_id:
+		if not owned_ids.has(int(card_id)):
+			return false
+	return true
+
+## 从玩家的完成故事列表中移除指定故事
+func _remove_story_from_player(player: Player, story: Story) -> void:
+	for i in range(player.finished_stories.size() - 1, -1, -1):
+		var item = player.finished_stories[i]
+		if item is Story and item.id == story.id:
+			player.finished_stories.remove_at(i)
+		elif item is int and item == story.id:
+			player.finished_stories.remove_at(i)
 
 func _register_disable_watch(current_player: Player, entry: Dictionary, events: Array) -> void:
 	var source_card: Card = _entry_card(entry)
@@ -623,7 +1080,7 @@ func _register_disable_watch(current_player: Player, entry: Dictionary, events: 
 		"scope": disable_scope,
 		"target_ids": target_ids,
 		"selected_instance_id": 0,
-		"selected_card_id": -1,
+		"selected_card_id": - 1,
 		"selected_card_name": "",
 	}
 
@@ -930,7 +1387,7 @@ func _get_ready_entries(card: Card) -> Array:
 	if card.has_meta("copied_skill_type"):
 		var copied_entry: Dictionary = {
 			"card": card,
-			"skill_index": -1,
+			"skill_index": - 1,
 			"skill_type": int(card.get_meta("copied_skill_type")),
 			"skill_target_ids": card.get_meta("copied_skill_target_ids") if card.has_meta("copied_skill_target_ids") else [],
 			"skill_value": float(card.get_meta("copied_skill_value")) if card.has_meta("copied_skill_value") else 0.0,
@@ -1030,7 +1487,7 @@ func _make_event_from_entry(
 	stage: int,
 	result_text: String,
 	payload: Dictionary = {}
-) :
+):
 	var card: Card = entry.get("card", null) as Card
 	var skill_type = int(entry.get("skill_type", CardSkill.SKILL_TYPE.NULL))
 	var stage_actor = actor.player_name if actor != null else ""
@@ -1055,7 +1512,7 @@ func _make_event_by_source(
 	stage: int,
 	result_text: String,
 	payload: Dictionary = {}
-) :
+):
 	return SkillCastEventScript.new(
 		match_state.round_index if match_state != null else 0,
 		actor.player_name if actor != null else "",
