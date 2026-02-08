@@ -717,28 +717,36 @@ func _refresh_card_visibility(card: Card) -> void:
 		card.set_card_back()
 
 func _is_card_visible_for_local_player(card: Card) -> bool:
+	var local_player = _get_local_player()
+	var opponent_player = _get_opponent(local_player) if local_player != null else null
+
+	# 本地玩家手牌始终可见，优先按手牌归属判断，避免 owner 异常导致误翻面
+	if local_player != null and local_player.is_card_in_hand(card):
+		return true
+
+	# 对手手牌默认背面；打开设置或被本地玩家的“翻开对手手牌”命中后可见
+	if opponent_player != null and opponent_player.is_card_in_hand(card):
+		if opponent_hand_visible:
+			return true
+		if match_state != null and match_state.revealed_opponent_hand_cards.has(local_player):
+			var revealed_ids: Array = match_state.revealed_opponent_hand_cards[local_player]
+			return revealed_ids.has(card.ID)
+		return false
+
 	# 公共区域和牌堆卡默认可见
 	if card.player_owner == null:
 		return true
 
-	# 玩家A视角：自己的手牌总是可见
-	if card.player_owner == player_a:
-		return true
-
-	# 玩家B（对手）手牌默认背面；打开设置后可见
-	if card.player_owner == player_b:
-		if not player_b.is_card_in_hand(card):
-			return true
-		if opponent_hand_visible:
-			return true
-		# 检查是否被"翻开对手手牌"技能翻开
-		# 注意：这里需要区分是玩家A发动技能翻开AI手牌，还是AI发动技能翻开玩家A手牌
-		if match_state != null and match_state.revealed_opponent_hand_cards.has(player_a):
-			var revealed_ids: Array = match_state.revealed_opponent_hand_cards[player_a]
-			return revealed_ids.has(card.ID)
-		return false
-
 	return true
+
+func _get_local_player() -> Player:
+	if player_a != null and not player_a.is_ai_player():
+		return player_a
+	if player_b != null and not player_b.is_ai_player():
+		return player_b
+	if player_a != null:
+		return player_a
+	return player_b
 
 func _build_skill_debug_entry(round_index: int, player: Player, skill_item: Dictionary) -> Dictionary:
 	var card_id = int(skill_item.get("card_id", -1))

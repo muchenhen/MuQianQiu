@@ -190,10 +190,6 @@ func check_disable_on_opponent_acquire(
 	acquired_cards: Array[Card] = []
 ) -> Array:
 	var events: Array = []
-	var check_pool: Array[Card] = acquired_cards.duplicate()
-	if check_pool.is_empty():
-		check_pool = _collect_special_cards_from_player(acquiring_player)
-
 	for watcher_raw in disable_watchers:
 		if not (watcher_raw is Dictionary):
 			continue
@@ -223,6 +219,105 @@ func check_disable_on_opponent_acquire(
 			}
 		))
 
+		if mode == DISABLE_MODE_FIXED_SINGLE or mode == DISABLE_MODE_FIXED_GROUP:
+			var own_hit_cards: Array[Card] = _find_target_cards_in_deal(owner, target_ids)
+			if not own_hit_cards.is_empty():
+				watcher["active"] = false
+				events.append(_make_event_by_source(
+					owner,
+					int(watcher.get("source_card_id", -1)),
+					str(watcher.get("source_card_name", "未知卡牌")),
+					"DISABLE_SKILL",
+					"禁用技能",
+					STAGE_FAILED,
+					"发动失败（目标卡在自己手里）: %s" % _cards_to_name_text(own_hit_cards),
+					{
+						"mode": mode,
+						"scope": scope,
+						"target_ids": target_ids,
+					}
+				))
+				continue
+
+			var opponent_hit_cards: Array[Card] = _find_target_cards_in_deal(acquiring_player, target_ids)
+			if opponent_hit_cards.is_empty():
+				events.append(_make_event_by_source(
+					owner,
+					int(watcher.get("source_card_id", -1)),
+					str(watcher.get("source_card_name", "未知卡牌")),
+					"DISABLE_SKILL",
+					"禁用技能",
+					STAGE_CHECK,
+					"未命中目标，继续监视",
+					{
+						"mode": mode,
+						"scope": scope,
+						"target_ids": target_ids,
+					}
+				))
+				continue
+
+			var special_hit_cards: Array[Card] = []
+			for card in opponent_hit_cards:
+				if card != null and card.Special:
+					special_hit_cards.append(card)
+
+			if special_hit_cards.is_empty():
+				watcher["active"] = false
+				events.append(_make_event_by_source(
+					owner,
+					int(watcher.get("source_card_id", -1)),
+					str(watcher.get("source_card_name", "未知卡牌")),
+					"DISABLE_SKILL",
+					"禁用技能",
+					STAGE_FAILED,
+					"发动失败（目标卡在对手手里，但只有基础卡）: %s" % _cards_to_name_text(opponent_hit_cards),
+					{
+						"mode": mode,
+						"scope": scope,
+						"target_ids": target_ids,
+					}
+				))
+				continue
+
+			var disabled_names: Array[String] = []
+			for target_card in special_hit_cards:
+				if _apply_disable_scope_to_card(scope, target_card):
+					disabled_names.append(target_card.Name)
+
+			watcher["active"] = false
+			if disabled_names.is_empty():
+				events.append(_make_event_by_source(
+					owner,
+					int(watcher.get("source_card_id", -1)),
+					str(watcher.get("source_card_name", "未知卡牌")),
+					"DISABLE_SKILL",
+					"禁用技能",
+					STAGE_FAILED,
+					"命中目标但禁用处理器无效",
+					{
+						"mode": mode,
+						"scope": scope,
+					}
+				))
+				continue
+
+			events.append(_make_event_by_source(
+				owner,
+				int(watcher.get("source_card_id", -1)),
+				str(watcher.get("source_card_name", "未知卡牌")),
+				"DISABLE_SKILL",
+				"禁用技能",
+				STAGE_TRIGGER,
+				"命中目标并已禁用: %s" % "、".join(disabled_names),
+				{
+					"mode": mode,
+					"scope": scope,
+					"target_ids": target_ids,
+				}
+			))
+			continue
+
 		if mode == DISABLE_MODE_PICK_OPPONENT_SPECIAL and int(watcher.get("selected_instance_id", 0)) <= 0:
 			var pick_result = await _resolve_disable_pick_target(owner, acquiring_player, watcher)
 			events.append_array(pick_result.get("events", []))
@@ -230,7 +325,7 @@ func check_disable_on_opponent_acquire(
 				watcher["active"] = false
 				continue
 
-		var hit_cards: Array[Card] = _find_disable_hit_cards(watcher, acquiring_player, check_pool)
+		var hit_cards: Array[Card] = _find_disable_hit_cards(watcher, acquiring_player, acquired_cards)
 		if hit_cards.is_empty():
 			events.append(_make_event_by_source(
 				owner,
@@ -248,12 +343,13 @@ func check_disable_on_opponent_acquire(
 			))
 			continue
 
-		var disabled_names: Array[String] = []
+		var disabled_names_pick: Array[String] = []
 		for target_card in hit_cards:
 			if _apply_disable_scope_to_card(scope, target_card):
-				disabled_names.append(target_card.Name)
+				disabled_names_pick.append(target_card.Name)
 
-		if disabled_names.is_empty():
+		watcher["active"] = false
+		if disabled_names_pick.is_empty():
 			events.append(_make_event_by_source(
 				owner,
 				int(watcher.get("source_card_id", -1)),
@@ -269,7 +365,6 @@ func check_disable_on_opponent_acquire(
 			))
 			continue
 
-		watcher["active"] = false
 		events.append(_make_event_by_source(
 			owner,
 			int(watcher.get("source_card_id", -1)),
@@ -277,7 +372,7 @@ func check_disable_on_opponent_acquire(
 			"DISABLE_SKILL",
 			"禁用技能",
 			STAGE_TRIGGER,
-			"命中目标并已禁用: %s" % "、".join(disabled_names),
+			"命中目标并已禁用: %s" % "、".join(disabled_names_pick),
 			{
 				"mode": mode,
 				"scope": scope,
@@ -514,7 +609,12 @@ func _register_disable_watch(current_player: Player, entry: Dictionary, events: 
 		return
 
 	_set_entry_state(entry, SkillUseState.USED)
-	disable_watchers.append({
+	var opponent_player: Player = _get_opponent_player(current_player)
+	if opponent_player == null:
+		events.append(_make_event_from_entry(current_player, entry, STAGE_FAILED, "无法获取对手，禁用技能未生效"))
+		return
+
+	var watcher_dict = {
 		"active": true,
 		"owner": current_player,
 		"source_card_id": source_card.ID if source_card != null else -1,
@@ -525,28 +625,182 @@ func _register_disable_watch(current_player: Player, entry: Dictionary, events: 
 		"selected_instance_id": 0,
 		"selected_card_id": -1,
 		"selected_card_name": "",
-	})
+	}
 
-	var register_text := ""
-	match disable_mode:
-		DISABLE_MODE_FIXED_SINGLE:
-			register_text = "已登记监视（单目标）: %s" % _target_ids_to_card_names_text(target_ids)
-		DISABLE_MODE_FIXED_GROUP:
-			register_text = "已登记监视（组目标）: %s" % _target_ids_to_card_names_text(target_ids)
-		DISABLE_MODE_PICK_OPPONENT_SPECIAL:
-			register_text = "已登记监视（待选目标），首次检查时选择"
-		_:
-			register_text = "已登记监视"
+	if disable_mode == DISABLE_MODE_PICK_OPPONENT_SPECIAL:
+		var pick_result = await _resolve_disable_pick_target(current_player, opponent_player, watcher_dict, true)
+		events.append_array(pick_result.get("events", []))
+		if bool(pick_result.get("waived", false)):
+			return
+		if not bool(pick_result.get("ok", false)):
+			return
 
-	events.append(_make_event_from_entry(
+		var selected_instance_id := int(watcher_dict.get("selected_instance_id", 0))
+		var selected_card: Card = null
+		for card in _collect_special_cards_from_player_deal(opponent_player):
+			if card != null and card.get_instance_id() == selected_instance_id:
+				selected_card = card
+				break
+
+		if selected_card == null:
+			events.append(_make_event_by_source(
+				current_player,
+				source_card.ID if source_card != null else -1,
+				source_card.Name if source_card != null else "未知卡牌",
+				"DISABLE_SKILL",
+				"禁用技能",
+				STAGE_FAILED,
+				"发动失败（目标不在对手牌堆）",
+				{
+					"mode": disable_mode,
+					"scope": disable_scope,
+				}
+			))
+			return
+
+		if _apply_disable_scope_to_card(disable_scope, selected_card):
+			events.append(_make_event_by_source(
+				current_player,
+				source_card.ID if source_card != null else -1,
+				source_card.Name if source_card != null else "未知卡牌",
+				"DISABLE_SKILL",
+				"禁用技能",
+				STAGE_TRIGGER,
+				"立即禁用目标: %s" % selected_card.Name,
+				{
+					"mode": disable_mode,
+					"scope": disable_scope,
+					"target_ids": [selected_card.ID, selected_card.BaseID],
+				}
+			))
+		else:
+			events.append(_make_event_by_source(
+				current_player,
+				source_card.ID if source_card != null else -1,
+				source_card.Name if source_card != null else "未知卡牌",
+				"DISABLE_SKILL",
+				"禁用技能",
+				STAGE_FAILED,
+				"命中目标但禁用处理器无效",
+				{
+					"mode": disable_mode,
+					"scope": disable_scope,
+				}
+			))
+		return
+
+	var own_hit_cards: Array[Card] = _find_target_cards_in_deal(current_player, target_ids)
+	if not own_hit_cards.is_empty():
+		events.append(_make_event_by_source(
+			current_player,
+			source_card.ID if source_card != null else -1,
+			source_card.Name if source_card != null else "未知卡牌",
+			"DISABLE_SKILL",
+			"禁用技能",
+			STAGE_FAILED,
+			"发动失败（目标卡在自己手里）: %s" % _cards_to_name_text(own_hit_cards),
+			{
+				"mode": disable_mode,
+				"scope": disable_scope,
+				"target_ids": target_ids,
+			}
+		))
+		return
+
+	var opponent_hit_cards: Array[Card] = _find_target_cards_in_deal(opponent_player, target_ids)
+	if opponent_hit_cards.is_empty():
+		disable_watchers.append(watcher_dict)
+		var register_text := ""
+		match disable_mode:
+			DISABLE_MODE_FIXED_SINGLE:
+				register_text = "已登记监视（单目标）: %s" % _target_ids_to_card_names_text(target_ids)
+			DISABLE_MODE_FIXED_GROUP:
+				register_text = "已登记监视（组目标）: %s" % _target_ids_to_card_names_text(target_ids)
+			_:
+				register_text = "已登记监视"
+
+		events.append(_make_event_from_entry(
+			current_player,
+			entry,
+			STAGE_REGISTER,
+			register_text,
+			{
+				"target_ids": target_ids,
+				"mode": disable_mode,
+				"scope": disable_scope,
+			}
+		))
+		events.append(_make_event_by_source(
+			current_player,
+			source_card.ID if source_card != null else -1,
+			source_card.Name if source_card != null else "未知卡牌",
+			"DISABLE_SKILL",
+			"禁用技能",
+			STAGE_CHECK,
+			"未找到目标，已登记监视",
+			{
+				"mode": disable_mode,
+				"scope": disable_scope,
+				"target_ids": target_ids,
+			}
+		))
+		return
+
+	var special_hit_cards: Array[Card] = []
+	for card in opponent_hit_cards:
+		if card != null and card.Special:
+			special_hit_cards.append(card)
+
+	if special_hit_cards.is_empty():
+		events.append(_make_event_by_source(
+			current_player,
+			source_card.ID if source_card != null else -1,
+			source_card.Name if source_card != null else "未知卡牌",
+			"DISABLE_SKILL",
+			"禁用技能",
+			STAGE_FAILED,
+			"发动失败（目标卡在对手手里，但只有基础卡）: %s" % _cards_to_name_text(opponent_hit_cards),
+			{
+				"mode": disable_mode,
+				"scope": disable_scope,
+				"target_ids": target_ids,
+			}
+		))
+		return
+
+	var disabled_names: Array[String] = []
+	for target_card in special_hit_cards:
+		if _apply_disable_scope_to_card(disable_scope, target_card):
+			disabled_names.append(target_card.Name)
+
+	if disabled_names.is_empty():
+		events.append(_make_event_by_source(
+			current_player,
+			source_card.ID if source_card != null else -1,
+			source_card.Name if source_card != null else "未知卡牌",
+			"DISABLE_SKILL",
+			"禁用技能",
+			STAGE_FAILED,
+			"命中目标但禁用处理器无效",
+			{
+				"mode": disable_mode,
+				"scope": disable_scope,
+			}
+		))
+		return
+
+	events.append(_make_event_by_source(
 		current_player,
-		entry,
-		STAGE_REGISTER,
-		register_text,
+		source_card.ID if source_card != null else -1,
+		source_card.Name if source_card != null else "未知卡牌",
+		"DISABLE_SKILL",
+		"禁用技能",
+		STAGE_TRIGGER,
+		"立即禁用目标: %s" % "、".join(disabled_names),
 		{
-			"target_ids": target_ids,
 			"mode": disable_mode,
 			"scope": disable_scope,
+			"target_ids": target_ids,
 		}
 	))
 
@@ -981,12 +1235,17 @@ func _build_disable_check_desc(mode: String, target_ids: Array[int], watcher: Di
 		DISABLE_MODE_PICK_OPPONENT_SPECIAL:
 			var selected_name := str(watcher.get("selected_card_name", "")).strip_edges()
 			if selected_name == "":
-				return "检查待选目标（手牌+牌堆）"
+				return "检查待选目标（牌堆）"
 			return "检查已选目标: %s" % selected_name
 		_:
 			return "检查禁用目标"
 
-func _resolve_disable_pick_target(owner: Player, target_player: Player, watcher: Dictionary) -> Dictionary:
+func _resolve_disable_pick_target(
+	owner: Player,
+	target_player: Player,
+	watcher: Dictionary,
+	waive_as_success: bool = false
+) -> Dictionary:
 	var events: Array = []
 	var candidates = _collect_disable_pick_candidates(target_player)
 	if candidates.is_empty():
@@ -1000,7 +1259,7 @@ func _resolve_disable_pick_target(owner: Player, target_player: Player, watcher:
 			"无可选目标，禁用监视结束",
 			{"mode": DISABLE_MODE_PICK_OPPONENT_SPECIAL}
 		))
-		return {"ok": false, "events": events}
+		return {"ok": false, "waived": false, "events": events}
 
 	var selected_card: Card = null
 	if owner != null and owner.is_ai_player():
@@ -1027,12 +1286,24 @@ func _resolve_disable_pick_target(owner: Player, target_player: Player, watcher:
 			var choice = await prompt_callback.call({
 				"type": "DISABLE_TARGET_PICK",
 				"title": "禁用技能目标选择",
-				"description": "请选择一张对手特殊卡作为禁用目标",
+				"description": "请选择一张对手牌堆中的特殊卡作为禁用目标",
 				"allow_cancel": true,
 				"options": options,
 			})
 			var choice_token := str(choice)
 			if choice_token == "" or choice_token == "cancel":
+				if waive_as_success:
+					events.append(_make_event_by_source(
+						owner,
+						int(watcher.get("source_card_id", -1)),
+						str(watcher.get("source_card_name", "未知卡牌")),
+						"DISABLE_SKILL",
+						"禁用技能",
+						STAGE_TRIGGER,
+						"发动成功（玩家放弃）",
+						{"mode": DISABLE_MODE_PICK_OPPONENT_SPECIAL}
+					))
+					return {"ok": false, "waived": true, "events": events}
 				events.append(_make_event_by_source(
 					owner,
 					int(watcher.get("source_card_id", -1)),
@@ -1043,7 +1314,7 @@ func _resolve_disable_pick_target(owner: Player, target_player: Player, watcher:
 					"未选择目标，禁用监视结束",
 					{"mode": DISABLE_MODE_PICK_OPPONENT_SPECIAL}
 				))
-				return {"ok": false, "events": events}
+				return {"ok": false, "waived": false, "events": events}
 			selected_card = token_to_card.get(choice_token, null) as Card
 
 	if selected_card == null:
@@ -1057,7 +1328,7 @@ func _resolve_disable_pick_target(owner: Player, target_player: Player, watcher:
 			"选择目标无效，禁用监视结束",
 			{"mode": DISABLE_MODE_PICK_OPPONENT_SPECIAL}
 		))
-		return {"ok": false, "events": events}
+		return {"ok": false, "waived": false, "events": events}
 
 	watcher["selected_instance_id"] = selected_card.get_instance_id()
 	watcher["selected_card_id"] = selected_card.ID
@@ -1076,7 +1347,7 @@ func _resolve_disable_pick_target(owner: Player, target_player: Player, watcher:
 		}
 	))
 
-	return {"ok": true, "events": events}
+	return {"ok": true, "waived": false, "events": events}
 
 func _collect_disable_pick_candidates(target_player: Player) -> Array:
 	var candidates: Array = []
@@ -1084,7 +1355,7 @@ func _collect_disable_pick_candidates(target_player: Player) -> Array:
 		return candidates
 
 	var seen: Dictionary = {}
-	var all_cards: Array[Card] = _collect_special_cards_from_player(target_player)
+	var all_cards: Array[Card] = _collect_special_cards_from_player_deal(target_player)
 	for card in all_cards:
 		if card == null:
 			continue
@@ -1098,22 +1369,67 @@ func _collect_disable_pick_candidates(target_player: Player) -> Array:
 		seen[instance_id] = true
 		candidates.append({
 			"card": card,
-			"zone": _card_zone_text(target_player, card),
+			"zone": "牌堆",
 		})
 	return candidates
 
-func _collect_special_cards_from_player(player: Player) -> Array[Card]:
+func _collect_cards_from_player_deal(player: Player) -> Array[Card]:
 	var result: Array[Card] = []
 	if player == null:
 		return result
 
-	for card in player.get_all_hand_cards():
-		if card != null and card.Special:
+	for card in player.deal_cards.values():
+		if card is Card:
 			result.append(card)
+	return result
+
+func _collect_special_cards_from_player_deal(player: Player) -> Array[Card]:
+	var result: Array[Card] = []
+	if player == null:
+		return result
+
 	for card in player.deal_cards.values():
 		if card is Card and card.Special:
 			result.append(card)
 	return result
+
+func _find_target_cards_in_deal(player: Player, target_ids: Array[int]) -> Array[Card]:
+	var result: Array[Card] = []
+	if player == null:
+		return result
+
+	var seen: Dictionary = {}
+	for card in _collect_cards_from_player_deal(player):
+		if card == null:
+			continue
+		if not _card_matches_target_ids(card, target_ids):
+			continue
+		var instance_id := card.get_instance_id()
+		if seen.has(instance_id):
+			continue
+		seen[instance_id] = true
+		result.append(card)
+	return result
+
+func _cards_to_name_text(cards: Array[Card]) -> String:
+	var names: Array[String] = []
+	var seen: Dictionary = {}
+	for card in cards:
+		if card == null:
+			continue
+		var instance_id := card.get_instance_id()
+		if seen.has(instance_id):
+			continue
+		seen[instance_id] = true
+		names.append(card.Name)
+	if names.is_empty():
+		return "无"
+	return "、".join(names)
+
+func _get_opponent_player(player: Player) -> Player:
+	if match_state == null or player == null:
+		return null
+	return match_state.get_opponent(player)
 
 func _find_disable_hit_cards(watcher: Dictionary, target_player: Player, check_pool: Array[Card]) -> Array[Card]:
 	var mode := str(watcher.get("mode", DISABLE_MODE_FIXED_SINGLE))
@@ -1124,7 +1440,7 @@ func _find_disable_hit_cards(watcher: Dictionary, target_player: Player, check_p
 		var selected_instance_id := int(watcher.get("selected_instance_id", 0))
 		if selected_instance_id <= 0:
 			return hits
-		var cards_to_check: Array[Card] = _collect_special_cards_from_player(target_player)
+		var cards_to_check: Array[Card] = _collect_special_cards_from_player_deal(target_player)
 		for card in cards_to_check:
 			if card == null:
 				continue
@@ -1134,8 +1450,11 @@ func _find_disable_hit_cards(watcher: Dictionary, target_player: Player, check_p
 		return hits
 
 	var target_ids: Array[int] = _array_to_int_array(watcher.get("target_ids", []))
-	for card in check_pool:
-		if card == null or not card.Special:
+	var cards_to_check: Array[Card] = check_pool
+	if cards_to_check.is_empty():
+		cards_to_check = _collect_cards_from_player_deal(target_player)
+	for card in cards_to_check:
+		if card == null:
 			continue
 		if not _card_matches_target_ids(card, target_ids):
 			continue
@@ -1219,11 +1538,6 @@ func _estimate_card_threat(card: Card) -> int:
 			_:
 				score += 1
 	return score
-
-func _card_zone_text(target_player: Player, card: Card) -> String:
-	if target_player != null and target_player.is_card_in_hand(card):
-		return "手牌"
-	return "牌堆"
 
 func _normalize_queue_entry(raw_entry) -> Dictionary:
 	if raw_entry == null:
