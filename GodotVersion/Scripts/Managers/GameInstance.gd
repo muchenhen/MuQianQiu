@@ -731,6 +731,8 @@ func _is_card_visible_for_local_player(card: Card) -> bool:
 			return true
 		if opponent_hand_visible:
 			return true
+		# 检查是否被"翻开对手手牌"技能翻开
+		# 注意：这里需要区分是玩家A发动技能翻开AI手牌，还是AI发动技能翻开玩家A手牌
 		if match_state != null and match_state.revealed_opponent_hand_cards.has(player_a):
 			var revealed_ids: Array = match_state.revealed_opponent_hand_cards[player_a]
 			return revealed_ids.has(card.ID)

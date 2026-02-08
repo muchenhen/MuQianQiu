@@ -1007,12 +1007,12 @@ func _play_upgrade_animation(special_card: Card, public_choosing_card: Card) -> 
 			
 	# 启动移动动画，将特殊卡移动到公共卡位置
 	animation_manager.start_linear_movement_combined(
-		special_card, 
-		public_choosing_card.position, 
-		public_choosing_card.rotation, 
-		0.8, 
-		animation_manager.EaseType.EASE_IN_OUT, 
-		Callable(self, "_on_special_card_upgrade_complete"), 
+		special_card,
+		public_choosing_card.position,
+		public_choosing_card.rotation,
+		0.8,
+		animation_manager.EaseType.EASE_IN_OUT,
+		Callable(self, "_on_special_card_upgrade_complete"),
 		[special_card, public_choosing_card, original_zindex]
 	)
 	
@@ -1027,6 +1027,8 @@ func _play_upgrade_animation(special_card: Card, public_choosing_card: Card) -> 
 func _on_special_card_upgrade_complete(special_card: Card, _public_choosing_card: Card, original_zindex: int):
 	# 恢复特殊卡的原始z_index
 	special_card.z_index = original_zindex
+	# 确保特殊卡正面朝上
+	special_card.set_card_face_up()
 
 func on_special_card_upgrade_complete(special_card: Card, original_zindex: int):
 	_on_special_card_upgrade_complete(special_card, null, original_zindex)

@@ -598,6 +598,10 @@ func _apply_open_hand_skill(current_player: Player, opponent_player: Player, ent
 		"翻开了对手手牌: %s" % "、".join(opened_names),
 		{"opened_ids": opened_ids}
 	))
+	
+	# 技能生效后刷新卡牌可见性
+	# 这里不需要直接修改卡牌的可见性，而是通过match_state中的信息来控制
+	# GameInstance中的_refresh_card_visibility会根据规则正确处理卡牌显示
 
 func _register_deferred_supply_skill(current_player: Player, entry: Dictionary, is_guarantee: bool, events: Array) -> void:
 	var source_card: Card = _entry_card(entry)
