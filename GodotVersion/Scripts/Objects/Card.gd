@@ -22,17 +22,22 @@ var choosed = false
 
 var is_enable_click = true
 
+# 拖拽相关常量
+const DRAG_THRESHOLD: float = 5.0
+const DRAG_TIME_THRESHOLD: float = 0.1
+
 # 拖拽相关变量
 var drag_start_position: Vector2
 var is_dragging = false
-var drag_threshold = 5
 var time_since_mouse_down = 0.0
-var drag_time_threshold = 0.1
 var mouse_down = false
 
 @onready var Image_ChooesdBG : TextureRect = $Image_ChooesdBG
 
 const BACK_TEXTURE_PATH: String = "res://Textures/Cards/Tex_Back.png"
+const CARD_TEXTURE_PATH: String = "res://Textures/Cards/"
+const DEFAULT_CARD_TEXTURE_PATH: String = "res://Textures/Cards/2/Tex_ARuan.png"
+const GRAY_SHADER_PATH: String = "res://Shaders/gray.gdshader"
 
 var back_texture: Texture = null
 
@@ -74,22 +79,22 @@ func _on_card_gui_input(event: InputEvent) -> void:
 				# 鼠标释放
 				mouse_down = false
 				# 如果没有被识别为拖拽，且点击时间短，才视为点击
-				if not is_dragging and time_since_mouse_down < drag_time_threshold:
+				if not is_dragging and time_since_mouse_down < DRAG_TIME_THRESHOLD:
 					_handle_click()
 				is_dragging = false
 				
-	elif event is InputEventMouseMotion and mouse_down:
-		# 如果鼠标按下并移动
-		var distance = event.position.distance_to(drag_start_position)
-		# 如果移动距离超过阈值，视为拖拽
-		if distance > drag_threshold:
-			is_dragging = true
-			# 告诉父容器此为拖拽事件
-			var parent = get_parent()
-			while parent and not parent.has_method("_notify_child_drag"):
-				parent = parent.get_parent()
-			if parent and parent.has_method("_notify_child_drag"):
-				parent._notify_child_drag(event.relative)
+		elif event is InputEventMouseMotion and mouse_down:
+			# 如果鼠标按下并移动
+			var distance = event.position.distance_to(drag_start_position)
+			# 如果移动距离超过阈值，视为拖拽
+			if distance > DRAG_THRESHOLD:
+				is_dragging = true
+				# 告诉父容器此为拖拽事件
+				var parent = get_parent()
+				while parent and not parent.has_method("_notify_child_drag"):
+					parent = parent.get_parent()
+				if parent and parent.has_method("_notify_child_drag"):
+					parent._notify_child_drag(event.relative)
 
 func _handle_click() -> void:
 	print_card_info()
@@ -102,18 +107,15 @@ func _handle_click() -> void:
 	card_clicked.emit(self)
 
 func initialize(card_id, card_info) -> void:
-	ID = card_id
-	Name = card_info["Name"]
-	PinyinName = card_info["PinyinName"]
-	Type = str(int(str(ID)[0]))
-	Score = card_info["Score"]
-	Season = card_info["Season"]
-	Describe = card_info["Describe"]
-	BaseID = card_info["BaseID"]
-	Special = card_info["Special"]
+	_update_card_properties(card_id, card_info)
 	update_card()
 
 func update_card_info(card_id, card_info) -> void:
+	_update_card_properties(card_id, card_info)
+	update_card()
+
+# 内部辅助函数，用于更新卡牌属性
+func _update_card_properties(card_id, card_info) -> void:
 	ID = card_id
 	Name = card_info["Name"]
 	PinyinName = card_info["PinyinName"]
@@ -123,7 +125,6 @@ func update_card_info(card_id, card_info) -> void:
 	Describe = card_info["Describe"]
 	BaseID = card_info["BaseID"]
 	Special = card_info["Special"]
-	update_card()
 
 func update_card_info_by_id(card_id: int) -> void:
 	var card_info = TableManager.get_instance().get_row("Cards", card_id)
@@ -141,13 +142,13 @@ func update_card() -> void:
 	_load_image()
 
 func _load_image() -> void:
-	var path = "res://Textures/Cards/" + Type + "/Tex_" + PinyinName + ".png"
+	var path = CARD_TEXTURE_PATH + Type + "/Tex_" + PinyinName + ".png"
 	var loaded_texture = load(path)
 	if loaded_texture:
 		self.texture_normal  = loaded_texture
 	else:
 		print("Failed to load texture: " + path + ". Will use default texture instead.")
-		self.texture_normal  = load("res://Textures/Cards/2/Tex_ARuan.png")
+		self.texture_normal  = load(DEFAULT_CARD_TEXTURE_PATH)
 
 func set_pinyin_name(value: String) -> void:
 	PinyinName = value
@@ -157,21 +158,19 @@ func set_card_back() -> void:
 	self.texture_normal  = back_texture
 
 func set_card_chooesd() -> void:
-	Image_ChooesdBG.visible = true
 	choosed = true
+	Image_ChooesdBG.visible = true
 
 func set_card_unchooesd() -> void:
-	Image_ChooesdBG.visible = false
 	choosed = false
+	Image_ChooesdBG.visible = false
 
 func get_card_chooesd() -> bool:
 	return choosed
 
 func change_card_chooesd() -> void:
-	if choosed:
-		set_card_unchooesd()
-	else:
-		set_card_chooesd()
+	choosed = !choosed
+	Image_ChooesdBG.visible = choosed
 
 func disable_click() -> void:
 	is_enable_click = false
@@ -200,7 +199,7 @@ func set_player_owner(player: Player) -> void:
 
 # 设置卡面实例是否灰色
 func set_card_gray(is_gray: bool) -> void:
-	var gray_shader = load("res://Shaders/gray.gdshader")
+	var gray_shader = load(GRAY_SHADER_PATH)
 	var card_material = ShaderMaterial.new()
 	card_material.shader = gray_shader
 	card_material.set_shader_parameter("is_gray", is_gray)
