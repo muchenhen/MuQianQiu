@@ -248,6 +248,8 @@ func check_hand_card_season() -> bool:
 	return has_season
 
 func send_card_to_deal(card: Card) -> void:
+	# 设置卡牌的z_index，确保后进入牌堆的卡牌层级更高
+	card.z_index = deal_cards.size() + 1
 	deal_cards[card.ID] = card
 	card.set_card_unchooesd()
 	card.disable_click()

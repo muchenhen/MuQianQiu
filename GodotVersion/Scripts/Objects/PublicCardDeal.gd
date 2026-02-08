@@ -159,7 +159,7 @@ func _supply_with_card(card: Card):
 		var card_info: PublicHandCardInfo = hand_cards[i]
 		if card_info.isEmpty:
 			card.move_to_top()
-			card.z_index = 8 - i + 1
+			card.z_index = i
 			card.set_input_priority(card.z_index)
 			print("补充公共牌手牌: ", i, " ", card.ID)
 			card_info.card = card
@@ -192,7 +192,7 @@ func supply_hand_card_anim_end(card: Card):
 	var hand_card_count = hand_cards.size()
 	for i in range(hand_card_count, 0, -1):
 		var card_info = hand_cards[i]
-		card_info.card.z_index = 8 - i + 1
+		card_info.card.z_index = i
 		card_info.card.disable_click()
 		card_info.card.move_to_top()
 		card_info.card.global_position = card_info.position
