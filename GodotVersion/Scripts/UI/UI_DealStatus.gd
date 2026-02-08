@@ -119,7 +119,7 @@ func update_unfinished_story_by_player(player: Player) -> void:
 	# 创建UI_DealStoryStatus实例
 	for story_id in stories_id:
 		var deal_story_status:UI_DealStoryStatus = ui_manager.create_ui_instance_for_multi("UI_DealStoryStatus")
-		deal_story_status.name = story_manager.stories[story_id]["Name"]
+		deal_story_status.name = story_manager.stories[story_id].name
 		unfinished_story_vb.add_child(deal_story_status)
 		# 传入玩家参数，使其能检查特殊卡
 		deal_story_status.update_story_status_by_id(story_id, player)
