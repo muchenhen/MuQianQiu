@@ -11,7 +11,7 @@ static var is_open_first: bool = false
 static var is_open_second: bool = false
 static var is_open_third: bool = false
 # 是否使用特殊牌
-static var use_special_cards: bool = false
+static var use_special_cards: bool = true
 # AI难度（1简单，2普通，3困难）
 static var ai_difficulty: int = MatchConfig.AIDifficulty.SIMPLE
 # 对手手牌可见性（普通AI受此影响）

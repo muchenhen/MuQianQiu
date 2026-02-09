@@ -94,7 +94,6 @@ func collect_skill_cardIDs_for_this_game() -> void:
 		if card_id == 0:
 			continue
 		skill_cardIDs.append(card_id)
-		print_debug("skill_cardIDs: ", skill_cardIDs)
 
 func shuffle_cardIDs() -> void:
 	cardIDs.shuffle()

@@ -19,6 +19,10 @@ func _ready() -> void:
 	print("UI_Start ready")
 	load_settings()
 	_ensure_match_setting_controls()
+	
+	# 设置特殊牌复选框的默认状态为true
+	special_card_checkbox.button_pressed = true
+	GameManager.set_use_special_cards(true)
 
 	start_button.connect("pressed", Callable(self, "_on_start_button_pressed"))
 	checkbox_1.connect("state_changed", Callable(self, "_on_checkbox_1_toggled"))
