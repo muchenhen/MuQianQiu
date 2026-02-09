@@ -9,14 +9,26 @@ const SETTINGS_FILE_PATH = "user://settings.cfg"
 @onready var special_card_checkbox = $SpecialCardContainer/SpecialCardCheckbox
 @onready var button_setting: Button = $SettingButton
 
-var ai_difficulty_option: OptionButton = null
-var opponent_visibility_checkbox: CheckBox = null
+# 新增AI难度选择按钮引用
+@onready var simple_difficulty_btn = $AIDifficultyContainer/SimpleDifficultyBtn
+@onready var normal_difficulty_btn = $AIDifficultyContainer/NormalDifficultyBtn
+@onready var hard_difficulty_btn = $AIDifficultyContainer/HardDifficultyBtn
 
 # 动画相关变量
 var tween: Tween = null
 
+# 延迟初始化的变量
+var opponent_visibility_checkbox: CheckBox = null
+
+# 用于防止递归调用的标志
+var is_updating_selection: bool = false
+
 func _ready() -> void:
 	print("UI_Start ready")
+	
+	# 获取对手可见性复选框的引用
+	opponent_visibility_checkbox = $OpponentHandVisible as CheckBox
+	
 	load_settings()
 	_ensure_match_setting_controls()
 	
@@ -30,6 +42,15 @@ func _ready() -> void:
 	checkbox_3.connect("state_changed", Callable(self, "_on_checkbox_3_toggled"))
 	special_card_checkbox.connect("toggled", Callable(self, "_on_special_card_checkbox_toggled"))
 	button_setting.connect("pressed", Callable(self, "_on_setting_button_pressed"))
+	
+	# 连接新的AI难度选择按钮
+	simple_difficulty_btn.connect("toggled", Callable(self, "_on_simple_difficulty_toggled"))
+	normal_difficulty_btn.connect("toggled", Callable(self, "_on_normal_difficulty_toggled"))
+	hard_difficulty_btn.connect("toggled", Callable(self, "_on_hard_difficulty_toggled"))
+	
+	# 安全地连接对手可见性复选框信号
+	if opponent_visibility_checkbox:
+		opponent_visibility_checkbox.connect("toggled", Callable(self, "_on_opponent_visibility_toggled"))
 
 	AudioManager.get_instance().play_bgm("QianQiu")
 	
@@ -48,34 +69,73 @@ func play_fade_in_animation():
 	tween.tween_property(self, "modulate:a", 1.0, 1.0)
 
 func _ensure_match_setting_controls() -> void:
-	if ai_difficulty_option == null:
-		ai_difficulty_option = OptionButton.new()
-		ai_difficulty_option.name = "AIDifficultyOption"
-		ai_difficulty_option.position = Vector2(905, 560)
-		ai_difficulty_option.size = Vector2(260, 40)
-		ai_difficulty_option.add_item("AI: 简单", MatchConfig.AIDifficulty.SIMPLE)
-		ai_difficulty_option.add_item("AI: 普通", MatchConfig.AIDifficulty.NORMAL)
-		ai_difficulty_option.add_item("AI: 困难", MatchConfig.AIDifficulty.HARD)
-		add_child(ai_difficulty_option)
-		ai_difficulty_option.item_selected.connect(Callable(self, "_on_ai_difficulty_selected"))
-
-	if opponent_visibility_checkbox == null:
-		opponent_visibility_checkbox = CheckBox.new()
-		opponent_visibility_checkbox.name = "OpponentHandVisible"
-		opponent_visibility_checkbox.position = Vector2(905, 610)
-		opponent_visibility_checkbox.size = Vector2(420, 48)
-		opponent_visibility_checkbox.text = "对手手牌可见（影响普通AI）"
-		add_child(opponent_visibility_checkbox)
-		opponent_visibility_checkbox.toggled.connect(Callable(self, "_on_opponent_visibility_toggled"))
-
-	# 同步当前全局设置
+	# 同步当前全局设置到新的按钮组
 	var current_level = GameManager.ai_difficulty
-	for i in range(ai_difficulty_option.item_count):
-		if ai_difficulty_option.get_item_id(i) == current_level:
-			ai_difficulty_option.select(i)
-			break
+	match current_level:
+		MatchConfig.AIDifficulty.SIMPLE:
+			# 确保只有简单难度被选中
+			is_updating_selection = true
+			simple_difficulty_btn.button_pressed = true
+			normal_difficulty_btn.button_pressed = false
+			hard_difficulty_btn.button_pressed = false
+			is_updating_selection = false
+		MatchConfig.AIDifficulty.NORMAL:
+			# 确保只有普通难度被选中
+			is_updating_selection = true
+			simple_difficulty_btn.button_pressed = false
+			normal_difficulty_btn.button_pressed = true
+			hard_difficulty_btn.button_pressed = false
+			is_updating_selection = false
+		MatchConfig.AIDifficulty.HARD:
+			# 确保只有困难难度被选中
+			is_updating_selection = true
+			simple_difficulty_btn.button_pressed = false
+			normal_difficulty_btn.button_pressed = false
+			hard_difficulty_btn.button_pressed = true
+			is_updating_selection = false
 
-	opponent_visibility_checkbox.button_pressed = GameManager.opponent_hand_visible
+	# 更新按钮高亮状态
+	update_button_highlights()
+	
+	# 安全地设置对手可见性复选框的状态
+	if opponent_visibility_checkbox:
+		opponent_visibility_checkbox.button_pressed = GameManager.opponent_hand_visible
+
+# 更新按钮高亮状态的函数
+func update_button_highlights():
+	# 根据按钮是否被按下设置不同的颜色来实现高亮效果
+	if simple_difficulty_btn.button_pressed:
+		# 选中的按钮使用高亮颜色
+		simple_difficulty_btn.add_theme_color_override("font_color", Color.YELLOW)  # 高亮颜色
+		simple_difficulty_btn.add_theme_color_override("font_hover_color", Color.YELLOW)
+		simple_difficulty_btn.add_theme_color_override("font_pressed_color", Color.YELLOW)
+	else:
+		# 未选中的按钮使用普通颜色
+		simple_difficulty_btn.add_theme_color_override("font_color", Color.LIGHT_GRAY)  # 普通颜色
+		simple_difficulty_btn.add_theme_color_override("font_hover_color", Color.WHITE)
+		simple_difficulty_btn.add_theme_color_override("font_pressed_color", Color.LIGHT_GRAY)
+	
+	if normal_difficulty_btn.button_pressed:
+		# 选中的按钮使用高亮颜色
+		normal_difficulty_btn.add_theme_color_override("font_color", Color.YELLOW)  # 高亮颜色
+		normal_difficulty_btn.add_theme_color_override("font_hover_color", Color.YELLOW)
+		normal_difficulty_btn.add_theme_color_override("font_pressed_color", Color.YELLOW)
+	else:
+		# 未选中的按钮使用普通颜色
+		normal_difficulty_btn.add_theme_color_override("font_color", Color.LIGHT_GRAY)  # 普通颜色
+		normal_difficulty_btn.add_theme_color_override("font_hover_color", Color.WHITE)
+		normal_difficulty_btn.add_theme_color_override("font_pressed_color", Color.LIGHT_GRAY)
+	
+	if hard_difficulty_btn.button_pressed:
+		# 选中的按钮使用高亮颜色
+		hard_difficulty_btn.add_theme_color_override("font_color", Color.YELLOW)  # 高亮颜色
+		hard_difficulty_btn.add_theme_color_override("font_hover_color", Color.YELLOW)
+		hard_difficulty_btn.add_theme_color_override("font_pressed_color", Color.YELLOW)
+	else:
+		# 未选中的按钮使用普通颜色
+		hard_difficulty_btn.add_theme_color_override("font_color", Color.LIGHT_GRAY)  # 普通颜色
+		hard_difficulty_btn.add_theme_color_override("font_hover_color", Color.WHITE)
+		hard_difficulty_btn.add_theme_color_override("font_pressed_color", Color.LIGHT_GRAY)
 
 func _on_start_button_pressed():
 	print("Start button pressed")
@@ -104,14 +164,52 @@ func _on_special_card_checkbox_toggled(is_checked: bool):
 	GameManager.set_use_special_cards(is_checked)
 	print("Special Card Checkbox toggled: ", is_checked)
 
-func _on_ai_difficulty_selected(index: int):
-	if ai_difficulty_option == null:
-		return
-	var difficulty = ai_difficulty_option.get_item_id(index)
-	GameManager.set_ai_difficulty(difficulty)
+# 新增的AI难度选择处理函数
+func _on_simple_difficulty_toggled(is_pressed: bool):
+	if is_updating_selection:
+		return  # 防止递归调用
+		
+	if is_pressed:
+		is_updating_selection = true
+		# 取消其他按钮的选中状态
+		normal_difficulty_btn.button_pressed = false
+		hard_difficulty_btn.button_pressed = false
+		is_updating_selection = false
+		
+		GameManager.set_ai_difficulty(MatchConfig.AIDifficulty.SIMPLE)
+		update_button_highlights()
 
-func _on_opponent_visibility_toggled(visible: bool):
-	GameManager.set_opponent_hand_visible(visible)
+func _on_normal_difficulty_toggled(is_pressed: bool):
+	if is_updating_selection:
+		return  # 防止递归调用
+		
+	if is_pressed:
+		is_updating_selection = true
+		# 取消其他按钮的选中状态
+		simple_difficulty_btn.button_pressed = false
+		hard_difficulty_btn.button_pressed = false
+		is_updating_selection = false
+		
+		GameManager.set_ai_difficulty(MatchConfig.AIDifficulty.NORMAL)
+		update_button_highlights()
+
+func _on_hard_difficulty_toggled(is_pressed: bool):
+	if is_updating_selection:
+		return  # 防止递归调用
+		
+	if is_pressed:
+		is_updating_selection = true
+		# 取消其他按钮的选中状态
+		simple_difficulty_btn.button_pressed = false
+		normal_difficulty_btn.button_pressed = false
+		is_updating_selection = false
+		
+		GameManager.set_ai_difficulty(MatchConfig.AIDifficulty.HARD)
+		update_button_highlights()
+
+func _on_opponent_visibility_toggled(is_visible: bool):  # 修复参数名称冲突
+	if opponent_visibility_checkbox:
+		GameManager.set_opponent_hand_visible(is_visible)
 
 func _on_setting_button_pressed():
 	print("Setting button pressed")

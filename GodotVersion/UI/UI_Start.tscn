@@ -329,3 +329,44 @@ theme_override_fonts/font = ExtResource("3_s0uod")
 theme_override_font_sizes/font_size = 36
 text = " 使用特殊牌"
 vertical_alignment = 1
+
+[node name="AIDifficultyContainer" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 860.0
+offset_top = 560.0
+offset_right = 1200.0
+offset_bottom = 620.0
+alignment = 1
+theme_override_constants/separation = 20
+
+[node name="SimpleDifficultyBtn" type="Button" parent="AIDifficultyContainer"]
+text = "简单AI"
+toggle_mode = true
+button_pressed = true
+size_flags_vertical = 3
+custom_minimum_size = Vector2(100, 50)
+theme_override_font_sizes/font_size = 20
+
+[node name="NormalDifficultyBtn" type="Button" parent="AIDifficultyContainer"]
+text = "普通AI"
+toggle_mode = true
+size_flags_vertical = 3
+custom_minimum_size = Vector2(100, 50)
+theme_override_font_sizes/font_size = 20
+
+[node name="HardDifficultyBtn" type="Button" parent="AIDifficultyContainer"]
+text = "困难AI"
+toggle_mode = true
+size_flags_vertical = 3
+custom_minimum_size = Vector2(100, 50)
+theme_override_font_sizes/font_size = 20
+
+[node name="AIDifficultyGroup" type="ButtonGroup" parent="."]
+
+[node name="OpponentHandVisible" type="CheckBox" parent="."]
+layout_mode = 0
+offset_left = 905.0
+offset_top = 630.0
+offset_right = 1325.0
+offset_bottom = 678.0
+text = "对手手牌可见（影响普通AI）"
