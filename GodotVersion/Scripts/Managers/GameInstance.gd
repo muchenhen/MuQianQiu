@@ -426,6 +426,7 @@ func _convert_score_event_to_display(event: Dictionary) -> Dictionary:
 	return {
 		"round_index": int(event.get("round_index", current_round_index)),
 		"actor_name": _format_player_display_name(player.player_name if player != null else "Unknown"),
+		"source_card_id": int(event.get("source_card_id", -1)),
 		"source_card_name": str(event.get("source_card_name", "未知卡牌")),
 		"skill_name": skill_name,
 		"stage": stage_code,

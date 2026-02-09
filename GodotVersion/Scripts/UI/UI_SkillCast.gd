@@ -131,8 +131,9 @@ func ask_choice(prompt: Dictionary) -> String:
 	return choice_id
 
 func _update_ui_for_event(event: Dictionary) -> void:
-	# 1. 更新卡牌图片
+	# 1. 更新卡牌图片 - 固定展示当前发动技能的特殊卡对应的图片
 	var card_id = int(event.get("source_card_id", -1))
+	# 确保展示的是发动技能的特殊卡图片
 	_load_card_image(card_id)
 	
 	# 2. 更新头部信息
@@ -163,6 +164,7 @@ func _load_card_image(card_id: int) -> void:
 	if card_row == null:
 		return
 		
+	# 确保展示的是特殊卡的图片
 	var type = str(int(str(card_id)[0]))
 	var pinyin = card_row.get("PinyinName", "")
 	
