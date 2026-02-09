@@ -1,0 +1,152 @@
+[gd_scene load_steps=4 format=3 uid="uid://cn5epc6fl666x"]
+
+[ext_resource type="Script" uid="uid://byg5pex0is65s" path="res://Scripts/UI/UI_ScoreRecord.gd" id="1_script"]
+[ext_resource type="FontFile" uid="uid://cgqf6jr2l5srf" path="res://Font/SourceHanSerifSC-Regular-simplified.otf" id="2_font"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.08, 0.08, 0.08, 0.94)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.85, 0.72, 0.44, 0.9)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[node name="UIScoreRecord" type="Control"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Overlay" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.65)
+
+[node name="MainPanel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -560.0
+offset_top = -330.0
+offset_right = 560.0
+offset_bottom = 330.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="Margin" type="MarginContainer" parent="MainPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="MainPanel/Margin"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 14
+
+[node name="Header" type="HBoxContainer" parent="MainPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TitleLabel" type="Label" parent="MainPanel/Margin/VBox/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 34
+text = "分数变化记录"
+vertical_alignment = 1
+
+[node name="CloseButton" type="Button" parent="MainPanel/Margin/VBox/Header"]
+custom_minimum_size = Vector2(120, 44)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 22
+text = "关闭"
+
+[node name="HeaderSeparator" type="HSeparator" parent="MainPanel/Margin/VBox"]
+layout_mode = 2
+
+[node name="ColumnHeader" type="HBoxContainer" parent="MainPanel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 38)
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TimeHeader" type="Label" parent="MainPanel/Margin/VBox/ColumnHeader"]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 20
+text = "时间"
+vertical_alignment = 1
+
+[node name="SourceHeader" type="Label" parent="MainPanel/Margin/VBox/ColumnHeader"]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 20
+text = "来源"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ScoreHeader" type="Label" parent="MainPanel/Margin/VBox/ColumnHeader"]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 20
+text = "分数"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DescHeader" type="Label" parent="MainPanel/Margin/VBox/ColumnHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 20
+text = "说明"
+vertical_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MainPanel/Margin/VBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+vertical_scroll_mode = 2
+
+[node name="RecordsList" type="VBoxContainer" parent="MainPanel/Margin/VBox/ScrollContainer"]
+custom_minimum_size = Vector2(0, 500)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="EmptyLabel" type="Label" parent="MainPanel/Margin/VBox/ScrollContainer/RecordsList"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 24
+text = "暂无分数变化记录"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BottomHint" type="Label" parent="MainPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 16
+text = "提示: 点击遮罩或按 ESC 可关闭"
+horizontal_alignment = 2

@@ -11,6 +11,8 @@ signal skill_cards_animation_completed
 @onready var player_b_skill_card_zone:ColorRect = get_node_or_null("Cards/PlayerBSkillCardZone")
 @onready var player_a_score_animation:Label = $UI/Text_AScoreAnimation
 @onready var player_b_score_animation:Label = $UI/Text_BScoreAnimation
+@onready var text_a_score:Label = $UI/Text_AScore
+@onready var text_b_score:Label = $UI/Text_BScore
 
 # 分数动画标签的初始Y位置（从tscn文件中获取）
 const PLAYER_A_SCORE_ANIMATION_Y = 600.0
@@ -35,6 +37,17 @@ func _ready() -> void:
 	player_a_deal.connect("pressed", Callable(self, "_on_player_a_deal_clcik"))
 	# player_b_deal绑定点击事件
 	player_b_deal.connect("pressed", Callable(self, "_on_player_b_deal_clcik"))
+	
+	# 为Text_AScore和Text_BScore添加点击事件
+	text_a_score.mouse_filter = Control.MOUSE_FILTER_STOP  # 允许接收鼠标事件
+	text_b_score.mouse_filter = Control.MOUSE_FILTER_STOP  # 允许接收鼠标事件
+	
+	text_a_score.connect("gui_input", Callable(self, "_on_text_a_score_gui_input"))
+	text_b_score.connect("gui_input", Callable(self, "_on_text_b_score_gui_input"))
+	
+	# 确保动画标签不会阻挡点击事件
+	player_a_score_animation.mouse_filter = Control.MOUSE_FILTER_IGNORE  # 忽略鼠标事件
+	player_b_score_animation.mouse_filter = Control.MOUSE_FILTER_IGNORE  # 忽略鼠标事件
 	
 	# 确保技能卡区域不会被显示，但卡会显示
 	if player_a_skill_card_zone:
@@ -558,3 +571,35 @@ func _exit_tree() -> void:
 	var game_instance = GameManager.instance
 	if ENABLE_SKILL_DEBUG_PANEL and game_instance != null and game_instance.is_connected("skill_debug_event", Callable(self, "_on_skill_debug_event")):
 		game_instance.disconnect("skill_debug_event", Callable(self, "_on_skill_debug_event"))
+
+# 处理Text_AScore的GUI输入事件
+func _on_text_a_score_gui_input(event):
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		_open_score_record_ui(GameManager.instance.player_a)
+
+# 处理Text_BScore的GUI输入事件
+func _on_text_b_score_gui_input(event):
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		_open_score_record_ui(GameManager.instance.player_b)
+
+# 打开分数记录UI
+func _open_score_record_ui(player: Player) -> void:
+	if player == null:
+		print("错误: 玩家为空，无法打开分数记录UI")
+		return
+	
+	# 获取分数记录UI实例
+	var score_record_ui := ui_manager.ensure_get_ui_instance("UI_ScoreRecord") as UI_ScoreRecord
+	if score_record_ui == null:
+		print("错误: 无法获取UI_ScoreRecord实例")
+		return
+	
+	# 将UI添加到场景树（如果尚未添加）
+	if not score_record_ui.is_inside_tree():
+		ui_manager.open_ui_instance(score_record_ui)
+	
+	# 确保UI在最顶层
+	ui_manager.move_ui_instance_to_top(score_record_ui)
+	
+	# 显示分数记录
+	score_record_ui.show_score_records(player)

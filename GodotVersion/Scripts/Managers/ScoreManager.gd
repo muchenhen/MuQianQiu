@@ -118,6 +118,12 @@ func get_player_score(player: Player) -> int:
 		init_player_score(player)
 	return player_scores[player]
 
+# 获取玩家分数历史记录
+func get_player_score_history(player: Player) -> Array:
+	if not score_history.has(player):
+		init_player_score(player)
+	return score_history[player].duplicate()
+
 # 记录分数变化
 func _add_score_record(player: Player, source: ScoreSource, score: int, description: String) -> void:
 	if not score_history.has(player):

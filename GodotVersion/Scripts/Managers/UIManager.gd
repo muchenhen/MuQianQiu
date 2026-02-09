@@ -41,6 +41,7 @@ func regiester_ui_elements() -> void:
 	register_ui_element("UI_SkillCast", "res://UI/UI_SkillCast.tscn")
 	register_ui_element("UI_DisableTargetPicker", "res://UI/UI_DisableTargetPicker.tscn")
 	register_ui_element("UI_ExchangeResult", "res://UI/UI_ExchangeResult.tscn")
+	register_ui_element("UI_ScoreRecord", "res://UI/UI_ScoreRecord.tscn")
 
 func register_ui_element(key: String, element_path: String) -> void:
 	ui_elements_path[key] = element_path
