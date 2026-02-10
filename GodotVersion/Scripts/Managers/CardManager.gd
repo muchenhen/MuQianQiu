@@ -7,6 +7,7 @@ static var instance: CardManager = null
 var tableManager = TableManager.get_instance()
 
 const CARD = preload("res://Scripts/Objects/Card.tscn")
+const _DebugController = preload("res://Scripts/Debug/DebugController.gd")
 
 # 公共牌区域
 const PUBLIC_CARD_AREA_POS: Vector2 = Vector2(1400, 416)
@@ -104,6 +105,18 @@ func shuffle_cardIDs() -> void:
 ## - game_instance: GameInstance引用，用于回调
 func send_cards_for_play(cards: Array, game_instance):
 	game_instance_ref = game_instance
+	
+	# Debug: 保证指定卡牌分到玩家A手中
+	var debug_ctrl = _DebugController.get_instance()
+	if debug_ctrl.force_card_to_player_a_enabled:
+		var target_base_id = debug_ctrl.force_card_to_player_a_base_id
+		for i in range(cards.size()):
+			if cards[i].BaseID == target_base_id:
+				var target_card = cards[i]
+				cards.remove_at(i)
+				cards.append(target_card)  # 移到末尾，pop_back 时第一个弹出 (i=0) → player_a
+				print("[Debug] 强制将卡牌 BaseID=%d 分配给玩家A" % target_base_id)
+				break
 	
 	# 阶段1: 准备要动画的卡牌数据
 	var cards_to_deal = []  # 存储所有需要发牌的数据

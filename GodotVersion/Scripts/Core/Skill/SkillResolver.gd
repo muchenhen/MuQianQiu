@@ -1734,10 +1734,13 @@ func _resolve_disable_pick_target(
 				var token := str(card.get_instance_id())
 				var zone_text := str(candidate.get("zone", "未知区域"))
 				options.append({
-					"id": token,
-					"label": "%s（%s）" % [card.Name, zone_text],
-					"description": "卡牌ID: %d / BaseID: %d" % [card.ID, card.BaseID],
-				})
+						"id": token,
+						"label": "%s（%s）" % [card.Name, zone_text],
+						"description": "卡牌ID: %d / BaseID: %d" % [card.ID, card.BaseID],
+						"card_id": card.ID,
+						"base_id": card.BaseID,
+						"pinyin_name": card.PinyinName,
+					})
 				token_to_card[token] = card
 
 			var choice = await prompt_callback.call({
