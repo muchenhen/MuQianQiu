@@ -50,7 +50,7 @@ var _is_playing: bool = false
 func _ready() -> void:
 	visible = false
 	background.mouse_filter = Control.MOUSE_FILTER_STOP
-	skip_button.pressed.connect(func(): _skip_requested = true)
+	skip_button.pressed.connect(_request_skip)
 	
 	# 初始化时隐藏选择面板，显示结果面板
 	choice_panel.visible = false
@@ -64,6 +64,7 @@ func play_events(events: Array) -> void:
 	_skip_requested = false
 	_is_playing = true
 	visible = true
+	skip_button.disabled = false
 	
 	# 确保处于展示模式
 	choice_panel.visible = false
@@ -79,14 +80,7 @@ func play_events(events: Array) -> void:
 		
 		# 如果是需要展示的事件（不仅仅是后台数据更新），则等待
 		if _should_wait_for_event(event):
-			var wait_time = auto_play_duration
-			if _skip_requested:
-				wait_time = 0.1
-			await get_tree().create_timer(wait_time).timeout
-		
-		if _skip_requested:
-			# 如果跳过，后续事件快速播放
-			pass
+			await _wait_with_skip(auto_play_duration)
 
 	_animate_exit()
 	await get_tree().create_timer(0.3).timeout
@@ -224,6 +218,17 @@ func _set_panel_style(panel: PanelContainer, bg_color: Color) -> void:
 	style.corner_radius_bottom_right = 4
 	style.bg_color = bg_color
 	panel.add_theme_stylebox_override("panel", style)
+
+func _request_skip() -> void:
+	_skip_requested = true
+	skip_button.disabled = true
+
+func _wait_with_skip(duration: float) -> void:
+	if duration <= 0.0 or _skip_requested:
+		return
+	var end_time_ms := Time.get_ticks_msec() + int(duration * 1000.0)
+	while not _skip_requested and Time.get_ticks_msec() < end_time_ms:
+		await get_tree().process_frame
 
 func _bind_option_button(btn: Button, options, index: int) -> void:
 	_clear_button_connections(btn)
