@@ -382,6 +382,13 @@ func _process_action_resolution_async(player: Player, action_cards: Array) -> vo
 
 	var skill_result = await skill_manager.resolve_turn_skills(player, opponent, action_cards_typed)
 	stage_events.append_array(_convert_skill_events_to_display(skill_result.get("events", [])))
+
+	# issue#42: 先完成技能登记（尤其是“增加分数-故事”），再结算故事，
+	# 避免最后一回合故事先结算导致加分技能错过触发窗口。
+	var has_new_story = player.check_finish_story()
+	if has_new_story:
+		await player.new_story_show_finished
+
 	stage_events.append_array(_consume_pending_score_events_for_player(player))
 
 	if not stage_events.is_empty():

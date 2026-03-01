@@ -909,9 +909,6 @@ func handle_card_selection(player_choosing_card: Card, public_choosing_card: Car
 	await _execute_card_animations(player_choosing_card, acquired_public_card, target_pos, anim_duration, game_instance)
 	_update_player_data(player_choosing_card, acquired_public_card)
 	await _wait_for_animation_complete(anim_duration)
-	var has_new_story = check_finish_story()
-	if has_new_story:
-		await new_story_show_finished
 	InputManager.get_instance().allow_input()
 	action_resolution_completed.emit(self, [player_choosing_card, acquired_public_card])
 
