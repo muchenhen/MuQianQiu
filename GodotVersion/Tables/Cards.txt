@@ -255,3 +255,8 @@ ID,Name,PinyinName,Score,Season,Describe,Special,BaseID,SpecialName,SkillsID
 独站群崖底，风物皆无情。",true,308,308,
 342,缙云·卸甲,JinYun_XieJia,4,秋,"玄甲浸苍烟，皓首远人间，
 十载常独坐，半身是离绝。",true,307,307,
+343,岑缨·森罗,CenYing_SenLuo,6,夏,"",true,301,301,
+344,北洛·森罗,BeiLuo_SenLuo,6,秋,"",true,304,304,
+345,云无月·森罗,YunWuYue_SenLuo,6,冬,"",true,303,303,
+346,刘兄·特默里恩,LiuXiong_TeMoLiEn,6,春,"",true,310,310,
+347,司危·艾达,SiWei_AiDa,6,夏,"",true,309,309,

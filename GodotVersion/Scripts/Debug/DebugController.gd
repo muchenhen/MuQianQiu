@@ -31,7 +31,7 @@ var force_all_special_skills_to_exchange_enabled: bool = false
 ## 保证指定卡牌ID一定分到玩家A手中
 ## - 仅影响开局发牌
 ## - 会优先在玩家A发牌轮次发出以下卡牌
-var force_specific_cards_to_player_a_enabled: bool = true
+var force_specific_cards_to_player_a_enabled: bool = false
 
 ## 要强制分给玩家A的卡牌ID列表
 var force_specific_cards_to_player_a_ids: Array[int] = [205, 224, 225, 226]

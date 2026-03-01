@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://b1jgttxkx7y2m"]
 
-[ext_resource type="Script" path="res://Scripts/UI/UI_DisableTargetPicker.gd" id="1"]
+[ext_resource type="Script" uid="uid://ck2wxrs2c2cjd" path="res://Scripts/UI/UI_DisableTargetPicker.gd" id="1"]
 
 [node name="UI_DisableTargetPicker" type="CanvasLayer"]
 layer = 121
