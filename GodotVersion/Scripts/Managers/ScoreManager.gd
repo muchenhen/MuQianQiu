@@ -380,7 +380,7 @@ func apply_score_effects(player: Player) -> void:
 				if effect.applied_targets[target_id]:
 					continue
 					
-				if player.finished_stories.has(target_id):
+				if player.check_story_in_finished_stories(target_id):
 					# 记录此目标已应用
 					effect.applied_targets[target_id] = true
 					_apply_single_effect(player, effect, target_id)

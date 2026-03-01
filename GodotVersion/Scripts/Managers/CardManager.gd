@@ -106,17 +106,28 @@ func shuffle_cardIDs() -> void:
 func send_cards_for_play(cards: Array, game_instance):
 	game_instance_ref = game_instance
 	
-	# Debug: 保证指定卡牌分到玩家A手中
+	# Debug: 强制将指定卡牌分到玩家A
 	var debug_ctrl = _DebugController.get_instance()
+	var forced_player_a_cards: Array[Card] = []
+
 	if debug_ctrl.force_card_to_player_a_enabled:
 		var target_base_id = debug_ctrl.force_card_to_player_a_base_id
-		for i in range(cards.size()):
-			if cards[i].BaseID == target_base_id:
-				var target_card = cards[i]
-				cards.remove_at(i)
-				cards.append(target_card)  # 移到末尾，pop_back 时第一个弹出 (i=0) → player_a
-				print("[Debug] 强制将卡牌 BaseID=%d 分配给玩家A" % target_base_id)
-				break
+		var target_card = _pop_card_by_base_id_from_array(cards, target_base_id)
+		if target_card != null:
+			forced_player_a_cards.append(target_card)
+			print("[Debug] 强制将卡牌 BaseID=%d 分配给玩家A" % target_base_id)
+		else:
+			push_warning("[Debug] 未找到 BaseID=%d，无法强制分配给玩家A" % target_base_id)
+
+	if debug_ctrl.force_specific_cards_to_player_a_enabled:
+		for raw_card_id in debug_ctrl.force_specific_cards_to_player_a_ids:
+			var target_card_id := int(raw_card_id)
+			var forced_card = _pop_card_by_id_from_array(cards, target_card_id)
+			if forced_card != null:
+				forced_player_a_cards.append(forced_card)
+				print("[Debug] 强制将卡牌 ID=%d 分配给玩家A" % target_card_id)
+			else:
+				push_warning("[Debug] 未找到 ID=%d，无法强制分配给玩家A" % target_card_id)
 	
 	# 阶段1: 准备要动画的卡牌数据
 	var cards_to_deal = []  # 存储所有需要发牌的数据
@@ -124,7 +135,14 @@ func send_cards_for_play(cards: Array, game_instance):
 	# 处理玩家手牌
 	for i in range(player_a.hand_cards_pos_array.size() + player_b.hand_cards_pos_array.size()):
 		# A和B玩家轮流发牌
-		var card = cards.pop_back()
+		var card: Card = null
+		if i % 2 == 0 and not forced_player_a_cards.is_empty():
+			card = forced_player_a_cards.pop_front()
+		else:
+			card = cards.pop_back()
+		if card == null:
+			push_error("发牌失败：牌库中的卡牌不足")
+			return
 		if i % 2 == 0:
 			cards_to_deal.append({"card": card, "position": player_a.hand_cards_pos_array.pop_front()})
 			var index:int = player_a.get_player_first_enpty_hand_card_index()
@@ -150,6 +168,22 @@ func send_cards_for_play(cards: Array, game_instance):
 	
 	# 开始发牌动画
 	_start_card_dealing_sequence(cards_to_deal)
+
+func _pop_card_by_base_id_from_array(cards: Array, target_base_id: int) -> Card:
+	for i in range(cards.size() - 1, -1, -1):
+		var card: Card = cards[i]
+		if card != null and card.BaseID == target_base_id:
+			cards.remove_at(i)
+			return card
+	return null
+
+func _pop_card_by_id_from_array(cards: Array, target_card_id: int) -> Card:
+	for i in range(cards.size() - 1, -1, -1):
+		var card: Card = cards[i]
+		if card != null and (card.ID == target_card_id or card.BaseID == target_card_id):
+			cards.remove_at(i)
+			return card
+	return null
 
 ## 开始发牌动画序列
 func _start_card_dealing_sequence(cards_to_deal: Array):
