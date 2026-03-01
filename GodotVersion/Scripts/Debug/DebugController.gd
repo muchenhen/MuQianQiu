@@ -22,3 +22,8 @@ var force_card_to_player_a_enabled: bool = true
 
 ## 要强制分给玩家A的卡牌 BaseID（303 = 云无月）
 var force_card_to_player_a_base_id: int = 303
+
+## 将所有特殊卡技能强制覆盖为“交换卡牌”
+## - 仅影响技能类型判定，不修改数据表原始内容
+## - 推荐仅在调试时开启
+var force_all_special_skills_to_exchange_enabled: bool = false

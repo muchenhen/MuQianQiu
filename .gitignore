@@ -134,3 +134,5 @@ QianQiuUMGVersion/SluaVersion/MuQianQiu/MuQianQiu.sln.DotSettings.user
 GodotVersion/Packages/Windows/
 
 GodotVersion/plans/
+# AI Assistant files
+AGENTS.md

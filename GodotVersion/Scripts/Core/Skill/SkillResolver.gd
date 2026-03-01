@@ -878,6 +878,7 @@ func _execute_card_exchange(current_player: Player, opponent_player: Player, sou
 		var display_data = {
 			"player_a": current_player,
 			"player_b": opponent_player,
+			"initiator_player": current_player,
 			"player_a_lost_card": source_card,
 			"player_a_gained_card": target_card,
 			"player_b_lost_card": target_card if target_in_deal else null,
@@ -1410,9 +1411,8 @@ func _build_entry_from_skill_row(card: Card, skill_index: int) -> Dictionary:
 	var type_key = "Skill%dType" % skill_index
 	if not row.has(type_key):
 		return {}
-
-	var type_str = str(row[type_key]).strip_edges()
-	if type_str == "":
+	var skill_type = CardSkill.get_skill_type_by_index(card, skill_index)
+	if skill_type == CardSkill.SKILL_TYPE.NULL:
 		return {}
 
 	var target_id_key = "Skill%dTargetID" % skill_index
@@ -1453,7 +1453,7 @@ func _build_entry_from_skill_row(card: Card, skill_index: int) -> Dictionary:
 	return {
 		"card": card,
 		"skill_index": skill_index,
-		"skill_type": CardSkill.string_to_skill_type(type_str),
+		"skill_type": skill_type,
 		"skill_target_ids": target_ids,
 		"skill_target_raw": target_raw,
 		"skill_target_name": target_name,

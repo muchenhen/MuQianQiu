@@ -1,6 +1,7 @@
 extends Node
 
 class_name CardSkill
+const _DebugController = preload("res://Scripts/Debug/DebugController.gd")
 
 enum SKILL_TYPE {
     DISABLE_SKILL,# 禁用技能
@@ -51,22 +52,26 @@ static func get_skill_num_for_card(card:Card) -> int:
     return num
 
 static func get_first_skill_type(card:Card) -> SKILL_TYPE:
-    var table_manager = TableManager.get_instance()
-    var card_skill_row = table_manager.get_row("Skills", card.ID)
-    if card_skill_row:
-        if card_skill_row.has("Skill1Type"):
-            return string_to_skill_type(card_skill_row["Skill1Type"])
-    return SKILL_TYPE.NULL
+    return get_skill_type_by_index(card, 1)
 
 static func get_second_skill_type(card:Card) -> SKILL_TYPE:
-    var table_manager = TableManager.get_instance()
-    var card_skill_row = table_manager.get_row("Skills", card.ID)
-    if card_skill_row:
-        if card_skill_row.has("Skill2Type"):
-            return string_to_skill_type(card_skill_row["Skill2Type"])
-    return SKILL_TYPE.NULL
+    return get_skill_type_by_index(card, 2)
 
 static func get_skill_type_by_index(card:Card, index:int) -> SKILL_TYPE:
+    if _should_force_exchange_skill(card):
+        var table_manager_for_debug = TableManager.get_instance()
+        var card_skill_row_for_debug = table_manager_for_debug.get_row("Skills", card.ID)
+        if card_skill_row_for_debug:
+            if index == 1 and card_skill_row_for_debug.has("Skill1Type"):
+                var skill1_type_raw: String = str(card_skill_row_for_debug["Skill1Type"]).strip_edges()
+                if not skill1_type_raw.is_empty():
+                    return SKILL_TYPE.EXCHANGE_CARD
+            elif index == 2 and card_skill_row_for_debug.has("Skill2Type"):
+                var skill2_type_raw: String = str(card_skill_row_for_debug["Skill2Type"]).strip_edges()
+                if not skill2_type_raw.is_empty():
+                    return SKILL_TYPE.EXCHANGE_CARD
+        return SKILL_TYPE.NULL
+
     var table_manager = TableManager.get_instance()
     var card_skill_row = table_manager.get_row("Skills", card.ID)
     if card_skill_row:
@@ -75,6 +80,14 @@ static func get_skill_type_by_index(card:Card, index:int) -> SKILL_TYPE:
         elif index == 2 and card_skill_row.has("Skill2Type"):
             return string_to_skill_type(card_skill_row["Skill2Type"])
     return SKILL_TYPE.NULL
+
+static func _should_force_exchange_skill(card: Card) -> bool:
+    if card == null:
+        return false
+    if not card.Special:
+        return false
+    var debug_ctrl: DebugController = _DebugController.get_instance()
+    return bool(debug_ctrl.force_all_special_skills_to_exchange_enabled)
 
 
 # 触发技能：禁用技能

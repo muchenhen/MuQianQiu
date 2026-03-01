@@ -52,6 +52,7 @@ func _ready() -> void:
 ## {
 ##   "player_a": Player,
 ##   "player_b": Player,
+##   "initiator_player": Player,  # 交换发起者
 ##   "player_a_lost_card": Card,
 ##   "player_a_gained_card": Card,
 ##   "player_b_lost_card": Card,  # 可能为null（如果从手牌交换）
@@ -83,17 +84,22 @@ func _setup_initial_state() -> void:
 	# 设置玩家名称
 	var player_a: Player = exchange_data.get("player_a")
 	var player_b: Player = exchange_data.get("player_b")
+	var initiator_player: Player = exchange_data.get("initiator_player", null)
 	
 	if player_a:
-		if player_a.name != "":
-			player_a_name.text = player_a.name
-		else:
-			player_a_name.text = "玩家A"
+		var player_a_base_name: String = "玩家A"
+		var player_a_name_value: String = str(player_a.name)
+		if not player_a_name_value.is_empty():
+			player_a_base_name = player_a_name_value
+		var player_a_is_initiator := initiator_player != null and initiator_player == player_a
+		player_a_name.text = "%s%s" % [player_a_base_name, "（发起）" if player_a_is_initiator else ""]
 	if player_b:
-		if player_b.name != "":
-			player_b_name.text = player_b.name
-		else:
-			player_b_name.text = "玩家B"
+		var player_b_base_name: String = "玩家B"
+		var player_b_name_value: String = str(player_b.name)
+		if not player_b_name_value.is_empty():
+			player_b_base_name = player_b_name_value
+		var player_b_is_initiator := initiator_player != null and initiator_player == player_b
+		player_b_name.text = "%s%s" % [player_b_base_name, "（发起）" if player_b_is_initiator else ""]
 	
 	# 初始时隐藏各元素，动画时逐步显示
 	_set_panel_alpha(player_a_panel, 0.0)
