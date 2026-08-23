@@ -134,5 +134,17 @@ QianQiuUMGVersion/SluaVersion/MuQianQiu/MuQianQiu.sln.DotSettings.user
 GodotVersion/Packages/Windows/
 
 GodotVersion/plans/
-# AI Assistant files
-AGENTS.md
+
+# Local secrets and machine-specific deployment configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.ppk
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+deploy.local.*
+server.local.*

@@ -141,7 +141,10 @@ func _on_start_button_pressed():
 	print("Start button pressed")
 	var count = GameManager.get_checked_count()
 	if count != 2:
-		print("目前只支持选择两个")
+		if count < 2:
+			UIManager.get_instance().show_warning_tip("请先选择两个游戏系列")
+		else:
+			UIManager.get_instance().show_warning_tip("目前仅支持选择两个游戏系列")
 		return
 	GameManager.start_new_game()
 

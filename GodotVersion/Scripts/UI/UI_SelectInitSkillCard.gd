@@ -38,7 +38,10 @@ const CARD_SCENE = preload("res://Scripts/Objects/Card.tscn")
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	start_button.pressed.connect(_on_start_button_pressed)
-	debug_button.pressed.connect(_on_debug_button_pressed)
+	if OS.is_debug_build():
+		debug_button.pressed.connect(_on_debug_button_pressed)
+	else:
+		debug_button.queue_free()
 	# 设置ScrollContainer可以接收输入
 	scroll_container.mouse_filter = Control.MOUSE_FILTER_PASS
 	# 连接滚动容器的输入事件
